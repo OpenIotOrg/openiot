@@ -3,6 +3,37 @@
 *.class
 
 
+# Eclipse Settings #
+####################
+.project
+**/.project
+.classpath
+**/.classpath
+org.eclipse.core.resources.prefs
+org.eclipse.m2e.core.prefs
+
+# Eclipse Plug-In Settings #
+############################
+.pmd
+
+
+# Maven Generated #
+###################
+pom.xml.versionsBackup
+
+
+# Mac Generated #
+#################
+.DS_Store
+
+
+# Binary Folders #
+#################
+bin
+**/bin
+target/
+*/target/
+
 # Packages #
 ############
 # it's better to unpack these files and commit the raw source
@@ -25,8 +56,3 @@
 # OS generated files #
 ######################
 
-
-# Folders #
-###########
-bin
-target
