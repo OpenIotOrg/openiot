@@ -24,57 +24,55 @@
 		Author: Nikos Kefalakis (nkef@ait.edu.gr)
    -->
 
-	<xs:element name="SensorTypes">
-		<xs:complexType>
-			<xs:sequence>
-				<xs:element maxOccurs="unbounded" ref="SensorType" />
-			</xs:sequence>
-		</xs:complexType>
-	</xs:element>
+  <xs:element name="SensorTypes">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="SensorType"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
 
 
-	<xs:element name="SensorType">
-		<xs:complexType>
-			<xs:sequence>
-				<xs:sequence>
-					<xs:element maxOccurs="unbounded" minOccurs="0"
-						ref="CoreMetaData" />
-				</xs:sequence>
-				<xs:sequence>
-					<xs:element maxOccurs="unbounded" minOccurs="0"
-						ref="MeasurementCapability" />
-				</xs:sequence>
-			</xs:sequence>
-			<xs:attribute name="name" type="xs:Name" />
-			<xs:attribute name="id" type="xs:anyURI" />
-			<xs:attribute name="Location" type="xs:string" />
-		</xs:complexType>
-	</xs:element>
+  <xs:element name="SensorType">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:sequence>
+          <xs:element maxOccurs="unbounded" minOccurs="0" ref="CoreMetaData"/>
+        </xs:sequence>
+        <xs:sequence>
+          <xs:element maxOccurs="unbounded" minOccurs="0" ref="MeasurementCapability"/>
+        </xs:sequence>
+      </xs:sequence>
+      <xs:attribute name="name" type="xs:Name"/>
+      <xs:attribute name="id" type="xs:anyURI"/>
+    </xs:complexType>
+  </xs:element>
 
 
-	<xs:element name="CoreMetaData" nillable="false">
-		<xs:complexType>
-			<xs:attribute name="Name" type="xs:anyURI" />
-			<xs:attribute name="Value" type="xs:string" />
-		</xs:complexType>
-	</xs:element>
+  <xs:element name="CoreMetaData" nillable="false">
+    <xs:complexType>
+      <xs:attribute name="name" type="xs:anyURI"/>
+      <xs:attribute name="value" type="xs:string"/>
+    </xs:complexType>
+  </xs:element>
 
-	<xs:element name="MeasurementCapability" nillable="false">
-		<xs:complexType>
-			<xs:sequence>
-				<xs:element maxOccurs="unbounded" minOccurs="1" ref="Unit" />
-			</xs:sequence>
-			<xs:attribute name="id" type="xs:anyURI" use="optional" />
-		</xs:complexType>
-	</xs:element>
+  <xs:element name="MeasurementCapability" nillable="false">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" minOccurs="1" ref="Unit"/>
+      </xs:sequence>
+      <xs:attribute name="id" type="xs:anyURI" use="optional"/>
+      <xs:attribute fixed="" name="name" type="xs:string"/>
+    </xs:complexType>
+  </xs:element>
 
-	<xs:element name="Unit">
-		<xs:complexType>
-			<xs:attribute name="Name" type="xs:string" />
-			<xs:attribute name="Type" type="xs:string" />
-		</xs:complexType>
-	</xs:element>
-    
-    
-    
+  <xs:element name="Unit">
+    <xs:complexType>
+      <xs:attribute name="name" type="xs:string"/>
+      <xs:attribute name="type" type="xs:string"/>
+    </xs:complexType>
+  </xs:element>
+
+
+
 </xs:schema>
