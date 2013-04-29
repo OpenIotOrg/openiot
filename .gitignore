@@ -39,7 +39,7 @@ pom.xml.versionsBackup
 # Binary Folders #
 #################
 bin
-**/bin
+*/bin/
 target/
 */target/
 
@@ -60,7 +60,9 @@ target/
 
 # Logs and databases #
 ######################
-#*.log
+*.log
+logs/
+*/logs/
 #*.sql
 #*.sqlite
 
