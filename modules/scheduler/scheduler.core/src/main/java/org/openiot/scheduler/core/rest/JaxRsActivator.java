@@ -1,6 +1,5 @@
 package org.openiot.scheduler.core.rest;
 
-
 /**
  * Copyright (c) 2011-2014, OpenIoT
  *
@@ -21,12 +20,16 @@ package org.openiot.scheduler.core.rest;
  * Contact: OpenIoT mailto: info@openiot.eu
  */
 
-
-
 import java.util.Set;
 import java.util.HashSet;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.core.util.StatusPrinter;
 
 /**
  * A class extending {@link Application} and annotated with @ApplicationPath is the Java EE 6 "no XML" approach to activating
@@ -38,25 +41,37 @@ import javax.ws.rs.core.Application;
  */
 /**
  * @author Nikos Kefalakis (nkef) e-mail: nkef@ait.edu.gr
- *
+ * 
  */
 @ApplicationPath("/rest")
 public class JaxRsActivator extends Application {
 
+	public static Logger logger;
 
 	private Set<Object> singletons = new HashSet<Object>();
 	private Set<Class<?>> empty = new HashSet<Class<?>>();
-	public JaxRsActivator(){
-	     singletons.add(new SchedulerRsControler());
-	     
+
+	public JaxRsActivator() {
+		singletons.add(new SchedulerRsControler());
+
+		// Initialize the Logger
+		logger = LoggerFactory.getLogger(SchedulerRsControler.class.getName());
+
+		// print Logger's internal state (not required for initialization)
+//		LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+//		StatusPrinter.print(lc);
+//		logger.debug("Hello world Debug by Logger. From : {}", JaxRsActivator.class.getName());
+
 	}
+
 	@Override
 	public Set<Class<?>> getClasses() {
-	     return empty;
+		return empty;
 	}
+
 	@Override
 	public Set<Object> getSingletons() {
-	     return singletons;
+		return singletons;
 	}
-	
+
 }

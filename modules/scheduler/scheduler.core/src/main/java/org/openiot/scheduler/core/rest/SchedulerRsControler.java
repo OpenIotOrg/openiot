@@ -30,11 +30,11 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
+
 import org.openiot.commons.osdspec.model.OSDSpec;
-import org.openiot.commons.sensortypes.model.SensorType;
 import org.openiot.commons.sensortypes.model.SensorTypes;
-import org.openiot.commons.sparql.protocoltypes.model.QueryRequest;
-import org.openiot.commons.sparql.protocoltypes.model.QueryResult;
+import org.openiot.scheduler.core.test.SensorTypesPopulation;
+
 
 /**
  * @author Nikos Kefalakis (nkef) e-mail: nkef@ait.edu.gr
@@ -42,6 +42,11 @@ import org.openiot.commons.sparql.protocoltypes.model.QueryResult;
  */
 @Path("/services")
 public class SchedulerRsControler {
+	
+	
+	
+
+    
 
 	/**
 	 * @return
@@ -67,6 +72,9 @@ public class SchedulerRsControler {
 				+ "getAvailableServiceIDs (userID: String): List<DescriptiveID>\n"
 				+ "getAvailableServices (userID: String): OSDSpec";
 
+		JaxRsActivator.logger.debug(welcomeText);
+
+		
 		return welcomeText;
 	}
 
@@ -91,32 +99,20 @@ public class SchedulerRsControler {
 
 	@GET
 	@Path("/discoverSensors")
-	@Consumes("application/xml")
+//	@Consumes("application/xml")
 	@Produces("application/xml")
-	public SensorTypes discoverSensors(String userID, double longitude, double latitude, float radius) {
+	public SensorTypes discoverSensors() {
+
+        
+		//@QueryParam("userID") String userID, @QueryParam("longitude") double longitude, @QueryParam("latitude") double latitude, @QueryParam("radius") float radius
+//		System.out.println("Recieved Data:\n\n\n\n\n\n\n\n\n\n userID:"+userID);
+		
+		SensorTypesPopulation sensorTypesPopulation = new SensorTypesPopulation();
+		
+
 
 		
-		//Test sensortypes to return 
-		SensorTypes testSensorTypes = new SensorTypes();
-		
-		SensorType testSensorType1 = new SensorType();
-		//Fill the testSensorType1
-		
-		
-		testSensorTypes.getSensorType().add(testSensorType1);
-		
-		SensorType testSensorType2 = new SensorType();
-		//Fill the testSensorType2
-		
-		
-		
-		testSensorTypes.getSensorType().add(testSensorType2);
-		
-		
-		
-		
-		
-		return testSensorTypes;
+		return sensorTypesPopulation.getSensorTypes();
 
 	}
 
