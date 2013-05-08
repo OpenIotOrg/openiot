@@ -181,6 +181,11 @@ public class ServiceDesignPageContext extends DisposableContext{
 			GenericSensor sensor = new GenericSensor();
 			sensor.setLabel(sensorType.getName());
 			sensor.setType("SENSOR");
+			
+			// Copy selected filter params
+			sensor.setFilterLocationLat(filterLocationLat);
+			sensor.setFilterLocationLon(filterLocationLon);
+			sensor.setFilterLocationRadius(filterLocationRadius);
 
 			// Initialize sensor endpoints
 			List<GraphNodeEndpoint> endpointList = new ArrayList<GraphNodeEndpoint>();
@@ -208,7 +213,7 @@ public class ServiceDesignPageContext extends DisposableContext{
 				endpoint.setMaxConnections(-1);
 				endpoint.setRequired(false);
 				endpoint.setType(EndpointType.Output);
-				String label = cap.getName();
+				String label = cap.getType();
 				if( !cap.getUnit().isEmpty() && cap.getUnit().get(0).getName() != null && !cap.getUnit().get(0).getName().equals("null") && !cap.getUnit().get(0).getName().isEmpty()){
 					label += " (" + cap.getUnit().get(0).getName() + ")";
 				}
