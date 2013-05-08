@@ -1,5 +1,26 @@
 package org.openiot.scheduler.core.rest.client;
 
+
+/**
+ * Copyright (c) 2011-2014, OpenIoT
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it either under the terms of the GNU Lesser General Public
+ * License version 2.1 as published by the Free Software Foundation
+ * (the "LGPL"). If you do not alter this
+ * notice, a recipient may use your version of this file under the LGPL.
+ *
+ * You should have received a copy of the LGPL along with this library
+ * in the file COPYING-LGPL-2.1; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ *
+ * This software is distributed on an "AS IS" basis, WITHOUT WARRANTY
+ * OF ANY KIND, either express or implied. See the LGPL  for
+ * the specific language governing rights and limitations.
+ *
+ * Contact: OpenIoT mailto: info@openiot.eu
+ */
+
 import java.io.StringReader;
 
 import javax.ws.rs.core.MediaType;
@@ -16,6 +37,11 @@ import org.openiot.commons.sensortypes.model.SensorType;
 import org.openiot.commons.sensortypes.model.SensorTypes;
 import org.openiot.commons.sensortypes.model.Unit;
 
+
+/**
+ * @author Nikos Kefalakis (nkef) e-mail: nkef@ait.edu.gr
+ *
+ */
 public class SchedulerClient {
 
 	static ClientRequestFactory clientRequestFactory;
@@ -25,7 +51,7 @@ public class SchedulerClient {
 		clientRequestFactory = new ClientRequestFactory(UriBuilder.fromUri(
 				"http://localhost:8080/scheduler.core").build());
 
-		 //welcomeMessage();
+		// welcomeMessage();
 		discoverSensors();
 
 	}
@@ -35,12 +61,13 @@ public class SchedulerClient {
 			ClientRequest discoverSensorsClientRequest = clientRequestFactory
 					.createRelativeRequest("/rest/services/discoverSensors");
 
-//			discoverSensorsClientRequest.queryParameter("userID", "userIDString");
-//			discoverSensorsClientRequest.queryParameter("longitude", 100.1);
-//			discoverSensorsClientRequest.queryParameter("latitude", 200.2);
-//			discoverSensorsClientRequest.queryParameter("radius", 30F);
+			discoverSensorsClientRequest.queryParameter("userID", "userIDString");
+			discoverSensorsClientRequest.queryParameter("longitude", 100.1);
+			discoverSensorsClientRequest.queryParameter("latitude", 200.2);
+			discoverSensorsClientRequest.queryParameter("radius", 30F);
 			
 			discoverSensorsClientRequest.accept("application/xml");
+
 
 			ClientResponse<String> response;
 			String str = null;
@@ -62,12 +89,13 @@ public class SchedulerClient {
 			Unmarshaller um = context.createUnmarshaller();
 			SensorTypes sensorTypes = (SensorTypes) um.unmarshal(new StreamSource(new StringReader(str)));
 
+			
 			for (SensorType sensorType : sensorTypes.getSensorType()){
 				System.out.println("sensorType.getId():"+sensorType.getId());
 				System.out.println("sensorType.getName():"+sensorType.getName());
 				for (MeasurementCapability measurementCapability : sensorType.getMeasurementCapability()){
 					System.out.println("measurementCapability.getId():"+measurementCapability.getId());
-					System.out.println("measurementCapability.getName():"+measurementCapability.getName());
+					System.out.println("measurementCapability.getName():"+measurementCapability.getType());
 					
 					for(Unit unit: measurementCapability.getUnit()){
 						System.out.println("unit.getName():"+unit.getName());
