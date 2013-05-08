@@ -1,10 +1,39 @@
 package org.openiot.scheduler.core.test;
 
+/**
+ * Copyright (c) 2011-2014, OpenIoT
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it either under the terms of the GNU Lesser General Public
+ * License version 2.1 as published by the Free Software Foundation
+ * (the "LGPL"). If you do not alter this
+ * notice, a recipient may use your version of this file under the LGPL.
+ *
+ * You should have received a copy of the LGPL along with this library
+ * in the file COPYING-LGPL-2.1; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ *
+ * This software is distributed on an "AS IS" basis, WITHOUT WARRANTY
+ * OF ANY KIND, either express or implied. See the LGPL  for
+ * the specific language governing rights and limitations.
+ *
+ * Contact: OpenIoT mailto: info@openiot.eu
+ */
+
+
 import org.openiot.commons.sensortypes.model.MeasurementCapability;
 import org.openiot.commons.sensortypes.model.SensorType;
 import org.openiot.commons.sensortypes.model.SensorTypes;
 import org.openiot.commons.sensortypes.model.Unit;
 
+
+
+
+/**
+ * @author Stavros Petris (spet) e-mail: spet@ait.edu.gr
+ * @author Nikos Kefalakis (nkef) e-mail: nkef@ait.edu.gr
+ *
+ */
 public class SensorTypesPopulation {
 
 	
@@ -48,6 +77,7 @@ public class SensorTypesPopulation {
         MeasurementCapability mc1Weather = new MeasurementCapability();
         //http://purl.oclc.ie/NET/ssnx/ssn#observes
         mc1Weather.setId("http://lsm.deri.ie/resource/5395423154665");//AirTemperature
+        mc1Weather.setType("AirTemperature");
         
         Unit unit1 = new Unit();
         unit1.setName("C");
@@ -58,6 +88,7 @@ public class SensorTypesPopulation {
         
         MeasurementCapability mc2Weather = new MeasurementCapability();
         mc2Weather.setId("http://lsm.deri.ie/resource/5395434919219");//windchill
+        mc2Weather.setType("windchill");
         
         Unit unit2 = new Unit();
         unit2.setName("C");
@@ -68,6 +99,7 @@ public class SensorTypesPopulation {
         
         MeasurementCapability mc3Weather = new MeasurementCapability();
         mc3Weather.setId("http://lsm.deri.ie/resource/5395438576035");//WindSpeed
+        mc3Weather.setType("WindSpeed");
         
         Unit unit3 = new Unit();
         unit3.setName("km/h");
@@ -78,6 +110,7 @@ public class SensorTypesPopulation {
         
         MeasurementCapability mc4Weather = new MeasurementCapability();
         mc4Weather.setId("http://lsm.deri.ie/resource/5395341713068");//AtmoshpereHumidity
+        mc4Weather.setType("AtmoshpereHumidity");
         
         Unit unit4 = new Unit();
         unit4.setName("%");
@@ -88,6 +121,7 @@ public class SensorTypesPopulation {
         
         MeasurementCapability mc5Weather = new MeasurementCapability();
         mc5Weather.setId("http://lsm.deri.ie/resource/5395345638854");//AtmoshperePressure
+        mc5Weather.setType("AtmoshperePressure");
         
         Unit unit5 = new Unit();
         unit5.setName("mb");
@@ -98,6 +132,7 @@ public class SensorTypesPopulation {
         
         MeasurementCapability mc6Weather = new MeasurementCapability();
         mc6Weather.setId("http://lsm.deri.ie/resource/5395349164649");//AtmoshpereVisibility
+        mc6Weather.setType("AtmoshpereVisibility");
         
         Unit unit6 = new Unit();
         unit6.setName("mb");
@@ -108,7 +143,8 @@ public class SensorTypesPopulation {
         
         MeasurementCapability mc7Weather = new MeasurementCapability();
         mc7Weather.setId("http://lsm.deri.ie/resource/5395417401338");//Status
-        
+        mc7Weather.setType("Status");
+                
         Unit unit7 = new Unit();
         unit7.setName("null");
         unit7.setType("Cloudy");
@@ -118,6 +154,7 @@ public class SensorTypesPopulation {
         
         MeasurementCapability mc8Weather = new MeasurementCapability();
         mc8Weather.setId("http://lsm.deri.ie/resource/5395372015952");//Direction
+        mc8Weather.setType("Direction");
         
         Unit unit8 = new Unit();
         unit8.setName("null");
@@ -164,6 +201,7 @@ public class SensorTypesPopulation {
         
         MeasurementCapability mc1BikeHire = new MeasurementCapability();
         mc1BikeHire.setId("http://lsm.deri.ie/resource/5395352331763");//BikeAvailability
+        mc1BikeHire.setType("BikeAvailability");
         
         Unit unit1BikeHire = new Unit();
         unit1BikeHire.setName("bike");
@@ -173,7 +211,8 @@ public class SensorTypesPopulation {
         ////
         
         MeasurementCapability mc2BikeHire = new MeasurementCapability();
-        mc1BikeHire.setId("http://lsm.deri.ie/resource/5395355582227");//BikeDockAvailability
+        mc2BikeHire.setId("http://lsm.deri.ie/resource/5395355582227");//BikeDockAvailability
+        mc2BikeHire.setType("BikeDockAvailability");
         
         Unit unit2BikeHire = new Unit();
         unit2BikeHire.setName("dock");
