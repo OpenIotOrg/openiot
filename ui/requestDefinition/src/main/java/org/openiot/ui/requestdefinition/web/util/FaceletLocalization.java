@@ -26,7 +26,7 @@ import org.openiot.ui.requestdefinition.logging.LoggerService;
 
 /**
  *
- * @author aana
+ * @author Achilleas Anagnostopoulos (aanag) email: aanag@sensap.eu
  */
 public class FaceletLocalization {
 

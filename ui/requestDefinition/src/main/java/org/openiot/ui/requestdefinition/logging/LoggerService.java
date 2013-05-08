@@ -23,7 +23,7 @@ import java.util.logging.Level;
 
 /**
  *
- * @author aana
+ * @author Achilleas Anagnostopoulos (aanag) email: aanag@sensap.eu
  */
 public class LoggerService {
 

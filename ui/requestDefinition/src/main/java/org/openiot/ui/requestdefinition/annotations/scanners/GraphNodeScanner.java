@@ -19,7 +19,6 @@
  ******************************************************************************/
 package org.openiot.ui.requestdefinition.annotations.scanners;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -37,7 +36,7 @@ import org.reflections.Reflections;
 
 /**
  *
- * @author aana
+ * @author Achilleas Anagnostopoulos (aanag) email: aanag@sensap.eu
  */
 public class GraphNodeScanner {
 

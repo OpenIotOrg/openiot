@@ -23,7 +23,7 @@ import org.openiot.ui.requestdefinition.nodes.enums.PropertyType;
 
 /**
  *
- * @author aana
+ * @author Achilleas Anagnostopoulos (aanag) email: aanag@sensap.eu
  */
 public interface GraphNodeProperty {
 

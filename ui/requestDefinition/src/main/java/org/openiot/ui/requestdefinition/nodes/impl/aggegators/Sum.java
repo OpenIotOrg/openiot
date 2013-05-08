@@ -29,7 +29,7 @@ import org.openiot.ui.requestdefinition.nodes.base.DefaultGraphNode;
 
 /**
  *
- * @author aana
+ * @author Achilleas Anagnostopoulos (aanag) email: aanag@sensap.eu
  */
 @GraphNodeClass(label = "Sum", type = "AGGREGATOR", scanProperties = true)
 @Endpoints({

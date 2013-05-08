@@ -35,7 +35,7 @@ import org.primefaces.renderkit.CoreRenderer;
 
 /**
  *
- * @author aana
+ * @author Achilleas Anagnostopoulos (aanag) email: aanag@sensap.eu
  */
 public class NodeGraphRenderer extends CoreRenderer {
 
@@ -228,7 +228,8 @@ public class NodeGraphRenderer extends CoreRenderer {
                             leftPosition += stepY;
                             anchorDX = -1;
                             anchorDY = 0;
-                            labelX = -0.18 * (double) label.length();
+                            //labelX = -0.18 * (double) label.length();
+                            labelX = 0;
                             labelY = -0.5;
                             break;
                         case Right:
@@ -237,7 +238,8 @@ public class NodeGraphRenderer extends CoreRenderer {
                             rightPosition += stepY;
                             anchorDX = 1;
                             anchorDY = 0;
-                            labelX = 0.21 * (double) label.length();
+                            //labelX = 0.21 * (double) label.length();
+                            labelX = 1.0;
                             labelY = -0.5;
                             break;
                         case Top:
@@ -254,7 +256,7 @@ public class NodeGraphRenderer extends CoreRenderer {
                     {
                         writer.write("nodeId : '" + node.getUID() + "',");
                         writer.write("id : '" + endpoint.getUID() + "',");
-                        writer.write("endpoint : ['" + endpoint.getConnectorType().toString() + "'],");
+                        writer.write("endpoint : '" + endpoint.getConnectorType().toString() + "',");
                         writer.write("anchor : [" + anchorXPos + ", " + anchorYPos + ", " + anchorDX + ", " + anchorDY + "],");
                         writer.write("scope : '" + endpoint.getScope() + "',");
                         writer.write("isSource : " + (EndpointType.Input.equals(endpoint.getType()) ? "false" : "true") + ",");

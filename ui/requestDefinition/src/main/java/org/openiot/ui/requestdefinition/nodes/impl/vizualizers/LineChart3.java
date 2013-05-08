@@ -41,7 +41,7 @@ import org.openiot.ui.requestdefinition.nodes.interfaces.GraphNodeEventListener;
 
 /**
  *
- * @author aana
+ * @author Achilleas Anagnostopoulos (aanag) email: aanag@sensap.eu
  */
 @GraphNodeClass(label = "LineChart3", type = "VISUALIZER", scanProperties = true)
 @Endpoints({

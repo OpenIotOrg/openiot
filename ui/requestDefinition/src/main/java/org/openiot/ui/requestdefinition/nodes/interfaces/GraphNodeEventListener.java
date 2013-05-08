@@ -23,7 +23,7 @@ import org.openiot.ui.requestdefinition.interfaces.GraphModel;
 
 /**
  *
- * @author aana
+ * @author Achilleas Anagnostopoulos (aanag) email: aanag@sensap.eu
  */
 public interface GraphNodeEventListener {
 

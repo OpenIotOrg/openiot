@@ -26,7 +26,7 @@ import java.lang.annotation.Target;
 
 /**
  *
- * @author aana
+ * @author Achilleas Anagnostopoulos (aanag) email: aanag@sensap.eu
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)

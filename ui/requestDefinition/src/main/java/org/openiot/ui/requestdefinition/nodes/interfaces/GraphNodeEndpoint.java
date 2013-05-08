@@ -25,7 +25,7 @@ import org.openiot.ui.requestdefinition.nodes.enums.EndpointType;
 
 /**
  *
- * @author aana
+ * @author Achilleas Anagnostopoulos (aanag) email: aanag@sensap.eu
  */
 public interface GraphNodeEndpoint {
 

@@ -1,4 +1,3 @@
-
 <!DOCTYPE HTML>
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:h="http://java.sun.com/jsf/html"
@@ -72,7 +71,7 @@
 								titleStyleClass="ellipsis">
 								<h:panelGrid columns="1" width="100%"
 									styleClass="table table-striped"
-									rendered="#{!serviceDesignPageController.context.availableNodesByTypeMap[type].isEmpty()}">
+									rendered="#{!(serviceDesignPageController.context.availableNodesByTypeMap[type].isEmpty())}">
 									<c:forEach var="entry"
 										items="#{serviceDesignPageController.context.availableNodesByTypeMap[type]}">
 										<h:outputLink
@@ -185,6 +184,15 @@
 											update=":nodeGraphForm:nodeGraph" />
 									</pe:inputNumber>
 								</pe:dynaFormControl>
+								<pe:dynaFormControl type="Long" for="long">
+									<pe:inputNumber id="long"
+										value="#{serviceDesignPageController.context.graphModel.selectedNode.propertyValueMap[control.valueKey]}"
+										required="#{control.required}"
+										decimalPlaces="0">
+										<p:ajax event="change" process="@this"
+											update=":nodeGraphForm:nodeGraph" />
+									</pe:inputNumber>
+								</pe:dynaFormControl>
 							</pe:dynaForm>
 						</h:form>
 					</p:layoutUnit>
@@ -213,7 +221,7 @@
 
 									<h:panelGrid columns="1" width="100%"
 										styleClass="table table-striped"
-										rendered="#{!serviceDesignPageController.context.graphValidationErrors.isEmpty()}">
+										rendered="#{!(serviceDesignPageController.context.graphValidationErrors.isEmpty())}">
 										<c:forEach var="issue"
 											items="#{serviceDesignPageController.context.graphValidationErrors}">
 
@@ -239,7 +247,7 @@
 
 									<h:panelGrid columns="1" width="100%"
 										styleClass="table table-striped"
-										rendered="#{!serviceDesignPageController.context.graphValidationWarnings.isEmpty()}">
+										rendered="#{!(serviceDesignPageController.context.graphValidationWarnings.isEmpty())}">
 										<c:forEach var="issue"
 											items="#{serviceDesignPageController.context.graphValidationWarnings}">
 

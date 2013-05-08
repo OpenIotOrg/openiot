@@ -37,7 +37,7 @@ import org.openiot.ui.requestdefinition.logging.LoggerService;
 
 /**
  *
- * @author aana
+ * @author Achilleas Anagnostopoulos (aanag) email: aanag@sensap.eu
  */
 public class DefaultGraphModel implements GraphModel, Serializable {
 	private static final long serialVersionUID = 1L;

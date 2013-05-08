@@ -98,16 +98,18 @@ Sensap = {
  */
 Sensap.widget = {};
 
-/** 
+
+/**
  * Node Graph
  */
 Sensap.widget.NodeGraph = PrimeFaces.widget.BaseWidget.extend({
 
     /**
-     * Initializes the widget.
-     * 
-     * @param {object} cfg The widget configuration.
-     */
+	 * Initializes the widget.
+	 * 
+	 * @param {object}
+	 *            cfg The widget configuration.
+	 */
     init : function(cfg) {
         this._super(cfg);
         this.cfg = cfg;
@@ -126,12 +128,12 @@ Sensap.widget.NodeGraph = PrimeFaces.widget.BaseWidget.extend({
             },
             ConnectionOverlays : [
             ['PlainArrow', {
-                location:-20
+                location:0.96
             } ]
             ]/*,
             ConnectorZIndex:3*/
         });
-
+        
         // initialize Selection
         this.graphNodeSelector = this.jqId + ' .graph-node';
         this.selectedNodeId = this.cfg.selectedNodeId || null;
@@ -147,6 +149,82 @@ Sensap.widget.NodeGraph = PrimeFaces.widget.BaseWidget.extend({
         this.bindDropEvents();
         this.bindConnectionEvents();
     },
+    /**
+     * Label draw area function override
+     */
+    customDrawLabel : function(component, currentConnectionPaintStyle) {
+		var self = this;
+	    var td = this.getDimensions();
+	    if (td != null && td.length == 2) {
+	        var cxy = {
+	            x: 0,
+	            y: 0
+	        };
+	        if (component.pointOnPath) {
+	            var loc = self.loc,
+	                absolute = false;
+	            if (jsPlumbUtil.isString(self.loc) || self.loc < 0 || self.loc > 1) {
+	                loc = parseInt(self.loc);
+	                absolute = true;
+	            }
+	            cxy = component.pointOnPath(loc, absolute); // a connection
+	        } else {
+	            var locToUse = self.loc.constructor == Array ? self.loc : self.endpointLoc;
+	            cxy = {
+	                x: locToUse[0] * component.width,
+	                y: locToUse[1] * component.height
+	            };
+	        }
+
+	        var minx = cxy.x - (td[0] / 2),
+	            miny = cxy.y - (td[1] / 2);
+	        
+	        // Align label with connector
+	        if (!component.pointOnPath) {
+	        	var locToUse = self.loc.constructor == Array ? self.loc : self.endpointLoc;
+	        	console.log(component);
+	        	if( locToUse[0] == 0 ){
+	        		minx = cxy.x - td[0];
+	        	} else if( locToUse[0] == 1){
+	        		minx = cxy.x;
+	        	}
+	        }
+	        
+	        console.log({
+	            component: component,
+	            d: {
+	                minx: minx,
+	                miny: miny,
+	                td: td,
+	                cxy: cxy
+	            },
+	            minX: minx,
+	            maxX: minx + td[0],
+	            minY: miny,
+	            maxY: miny + td[1]
+	        }, this);
+	        
+	        return {
+	            component: component,
+	            d: {
+	                minx: minx,
+	                miny: miny,
+	                td: td,
+	                cxy: cxy
+	            },
+	            minX: minx,
+	            maxX: minx + td[0],
+	            minY: miny,
+	            maxY: miny + td[1]
+	        };
+	    } else return {
+	            minX: 0,
+	            maxX: 0,
+	            minY: 0,
+	            maxY: 0
+	    };
+    },
+    
     /** 
      * Render graph form encoded data 
      */
@@ -161,7 +239,7 @@ Sensap.widget.NodeGraph = PrimeFaces.widget.BaseWidget.extend({
         jQuery.each( this.cfg.endpoints, function( index, endPointSpec){
             var ep = jsPlumb.addEndpoint( endPointSpec.nodeId, endPointSpec);
             ep.setParameter('nodeId', endPointSpec.nodeId);
-            ep.setParameter('endPointId', endPointSpec.id);
+            ep.setParameter('endPointId', endPointSpec.id);            
             self.endPoints[endPointSpec.id] = ep;
         });
         

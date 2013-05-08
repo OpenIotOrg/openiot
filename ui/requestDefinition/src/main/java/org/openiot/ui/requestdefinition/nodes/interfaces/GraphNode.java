@@ -24,7 +24,7 @@ import java.util.Map;
 
 /**
  *
- * @author aana
+ * @author Achilleas Anagnostopoulos (aanag) email: aanag@sensap.eu
  */
 public interface GraphNode {
 

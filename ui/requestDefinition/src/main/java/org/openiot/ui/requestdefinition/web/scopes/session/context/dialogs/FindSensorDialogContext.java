@@ -29,7 +29,7 @@ import org.primefaces.model.map.Marker;
 
 /**
  *
- * @author aana
+ * @author Achilleas Anagnostopoulos (aanag) email: aanag@sensap.eu
  */
 public class FindSensorDialogContext extends DisposableContext implements Serializable {
 	private static final long serialVersionUID = 1L;

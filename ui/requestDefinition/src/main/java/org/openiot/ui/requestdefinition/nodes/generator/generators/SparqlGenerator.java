@@ -39,7 +39,7 @@ import org.openiot.ui.requestdefinition.logging.LoggerService;
 
 /**
  *
- * @author aana
+ * @author Achilleas Anagnostopoulos (aanag) email: aanag@sensap.eu
  */
 public class SparqlGenerator extends AbstractGraphNodeVisitor {
 
@@ -100,6 +100,10 @@ public class SparqlGenerator extends AbstractGraphNodeVisitor {
         generatedCode += codeBlock;
     }
 
+    private void encodePropertySelectionFilters( GraphNode sensorNode, GraphNodeEndpoint attributeEndpoint ){
+    	this.generatedWhereCode.add("\t#?" + sensorNode.getUID() + " <http://www.loa-cnr.it/ontologies/DUL.owl#hasAttribute> ?" + attributeEndpoint.getUID() + ".");
+    }
+    
     //-------------------------------------------------------------------------
     // Visitors
     //-------------------------------------------------------------------------
@@ -201,7 +205,7 @@ public class SparqlGenerator extends AbstractGraphNodeVisitor {
         this.generatedWhereCode.add("\tFILTER (<bif:st_intersects>(?" + node.getUID() + "_geo,<bif:st_point>(" + node.getFilterLocationLat() + "," + node.getFilterLocationLon() + ")," + node.getFilterLocationRadius() + ")).");
         
         // Encode attribute selection queries in where statement
-        this.generatedWhereCode.add("\t#?" + node.getUID() + " <http://www.loa-cnr.it/ontologies/DUL.owl#hasAttribute> ?" + sourceEndpoint.getUID() + ".");
+        this.encodePropertySelectionFilters(node, sourceEndpoint);
         
         // If sensor node has an incoming filter node connection
         // visit it and append any additional filters
@@ -267,14 +271,14 @@ public class SparqlGenerator extends AbstractGraphNodeVisitor {
             return;
         }
          
-        // Encode attribute selection queries in where statement
-        this.generatedWhereCode.add("\t#?" + sensorNode.getUID() + " <http://www.loa-cnr.it/ontologies/DUL.owl#hasAttribute> ?" + match.getUID() + ".");
+        // Encode attribute selection queries in where statement        
+        this.encodePropertySelectionFilters(sensorNode, match);
         
         // Encode filter query in where statement
         this.generatedWhereCode.add("\tFILTER( ?" + match.getUID() + " " + node.getPropertyValueMap().get("OPERATOR") + " " + node.getPropertyValueMap().get("CMP_VALUE") + " ).");
     }
 
-    public void visit(org.openiot.ui.requestdefinition.nodes.impl.comparators.CompareDateTime node) {
+    public void visit(org.openiot.ui.requestdefinition.nodes.impl.comparators.CompareAbsoluteDateTime node) {
         // Since the filter node cloned the original attribute endpoint, we need to 
         // match the incoming endpoint from the last connection on stack to the
         // endpoint with same name from the sensor node (2 connections back)        
@@ -296,7 +300,7 @@ public class SparqlGenerator extends AbstractGraphNodeVisitor {
         }
          
         // Encode attribute selection queries in where statement
-        this.generatedWhereCode.add("\t#?" + sensorNode.getUID() + " <http://www.loa-cnr.it/ontologies/DUL.owl#hasAttribute> ?" + match.getUID() + ".");
+        this.encodePropertySelectionFilters(sensorNode, match);
 
         // Generate date string in appropriate format. The xsd:datetime type formats
         // dates a bit differently than the pattern used by simple date format (separates hours and mins of the timezone with a colon)
@@ -310,6 +314,51 @@ public class SparqlGenerator extends AbstractGraphNodeVisitor {
         this.generatedWhereCode.add("\tFILTER( ?" + match.getUID() + " " + node.getPropertyValueMap().get("OPERATOR") + " \"" + formattedDate + "\"^^xsd:date ).");
     }
 
+    public void visit(org.openiot.ui.requestdefinition.nodes.impl.comparators.CompareRelativeDateTime node) {
+        // Since the filter node cloned the original attribute endpoint, we need to 
+        // match the incoming endpoint from the last connection on stack to the
+        // endpoint with same name from the sensor node (2 connections back)        
+        ListIterator<GraphNodeConnection> connectionIt = visitedConnectionGraphStack.listIterator(visitedConnectionGraphStack.size());
+        GraphNodeEndpoint sourceFilterEndpoint = connectionIt.previous().getSourceEndpoint();
+        GraphNode sensorNode = connectionIt.previous().getDestinationNode();
+         
+        GraphNodeEndpoint match = null;
+        for( GraphNodeEndpoint test : sensorNode.getEndpointDefinitions() ){
+            if( test.getLabel().equals(sourceFilterEndpoint.getLabel())){
+                match = test;
+                break;
+            }
+        }
+        
+        if( match == null ){
+            LoggerService.log(Level.SEVERE, "[SparqlGenerator] Could not match filter node endpoint '"+sourceFilterEndpoint.getLabel()+"' to original sensor endpoint");
+            return;
+        }
+         
+        // Encode attribute selection queries in where statement
+        this.encodePropertySelectionFilters(sensorNode, match);
+
+        long scaler = 1L;
+        String unit = (String) node.getPropertyValueMap().get("CMP_VALUE_UNIT");
+        if( "SECOND(S)".equals(unit) ){
+        	scaler = 1L;
+        } else if( "MINUTE(S)".equals(unit) ){
+        	scaler = 60L;
+        }else if( "HOUR(S)".equals(unit) ){
+        	scaler = 60 * 60L;
+        }else if( "DAY(S)".equals(unit) ){
+        	scaler = 24 * 60 * 60L;
+        }else if( "MONTH(S)".equals(unit) ){
+        	scaler = 30 * 24 * 60 * 60L;
+        }else if( "YEAR(S)".equals(unit) ){
+        	scaler = 365 * 24 * 60 * 60L;
+        }
+        long cmpValue = (Long) node.getPropertyValueMap().get("CMP_VALUE") * scaler;        
+        
+        // Encode filter query in where statement
+        this.generatedWhereCode.add("\tFILTER( bif:datediff('second', xsd:dateTime(str(?" + match.getUID() + ")), NOW()) " + node.getPropertyValueMap().get("OPERATOR") + " " + cmpValue + ").");
+    }
+    
     public void visit(org.openiot.ui.requestdefinition.nodes.impl.comparators.Between node) {
         // Since the filter node cloned the original attribute endpoint, we need to 
         // match the incoming endpoint from the last connection on stack to the
@@ -332,7 +381,7 @@ public class SparqlGenerator extends AbstractGraphNodeVisitor {
         }
          
         // Encode attribute selection queries in where statement
-        this.generatedWhereCode.add("\t#?" + sensorNode.getUID() + " <http://www.loa-cnr.it/ontologies/DUL.owl#hasAttribute> ?" + match.getUID() + ".");
+        this.encodePropertySelectionFilters(sensorNode, match);
         
         // Encode filter query in where statement
         this.generatedWhereCode.add("\tFILTER( ?" + match.getUID() + " >= " + node.getPropertyValueMap().get("CMP_VALUE1") + " && ?" + match.getUID() + " <= " + node.getPropertyValueMap().get("CMP_VALUE2") + " ).");
@@ -360,7 +409,7 @@ public class SparqlGenerator extends AbstractGraphNodeVisitor {
         }
          
         // Encode attribute selection queries in where statement
-        this.generatedWhereCode.add("\t#?" + sensorNode.getUID() + " <http://www.loa-cnr.it/ontologies/DUL.owl#hasAttribute> ?" + match.getUID() + ".");
+        this.encodePropertySelectionFilters(sensorNode, match);
 
         // Generate date string in appropriate format. The xsd:datetime type formats
         // dates a bit differently than the pattern used by simple date format (separates hours and mins of the timezone with a colon)

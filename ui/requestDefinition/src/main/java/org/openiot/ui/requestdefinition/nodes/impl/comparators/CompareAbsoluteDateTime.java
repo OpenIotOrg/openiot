@@ -36,9 +36,9 @@ import org.openiot.ui.requestdefinition.nodes.enums.PropertyType;
 
 /**
  *
- * @author aana
+ * @author Achilleas Anagnostopoulos (aanag) email: aanag@sensap.eu
  */
-@GraphNodeClass(label = "CompareDateTime", type = "COMPARATOR", scanProperties = true)
+@GraphNodeClass(label = "CompareAbsoluteDateTime", type = "COMPARATOR", scanProperties = true)
 @Endpoints({
     @Endpoint(type = EndpointType.Input, anchorType = AnchorType.Left, scope = "Compare.Date", label = "IN", required = true),
 })
@@ -46,10 +46,10 @@ import org.openiot.ui.requestdefinition.nodes.enums.PropertyType;
     @NodeProperty(type = PropertyType.Writable, javaType = java.lang.String.class, name = "OPERATOR", allowedValues = {"<", "<=", ">", ">="}, required = true),
     @NodeProperty(type = PropertyType.Writable, javaType = java.util.Date.class, name = "CMP_VALUE", required = true)
 })
-public class CompareDateTime extends DefaultGraphNode implements Serializable, Observer {
+public class CompareAbsoluteDateTime extends DefaultGraphNode implements Serializable, Observer {
 	private static final long serialVersionUID = 1L;
 
-    public CompareDateTime() {
+    public CompareAbsoluteDateTime() {
         super();
 
         // Listen for property change events
@@ -63,7 +63,7 @@ public class CompareDateTime extends DefaultGraphNode implements Serializable, O
         	SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy HH:mm");
             setLabel(propertyMap.get("OPERATOR") + "<br/>" + sdf.format(propertyMap.get("CMP_VALUE")));
         } else {
-            setLabel("CompareDateTime");
+            setLabel("CompareAbsoluteDateTime");
         }
     }
 }

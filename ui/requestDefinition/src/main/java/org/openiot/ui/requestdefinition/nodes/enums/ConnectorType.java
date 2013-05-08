@@ -21,7 +21,7 @@ package org.openiot.ui.requestdefinition.nodes.enums;
 
 /**
  *
- * @author aana
+ * @author Achilleas Anagnostopoulos (aanag) email: aanag@sensap.eu
  */
 public enum ConnectorType {
 

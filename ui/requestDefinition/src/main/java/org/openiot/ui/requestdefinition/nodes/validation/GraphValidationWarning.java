@@ -21,7 +21,7 @@ package org.openiot.ui.requestdefinition.nodes.validation;
 
 /**
  *
- * @author aana
+ * @author Achilleas Anagnostopoulos (aanag) email: aanag@sensap.eu
  */
 public class GraphValidationWarning {
 

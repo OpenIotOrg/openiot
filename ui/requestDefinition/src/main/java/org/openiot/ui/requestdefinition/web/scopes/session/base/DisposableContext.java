@@ -23,7 +23,7 @@ import org.openiot.ui.requestdefinition.web.scopes.application.ApplicationBean;
 
 /**
  *
- * @author aana
+ * @author Achilleas Anagnostopoulos (aanag) email: aanag@sensap.eu
  */
 public abstract class DisposableContext {
     

@@ -27,7 +27,9 @@ import org.openiot.ui.requestdefinition.annotations.Endpoints;
 import org.openiot.ui.requestdefinition.annotations.GraphNodeClass;
 import org.openiot.ui.requestdefinition.interfaces.GraphModel;
 import org.openiot.ui.requestdefinition.nodes.base.DefaultGraphNode;
+import org.openiot.ui.requestdefinition.nodes.base.DefaultGraphNodeEndpoint;
 import org.openiot.ui.requestdefinition.nodes.enums.AnchorType;
+import org.openiot.ui.requestdefinition.nodes.enums.ConnectorType;
 import org.openiot.ui.requestdefinition.nodes.enums.EndpointType;
 import org.openiot.ui.requestdefinition.nodes.impl.sensors.GenericSensor;
 import org.openiot.ui.requestdefinition.nodes.interfaces.GraphNode;
@@ -37,7 +39,7 @@ import org.openiot.ui.requestdefinition.nodes.interfaces.GraphNodeEventListener;
 
 /**
  *
- * @author aana
+ * @author Achilleas Anagnostopoulos (aanag) email: aanag@sensap.eu
  */
 @GraphNodeClass(label = "SelectionFilter", type = "FILTER", scanProperties = true)
 @Endpoints({
@@ -68,6 +70,18 @@ public class SelectionFilter extends DefaultGraphNode implements GraphNodeEventL
                     ourEndpoints.add(copy);
                 }
             }
+            
+			// Add an additional endpoint for the record timestamp filtering
+			GraphNodeEndpoint endpoint = new DefaultGraphNodeEndpoint();
+			endpoint.setAnchor(AnchorType.Bottom);
+			endpoint.setConnectorType(ConnectorType.Rectangle);
+			endpoint.setMaxConnections(1);
+			endpoint.setRequired(false);
+			endpoint.setType(EndpointType.Output);
+			endpoint.setLabel("REC_TIMESTAMP");
+			endpoint.setScope("Compare.Date");
+			endpoint.setUserData("observationResultTime");
+			ourEndpoints.add(endpoint);
         }
     }
 

@@ -27,7 +27,7 @@ import org.openiot.ui.requestdefinition.nodes.interfaces.GraphNodeEndpoint;
 
 /**
  *
- * @author aana
+ * @author Achilleas Anagnostopoulos (aanag) email: aanag@sensap.eu
  */
 public interface GraphModel {
 

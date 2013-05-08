@@ -19,7 +19,6 @@
  ******************************************************************************/
 package org.openiot.ui.requestdefinition.web.scopes.session.context.pages;
 
-import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -29,7 +28,6 @@ import java.util.logging.Level;
 import org.openiot.commons.sensortypes.model.MeasurementCapability;
 import org.openiot.commons.sensortypes.model.SensorType;
 import org.openiot.commons.sensortypes.model.SensorTypes;
-import org.openiot.ui.requestdefinition.annotations.GraphNodeClass;
 import org.openiot.ui.requestdefinition.annotations.scanners.GraphNodeScanner;
 import org.openiot.ui.requestdefinition.interfaces.GraphModel;
 import org.openiot.ui.requestdefinition.models.DefaultGraphModel;
@@ -48,7 +46,7 @@ import org.primefaces.extensions.model.dynaform.DynaFormModel;
 
 /**
  * 
- * @author aana
+ * @author Achilleas Anagnostopoulos (aanag) email: aanag@sensap.eu
  */
 public class ServiceDesignPageContext extends DisposableContext{
 
@@ -207,7 +205,7 @@ public class ServiceDesignPageContext extends DisposableContext{
 				endpoint = new DefaultGraphNodeEndpoint();
 				endpoint.setAnchor(AnchorType.Right);
 				endpoint.setConnectorType(ConnectorType.Rectangle);
-				endpoint.setMaxConnections(1);
+				endpoint.setMaxConnections(-1);
 				endpoint.setRequired(false);
 				endpoint.setType(EndpointType.Output);
 				String label = cap.getName();

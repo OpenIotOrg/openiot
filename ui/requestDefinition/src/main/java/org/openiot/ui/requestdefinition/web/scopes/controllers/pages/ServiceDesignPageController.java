@@ -54,7 +54,7 @@ import org.openiot.ui.requestdefinition.web.util.FaceletLocalization;
 
 /**
  * 
- * @author aana
+ * @author Achilleas Anagnostopoulos (aanag) email: aanag@sensap.eu
  */
 @ManagedBean(name = "serviceDesignPageController")
 @RequestScoped

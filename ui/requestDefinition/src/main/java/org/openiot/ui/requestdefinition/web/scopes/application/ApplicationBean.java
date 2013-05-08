@@ -30,7 +30,7 @@ import org.openiot.ui.requestdefinition.web.scopes.session.SessionBean;
 
 /**
  *
- * @author aana
+ * @author Achilleas Anagnostopoulos (aanag) email: aanag@sensap.eu
  */
 @ManagedBean(name = "applicationBean", eager = true)
 @ApplicationScoped

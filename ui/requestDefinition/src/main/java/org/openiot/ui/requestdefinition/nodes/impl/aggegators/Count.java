@@ -29,7 +29,7 @@ import org.openiot.ui.requestdefinition.nodes.enums.EndpointType;
 
 /**
  *
- * @author aana
+ * @author Achilleas Anagnostopoulos (aanag) email: aanag@sensap.eu
  */
 @GraphNodeClass(label = "Count", type = "AGGREGATOR", scanProperties = true)
 @Endpoints({

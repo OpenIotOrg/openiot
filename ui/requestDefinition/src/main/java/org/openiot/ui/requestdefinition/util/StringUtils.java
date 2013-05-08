@@ -24,7 +24,7 @@ import java.util.List;
 
 /**
  *
- * @author aana
+ * @author Achilleas Anagnostopoulos (aanag) email: aanag@sensap.eu
  */
 public class StringUtils {
 

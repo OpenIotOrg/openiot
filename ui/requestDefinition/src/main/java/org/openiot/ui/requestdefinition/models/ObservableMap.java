@@ -30,7 +30,7 @@ import org.openiot.ui.requestdefinition.util.StringUtils;
  * Decorate a map with a modified put method that sets a flag when the map is
  * modified
  *
- * @author aana
+ * @author Achilleas Anagnostopoulos (aanag) email: aanag@sensap.eu
  */
 public class ObservableMap<K, V> extends Observable implements Map<K, V>, Serializable {
 	private static final long serialVersionUID = 1L;

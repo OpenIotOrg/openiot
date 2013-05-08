@@ -27,7 +27,7 @@ import org.openiot.ui.requestdefinition.nodes.interfaces.GraphNodeEndpoint;
 
 /**
  *
- * @author aana
+ * @author Achilleas Anagnostopoulos (aanag) email: aanag@sensap.eu
  */
 public class DefaultGraphNodeEndpoint implements GraphNodeEndpoint, Serializable {
 	private static final long serialVersionUID = 1L;

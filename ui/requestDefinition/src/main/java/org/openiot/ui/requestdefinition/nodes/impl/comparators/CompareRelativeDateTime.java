@@ -37,18 +37,19 @@ import org.openiot.ui.requestdefinition.nodes.enums.PropertyType;
  *
  * @author Achilleas Anagnostopoulos (aanag) email: aanag@sensap.eu
  */
-@GraphNodeClass(label = "Compare", type = "COMPARATOR", scanProperties = true)
+@GraphNodeClass(label = "CompareRelativeDateTime", type = "COMPARATOR", scanProperties = true)
 @Endpoints({
-    @Endpoint(type = EndpointType.Input, anchorType = AnchorType.Left, scope = "Compare.Number", label = "IN", required = true),
+    @Endpoint(type = EndpointType.Input, anchorType = AnchorType.Left, scope = "Compare.Date", label = "IN", required = true),
 })
 @NodeProperties({
-    @NodeProperty(type = PropertyType.Writable, javaType = java.lang.String.class, name = "OPERATOR", allowedValues = {"=", "<", "<=", ">", ">="}, required = true),
-    @NodeProperty(type = PropertyType.Writable, javaType = java.lang.Number.class, name = "CMP_VALUE", required = true)
+    @NodeProperty(type = PropertyType.Writable, javaType = java.lang.String.class, name = "OPERATOR", allowedValues = {"<", "<=", ">", ">="}, required = true),
+    @NodeProperty(type = PropertyType.Writable, javaType = java.lang.Long.class, name = "CMP_VALUE", required = true),
+    @NodeProperty(type = PropertyType.Writable, javaType = java.lang.String.class, name = "CMP_VALUE_UNIT", allowedValues = {"SECOND(S)", "MINUTE(S)", "HOUR(S)", "DAY(S)", "MONTH(S)", "YEAR(S)"}, required = true)
 })
-public class Compare extends DefaultGraphNode implements Serializable, Observer {
+public class CompareRelativeDateTime extends DefaultGraphNode implements Serializable, Observer {
 	private static final long serialVersionUID = 1L;
 
-    public Compare() {
+    public CompareRelativeDateTime() {
         super();
 
         // Listen for property change events
@@ -58,10 +59,10 @@ public class Compare extends DefaultGraphNode implements Serializable, Observer 
     public void update(Observable o, Object arg) {
         // Mutate our label
         Map<String, Object> propertyMap = getPropertyValueMap();
-        if (propertyMap.get("OPERATOR") != null && propertyMap.get("CMP_VALUE") != null) {
-            setLabel(propertyMap.get("OPERATOR") + "<br/>" + propertyMap.get("CMP_VALUE"));
+        if (propertyMap.get("OPERATOR") != null && propertyMap.get("CMP_VALUE") != null && propertyMap.get("CMP_VALUE_UNIT") != null) {
+            setLabel(propertyMap.get("OPERATOR") + "<br/>" + propertyMap.get("CMP_VALUE") + " " + propertyMap.get("CMP_VALUE_UNIT"));
         } else {
-            setLabel("Compare");
+            setLabel("CompareRelativeDateTime");
         }
     }
 }

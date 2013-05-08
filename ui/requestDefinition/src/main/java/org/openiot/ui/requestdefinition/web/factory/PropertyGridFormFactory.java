@@ -32,7 +32,7 @@ import org.primefaces.extensions.model.dynaform.DynaFormRow;
 
 /**
  *
- * @author aana
+ * @author Achilleas Anagnostopoulos (aanag) email: aanag@sensap.eu
  */
 public class PropertyGridFormFactory {
 

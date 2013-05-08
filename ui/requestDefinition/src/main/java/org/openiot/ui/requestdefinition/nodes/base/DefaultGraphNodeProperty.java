@@ -25,7 +25,7 @@ import org.openiot.ui.requestdefinition.nodes.interfaces.GraphNodeProperty;
 
 /**
  *
- * @author aana
+ * @author Achilleas Anagnostopoulos (aanag) email: aanag@sensap.eu
  */
 public class DefaultGraphNodeProperty implements GraphNodeProperty, Serializable {
 	private static final long serialVersionUID = 1L;

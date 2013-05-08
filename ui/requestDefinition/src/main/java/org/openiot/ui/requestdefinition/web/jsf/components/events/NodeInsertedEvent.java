@@ -21,7 +21,6 @@ package org.openiot.ui.requestdefinition.web.jsf.components.events;
 
 import javax.faces.component.UIComponent;
 import javax.faces.component.behavior.Behavior;
-import org.openiot.ui.requestdefinition.nodes.interfaces.GraphNode;
 import org.primefaces.extensions.event.AbstractAjaxBehaviorEvent;
 
 /**

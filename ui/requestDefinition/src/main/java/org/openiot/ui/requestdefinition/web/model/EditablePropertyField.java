@@ -21,7 +21,7 @@ package org.openiot.ui.requestdefinition.web.model;
 
 /**
  *
- * @author aana
+ * @author Achilleas Anagnostopoulos (aanag) email: aanag@sensap.eu
  */
 public class EditablePropertyField {
     private String valueKey;

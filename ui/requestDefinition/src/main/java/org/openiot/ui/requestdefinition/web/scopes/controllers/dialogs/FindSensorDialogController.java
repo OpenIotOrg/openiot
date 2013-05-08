@@ -34,7 +34,7 @@ import org.primefaces.model.map.LatLng;
 
 /**
  *
- * @author aana
+ * @author Achilleas Anagnostopoulos (aanag) email: aanag@sensap.eu
  */
 @ManagedBean(name = "findSensorDialogController")
 @RequestScoped

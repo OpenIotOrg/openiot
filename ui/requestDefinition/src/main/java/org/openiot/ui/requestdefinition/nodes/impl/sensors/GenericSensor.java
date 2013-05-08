@@ -28,7 +28,7 @@ import org.openiot.ui.requestdefinition.nodes.interfaces.GraphNode;
  * this class contains no annotations and will not be detected by the node
  * scanner.
  *
- * @author aana
+ * @author Achilleas Anagnostopoulos (aanag) email: aanag@sensap.eu
  */
 public class GenericSensor extends DefaultGraphNode implements Serializable {
 	private static final long serialVersionUID = 1L;

@@ -31,7 +31,7 @@ import org.openiot.ui.requestdefinition.web.scopes.session.base.DisposableContex
 
 /**
  *
- * @author aana
+ * @author Achilleas Anagnostopoulos (aanag) email: aanag@sensap.eu
  */
 @ManagedBean(name = "sessionBean")
 @SessionScoped
