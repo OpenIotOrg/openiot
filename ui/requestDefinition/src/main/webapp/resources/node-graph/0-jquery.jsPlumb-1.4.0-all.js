@@ -7343,7 +7343,6 @@
 				    // @aana Align label with connector
 	        if (!component.pointOnPath) {
 	        	var locToUse = self.loc.constructor == Array ? self.loc : self.endpointLoc;
-	        	console.log(component);
 	        	if( locToUse[0] == 0 ){
 	        		minx = cxy.x - td[0];
 	        	} else if( locToUse[0] == 1){

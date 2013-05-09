@@ -69,7 +69,8 @@
 
 				<p:commandButton id="findSensorsButton"
 					value="#{messages.UI_FIND_SENSOR_DIALOG_RUN_SEARCH}"
-					process="@form" update="searchRadius, :toolboxForm, :nodeGraphForm"
+					process="@form" 
+					update="searchRadius, :toolboxForm, :nodeGraphForm"
 					actionListener="#{serviceDesignPageController.executeSensorDiscoveryQuery}"
 					onstart="windowBlockUI.block();"
 					oncomplete="windowBlockUI.unblock();if( args &amp;&amp; (args.notValid || args.validationFailed ) ){return false;}#{cc.attrs.id}.hide();return false;" />

@@ -193,7 +193,7 @@ public class ServiceDesignPageContext extends DisposableContext{
 			
 			// Add an additional endpoint for filtering options
 			GraphNodeEndpoint endpoint = new DefaultGraphNodeEndpoint();
-			endpoint.setAnchor(AnchorType.Bottom);
+			endpoint.setAnchor(AnchorType.Left);
 			endpoint.setConnectorType(ConnectorType.Rectangle);
 			endpoint.setMaxConnections(1);
 			endpoint.setRequired(false);

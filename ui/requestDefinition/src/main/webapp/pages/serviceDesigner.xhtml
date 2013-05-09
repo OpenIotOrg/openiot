@@ -17,18 +17,17 @@
 		<title>#{messages.UI_SERVICE_DESIGNER_TITLE}</title>
 	</h:head>
 
-	<h:body styleClass="service-designer" 
-			id="body">
+	<h:body styleClass="service-designer" id="body">
 		<p:growl autoUpdate="true" life="2000" showDetail="true"
 			showSummary="true" />
 
-		<pe:blockUI widgetVar="windowBlockUI" targetSelector=".service-designer">
+		<pe:blockUI widgetVar="windowBlockUI"
+			targetSelector=".service-designer">
 			<span class="icon-loader-big"></span>
 		</pe:blockUI>
 
 
-		<p:layout id="pageLayout" 
-				  fullPage="true">
+		<p:layout id="pageLayout" fullPage="true">
 
 			<!-- Menubar -->
 			<p:layoutUnit position="north" size="42"
@@ -69,19 +68,20 @@
 							<p:tab
 								title="#{messages['UI_NODE_GROUP_'.concat(type)]} (#{serviceDesignPageController.context.availableNodesByTypeMap[type].size()})"
 								titleStyleClass="ellipsis">
-								<h:panelGrid columns="1" width="100%"
+								<h:dataTable var="entry"
+									value="#{serviceDesignPageController.context.availableNodesByTypeMap[type]}"
+									width="100%" style="box-sizing:border-box;"
 									styleClass="table table-striped"
 									rendered="#{!(serviceDesignPageController.context.availableNodesByTypeMap[type].isEmpty())}">
-									<c:forEach var="entry"
-										items="#{serviceDesignPageController.context.availableNodesByTypeMap[type]}">
+									<h:column>
 										<h:outputLink
 											styleClass="insertable-node type_#{type}-#{entry.label}"
 											onclick="return false;">
 											<h:outputText escape="false"
 												value="#{s:label1(messages, entry.label, 'UI_NODE_'.concat(entry.label))}" />
 										</h:outputLink>
-									</c:forEach>
-								</h:panelGrid>
+									</h:column>
+								</h:dataTable>
 							</p:tab>
 						</c:forEach>
 					</p:accordionPanel>
@@ -161,8 +161,7 @@
 								<pe:dynaFormControl type="Date" for="date">
 									<p:calendar id="date"
 										value="#{serviceDesignPageController.context.graphModel.selectedNode.propertyValueMap[control.valueKey]}"
-										required="#{control.required}"
-										showOn="button"
+										required="#{control.required}" showOn="button"
 										pattern="MM/dd/yyyy HH:mm">
 										<p:ajax event="change" process="@this"
 											update=":nodeGraphForm:nodeGraph" />
@@ -187,8 +186,7 @@
 								<pe:dynaFormControl type="Long" for="long">
 									<pe:inputNumber id="long"
 										value="#{serviceDesignPageController.context.graphModel.selectedNode.propertyValueMap[control.valueKey]}"
-										required="#{control.required}"
-										decimalPlaces="0">
+										required="#{control.required}" decimalPlaces="0">
 										<p:ajax event="change" process="@this"
 											update=":nodeGraphForm:nodeGraph" />
 									</pe:inputNumber>

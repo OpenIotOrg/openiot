@@ -34,13 +34,12 @@ import org.openiot.ui.requestdefinition.web.util.FaceletLocalization;
 import org.primefaces.renderkit.CoreRenderer;
 
 /**
- *
  * @author Achilleas Anagnostopoulos (aanag) email: aanag@sensap.eu
  */
 public class NodeGraphRenderer extends CoreRenderer {
 
     public static final int MIN_NODE_WIDTH = 150;
-    public static final int MIN_NODE_HEIGHT = 100;
+    public static final int MIN_NODE_HEIGHT = 60;
     public static final int PIXELS_PER_HORIZONTAL_ENDPOINT = 20;
     public static final int PIXELS_PER_VERTICAL_ENDPOINT = 40;
 
@@ -210,7 +209,7 @@ public class NodeGraphRenderer extends CoreRenderer {
                     double anchorDY = 0;
                     String label = endpoint.getLabel();
                     if (messages != null) {
-                        label = FaceletLocalization.lookupLabelTranslation(messages, endpoint.getLabel(), "UI_NODE_ENDPOINT_" + node.getClass().getSimpleName() + "_" + endpoint.getLabel(), "UI_NODE_ENDPOINT_" + endpoint.getClass().getSimpleName());
+                        label = FaceletLocalization.lookupLabelTranslation(messages, endpoint.getLabel(), "UI_NODE_ENDPOINT_" + node.getClass().getSimpleName() + "_" + endpoint.getLabel(), "UI_NODE_ENDPOINT_" + endpoint.getLabel());
                     }
                     switch (endpoint.getAnchor()) {
                         case Bottom:

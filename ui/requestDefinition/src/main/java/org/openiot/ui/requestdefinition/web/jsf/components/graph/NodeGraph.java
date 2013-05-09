@@ -51,8 +51,7 @@ import org.primefaces.util.Constants;
 @ResourceDependencies({
     @ResourceDependency(library = "primefaces", name = "jquery/jquery.js"),
     @ResourceDependency(library = "primefaces", name = "primefaces.js"),
-    //@ResourceDependency(library = "node-graph", name = "0-jquery.jsPlumb-1.3.16-all-min.js"),
-    @ResourceDependency(library = "node-graph", name = "0-jquery.jsPlumb-1.4.0-all.js"),
+    @ResourceDependency(library = "node-graph", name = "0-jquery.jsPlumb-1.4.0-all-min.js"),
     @ResourceDependency(library = "node-graph", name = "1-node-graph.js"),
     @ResourceDependency(library = "node-graph", name = "node-graph.css"),})
 public class NodeGraph extends UIComponentBase implements Widget, ClientBehaviorHolder {

@@ -69,14 +69,14 @@
         <version.war.plugin>2.1.1</version.war.plugin>
 
         <!-- maven-compiler-plugin -->
-        <maven.compiler.target>1.6</maven.compiler.target>
-        <maven.compiler.source>1.6</maven.compiler.source>
+        <maven.compiler.target>1.7</maven.compiler.target>
+        <maven.compiler.source>1.5</maven.compiler.source>
     </properties>
 
   <!-- =========================================================== -->
   <!-- Parent -->
   <!-- =========================================================== -->
-             <!-- to be filled -->
+             <!-- to be filled java-->
 
 
 
