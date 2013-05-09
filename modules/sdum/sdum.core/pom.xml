@@ -1,38 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
-<!-- * Copyright (c) 2011-2014, OpenIoT * * This library is free software; 
-	you can redistribute it and/or * modify it either under the terms of the 
-	GNU Lesser General Public * License version 2.1 as published by the Free 
-	Software Foundation * (the "LGPL"). If you do not alter this * notice, a 
-	recipient may use your version of this file under the LGPL. * * You should 
-	have received a copy of the LGPL along with this library * in the file COPYING-LGPL-2.1; 
-	if not, write to the Free Software * Foundation, Inc., 59 Temple Place, Suite 
-	330, Boston, MA 02111-1307 USA * * This software is distributed on an "AS 
-	IS" basis, WITHOUT WARRANTY * OF ANY KIND, either express or implied. See 
-	the LGPL for * the specific language governing rights and limitations. * 
-	* Contact: OpenIoT mailto: info@openiot.eu -->
-
+ <!-- 
+ * Copyright (c) 2011-2014, OpenIoT
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it either under the terms of the GNU Lesser General Public
+ * License version 2.1 as published by the Free Software Foundation
+ * (the "LGPL"). If you do not alter this
+ * notice, a recipient may use your version of this file under the LGPL.
+ *
+ * You should have received a copy of the LGPL along with this library
+ * in the file COPYING-LGPL-2.1; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ *
+ * This software is distributed on an "AS IS" basis, WITHOUT WARRANTY
+ * OF ANY KIND, either express or implied. See the LGPL  for
+ * the specific language governing rights and limitations.
+ *
+ * Contact: OpenIoT mailto: info@openiot.eu
+ -->
+ 
  <!-- 
    @author Nikos Kefalakis (nkef) e-mail: nkef@ait.edu.gr
   -->
-
-
+ 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-  
+   
   <!-- =========================================================== -->
   <!-- Basics -->
-  <!-- =========================================================== -->  
+  <!-- =========================================================== -->     
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.openiot</groupId>
-    <artifactId>scheduler.core</artifactId>
+    <artifactId>sdum.core</artifactId>
     <version>0.0.1</version>
     <packaging>war</packaging>
-    <name>OpenIoT Scheduler Core</name>
+    <name>sdum.core</name>
     <description>A Java EE 6 webapp project for JBoss AS 7.1 / EAP 6</description>
     <url>https://github.com/OpenIotOrg/openiot</url>
-
-
+    
     <licenses>
         <license>
             <name>GNU Lesser General Public License, version 2.1</name>
@@ -45,7 +50,7 @@
   <!-- =========================================================== -->
   <!-- Properties -->
   <!-- =========================================================== -->
-    <properties>
+   <properties>
         <!-- Explicitly declaring the source encoding eliminates the following 
             message: [WARNING] Using platform encoding (UTF-8 actually) to copy filtered 
             resources, i.e. build is platform dependent!
@@ -80,10 +85,6 @@
   <!-- =========================================================== -->
              <!-- to be filled -->
 
-
-  <!-- =========================================================== -->
-  <!-- Dependencies -->
-  <!-- =========================================================== -->
 
     <dependencyManagement>
         <dependencies>
@@ -126,42 +127,44 @@
 
 
 		<!-- ======== JBoss Common Annotations API Dependencies ========== -->
-		<!-- We use provided scope as the API is included in JBoss AS 7 -->
-		<dependency>
-			<groupId>org.jboss.spec.javax.annotation</groupId>
-			<artifactId>jboss-annotations-api_1.1_spec</artifactId>
-			<scope>provided</scope>
-		</dependency>
-
-
-		<!-- ======== JSF API Dependencies ========== -->
-		<!-- We use provided scope as the API is included in JBoss AS 7 -->
-		<dependency>
-			<groupId>org.jboss.spec.javax.faces</groupId>
-			<artifactId>jboss-jsf-api_2.1_spec</artifactId>
-			<scope>provided</scope>
-		</dependency>
+        <!-- We use provided scope as the API is included in JBoss AS 7 -->
+        <dependency>
+            <groupId>org.jboss.spec.javax.annotation</groupId>
+            <artifactId>jboss-annotations-api_1.1_spec</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        
+        
+        <!-- ======== JSF API Dependencies ========== -->
+        <!-- We use provided scope as the API is included in JBoss AS 7 -->
+        <dependency>
+            <groupId>org.jboss.spec.javax.faces</groupId>
+            <artifactId>jboss-jsf-api_2.1_spec</artifactId>
+            <scope>provided</scope>
+        </dependency>
 
 
 		<!-- ======== JBoss RestEasy JAX-RS with JAXB support Dependencies ========== -->
-		<dependency>
-			<groupId>org.jboss.resteasy</groupId>
-			<artifactId>resteasy-jaxrs</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.jboss.resteasy</groupId>
-			<artifactId>resteasy-jaxb-provider</artifactId>
-		</dependency>
+        <dependency>
+        	<groupId>org.jboss.resteasy</groupId>
+        	<artifactId>resteasy-jaxrs</artifactId>
+        	<version>2.3.6.Final</version>
+        </dependency>        
+        <dependency>
+        	<groupId>org.jboss.resteasy</groupId>
+        	<artifactId>resteasy-jaxb-provider</artifactId>
+        	<version>2.3.6.Final</version>
+        </dependency>
 
 
-		<!-- ======== jUnit Dependencies ========== -->
+        <!-- ======== jUnit Dependencies ========== -->
 
-		<!-- Needed for running tests -->
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<scope>test</scope>
-		</dependency>
+        <!-- Needed for running tests  -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
 
 
 		<!-- ======== Sesame Dependencies ========== -->
@@ -180,13 +183,18 @@
 			<artifactId>sesame-repository-sparql</artifactId>
 			<version>2.7.0</version>
 		</dependency>
+		
+       <!-- This is to include the entire Sesame core framework 
+       	<dependency>
+			<groupId>org.openrdf.sesame</groupId>
+			<artifactId>sesame-runtime</artifactId>
+			<version>2.7.0</version>
+		</dependency> 
+         -->
 
-		<!-- This is to include the entire Sesame core framework <dependency> <groupId>org.openrdf.sesame</groupId> 
-			<artifactId>sesame-runtime</artifactId> <version>2.7.0</version> </dependency> -->
-
-
-
-
+       
+        
+        
 		<!-- ======== LogBack Dependencies ========== -->
 
 		<dependency>
@@ -194,7 +202,7 @@
 			<artifactId>logback-classic</artifactId>
 			<version>1.0.11</version>
 		</dependency>
-		<!-- Apache commons-logging Required By Sesame -->
+         <!-- Apache commons-logging Required By Sesame -->
 		<dependency>
 			<groupId>commons-logging</groupId>
 			<artifactId>commons-logging</artifactId>
@@ -205,11 +213,13 @@
 
 
     </dependencies>
-
+    
+    
+    
+    
   <!-- =========================================================== -->
   <!-- Plugins -->
   <!-- =========================================================== -->
-
 
     <build>
         <!-- Maven will append the version to the finalName (which is the name 
@@ -244,6 +254,10 @@
         </plugins>
     </build>
 
+
+  <!-- =========================================================== -->
+  <!-- profiles -->
+  <!-- =========================================================== -->
     <profiles>
         <profile>
             <!-- The default profile skips all tests, though you can tune it to run 
@@ -266,12 +280,6 @@
                 </plugins>
             </build>
         </profile>
-
-
-  <!-- =========================================================== -->
-  <!-- profiles -->
-  <!-- =========================================================== -->
-
 
         <profile>
             <!-- When built in OpenShift the 'openshift' profile will be used when 
@@ -298,7 +306,6 @@
 
     </profiles>
     
-    
   <!-- =========================================================== -->
   <!-- Repositories -->
   <!-- =========================================================== -->
@@ -308,7 +315,4 @@
 
   <pluginRepositories>
   </pluginRepositories>
-    
-    
-    
 </project>
