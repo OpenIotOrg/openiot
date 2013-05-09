@@ -59,7 +59,19 @@ public class SelectionFilter extends DefaultGraphNode implements GraphNodeEventL
             ourEndpoints.clear();
             ourEndpoints.add(ourInput);
 
-            // Copy only output endpoints
+			// Add an additional endpoint for the record timestamp filtering
+			GraphNodeEndpoint endpoint = new DefaultGraphNodeEndpoint();
+			endpoint.setAnchor(AnchorType.Right);
+			endpoint.setConnectorType(ConnectorType.Rectangle);
+			endpoint.setMaxConnections(1);
+			endpoint.setRequired(false);
+			endpoint.setType(EndpointType.Output);
+			endpoint.setLabel("REC_TIMESTAMP");
+			endpoint.setScope("Compare.Date");
+			endpoint.setUserData("observationResultTime");
+			ourEndpoints.add(endpoint);
+
+			// Copy only output endpoints
             for (GraphNodeEndpoint ep : otherNode.getEndpointDefinitions()) {
                 if (ep.getType().equals(EndpointType.Output)) {
                     // Copy endpoint and mutate its scope so that it can only
@@ -69,19 +81,7 @@ public class SelectionFilter extends DefaultGraphNode implements GraphNodeEventL
                     copy.setMaxConnections(1);
                     ourEndpoints.add(copy);
                 }
-            }
-            
-			// Add an additional endpoint for the record timestamp filtering
-			GraphNodeEndpoint endpoint = new DefaultGraphNodeEndpoint();
-			endpoint.setAnchor(AnchorType.Bottom);
-			endpoint.setConnectorType(ConnectorType.Rectangle);
-			endpoint.setMaxConnections(1);
-			endpoint.setRequired(false);
-			endpoint.setType(EndpointType.Output);
-			endpoint.setLabel("REC_TIMESTAMP");
-			endpoint.setScope("Compare.Date");
-			endpoint.setUserData("observationResultTime");
-			ourEndpoints.add(endpoint);
+            }            
         }
     }
 

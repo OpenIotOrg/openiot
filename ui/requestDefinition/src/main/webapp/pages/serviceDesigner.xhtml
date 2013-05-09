@@ -19,7 +19,7 @@
 
 	<h:body styleClass="service-designer" id="body">
 		<p:growl autoUpdate="true" life="2000" showDetail="true"
-			showSummary="true" />
+			escape="false" showSummary="true" />
 
 		<pe:blockUI widgetVar="windowBlockUI"
 			targetSelector=".service-designer">
@@ -264,7 +264,7 @@
 									<pe:codeMirror id="codeMirror"
 										value="#{serviceDesignPageController.context.generatedCode}"
 										lineNumbers="true" readOnly="true" theme="eclipse"
-										mode="sparql" widgetVar="codeMirror" />
+										matchBrackets="true" mode="sparql" widgetVar="codeMirror" />
 								</p:tab>
 							</p:tabView>
 						</h:form>

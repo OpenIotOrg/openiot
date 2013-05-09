@@ -214,11 +214,14 @@ public class ServiceDesignPageContext extends DisposableContext{
 				endpoint.setRequired(false);
 				endpoint.setType(EndpointType.Output);
 				String label = cap.getType();
+				if( label.contains("#")){
+					label = label.substring(label.indexOf('#') + 1);
+				}
 				if( !cap.getUnit().isEmpty() && cap.getUnit().get(0).getName() != null && !cap.getUnit().get(0).getName().equals("null") && !cap.getUnit().get(0).getName().isEmpty()){
 					label += " (" + cap.getUnit().get(0).getName() + ")";
 				}
 				endpoint.setLabel(label); 
-				endpoint.setUserData(cap.getId());
+				endpoint.setUserData(cap.getType());
 
 				String scope = "Number";
 				String capScope = cap.getUnit().get(0).getType();

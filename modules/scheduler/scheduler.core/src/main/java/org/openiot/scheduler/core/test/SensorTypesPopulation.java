@@ -36,15 +36,17 @@ import org.openiot.commons.sensortypes.model.Unit;
  */
 public class SensorTypesPopulation {
 
+
+
 	private SensorTypes testSensorTypes;
-	
-	
-	
+
+
+
 	public SensorTypesPopulation (){
-		
-		
-		
-		
+
+
+
+
         //Test sensortypes to return 
         testSensorTypes = new SensorTypes();
         
@@ -75,7 +77,7 @@ public class SensorTypesPopulation {
         MeasurementCapability mc1Weather = new MeasurementCapability();
         //http://purl.oclc.ie/NET/ssnx/ssn#observes
         mc1Weather.setId("http://lsm.deri.ie/resource/5395423154665");//AirTemperature
-        mc1Weather.setType("AirTemperature");
+        mc1Weather.setType("http://lsm.deri.ie/ont/lsm.owl#AirTemperature");
         
         Unit unit1 = new Unit();
         unit1.setName("C");
@@ -86,7 +88,7 @@ public class SensorTypesPopulation {
         
         MeasurementCapability mc2Weather = new MeasurementCapability();
         mc2Weather.setId("http://lsm.deri.ie/resource/5395434919219");//windchill
-        mc2Weather.setType("windchill");
+        mc2Weather.setType("http://lsm.deri.ie/ont/lsm.owl#WindChill");
         
         Unit unit2 = new Unit();
         unit2.setName("C");
@@ -97,7 +99,7 @@ public class SensorTypesPopulation {
         
         MeasurementCapability mc3Weather = new MeasurementCapability();
         mc3Weather.setId("http://lsm.deri.ie/resource/5395438576035");//WindSpeed
-        mc3Weather.setType("WindSpeed");
+        mc3Weather.setType("http://lsm.deri.ie/ont/lsm.owl#WindSpeed");
         
         Unit unit3 = new Unit();
         unit3.setName("km/h");
@@ -108,7 +110,7 @@ public class SensorTypesPopulation {
         
         MeasurementCapability mc4Weather = new MeasurementCapability();
         mc4Weather.setId("http://lsm.deri.ie/resource/5395341713068");//AtmosphereHumidity
-        mc4Weather.setType("AtmosphereHumidity");
+        mc4Weather.setType("http://lsm.deri.ie/ont/lsm.owl#AtmosphereHumidity");
         
         Unit unit4 = new Unit();
         unit4.setName("%");
@@ -119,7 +121,7 @@ public class SensorTypesPopulation {
         
         MeasurementCapability mc5Weather = new MeasurementCapability();
         mc5Weather.setId("http://lsm.deri.ie/resource/5395345638854");//AtmospherePressure
-        mc5Weather.setType("AtmospherePressure");
+        mc5Weather.setType("http://lsm.deri.ie/ont/lsm.owl#AtmospherePressure");
         
         Unit unit5 = new Unit();
         unit5.setName("mb");
@@ -130,7 +132,7 @@ public class SensorTypesPopulation {
         
         MeasurementCapability mc6Weather = new MeasurementCapability();
         mc6Weather.setId("http://lsm.deri.ie/resource/5395349164649");//AtmosphereVisibility
-        mc6Weather.setType("AtmosphereVisibility");
+        mc6Weather.setType("http://lsm.deri.ie/ont/lsm.owl#AtmosphereVisibility");
         
         Unit unit6 = new Unit();
         unit6.setName("mb");
@@ -220,12 +222,13 @@ public class SensorTypesPopulation {
         testSensorType2.getMeasurementCapability().add(mc1BikeHire);
         testSensorType2.getMeasurementCapability().add(mc2BikeHire);
         
-        testSensorTypes.getSensorType().add(testSensorType2);
-		
+        testSensorTypes.getSensorType().add(testSensorType2);      
+        
+
+
 	}
 
-	public SensorTypes getSensorTypes() {
+	public SensorTypes getSensorTypes(){
 		return testSensorTypes;
 	}
-
 }

@@ -43,6 +43,7 @@ public abstract class AbstractGraphNodeVisitor {
         } catch (NoSuchMethodException e) {
             defaultVisit(node);
         } catch (InvocationTargetException e) {
+        	e.printStackTrace();        	
             defaultVisit(node);
         } catch (IllegalAccessException e) {
             defaultVisit(node);
