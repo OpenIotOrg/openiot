@@ -256,6 +256,7 @@ public class NodeGraphRenderer extends CoreRenderer {
                         writer.write("nodeId : '" + node.getUID() + "',");
                         writer.write("id : '" + endpoint.getUID() + "',");
                         writer.write("endpoint : '" + endpoint.getConnectorType().toString() + "',");
+                        writer.write("connector:[ 'Flowchart', { stub:[40, 60], gap:10, cornerRadius:5 } ],");
                         writer.write("anchor : [" + anchorXPos + ", " + anchorYPos + ", " + anchorDX + ", " + anchorDY + "],");
                         writer.write("scope : '" + endpoint.getScope() + "',");
                         writer.write("isSource : " + (EndpointType.Input.equals(endpoint.getType()) ? "false" : "true") + ",");
