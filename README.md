@@ -1,5 +1,8 @@
-openiot
+OpenIoT
 =======
+
+[[http://cultzine.files.wordpress.com/2012/10/under-constructions.gif|align=center| width=400px]]
+
 
 OpenIoT - The Open Source Project for the Internet of Things
 
