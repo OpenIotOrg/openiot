@@ -31,7 +31,7 @@
 	<groupId>org.openiot</groupId>
 	<artifactId>ui.requestDefinition</artifactId>
 	<packaging>war</packaging>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.1</version>
 	<name>OpenIoT request definition web app</name>
 	<url>https://github.com/OpenIotOrg/openiot</url>
 

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project-modules id="moduleCoreId" project-version="1.5.0">
-    <wb-module deploy-name="requestDefinition">
+    <wb-module deploy-name="ui.requestDefinition">
         <wb-resource deploy-path="/" source-path="/target/m2e-wtp/web-resources"/>
         <wb-resource deploy-path="/" source-path="/src/main/webapp" tag="defaultRootSource"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/java"/>
@@ -8,7 +8,7 @@
         <dependent-module archiveName="utils.commons-0.0.1.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/utils.commons/utils.commons">
             <dependency-type>uses</dependency-type>
         </dependent-module>
-        <property name="java-output-path" value="/requestDefinition/target/classes"/>
         <property name="context-root" value="ui.requestDefinition"/>
+        <property name="java-output-path" value="/ui.requestDefinition/target/classes"/>
     </wb-module>
 </project-modules>
