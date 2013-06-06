@@ -11,6 +11,8 @@
 **/.project
 .classpath
 **/.classpath
+.settings
+**/.settings
 org.eclipse.core.resources.prefs
 org.eclipse.m2e.core.prefs
 .factorypath
