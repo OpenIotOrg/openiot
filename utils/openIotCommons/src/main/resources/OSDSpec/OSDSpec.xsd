@@ -23,21 +23,56 @@
   <!--
 		Author: Nikos Kefalakis (nkef@ait.edu.gr)
    -->
-  
-  
+
+
   <xs:element name="OSDSpec">
+    <xs:annotation>
+      <xs:documentation>OpenIoT Service Description Specification</xs:documentation>
+    </xs:annotation>
     <xs:complexType>
       <xs:sequence>
-        <xs:element maxOccurs="unbounded" ref="OSMO"/>
+        <xs:element maxOccurs="unbounded" ref="OAMO"/>
       </xs:sequence>
       <xs:attribute name="userID" use="required" type="xs:anyURI"/>
     </xs:complexType>
   </xs:element>
 
-  <xs:element name="OSMO">
+
+
+
+  <xs:element name="OAMO">
+    <xs:annotation>
+      <xs:documentation>OpenIoT Application Model Object</xs:documentation>
+    </xs:annotation>
     <xs:complexType>
       <xs:sequence>
-        <xs:element ref="descriptiveID"/>
+        <xs:element maxOccurs="1" ref="applicationDescriptiveID"/>
+        <xs:element maxOccurs="unbounded" ref="OSMO"> </xs:element>
+      </xs:sequence>
+      <xs:attribute name="oamoID" type="xs:anyURI"/>
+    </xs:complexType>
+  </xs:element>
+
+
+
+  <xs:element name="applicationDescriptiveID">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="applicationName" minOccurs="0" maxOccurs="1" type="xs:NCName"/>
+        <xs:element name="applicationDescription" minOccurs="0" maxOccurs="1" type="xs:string"/>
+      </xs:sequence>
+      <xs:attribute name="applicationID" use="required" type="xs:anyURI"/>
+    </xs:complexType>
+  </xs:element>
+
+
+  <xs:element name="OSMO">
+    <xs:annotation>
+      <xs:documentation>OpenIoT Sensor Model Object</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="serviceDescriptiveID"/>
         <xs:element ref="queryControls"/>
         <xs:element ref="requestPresentation"/>
         <xs:element ref="query-request"/>
@@ -45,9 +80,8 @@
     </xs:complexType>
   </xs:element>
 
-  <xs:element name="descriptiveID">
+  <xs:element name="serviceDescriptiveID">
     <xs:complexType>
-
       <xs:sequence>
         <xs:element name="serviceName" minOccurs="0" maxOccurs="1" type="xs:NCName"/>
         <xs:element name="serviceDescription" minOccurs="0" maxOccurs="1" type="xs:string"/>
@@ -137,12 +171,26 @@
              "a sequence of characters in the language defined by the
              [SPARQL] grammar, starting with the Query production"
             </xs:documentation>
-
           </xs:annotation>
         </xs:element>
         <xs:element minOccurs="0" maxOccurs="unbounded" name="default-graph-uri" type="xs:anyURI"/>
         <xs:element minOccurs="0" maxOccurs="unbounded" name="named-graph-uri" type="xs:anyURI"/>
+        <xs:sequence>
+          <xs:element maxOccurs="unbounded" ref="maxDynamicAttr"/>
+
+        </xs:sequence>
       </xs:sequence>
     </xs:complexType>
   </xs:element>
+
+  <xs:element name="maxDynamicAttr">
+    <xs:annotation>
+      <xs:documentation>Maximum/Area of Interest for the defined dynamic value</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:attribute name="name" use="required" type="xs:string"/>
+      <xs:attribute name="value" use="required" type="xs:string"/>
+    </xs:complexType>
+  </xs:element>
+
 </xs:schema>
