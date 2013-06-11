@@ -29,9 +29,10 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element ref="{}OAMO" maxOccurs="unbounded"/>
+ *         &lt;element ref="{}applicationDescriptiveID"/>
+ *         &lt;element ref="{}OSMO" maxOccurs="unbounded"/>
  *       &lt;/sequence>
- *       &lt;attribute name="userID" use="required" type="{http://www.w3.org/2001/XMLSchema}anyURI" />
+ *       &lt;attribute name="oamoID" type="{http://www.w3.org/2001/XMLSchema}anyURI" />
  *     &lt;/restriction>
  *   &lt;/complexContent>
  * &lt;/complexType>
@@ -41,68 +42,95 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "oamo"
+    "applicationDescriptiveID",
+    "osmo"
 })
-@XmlRootElement(name = "OSDSpec")
-public class OSDSpec {
+@XmlRootElement(name = "OAMO")
+public class OAMO {
 
-    @XmlElement(name = "OAMO", required = true)
-    protected List<OAMO> oamo;
-    @XmlAttribute(name = "userID", required = true)
+    @XmlElement(required = true)
+    protected ApplicationDescriptiveID applicationDescriptiveID;
+    @XmlElement(name = "OSMO", required = true)
+    protected List<OSMO> osmo;
+    @XmlAttribute(name = "oamoID")
     @XmlSchemaType(name = "anyURI")
-    protected String userID;
+    protected String oamoID;
 
     /**
-     * Gets the value of the oamo property.
+     * Gets the value of the applicationDescriptiveID property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link ApplicationDescriptiveID }
+     *     
+     */
+    public ApplicationDescriptiveID getApplicationDescriptiveID() {
+        return applicationDescriptiveID;
+    }
+
+    /**
+     * Sets the value of the applicationDescriptiveID property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link ApplicationDescriptiveID }
+     *     
+     */
+    public void setApplicationDescriptiveID(ApplicationDescriptiveID value) {
+        this.applicationDescriptiveID = value;
+    }
+
+    /**
+     * Gets the value of the osmo property.
      * 
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the oamo property.
+     * This is why there is not a <CODE>set</CODE> method for the osmo property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    getOAMO().add(newItem);
+     *    getOSMO().add(newItem);
      * </pre>
      * 
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link OAMO }
+     * {@link OSMO }
      * 
      * 
      */
-    public List<OAMO> getOAMO() {
-        if (oamo == null) {
-            oamo = new ArrayList<OAMO>();
+    public List<OSMO> getOSMO() {
+        if (osmo == null) {
+            osmo = new ArrayList<OSMO>();
         }
-        return this.oamo;
+        return this.osmo;
     }
 
     /**
-     * Gets the value of the userID property.
+     * Gets the value of the oamoID property.
      * 
      * @return
      *     possible object is
      *     {@link String }
      *     
      */
-    public String getUserID() {
-        return userID;
+    public String getOamoID() {
+        return oamoID;
     }
 
     /**
-     * Sets the value of the userID property.
+     * Sets the value of the oamoID property.
      * 
      * @param value
      *     allowed object is
      *     {@link String }
      *     
      */
-    public void setUserID(String value) {
-        this.userID = value;
+    public void setOamoID(String value) {
+        this.oamoID = value;
     }
 
 }

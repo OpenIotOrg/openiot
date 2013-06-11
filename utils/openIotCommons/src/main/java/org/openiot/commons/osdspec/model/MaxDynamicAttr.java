@@ -35,8 +35,8 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "")
-@XmlRootElement(name = "presentationAttr")
-public class PresentationAttr {
+@XmlRootElement(name = "maxDynamicAttr")
+public class MaxDynamicAttr {
 
     @XmlAttribute(name = "name", required = true)
     protected String name;
