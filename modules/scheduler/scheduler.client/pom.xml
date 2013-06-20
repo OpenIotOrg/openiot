@@ -1,0 +1,209 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <!-- =========================================================== -->
+  <!-- Basics -->
+  <!-- =========================================================== -->  
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.openiot</groupId>
+  <artifactId>scheduler.client</artifactId>
+  <version>0.0.1</version>
+  <packaging>jar</packaging>
+  <name>scheduler.client</name>
+
+
+    <licenses>
+        <license>
+            <name>GNU Lesser General Public License, version 2.1</name>
+            <distribution>repo</distribution>
+            <url>http://www.gnu.org/licenses/lgpl-2.1.html</url>
+        </license>
+    </licenses>
+
+
+  <!-- =========================================================== -->
+  <!-- Properties -->
+  <!-- =========================================================== -->
+    <properties>
+        <!-- Explicitly declaring the source encoding eliminates the following 
+            message: [WARNING] Using platform encoding (UTF-8 actually) to copy filtered 
+            resources, i.e. build is platform dependent!
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding> -->
+        
+
+        <!-- other plugin versions -->
+        <version.compiler.plugin>2.3.2</version.compiler.plugin>
+
+        <!-- maven-compiler-plugin -->
+        <maven.compiler.target>1.6</maven.compiler.target>
+        <maven.compiler.source>1.6</maven.compiler.source>
+    </properties>
+
+
+  <!-- =========================================================== -->
+  <!-- Parent -->
+  <!-- =========================================================== -->
+             <!-- to be filled -->
+
+
+  <!-- =========================================================== -->
+  <!-- Dependencies -->
+  <!-- =========================================================== -->
+
+    
+
+    
+    <dependencies>
+
+		<!--======== OpenIoT dependencies ============-->
+
+
+        <dependency>
+	        <groupId>org.openiot</groupId>
+	        <artifactId>utils.commons</artifactId>
+	        <version>0.0.1</version>
+        </dependency>
+
+ 
+
+
+		<!-- ======== JBoss RestEasy JAX-RS with JAXB support Dependencies ========== -->
+        <dependency>
+        	<groupId>org.jboss.resteasy</groupId>
+        	<artifactId>resteasy-jaxrs</artifactId>
+        	<version>2.3.6.Final</version>
+        </dependency>        
+        <dependency>
+        	<groupId>org.jboss.resteasy</groupId>
+        	<artifactId>resteasy-jaxb-provider</artifactId>
+        	<version>2.3.6.Final</version>
+        </dependency>
+
+
+
+
+
+		<!-- ======== LogBack Dependencies ========== -->
+
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>1.0.11</version>
+		</dependency>
+         <!-- Apache commons-logging Required By Sesame -->
+		<dependency>
+			<groupId>commons-logging</groupId>
+			<artifactId>commons-logging</artifactId>
+			<version>1.1.2</version>
+		</dependency>
+
+
+
+
+		<!-- ======== Eclipse win32 SWT Dependencies (Specific for every platform) ========== -->
+		<dependency>
+		  	<groupId>org.eclipse.swt.win32.win32</groupId>
+		  	<artifactId>x86</artifactId>
+ 			<version>3.3.0-v3346</version>
+		</dependency>
+
+
+    </dependencies>
+
+  <!-- =========================================================== -->
+  <!-- Plugins -->
+  <!-- =========================================================== -->
+
+
+	<build>
+	
+		<plugins>
+			<!-- Compiler plugin enforces Java 1.6 compatibility and activates annotation 
+				processors -->
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>${version.compiler.plugin}</version>
+				<configuration>
+					<source>${maven.compiler.source}</source>
+					<target>${maven.compiler.target}</target>
+				</configuration>
+			</plugin>
+
+
+
+ 
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>2.2</version>
+			</plugin>
+			
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<version>2.4</version>
+				<configuration>
+					<descriptorRefs>
+						<descriptorRef>jar-with-dependencies</descriptorRef>
+					</descriptorRefs>
+					<archive>
+						<manifest>
+							<mainClass>org.openiot.scheduler.client.rest.SchedulerClientFromConsole</mainClass>
+						</manifest>
+					</archive>
+				</configuration>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+ 
+
+
+		</plugins>
+	</build>
+
+
+
+
+  <!-- =========================================================== -->
+  <!-- profiles -->
+  <!-- =========================================================== -->
+    <profiles>
+    </profiles>
+    
+    
+  <!-- =========================================================== -->
+  <!-- Repositories -->
+  <!-- =========================================================== -->
+
+  <repositories>
+  </repositories>
+
+  <pluginRepositories>
+  </pluginRepositories>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</project>
