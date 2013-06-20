@@ -30,6 +30,8 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.openiot.commons.osdspec.model.OSDSpec;
 import org.openiot.commons.sensortypes.model.SensorTypes;
@@ -45,7 +47,14 @@ public class SchedulerRsControler {
 	
 	
 	
+	Logger logger;
 
+	public SchedulerRsControler() {
+		
+		//Logger's initialization
+		logger = LoggerFactory.getLogger(SchedulerRsControler.class);
+
+	}
     
 
 	/**
@@ -72,7 +81,7 @@ public class SchedulerRsControler {
 				+ "getAvailableServiceIDs (userID: String): List<DescriptiveID>\n"
 				+ "getAvailableServices (userID: String): OSDSpec";
 
-		JaxRsActivator.logger.debug(welcomeText);
+		logger.debug(welcomeText);
 
 		
 		return welcomeText;

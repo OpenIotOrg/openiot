@@ -28,8 +28,8 @@ import javax.ws.rs.core.Application;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.core.util.StatusPrinter;
+//import ch.qos.logback.classic.LoggerContext;
+//import ch.qos.logback.core.util.StatusPrinter;
 
 /**
  * A class extending {@link Application} and annotated with @ApplicationPath is the Java EE 6 "no XML" approach to activating
@@ -55,7 +55,7 @@ public class JaxRsActivator extends Application {
 		singletons.add(new SchedulerRsControler());
 
 		// Initialize the Logger
-		logger = LoggerFactory.getLogger(SchedulerRsControler.class.getName());
+		logger = LoggerFactory.getLogger(JaxRsActivator.class.getName());
 
 		// print Logger's internal state (not required for initialization)
 //		LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();

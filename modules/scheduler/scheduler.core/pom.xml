@@ -123,6 +123,14 @@
     
     <dependencies>
 
+		<!--======== OpenIoT dependencies ============-->
+        <dependency>
+	        <groupId>org.openiot</groupId>
+	        <artifactId>utils.commons</artifactId>
+	        <version>0.0.1</version>
+        </dependency>
+
+
 
 		<!-- ========  CDI API Dependencies ========== -->
         <!-- We use provided scope as the API is included in JBoss AS 7 -->
