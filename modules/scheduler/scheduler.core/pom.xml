@@ -123,13 +123,15 @@
     
     <dependencies>
 
+
 		<!--======== OpenIoT dependencies ============-->
+
+
         <dependency>
 	        <groupId>org.openiot</groupId>
 	        <artifactId>utils.commons</artifactId>
 	        <version>0.0.1</version>
         </dependency>
-
 
 
 		<!-- ========  CDI API Dependencies ========== -->
@@ -267,15 +269,6 @@
         </plugins>
     </build>
 
-
-
-
-  <!-- =========================================================== -->
-  <!-- profiles -->
-  <!-- =========================================================== -->
-  
-  
-  
     <profiles>
         <profile>
             <!-- The default profile skips all tests, though you can tune it to run 
@@ -298,6 +291,11 @@
                 </plugins>
             </build>
         </profile>
+
+
+  <!-- =========================================================== -->
+  <!-- profiles -->
+  <!-- =========================================================== -->
 
 
         <profile>

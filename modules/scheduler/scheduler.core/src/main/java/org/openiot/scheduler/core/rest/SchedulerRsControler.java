@@ -20,22 +20,20 @@ package org.openiot.scheduler.core.rest;
  * Contact: OpenIoT mailto: info@openiot.eu
  */
 
-
-
-
-
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import org.openiot.commons.osdspec.model.OSDSpec;
 import org.openiot.commons.sensortypes.model.SensorTypes;
 import org.openiot.scheduler.core.test.SensorTypesPopulation;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -43,18 +41,15 @@ import org.openiot.scheduler.core.test.SensorTypesPopulation;
  *
  */
 @Path("/services")
+@Consumes({ "application/xml", "application/json" })
+@Produces({ "application/xml", "application/json" })
 public class SchedulerRsControler {
 	
+	private Logger logger;
 	
-	
-	Logger logger;
-
-	public SchedulerRsControler() {
-		
-		//Logger's initialization
-		logger = LoggerFactory.getLogger(SchedulerRsControler.class);
-
-	}
+public SchedulerRsControler(){
+	logger = LoggerFactory.getLogger(SchedulerRsControler.class);
+}
     
 
 	/**
@@ -69,7 +64,7 @@ public class SchedulerRsControler {
 		welcomeText = "Welcome to Scheduler's Rest Interface\n"
 				+ "=====================================\n\n"
 				+ "This Interface provides the folowing Services:\n"
-				+ "discoverService(userID: String, sparqlQuery:QueryRequest): SparqlResultsDoc\n"
+				+ "discoverSensors (userID:String, longitude:double, latitude:double, radius:float): SensorTypes\n"
 				+ "registerService(osdSpec: OSDSpec): String\n"
 				+ "unregisterService(String serviceID): void\n"
 				+ "updateService(osdSpec: OSDSpec): void\n"
@@ -97,10 +92,10 @@ public class SchedulerRsControler {
 	 */
 	@POST
 	@Path("/registerService")
-	@Consumes("application/xml")
+//	@Consumes("application/xml")
 	public String registerService(OSDSpec osdSpec) {
 
-		// TODO: Fill the registerService method
+		logger.debug("Recieved Parameters: userID= " + osdSpec.getUserID());
 
 		return "Success";
 
@@ -109,8 +104,8 @@ public class SchedulerRsControler {
 	@GET
 	@Path("/discoverSensors")
 //	@Consumes("application/xml")
-	@Produces("application/xml")
-	public SensorTypes discoverSensors() {
+//	@Produces("application/xml")
+	public SensorTypes discoverSensors(@QueryParam("userID") String userID, @QueryParam("longitude") double longitude, @QueryParam("latitude") double latitude, @QueryParam("radius") float radius) {
 
         
 		//@QueryParam("userID") String userID, @QueryParam("longitude") double longitude, @QueryParam("latitude") double latitude, @QueryParam("radius") float radius
@@ -118,7 +113,7 @@ public class SchedulerRsControler {
 		
 		SensorTypesPopulation sensorTypesPopulation = new SensorTypesPopulation();
 		
-
+		logger.debug("Recieved Parameters: userID="+userID+", longitude="+longitude+", latitude="+latitude+", radius="+radius );
 
 		
 		return sensorTypesPopulation.getSensorTypes();
