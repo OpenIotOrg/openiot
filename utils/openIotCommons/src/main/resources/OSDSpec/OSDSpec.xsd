@@ -46,24 +46,17 @@
     </xs:annotation>
     <xs:complexType>
       <xs:sequence>
-        <xs:element maxOccurs="1" ref="applicationDescriptiveID"/>
+        <xs:element minOccurs="0" maxOccurs="1" ref="description"/>
         <xs:element maxOccurs="unbounded" ref="OSMO"> </xs:element>
       </xs:sequence>
-      <xs:attribute name="oamoID" type="xs:anyURI"/>
+      <xs:attribute name="id" use="required" type="xs:anyURI"/>
+      <xs:attribute name="name" type="xs:NCName" use="required"/>
     </xs:complexType>
   </xs:element>
 
 
 
-  <xs:element name="applicationDescriptiveID">
-    <xs:complexType>
-      <xs:sequence>
-        <xs:element name="applicationName" minOccurs="0" maxOccurs="1" type="xs:NCName"/>
-        <xs:element name="applicationDescription" minOccurs="0" maxOccurs="1" type="xs:string"/>
-      </xs:sequence>
-      <xs:attribute name="applicationID" use="required" type="xs:anyURI"/>
-    </xs:complexType>
-  </xs:element>
+  <xs:element name="description" type="xs:string"> </xs:element>
 
 
   <xs:element name="OSMO">
@@ -72,21 +65,13 @@
     </xs:annotation>
     <xs:complexType>
       <xs:sequence>
-        <xs:element ref="serviceDescriptiveID"/>
+        <xs:element minOccurs="0" maxOccurs="1" ref="description"/>
         <xs:element ref="queryControls"/>
         <xs:element ref="requestPresentation"/>
         <xs:element ref="query-request"/>
       </xs:sequence>
-    </xs:complexType>
-  </xs:element>
-
-  <xs:element name="serviceDescriptiveID">
-    <xs:complexType>
-      <xs:sequence>
-        <xs:element name="serviceName" minOccurs="0" maxOccurs="1" type="xs:NCName"/>
-        <xs:element name="serviceDescription" minOccurs="0" maxOccurs="1" type="xs:string"/>
-      </xs:sequence>
-      <xs:attribute name="serviceID" use="required" type="xs:anyURI"/>
+      <xs:attribute name="id" use="required" type="xs:anyURI"/>
+      <xs:attribute name="name" type="xs:NCName" use="required"/>
     </xs:complexType>
   </xs:element>
 
@@ -176,14 +161,14 @@
         <xs:element minOccurs="0" maxOccurs="unbounded" name="default-graph-uri" type="xs:anyURI"/>
         <xs:element minOccurs="0" maxOccurs="unbounded" name="named-graph-uri" type="xs:anyURI"/>
         <xs:sequence>
-          <xs:element maxOccurs="unbounded" ref="maxDynamicAttr"/>
+          <xs:element maxOccurs="unbounded" ref="dynamicAttrMaxValue"/>
 
         </xs:sequence>
       </xs:sequence>
     </xs:complexType>
   </xs:element>
 
-  <xs:element name="maxDynamicAttr">
+  <xs:element name="dynamicAttrMaxValue">
     <xs:annotation>
       <xs:documentation>Maximum/Area of Interest for the defined dynamic value</xs:documentation>
     </xs:annotation>
