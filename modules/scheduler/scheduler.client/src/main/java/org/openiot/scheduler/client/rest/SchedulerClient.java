@@ -20,6 +20,7 @@ package org.openiot.scheduler.client.rest;
  * Contact: OpenIoT mailto: info@openiot.eu
  */
 
+import java.io.FileNotFoundException;
 import java.io.StringReader;
 
 import javax.ws.rs.core.MediaType;
@@ -37,7 +38,13 @@ import org.openiot.commons.sensortypes.model.SensorType;
 import org.openiot.commons.sensortypes.model.SensorTypes;
 import org.openiot.commons.sensortypes.model.Unit;
 
+import org.openiot.commons.osdspec.model.OAMO;
 import org.openiot.commons.osdspec.model.OSDSpec;
+import org.openiot.commons.osdspec.model.OSMO;
+import org.openiot.commons.osdspec.model.PresentationAttr;
+import org.openiot.commons.osdspec.model.Widget;
+
+import org.openiot.commons.osdspec.utils.DeserializerUtil;
 
 /**
  * @author Nikos Kefalakis (nkef) e-mail: nkef@ait.edu.gr
@@ -153,6 +160,65 @@ public class SchedulerClient {
 		//Prepare the request
 		OSDSpec osdSpec = new OSDSpec();
 		osdSpec.setUserID("Nikos-Kefalakis");
+//		
+//		//set it and forget it
+//		OAMO oamo1 = new OAMO();
+//		
+//		oamo1.setId("OpenIoTApplicationModelObject_1");
+//		oamo1.setName("OpenIoTApplicationModelObject1Name");
+//
+//		
+//		
+//		//equivalent to service entity
+//		OSMO osmo1 = new OSMO();
+//		
+//		osmo1.setDescription("The New Hyper Service test");
+//				
+//		//(kane select apo thn vash gia to Service ID)
+//		osmo1.setId("SensorModelObjectServiceID");
+//		osmo1.setDescription("OpenIoT Sensor Model Object 1");
+//		osmo1.setName("SensorModelObjectName");
+//		
+//		
+//		
+//		//ADD WIDGET
+//		Widget widget1 = new Widget();
+//		
+//		//to WidgetID tha sto stelnei katheytheian o achileas (equivalent to widgetAvailable)
+//		widget1.setWidgetID("TheYperwidgetID");
+//		
+//		PresentationAttr presentationAttr1 = new PresentationAttr();
+//		presentationAttr1.setName("widget1PresentationAttr1Name");
+//		presentationAttr1.setValue("widget1PresentationAttr1Value");
+//		
+//		PresentationAttr presentationAttr2 = new PresentationAttr();
+//		presentationAttr2.setName("widget1PresentationAttr2Name");
+//		presentationAttr2.setValue("widget1PresentationAttr2Value");
+//		
+//		
+//		widget1.getPresentationAttr().add(presentationAttr1);
+//		widget1.getPresentationAttr().add(presentationAttr2);
+//		
+//		osmo1.getRequestPresentation().getWidget().add(widget1);
+//
+//		
+//		
+//		//ADD QUERY REQUEST
+//		
+//		osmo1.getQueryRequest().setQuery("SELECT * FROM <openiot> WHERE {?s ?p ?o}");
+//		
+//		
+//			
+//		oamo1.getOSMO().add(osmo1);
+//		
+//		osdSpec.getOAMO().add(oamo1);
+		
+		
+		
+		
+		
+		
+		
 
 		registerServiceClientRequest.body("application/xml", osdSpec);
 
@@ -174,6 +240,58 @@ public class SchedulerClient {
 			e.printStackTrace();
 		}
 
+	}
+
+	
+	/**
+	 * @param osdSpecFilePathName
+	 */
+	public void registerFromFile(String osdSpecFilePathName) {
+		
+		
+		ClientRequest registerServiceClientRequest = clientRequestFactory
+				.createRelativeRequest("/rest/services/registerService");
+
+		registerServiceClientRequest.accept("application/xml");
+		
+		
+		
+		OSDSpec osdSpec = new OSDSpec();
+		
+		//Open and Deserialize OSDSPec form file
+		try {
+			osdSpec = DeserializerUtil.deserializeOSDSpecFile(osdSpecFilePathName);
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+		
+		
+		registerServiceClientRequest.body("application/xml", osdSpec);
+
+		
+		
+		//Handle the response
+		ClientResponse<String> response;
+		String str = null;
+		try {
+			response = registerServiceClientRequest.post(String.class);
+
+			if (response.getStatus() != 200) {
+				throw new RuntimeException("Failed : HTTP error code : " + response.getStatus());
+			}
+
+			str = response.getEntity();
+			System.out.println("===============Registered: " + str);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 	}
 
 }

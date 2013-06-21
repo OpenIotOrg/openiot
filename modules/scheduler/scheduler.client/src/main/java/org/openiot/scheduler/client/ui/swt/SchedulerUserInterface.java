@@ -1,11 +1,11 @@
-package org.openiot.scheduler.client.ui;
+package org.openiot.scheduler.client.ui.swt;
 
-import javax.ws.rs.core.UriBuilder;
+
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
-import org.jboss.resteasy.client.ClientRequestFactory;
+
 import org.openiot.scheduler.client.rest.SchedulerClient;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.events.SelectionAdapter;
