@@ -30,7 +30,10 @@ import javax.ws.rs.QueryParam;
 
 import org.openiot.commons.osdspec.model.OSDSpec;
 import org.openiot.commons.sensortypes.model.SensorTypes;
-import org.openiot.scheduler.core.test.SensorTypesPopulation;
+
+
+import org.openiot.scheduler.core.api.impl.DiscoverSensorsImpl;
+import org.openiot.scheduler.core.api.impl.RegisterServiceImpl;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -95,9 +98,12 @@ public SchedulerRsControler(){
 //	@Consumes("application/xml")
 	public String registerService(OSDSpec osdSpec) {
 
-		logger.debug("Recieved Parameters: userID= " + osdSpec.getUserID());
+		
+		
+		RegisterServiceImpl registerServiceImpl = new RegisterServiceImpl(osdSpec);
+		
 
-		return "Success";
+		return registerServiceImpl.replyMessage();
 
 	}
 
@@ -107,16 +113,11 @@ public SchedulerRsControler(){
 //	@Produces("application/xml")
 	public SensorTypes discoverSensors(@QueryParam("userID") String userID, @QueryParam("longitude") double longitude, @QueryParam("latitude") double latitude, @QueryParam("radius") float radius) {
 
-        
-		//@QueryParam("userID") String userID, @QueryParam("longitude") double longitude, @QueryParam("latitude") double latitude, @QueryParam("radius") float radius
-//		System.out.println("Recieved Data:\n\n\n\n\n\n\n\n\n\n userID:"+userID);
 		
-		SensorTypesPopulation sensorTypesPopulation = new SensorTypesPopulation();
-		
-		logger.debug("Recieved Parameters: userID="+userID+", longitude="+longitude+", latitude="+latitude+", radius="+radius );
+		DiscoverSensorsImpl discoverSensorsImpl = new DiscoverSensorsImpl(userID, longitude, latitude, radius);
 
 		
-		return sensorTypesPopulation.getSensorTypes();
+		return discoverSensorsImpl.getSensorTypes();
 
 	}
 
