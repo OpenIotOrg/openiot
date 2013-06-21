@@ -22,11 +22,21 @@ package org.openiot.scheduler.core.api.impl;
  */
 
 
+
+
+import lsm.beans.User;
+import lsm.schema.LSMSchema;
+import lsm.server.LSMTripleStore;
+
 import org.openiot.commons.osdspec.model.OAMO;
 import org.openiot.commons.osdspec.model.OSDSpec;
 import org.openiot.commons.osdspec.model.OSMO;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.hp.hpl.jena.ontology.OntModelSpec;
+
 
 /**
  * @author Nikos Kefalakis (nkef) e-mail: nkef@ait.edu.gr
@@ -52,8 +62,9 @@ public class RegisterServiceImpl {
 		logger.debug("Recieved OSDSpec from User with userID: " + osdSpec.getUserID());
 		
 		
-		
+		//uncoment after test
 		registerService();
+//		insertUser();
 		
 	}
 
@@ -95,10 +106,33 @@ public class RegisterServiceImpl {
 	}
 	
 	
-	
-	
-	
-	
+	//helper methods
+	private void insertUser()
+	{
+		//Push data into LSM		
+		User user = new User();
+		user.setUsername("spet");
+		user.setPass("spetlsm");
+		
+		LSMTripleStore lsmStore = new LSMTripleStore();
+		lsmStore.setUser(user);
+		
+		LSMSchema myOnt  =  new  LSMSchema("savedFromProtegeCopy.owl", OntModelSpec.OWL_DL_MEM,"TURTLE");
+		LSMSchema myOntInstance = new LSMSchema();				
+				
+		org.openiot.scheduler.core.utils.lsmpa.entities.User usr = new org.openiot.scheduler.core.utils.lsmpa.entities.User(myOnt, myOntInstance,"http://lsm.deri.ie/OpenIoT/testSchema#",lsmStore);
+		usr.setName("a user");
+		usr.setEmail("user@email");
+		usr.setDescription("a user description");
+//		usr.setServiceList(serviceList);
+		
+		usr.createClassIdv();
+		usr.createPName();
+		usr.createPemail();
+		usr.createPdescription();
+		
+		logger.debug(myOntInstance.exportToTriples("TURTLE"));
+	}
 	
 	/**
 	 * @return String
