@@ -91,6 +91,8 @@ public class RegisterServiceImpl {
 				logger.debug("OSMO Name: {}",osmo.getName());
 				
 				
+				logger.debug("OSMO Query: {}",osmo.getQueryRequest().getQuery());
+					
 				
 				//keep going in....
 				
