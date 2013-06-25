@@ -25,6 +25,7 @@ import java.io.StringReader;
 
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriBuilder;
+
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.stream.StreamSource;
@@ -43,6 +44,8 @@ import org.openiot.commons.osdspec.model.OSDSpec;
 import org.openiot.commons.osdspec.model.OSMO;
 import org.openiot.commons.osdspec.model.PresentationAttr;
 import org.openiot.commons.osdspec.model.Widget;
+
+
 
 import org.openiot.commons.osdspec.utils.DeserializerUtil;
 
@@ -100,7 +103,11 @@ public class SchedulerClient {
 		}
 
 		try {
-			JAXBContext context = JAXBContext.newInstance(SensorTypes.class);
+			String sensorTypes_JAXB_CONTEXT = "org.openiot.commons.sensortypes.model";
+			
+			
+			
+			JAXBContext context = JAXBContext.newInstance(sensorTypes_JAXB_CONTEXT);
 			Unmarshaller um = context.createUnmarshaller();
 			SensorTypes sensorTypes = (SensorTypes) um.unmarshal(new StreamSource(new StringReader(str)));
 

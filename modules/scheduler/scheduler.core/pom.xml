@@ -78,8 +78,8 @@
         <version.war.plugin>2.1.1</version.war.plugin>
 
         <!-- maven-compiler-plugin -->
-        <maven.compiler.target>1.6</maven.compiler.target>
-        <maven.compiler.source>1.6</maven.compiler.source>
+        <maven.compiler.target>1.7</maven.compiler.target>
+        <maven.compiler.source>1.7</maven.compiler.source>
     </properties>
 
 
@@ -166,13 +166,23 @@
         	<groupId>org.jboss.resteasy</groupId>
         	<artifactId>resteasy-jaxrs</artifactId>
         	<version>2.3.6.Final</version>
-        </dependency>        
+        </dependency>  
+        
+     
         <dependency>
         	<groupId>org.jboss.resteasy</groupId>
         	<artifactId>resteasy-jaxb-provider</artifactId>
         	<version>2.3.6.Final</version>
         </dependency>
 
+
+		<!-- ====== org.eclipse.persistence.jaxb.JAXBContextFactory Dependencies -->
+		 
+		<dependency>
+			<groupId>org.eclipse.persistence</groupId>
+			<artifactId>eclipselink</artifactId>
+			<version>2.5.0</version>
+		</dependency>
 
         <!-- ======== jUnit Dependencies ========== -->
 
