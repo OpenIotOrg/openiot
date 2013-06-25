@@ -167,7 +167,6 @@
         	<artifactId>resteasy-jaxrs</artifactId>
         	<version>2.3.6.Final</version>
         </dependency>  
-        
      
         <dependency>
         	<groupId>org.jboss.resteasy</groupId>
@@ -234,6 +233,12 @@
 			<artifactId>lsm.api</artifactId>
 			<version>0.0.1</version>
 		</dependency>
+		
+		<dependency>
+			<groupId>dom4j</groupId>
+			<artifactId>dom4j</artifactId>
+			<version>1.6.1</version>
+		</dependency>
         
         
 		<!-- ======== LogBack Dependencies ========== -->
@@ -249,6 +254,7 @@
 			<artifactId>commons-logging</artifactId>
 			<version>1.1.2</version>
 		</dependency>
+
 
 
 
