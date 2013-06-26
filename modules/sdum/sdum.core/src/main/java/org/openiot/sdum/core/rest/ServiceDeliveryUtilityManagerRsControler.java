@@ -43,10 +43,9 @@ public class ServiceDeliveryUtilityManagerRsControler {
 	Logger logger;
 
 	public ServiceDeliveryUtilityManagerRsControler() {
+		
+		//Logger's initialization
 		logger = LoggerFactory.getLogger(ServiceDeliveryUtilityManagerRsControler.class);
-		// print Logger's internal state (not required for initialization)
-		// LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
-		// StatusPrinter.print(lc);
 	}
 
 	/**

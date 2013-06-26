@@ -1,31 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-  /**
-   * Copyright (c) 2011-2014, OpenIoT
-   *
-   * This library is free software; you can redistribute it and/or
-   * modify it either under the terms of the GNU Lesser General Public
-   * License version 2.1 as published by the Free Software Foundation
-   * (the "LGPL"). If you do not alter this
-   * notice, a recipient may use your version of this file under the LGPL.
-   *
-   * You should have received a copy of the LGPL along with this library
-   * in the file COPYING-LGPL-2.1; if not, write to the Free Software
-   * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-   *
-   * This software is distributed on an "AS IS" basis, WITHOUT WARRANTY
-   * OF ANY KIND, either express or implied. See the LGPL  for
-   * the specific language governing rights and limitations.
-   *
-   * Contact: OpenIoT mailto: info@openiot.eu
-   */
--->
+<!-- /** * Copyright (c) 2011-2014, OpenIoT * * This library is free software; 
+	you can redistribute it and/or * modify it either under the terms of the 
+	GNU Lesser General Public * License version 2.1 as published by the Free 
+	Software Foundation * (the "LGPL"). If you do not alter this * notice, a 
+	recipient may use your version of this file under the LGPL. * * You should 
+	have received a copy of the LGPL along with this library * in the file COPYING-LGPL-2.1; 
+	if not, write to the Free Software * Foundation, Inc., 59 Temple Place, Suite 
+	330, Boston, MA 02111-1307 USA * * This software is distributed on an "AS 
+	IS" basis, WITHOUT WARRANTY * OF ANY KIND, either express or implied. See 
+	the LGPL for * the specific language governing rights and limitations. * 
+	* Contact: OpenIoT mailto: info@openiot.eu */ -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-  <!-- =========================================================== -->
-  <!-- Basics -->
-  <!-- =========================================================== -->  
+	<!-- =========================================================== -->
+	<!-- Basics -->
+	<!-- =========================================================== -->
 
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.openiot</groupId>
@@ -36,58 +26,63 @@
 	<url>https://github.com/OpenIotOrg/openiot</url>
 
 
-    <licenses>
-        <license>
-            <name>GNU Lesser General Public License, version 2.1</name>
-            <distribution>repo</distribution>
-            <url>http://www.gnu.org/licenses/lgpl-2.1.html</url>
-        </license>
-    </licenses>
+	<licenses>
+		<license>
+			<name>GNU Lesser General Public License, version 2.1</name>
+			<distribution>repo</distribution>
+			<url>http://www.gnu.org/licenses/lgpl-2.1.html</url>
+		</license>
+	</licenses>
 
 
 
-  <!-- =========================================================== -->
-  <!-- Properties -->
-  <!-- =========================================================== -->
+	<!-- =========================================================== -->
+	<!-- Properties -->
+	<!-- =========================================================== -->
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-	   
-	   
-	    <!-- JBoss dependency versions -->
-        <version.jboss.maven.plugin>7.3.Final</version.jboss.maven.plugin>
-	   
-	    <!-- other plugin versions -->
-        <version.compiler.plugin>2.3.2</version.compiler.plugin>
 
-        <version.war.plugin>2.1.1</version.war.plugin>
 
-        <!-- maven-compiler-plugin -->
-        <maven.compiler.source>1.6</maven.compiler.source>
-        <maven.compiler.target>1.7</maven.compiler.target>
+		<!-- JBoss dependency versions -->
+		<version.jboss.maven.plugin>7.3.Final</version.jboss.maven.plugin>
 
-		
-		
+		<!-- other plugin versions -->
+		<version.compiler.plugin>2.3.2</version.compiler.plugin>
+
+		<version.war.plugin>2.1.1</version.war.plugin>
+
+		<!-- maven-compiler-plugin -->
+		<maven.compiler.source>1.6</maven.compiler.source>
+		<maven.compiler.target>1.7</maven.compiler.target>
+
+
+
 	</properties>
 
 
-  <!-- =========================================================== -->
-  <!-- Parent -->
-  <!-- =========================================================== -->
-             <!-- to be filled -->
+	<!-- =========================================================== -->
+	<!-- Parent -->
+	<!-- =========================================================== -->
+	<!-- to be filled -->
 
 
-  <!-- =========================================================== -->
-  <!-- Dependencies -->
-  <!-- =========================================================== -->
+	<!-- =========================================================== -->
+	<!-- Dependencies -->
+	<!-- =========================================================== -->
 
 	<dependencies>
 		<!-- OpenIoT dependencies -->
-                <dependency>
-                        <groupId>org.openiot</groupId>
-                        <artifactId>utils.commons</artifactId>
-                        <version>0.0.1</version>
-                </dependency>
+		<dependency>
+			<groupId>org.openiot</groupId>
+			<artifactId>utils.commons</artifactId>
+			<version>0.0.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.openiot</groupId>
+			<artifactId>ui.requestCommons</artifactId>
+			<version>0.0.1</version>
+		</dependency>
 
 		<!-- MISC -->
 		<dependency>
@@ -110,11 +105,6 @@
 			<groupId>org.primefaces.extensions</groupId>
 			<artifactId>resources-codemirror</artifactId>
 			<version>0.6.3</version>
-		</dependency>
-		<dependency>
-			<groupId>org.reflections</groupId>
-			<artifactId>reflections</artifactId>
-			<version>0.9.9-RC1</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-io</groupId>
@@ -154,83 +144,83 @@
 			<version>2.3.1.GA</version>
 		</dependency>
 	</dependencies>
-	
-	
-	
-  <!-- =========================================================== -->
-  <!-- Plugins -->
-  <!-- =========================================================== -->	
-	
+
+
+
+	<!-- =========================================================== -->
+	<!-- Plugins -->
+	<!-- =========================================================== -->
+
 	<build>
-	    <!-- Maven will append the version to the finalName (which is the name 
-             given to the generated war, and hence the context root) -->
+		<!-- Maven will append the version to the finalName (which is the name 
+			given to the generated war, and hence the context root) -->
 		<finalName>${project.artifactId}</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-                <version>${version.compiler.plugin}</version>
-                <configuration>
-                    <source>${maven.compiler.source}</source>
-                    <target>${maven.compiler.target}</target>
-                </configuration>
+				<version>${version.compiler.plugin}</version>
+				<configuration>
+					<source>${maven.compiler.source}</source>
+					<target>${maven.compiler.target}</target>
+				</configuration>
 			</plugin>
-			
+
 			<plugin>
-                <artifactId>maven-war-plugin</artifactId>
-                <version>${version.war.plugin}</version>
-                <configuration>
-                    <!-- Java EE 6 doesn't require web.xml, Maven needs to catch up! -->
-                    <failOnMissingWebXml>false</failOnMissingWebXml>
-                </configuration>
-            </plugin>
-			
-			
+				<artifactId>maven-war-plugin</artifactId>
+				<version>${version.war.plugin}</version>
+				<configuration>
+					<!-- Java EE 6 doesn't require web.xml, Maven needs to catch up! -->
+					<failOnMissingWebXml>false</failOnMissingWebXml>
+				</configuration>
+			</plugin>
+
+
 			<!-- The JBoss AS plugin deploys your war to a local JBoss AS container -->
-            <!-- To use, run: mvn package jboss-as:deploy -->
-            <plugin>
-                <groupId>org.jboss.as.plugins</groupId>
-                <artifactId>jboss-as-maven-plugin</artifactId>
-                <version>${version.jboss.maven.plugin}</version>
-            </plugin>
+			<!-- To use, run: mvn package jboss-as:deploy -->
+			<plugin>
+				<groupId>org.jboss.as.plugins</groupId>
+				<artifactId>jboss-as-maven-plugin</artifactId>
+				<version>${version.jboss.maven.plugin}</version>
+			</plugin>
 		</plugins>
 	</build>
-	
-	
-  <!-- =========================================================== -->
-  <!-- profiles -->
-  <!-- =========================================================== -->
 
-    <profiles>
-        <profile>
-            <!-- When built in OpenShift the 'openshift' profile will be used when 
-                invoking mvn. -->
-            <!-- Use this profile for any OpenShift specific customization your app 
-                will need. -->
-            <!-- By default that is to put the resulting archive into the 'deployments' 
-                folder. -->
-            <!-- http://maven.apache.org/guides/mini/guide-building-for-different-environments.html -->
-            <id>openshift</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <artifactId>maven-war-plugin</artifactId>
-                        <version>${version.war.plugin}</version>
-                        <configuration>
-                            <outputDirectory>deployments</outputDirectory>
-                            <warName>ROOT</warName>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
 
-    </profiles>
-	
-	
-  <!-- =========================================================== -->
-  <!-- Repositories -->
-  <!-- =========================================================== -->
+	<!-- =========================================================== -->
+	<!-- profiles -->
+	<!-- =========================================================== -->
+
+	<profiles>
+		<profile>
+			<!-- When built in OpenShift the 'openshift' profile will be used when 
+				invoking mvn. -->
+			<!-- Use this profile for any OpenShift specific customization your app 
+				will need. -->
+			<!-- By default that is to put the resulting archive into the 'deployments' 
+				folder. -->
+			<!-- http://maven.apache.org/guides/mini/guide-building-for-different-environments.html -->
+			<id>openshift</id>
+			<build>
+				<plugins>
+					<plugin>
+						<artifactId>maven-war-plugin</artifactId>
+						<version>${version.war.plugin}</version>
+						<configuration>
+							<outputDirectory>deployments</outputDirectory>
+							<warName>ROOT</warName>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+
+	</profiles>
+
+
+	<!-- =========================================================== -->
+	<!-- Repositories -->
+	<!-- =========================================================== -->
 
 	<repositories>
 		<repository>
@@ -240,5 +230,5 @@
 			<layout>default</layout>
 		</repository>
 	</repositories>
-	
+
 </project>
