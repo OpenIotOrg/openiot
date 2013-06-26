@@ -20,7 +20,9 @@ import java.io.*;
 public class SesameSPARQLClient
 {	
 	
-	Logger logger;
+	
+    //Initialize the Logger
+	final static Logger logger = LoggerFactory.getLogger(SesameSPARQLClient.class.getName()); 
 	
 	SPARQLRepository therepository = null;
 	
@@ -38,8 +40,7 @@ public class SesameSPARQLClient
 		
 		
 		
-	    //Initialize the Logger
-	    logger = LoggerFactory.getLogger(SesameSPARQLClient.class.getName()); 
+
 	    
 	    // print Logger's internal state (not required for initialization)
 	    LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory(); 

@@ -48,11 +48,8 @@ import org.slf4j.LoggerFactory;
 @Produces({ "application/xml", "application/json" })
 public class SchedulerRsControler {
 	
-	private Logger logger;
+	final static Logger logger = LoggerFactory.getLogger(SchedulerRsControler.class);
 	
-public SchedulerRsControler(){
-	logger = LoggerFactory.getLogger(SchedulerRsControler.class);
-}
     
 
 	/**

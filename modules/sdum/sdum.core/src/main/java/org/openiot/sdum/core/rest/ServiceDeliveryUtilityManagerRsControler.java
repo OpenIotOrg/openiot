@@ -40,13 +40,10 @@ import org.slf4j.LoggerFactory;
 @Produces({ "application/xml", "application/json" })
 public class ServiceDeliveryUtilityManagerRsControler {
 
-	Logger logger;
+	//Logger's initialization
+	final static Logger logger = LoggerFactory.getLogger(ServiceDeliveryUtilityManagerRsControler.class);
+	
 
-	public ServiceDeliveryUtilityManagerRsControler() {
-		
-		//Logger's initialization
-		logger = LoggerFactory.getLogger(ServiceDeliveryUtilityManagerRsControler.class);
-	}
 
 	/**
 	 * @return
@@ -75,6 +72,13 @@ public class ServiceDeliveryUtilityManagerRsControler {
 
 		return welcomeText;
 	}
+	
+	
+//	@GET
+//	@Path("/pollforreport")
+//	public String pollForReport(){
+//		
+//	}
 	
 	
 	

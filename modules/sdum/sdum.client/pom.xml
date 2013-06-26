@@ -3,14 +3,16 @@
   <!-- =========================================================== -->
   <!-- Basics -->
   <!-- =========================================================== -->  
+
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.openiot</groupId>
-  <artifactId>scheduler.client</artifactId>
+  <artifactId>sdum.client</artifactId>
   <version>0.0.1</version>
-  <packaging>jar</packaging>
-  <name>scheduler.client</name>
-  <description>The Scheduler Client</description>
-
+  <name>sdum.client</name>
+  <description>The Service Delivery and Utility Manager Client</description>
+  
+  
+  
     <licenses>
         <license>
             <name>GNU Lesser General Public License, version 2.1</name>
@@ -101,16 +103,6 @@
 			<groupId>commons-logging</groupId>
 			<artifactId>commons-logging</artifactId>
 			<version>1.1.2</version>
-		</dependency>
-
-
-
-
-		<!-- ======== Eclipse win32 SWT Dependencies (Specific for every platform) ========== -->
-		<dependency>
-		  	<groupId>org.eclipse.swt.win32.win32</groupId>
-		  	<artifactId>x86</artifactId>
- 			<version>3.3.0-v3346</version>
 		</dependency>
 
 
@@ -214,5 +206,14 @@
 
 
 
-
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
 </project>

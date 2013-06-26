@@ -47,7 +47,7 @@ public class RegisterServiceImpl {
 	
 	private OSDSpec osdSpec;
 	
-	private Logger logger;
+	final static Logger logger = LoggerFactory.getLogger(RegisterServiceImpl.class);
 	
 	private String replyMessage= "unsuccessfuly";
 	
@@ -55,7 +55,7 @@ public class RegisterServiceImpl {
 	
 	public RegisterServiceImpl (OSDSpec osdSpec){
 		
-		logger = LoggerFactory.getLogger(RegisterServiceImpl.class);
+
 		
 		this.osdSpec = osdSpec;
 		
