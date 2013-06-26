@@ -3,6 +3,9 @@ OpenIoT
 
 
 
+Under Construction
+
+
 OpenIoT - The Open Source Project for the Internet of Things
 
 The OpenIoT project is preparing it's core platform for open source develoment here. It will be announced here when the first version of the OpenIoT core platform is available. If you wish to be notified at that time, please send an email to info@openiot.eu.
@@ -26,8 +29,7 @@ OpenIoT is pertinent to a wide range of interrelated scientific and technologica
 
 
 
-[[http://angrybrownbutch.com/images/construction.gif|align=center| width=170px]]
-[[http://cultzine.files.wordpress.com/2012/10/under-constructions.gif|align=center| width=400px]]
+
 
 
 
