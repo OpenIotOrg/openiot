@@ -1,4 +1,4 @@
-OpenIoT - The Open Source Project for the Internet of Things
+OpenIoT - The Open Source Internet of Things
 ===========================================================
 
 
@@ -12,9 +12,9 @@ Under Construction
 
 The OpenIoT project is preparing it's core platform for open source develoment here. It will be announced here when the first version of the OpenIoT core platform is available. If you wish to be notified at that time, please send an email to info@openiot.eu.
 
-Read more at http://www.openiot.eu and http://gsn.sf.net
+Read more at http://www.openiot.eu
 
-
+------------------------------------------------------
 
 
 
@@ -31,9 +31,12 @@ OpenIoT is pertinent to a wide range of interrelated scientific and technologica
 
 
 
-
-
 ----------------------------
+*EU Funded project: 
+Contract No.: 287305, 
+Objective: ICT-2011.1.3, 
+Internetconnected Objects*
+
 ----------------------------
 ----------------------------
 ----------------------------
