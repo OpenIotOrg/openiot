@@ -1,0 +1,104 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions">
+
+
+<h:head>
+	<h:outputStylesheet library="css" name="style.css" target="body" />
+	<title>OpenIOT IDE</title>
+</h:head>
+
+
+<h:body>
+	<pe:layout id="page" fullPage="true">
+
+		<!-- North -->
+		<pe:layoutPane position="north" size="10%" closable="true"
+			resizable="false">
+			<p:commandLink
+				actionListener="#{layout.setNavigation('welcome.jsf')}"
+				action="home.xhtml" update=":centerpanel">
+				<p:graphicImage value="/resources/img/openiotlogo_left_IDE.jpg"
+					style="max-width: 100% !important; max-height:100% !important; margin-left: 10px" />
+			</p:commandLink>
+		</pe:layoutPane>
+
+		<!-- West -->
+		<pe:layoutPane id="westPane" position="west" size="220"
+			collapsible="true" effect="slide" resizable="false" spacingClosed="6"
+			spacingOpen="6" styleClassHeader="menuBar">
+			<f:facet name="header">Components</f:facet>
+			<h:form id="form1">
+				<p:menu
+					style="background: none; border: none; width: 190px !important; maxWidth: 100% !important">
+
+					<p:menuitem value="Request Definition Tool" update=":centerpanel"
+						icon="ui-icon-triangle-1-e"
+						actionListener="#{layout.setNavigation('http://localhost:8080/ui.requestDefinition/')}" />
+
+					<p:menuitem value="Request Definition Monitor"
+						update=":centerpanel" icon="ui-icon-triangle-1-e"
+						actionListener="#{layout.setNavigation('http://localhost:8080/ui.requestDefinition/monitoring')}" />
+
+					<p:menuitem value="IDE Monitor" update=":centerpanel"
+						icon="ui-icon-triangle-1-e"
+						actionListener="#{layout.setNavigation('http://localhost:8080/ide.core/monitoring')}" />
+
+				</p:menu>
+			</h:form>
+		</pe:layoutPane>
+
+		<!-- Center -->
+		<pe:layoutPane id="center" position="center" maskContents="true"
+			resizable="false">
+
+			<h:panelGroup id="centerpanel" layout="block">
+				<iframe id="navigation" src="#{layout.navigation}"
+					onload="hideDialog()"
+					style="position: absolute; top: 0px; left: 0px; bottom: 0px; right: 0px; width: 100%; height: 100%; border: none; margin: 0; padding: 0; overflow: hidden; z-index: 999999;">
+				</iframe>
+			</h:panelGroup>
+		</pe:layoutPane>
+
+	</pe:layout>
+
+
+	<p:ajaxStatus onstart="start()" />
+
+	<p:dialog widgetVar="statusDialog" resizable="false" showHeader="false"
+		draggable="false" closable="false">
+		<p:graphicImage value="/resources/img/progress.gif" />
+	</p:dialog>
+
+
+	<script>
+		var hasLoaded = false;
+
+		function start() {
+			hasLoaded = false;
+			setTimeout("showDialog();", 700);
+			//statusDialog.show();
+		}
+
+		function hideDialog() {
+			hasLoaded = true;
+			if (statusDialog != undefined)
+				statusDialog.hide();
+		}
+
+		function showDialog() {
+			//alert("has loaded = " + hasLoaded);
+			if (!hasLoaded)
+				statusDialog.show();
+		}
+	</script>
+
+
+</h:body>
+</html>
