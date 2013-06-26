@@ -1,5 +1,5 @@
-OpenIoT
-=======
+OpenIoT - The Open Source Project for the Internet of Things
+===========================================================
 
 
 ----------------------------
@@ -8,7 +8,7 @@ Under Construction
 ----------------------------
 
 
-OpenIoT - The Open Source Project for the Internet of Things
+
 
 The OpenIoT project is preparing it's core platform for open source develoment here. It will be announced here when the first version of the OpenIoT core platform is available. If you wish to be notified at that time, please send an email to info@openiot.eu.
 
@@ -33,7 +33,10 @@ OpenIoT is pertinent to a wide range of interrelated scientific and technologica
 
 
 
-
+----------------------------
+----------------------------
+----------------------------
+----------------------------
 
 
 <a href="http://www2.clustrmaps.com/user/06410c614"><img src="http://www2.clustrmaps.com/stats/maps-no_clusters/https---github.com-OpenIotOrg-openiot-wiki-thumb.jpg" alt="Locations of visitors to this page" />
