@@ -8,7 +8,6 @@
 	xmlns:p="http://primefaces.org/ui"
 	xmlns:pe="http://primefaces.org/ui/extensions">
 
-
 <h:head>
 	<h:outputStylesheet library="css" name="style.css" target="body" />
 	<title>OpenIOT IDE</title>
@@ -21,9 +20,9 @@
 		<!-- North -->
 		<pe:layoutPane position="north" size="10%" closable="true"
 			resizable="false">
-			<p:commandLink
-				actionListener="#{layout.setNavigation('welcome.jsf')}"
-				action="home.xhtml" update=":centerpanel">
+			<ui:param name="logoNav" value="#{nav.welcomePage}" />
+			<p:commandLink actionListener="#{layout.setNavigation(logoNav)}"
+				update=":centerpanel">
 				<p:graphicImage value="/resources/img/openiotlogo_left_IDE.jpg"
 					style="max-width: 100% !important; max-height:100% !important; margin-left: 10px" />
 			</p:commandLink>
@@ -33,24 +32,31 @@
 		<pe:layoutPane id="westPane" position="west" size="220"
 			collapsible="true" effect="slide" resizable="false" spacingClosed="6"
 			spacingOpen="6" styleClassHeader="menuBar">
-			<f:facet name="header">Components</f:facet>
+			<f:facet name="header">Menu</f:facet>
 			<h:form id="form1">
-				<p:menu
+				<p:panelMenu
 					style="background: none; border: none; width: 190px !important; maxWidth: 100% !important">
 
-					<p:menuitem value="Request Definition Tool" update=":centerpanel"
-						icon="ui-icon-triangle-1-e"
-						actionListener="#{layout.setNavigation('http://localhost:8080/ui.requestDefinition/')}" />
+					<p:submenu label="Components" style="font-size: 10px !important;">
+						<ui:param name="rqDefTool" value="#{nav.requestDefinition}" />
+						<p:menuitem value="Request Definition Tool" update=":centerpanel"
+							icon="ui-icon-triangle-1-e"
+							actionListener="#{layout.setNavigation(rqDefTool)}" />
+					</p:submenu>
 
-					<p:menuitem value="Request Definition Monitor"
-						update=":centerpanel" icon="ui-icon-triangle-1-e"
-						actionListener="#{layout.setNavigation('http://localhost:8080/ui.requestDefinition/monitoring')}" />
+					<p:submenu label="Monitors" style="font-size: 10px !important;">
+						<ui:param name="rqDefMon" value="#{nav.requestDefinitionMonitor}" />
+						<p:menuitem value="Request Definition Monitor"
+							update=":centerpanel" icon="ui-icon-triangle-1-e"
+							actionListener="#{layout.setNavigation(rqDefMon)}" />
 
-					<p:menuitem value="IDE Monitor" update=":centerpanel"
-						icon="ui-icon-triangle-1-e"
-						actionListener="#{layout.setNavigation('http://localhost:8080/ide.core/monitoring')}" />
+						<ui:param name="ideMon" value="#{nav.ideMonitor}" />
+						<p:menuitem value="IDE Monitor" update=":centerpanel"
+							icon="ui-icon-triangle-1-e"
+							actionListener="#{layout.setNavigation(ideMon)}" />
+					</p:submenu>
 
-				</p:menu>
+				</p:panelMenu>
 			</h:form>
 		</pe:layoutPane>
 

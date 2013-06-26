@@ -109,42 +109,22 @@
 
 		<!-- Import the JAX-RS API, we use provided scope as the API is included 
 			in JBoss AS 7 -->
-		<dependency>
-			<groupId>org.jboss.spec.javax.ws.rs</groupId>
-			<artifactId>jboss-jaxrs-api_1.1_spec</artifactId>
-			<scope>provided</scope>
-		</dependency>
+		<!-- <dependency> -->
+		<!-- <groupId>org.jboss.spec.javax.ws.rs</groupId> -->
+		<!-- <artifactId>jboss-jaxrs-api_1.1_spec</artifactId> -->
+		<!-- <scope>provided</scope> -->
+		<!-- </dependency> -->
 
-		<!-- Import the JPA API, we use provided scope as the API is included in 
-			JBoss AS 7 -->
-		<dependency>
-			<groupId>org.hibernate.javax.persistence</groupId>
-			<artifactId>hibernate-jpa-2.0-api</artifactId>
-			<scope>provided</scope>
-		</dependency>
 
 		<!-- Import the EJB API, we use provided scope as the API is included in 
 			JBoss AS 7 -->
-		<dependency>
-			<groupId>org.jboss.spec.javax.ejb</groupId>
-			<artifactId>jboss-ejb-api_3.1_spec</artifactId>
-			<scope>provided</scope>
-		</dependency>
+		<!-- <dependency> -->
+		<!-- <groupId>org.jboss.spec.javax.ejb</groupId> -->
+		<!-- <artifactId>jboss-ejb-api_3.1_spec</artifactId> -->
+		<!-- <scope>provided</scope> -->
+		<!-- </dependency> -->
 
-		<!-- JSR-303 (Bean Validation) Implementation -->
-		<!-- Provides portable constraints such as @Email -->
-		<!-- Hibernate Validator is shipped in JBoss AS 7 -->
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-validator</artifactId>
-			<scope>provided</scope>
-			<exclusions>
-				<exclusion>
-					<groupId>org.slf4j</groupId>
-					<artifactId>slf4j-api</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
+
 
 		<!-- Import the JSF API, we use provided scope as the API is included in 
 			JBoss AS 7 -->
@@ -158,19 +138,9 @@
 
 		<!-- Annotation processor to generate the JPA 2.0 metamodel classes for 
 			typesafe criteria queries -->
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-jpamodelgen</artifactId>
-			<scope>provided</scope>
-		</dependency>
 
 		<!-- Annotation processor that raising compilation errors whenever constraint 
 			annotations are incorrectly used. -->
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-validator-annotation-processor</artifactId>
-			<scope>provided</scope>
-		</dependency>
 
 		<!-- Needed for running tests (you may also use TestNG) -->
 		<dependency>
@@ -182,17 +152,7 @@
 		<!-- Optional, but highly recommended -->
 		<!-- Arquillian allows you to test enterprise code such as EJBs and Transactional(JTA) 
 			JPA from JUnit/TestNG -->
-		<dependency>
-			<groupId>org.jboss.arquillian.junit</groupId>
-			<artifactId>arquillian-junit-container</artifactId>
-			<scope>test</scope>
-		</dependency>
 
-		<dependency>
-			<groupId>org.jboss.arquillian.protocol</groupId>
-			<artifactId>arquillian-protocol-servlet</artifactId>
-			<scope>test</scope>
-		</dependency>
 
 		<dependency>
 			<groupId>org.primefaces</groupId>
@@ -328,10 +288,17 @@
 		</profile>
 
 	</profiles>
+<<<<<<< HEAD
 	
   <!-- =========================================================== -->
   <!-- Repositories -->
   <!-- =========================================================== -->
+=======
+
+	<!-- =========================================================== -->
+	<!-- Repositories -->
+	<!-- =========================================================== -->
+>>>>>>> 256ae9436a62407123157391956896b82262f0e5
 
 	<repositories>
 		<repository>
