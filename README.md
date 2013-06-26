@@ -32,12 +32,12 @@ OpenIoT is pertinent to a wide range of interrelated scientific and technologica
 
 
 ----------------------------
+----------------------------
 *EU Funded project: 
 Contract No.: 287305, 
 Objective: ICT-2011.1.3, 
 Internetconnected Objects*
 
-----------------------------
 ----------------------------
 ----------------------------
 
