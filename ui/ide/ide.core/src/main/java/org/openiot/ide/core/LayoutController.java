@@ -20,19 +20,24 @@ package org.openiot.ide.core;
  * Contact: OpenIoT mailto: info@openiot.eu
  */
 
-
+import java.io.IOException;
 import java.io.Serializable;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
+import java.net.URL;
+import java.util.HashMap;
+
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.SessionScoped;
+import javax.inject.Named;
 
 /**
  * @author Chris Georgoulis e-mail: cgeo@ait.edu.gr
  * 
  */
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.SessionScoped;
-import javax.inject.Named;
-
-@Named(value="layout")
+@Named("layout")
 @SessionScoped
 public class LayoutController implements Serializable {
 
@@ -40,29 +45,59 @@ public class LayoutController implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 6629499890720592580L;
-	
+
+	private HashMap<String, Boolean> map;
 
 	public LayoutController() {
 	}
-	
+
 	@PostConstruct
 	private void init() {
 		navigation = "welcome.jsf";
+		map = new HashMap<String, Boolean>();
 	}
-	
+
 	private String navigation;
 
-	
 	public String getNavigation() {
-		
+
 		return navigation;
 	}
 
 	public void setNavigation(String navigation) {
 		this.navigation = navigation;
 	}
-	
-	
-	
+
+	/**
+	 * Checks if the component exists / is Loaded in order to display the menu
+	 * link
+	 * 
+	 * @return boolean
+	 */
+	public boolean isLoaded(String url) {
+
+		Boolean b = false;
+
+		if (map.containsKey(url)) {
+			b = map.get(url);
+		} else {
+			try {
+				URL u = new URL(url);
+				HttpURLConnection huc = (HttpURLConnection) u.openConnection();
+				huc.setRequestMethod("HEAD");
+				huc.connect();
+				b = Boolean.valueOf(huc.getResponseCode() == HttpURLConnection.HTTP_OK);
+				map.put(url, b);
+			} catch (MalformedURLException e) {
+				// e.printStackTrace();
+			} catch (ProtocolException e) {
+				// e.printStackTrace();
+			} catch (IOException e) {
+				// e.printStackTrace();
+			}
+		}
+		
+		return b.booleanValue();
+	}
 
 }

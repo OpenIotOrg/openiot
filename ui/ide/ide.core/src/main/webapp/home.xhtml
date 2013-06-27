@@ -38,22 +38,44 @@
 					style="background: none; border: none; width: 190px !important; maxWidth: 100% !important">
 
 					<p:submenu label="Components" style="font-size: 10px !important;">
+
+						<!-- Request Definition Tool -->
 						<ui:param name="rqDefTool" value="#{nav.requestDefinition}" />
 						<p:menuitem value="Request Definition Tool" update=":centerpanel"
 							icon="ui-icon-triangle-1-e"
-							actionListener="#{layout.setNavigation(rqDefTool)}" />
+							actionListener="#{layout.setNavigation(rqDefTool)}"
+							rendered="#{layout.isLoaded(rqDefTool)}" />
 					</p:submenu>
 
 					<p:submenu label="Monitors" style="font-size: 10px !important;">
+
+						<!-- Request Definition Monitor -->
 						<ui:param name="rqDefMon" value="#{nav.requestDefinitionMonitor}" />
 						<p:menuitem value="Request Definition Monitor"
 							update=":centerpanel" icon="ui-icon-triangle-1-e"
-							actionListener="#{layout.setNavigation(rqDefMon)}" />
+							actionListener="#{layout.setNavigation(rqDefMon)}"
+							rendered="#{layout.isLoaded(rqDefMon)}" />
 
+						<!-- IDE Monitor -->
 						<ui:param name="ideMon" value="#{nav.ideMonitor}" />
 						<p:menuitem value="IDE Monitor" update=":centerpanel"
 							icon="ui-icon-triangle-1-e"
-							actionListener="#{layout.setNavigation(ideMon)}" />
+							actionListener="#{layout.setNavigation(ideMon)}"
+							rendered="#{layout.isLoaded(ideMon)}" />
+ 
+						<!-- SDUM Monitor -->
+						<ui:param name="sdumMon" value="#{nav.sdumMonitor}" />
+						<p:menuitem value="SDUM Monitor" update=":centerpanel"
+							icon="ui-icon-triangle-1-e"
+							actionListener="#{layout.setNavigation(sdumMon)}"
+							rendered="#{layout.isLoaded(sdumMon)}" />
+
+						<!-- Scheduler Monitor -->
+						<ui:param name="schedMon" value="#{nav.schedulerMonitor}" />
+						<p:menuitem value="Scheduler Monitor" update=":centerpanel"
+							icon="ui-icon-triangle-1-e"
+							actionListener="#{layout.setNavigation(schedMon)}"
+							rendered="#{layout.isLoaded(schedMon)}" />
 					</p:submenu>
 
 				</p:panelMenu>
@@ -81,7 +103,6 @@
 		draggable="false" closable="false">
 		<p:graphicImage value="/resources/img/progress.gif" />
 	</p:dialog>
-
 
 	<script>
 		var hasLoaded = false;
