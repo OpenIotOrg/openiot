@@ -52,7 +52,7 @@ public class LayoutController implements Serializable {
 	}
 
 	@PostConstruct
-	private void init() {
+	public void init() {
 		navigation = "welcome.jsf";
 		map = new HashMap<String, Boolean>();
 	}
@@ -76,7 +76,7 @@ public class LayoutController implements Serializable {
 	 */
 	public boolean isLoaded(String url) {
 
-		Boolean b = false;
+		Boolean b = true;
 
 		if (map.containsKey(url)) {
 			b = map.get(url);
