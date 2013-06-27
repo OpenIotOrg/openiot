@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright (c) 2011-2014, OpenIoT This library is free software; you 
+	can redistribute it and/or modify it either under the terms of the GNU Lesser 
+	General Public License version 2.1 as published by the Free Software Foundation 
+	(the "LGPL"). If you do not alter this notice, a recipient may use your version 
+	of this file under the LGPL. You should have received a copy of the LGPL 
+	along with this library in the file COPYING-LGPL-2.1; if not, write to the 
+	Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 
+	USA This software is distributed on an "AS IS" basis, WITHOUT WARRANTY OF 
+	ANY KIND, either express or implied. See the LGPL for the specific language 
+	governing rights and limitations. Contact: OpenIoT mailto: info@openiot.eu -->
+
+<!-- Author: Nikos Kefalakis (nkef@ait.edu.gr) -->
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	elementFormDefault="qualified" targetNamespace="urn:openiot:osdspec:xsd:1"
+	xmlns:osd="urn:openiot:osdspec:xsd:1" xmlns:prt="http://www.w3.org/2007/SPARQL/protocol-types#">
+
+	<xs:import namespace="http://www.w3.org/2007/SPARQL/protocol-types#" schemaLocation="sparql/protocol-types.xsd" />
+
+	<xs:element name="OSDSpec" >
+		<xs:annotation>
+			<xs:documentation>OpenIoT Service Description Specification</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element maxOccurs="unbounded" ref="osd:OAMO"/>
+			</xs:sequence>
+			<xs:attribute name="userID" use="required" type="xs:anyURI"/>
+		</xs:complexType>
+	</xs:element>	
+	
+	<xs:element name="OAMO">
+		<xs:annotation>
+			<xs:documentation>OpenIoT Application Model Object</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element minOccurs="0" maxOccurs="1" ref="osd:description" />
+				<xs:element minOccurs="0" maxOccurs="1" ref="osd:graphMeta" />
+				<xs:element maxOccurs="unbounded" ref="osd:OSMO"/>
+			</xs:sequence>
+			<xs:attribute name="id" use="required" type="xs:anyURI"/>
+			<xs:attribute name="name" type="xs:NCName" use="required"/>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="graphMeta" type="xs:string"></xs:element>
+	<xs:element name="description" type="xs:string"></xs:element>
+
+	<xs:element name="OSMO">
+		<xs:annotation>
+			<xs:documentation>OpenIoT Sensor Model Object</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element minOccurs="0" maxOccurs="1" ref="osd:description" />
+				<xs:element ref="osd:queryControls" />
+				<xs:element ref="osd:requestPresentation" />
+				<xs:element ref="prt:query-request" />
+				<xs:sequence>
+					<xs:element maxOccurs="unbounded" minOccurs="0"
+						ref="osd:dynamicAttrMaxValue" />
+				</xs:sequence>
+			</xs:sequence>
+			<xs:attribute name="id" use="required" type="xs:anyURI"/>
+			<xs:attribute name="name" type="xs:NCName" use="required"/>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="serviceID">
+		<xs:complexType>
+			<xs:sequence>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="serviceName">
+		<xs:complexType>
+			<xs:sequence>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="serviceDescription">
+		<xs:complexType>
+			<xs:sequence>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="queryControls">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="osd:QuerySchedule" />
+				<xs:element name="trigger" type="xs:anyURI" minOccurs="0" />
+				<xs:element name="initialRecordTime" type="xs:dateTime"
+					minOccurs="0" />
+				<xs:element name="reportIfEmpty" type="xs:boolean" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="QuerySchedule">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="second" type="xs:string" minOccurs="0" />
+				<xs:element name="minute" type="xs:string" minOccurs="0" />
+				<xs:element name="hour" type="xs:string" minOccurs="0" />
+				<xs:element name="dayOfMonth" type="xs:string" minOccurs="0" />
+				<xs:element name="month" type="xs:string" minOccurs="0" />
+				<xs:element name="dayOfWeek" type="xs:string" minOccurs="0" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="requestPresentation">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element maxOccurs="unbounded" ref="osd:widget" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="widget">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element maxOccurs="unbounded" ref="osd:presentationAttr" />
+			</xs:sequence>
+			<xs:attribute name="widgetID" use="required" type="xs:anyURI" />
+		</xs:complexType>
+	</xs:element>
+
+
+	<xs:element name="presentationAttr">
+		<xs:complexType>
+			<xs:attribute name="name" use="required" type="xs:string" />
+			<xs:attribute name="value" use="required" type="xs:string" />
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="dynamicAttrMaxValue">
+		<xs:annotation>
+			<xs:documentation>Maximum/Area of Interest for the defined dynamic
+				value</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="name" use="required" type="xs:string" />
+			<xs:attribute name="value" use="required" type="xs:string" />
+		</xs:complexType>
+	</xs:element>
+
+</xs:schema>

@@ -125,8 +125,6 @@
 
 
 		<!--======== OpenIoT dependencies ============-->
-
-
         <dependency>
 	        <groupId>org.openiot</groupId>
 	        <artifactId>utils.commons</artifactId>
@@ -166,13 +164,22 @@
         	<groupId>org.jboss.resteasy</groupId>
         	<artifactId>resteasy-jaxrs</artifactId>
         	<version>2.3.6.Final</version>
-        </dependency>        
+        </dependency>  
+     
         <dependency>
         	<groupId>org.jboss.resteasy</groupId>
         	<artifactId>resteasy-jaxb-provider</artifactId>
         	<version>2.3.6.Final</version>
         </dependency>
 
+
+		<!-- ====== org.eclipse.persistence.jaxb.JAXBContextFactory Dependencies -->
+		 
+		<dependency>
+			<groupId>org.eclipse.persistence</groupId>
+			<artifactId>eclipselink</artifactId>
+			<version>2.5.0</version>
+		</dependency>
 
         <!-- ======== jUnit Dependencies ========== -->
 
@@ -229,6 +236,12 @@
 			<artifactId>lsm.api</artifactId>
 			<version>0.0.1</version>
 		</dependency>
+		
+		<dependency>
+			<groupId>dom4j</groupId>
+			<artifactId>dom4j</artifactId>
+			<version>1.6.1</version>
+		</dependency>
         
         
 		<!-- ======== LogBack Dependencies ========== -->
@@ -246,6 +259,12 @@
 		</dependency>
 
 
+		<!-- ========javamelody (monitoring) dependency ==========-->
+		<dependency>
+			<groupId>net.bull.javamelody</groupId>
+			<artifactId>javamelody-core</artifactId>
+			<version>1.45.0</version>
+		</dependency>
 
 
 
@@ -297,6 +316,11 @@
         </plugins>
     </build>
 
+
+  <!-- =========================================================== -->
+  <!-- profiles -->
+  <!-- =========================================================== -->
+
     <profiles>
         <profile>
             <!-- The default profile skips all tests, though you can tune it to run 
@@ -319,11 +343,6 @@
                 </plugins>
             </build>
         </profile>
-
-
-  <!-- =========================================================== -->
-  <!-- profiles -->
-  <!-- =========================================================== -->
 
 
         <profile>

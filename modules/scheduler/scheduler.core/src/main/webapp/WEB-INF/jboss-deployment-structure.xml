@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <jboss-deployment-structure>
+<!-- Documentation: https://docs.jboss.org/author/display/AS7/Class+Loading+in+AS7#ClassLoadinginAS7-JBossDeploymentStructureFile -->
     <deployment>
         <!-- Exclusions allow you to prevent the server from automatically adding some dependencies     -->
         <exclusions>

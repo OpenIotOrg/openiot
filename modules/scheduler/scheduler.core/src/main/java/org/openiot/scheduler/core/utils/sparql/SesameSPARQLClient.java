@@ -19,6 +19,7 @@ import java.util.Set;
 import java.util.UUID;
 
 public class SesameSPARQLClient
+<<<<<<< HEAD
 {
 	private SPARQLRepository therepository = null;
 		
@@ -35,6 +36,16 @@ public class SesameSPARQLClient
 			e.printStackTrace();
 		}		
 	}
+=======
+{	
+	
+	
+    //Initialize the Logger
+	final static Logger logger = LoggerFactory.getLogger(SesameSPARQLClient.class.getName()); 
+	
+	SPARQLRepository therepository = null;
+	
+>>>>>>> a0f855027ab27c2ee9735e60106621a36e59db3c
 	public SesameSPARQLClient(String url)
 	{					
 		therepository = new SPARQLRepository(url);
@@ -46,6 +57,23 @@ public class SesameSPARQLClient
 		{			
 			e.printStackTrace();
 		}		
+<<<<<<< HEAD
+=======
+		
+		
+		
+
+	    
+	    // print Logger's internal state (not required for initialization)
+	    LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory(); 
+	    StatusPrinter.print(lc);
+	   
+	    logger.debug("Hello world Debug by Logger. From : {}",SesameSPARQLClient.class.getName());
+
+		
+		
+		
+>>>>>>> a0f855027ab27c2ee9735e60106621a36e59db3c
 	}
 	
 		

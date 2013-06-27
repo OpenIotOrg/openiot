@@ -40,14 +40,10 @@ import org.slf4j.LoggerFactory;
 @Produces({ "application/xml", "application/json" })
 public class ServiceDeliveryUtilityManagerRsControler {
 
-	Logger logger;
+	//Logger's initialization
+	final static Logger logger = LoggerFactory.getLogger(ServiceDeliveryUtilityManagerRsControler.class);
+	
 
-	public ServiceDeliveryUtilityManagerRsControler() {
-		logger = LoggerFactory.getLogger(ServiceDeliveryUtilityManagerRsControler.class);
-		// print Logger's internal state (not required for initialization)
-		// LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
-		// StatusPrinter.print(lc);
-	}
 
 	/**
 	 * @return
@@ -76,6 +72,13 @@ public class ServiceDeliveryUtilityManagerRsControler {
 
 		return welcomeText;
 	}
+	
+	
+//	@GET
+//	@Path("/pollforreport")
+//	public String pollForReport(){
+//		
+//	}
 	
 	
 	

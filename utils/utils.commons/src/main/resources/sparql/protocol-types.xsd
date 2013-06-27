@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+Please see the namespace document in this directory: namespace.html
+-->
+<xs:schema version="$Id: protocol-types.xsd,v 1.2 2007/10/17 17:17:35 eric Exp $"
+    targetNamespace="http://www.w3.org/2007/SPARQL/protocol-types#"
+    xmlns:st="http://www.w3.org/2007/SPARQL/protocol-types#"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:vbr="http://www.w3.org/2007/SPARQL/results#"
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+
+  <xs:import namespace="http://www.w3.org/2007/SPARQL/results#" 
+	      schemaLocation="result.xsd" />
+
+  <xs:import namespace="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+	      schemaLocation="rdf.xsd" />
+
+  <xs:element name="query-request">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="1" maxOccurs="1" name="query" type="xs:string">
+	       <xs:annotation>
+		      <xs:documentation>query is an xs:string constrained by the language definition,
+             http://www.w3.org/TR/rdf-sparql-query/#grammar, as "a sequence of characters in 
+             the language defined by the [SPARQL] grammar, starting with the Query production"
+           </xs:documentation>
+		    </xs:annotation>
+        </xs:element>
+        <xs:element minOccurs="0" maxOccurs="unbounded" name="default-graph-uri" type="xs:anyURI"/>
+        <xs:element minOccurs="0" maxOccurs="unbounded" name="named-graph-uri" type="xs:anyURI"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="query-result">
+    <xs:annotation>
+      <xs:documentation>The type for serializing query results, either as XML or RDF/XML.</xs:documentation>
+    </xs:annotation>
+        <xs:complexType>
+          <xs:choice>
+            <xs:element maxOccurs="1" ref="vbr:sparql"/>
+            <xs:element maxOccurs="1" ref="rdf:RDF"/>
+          </xs:choice>
+        </xs:complexType>
+    </xs:element>
+  <xs:element type="xs:string" name="fault-details">
+    <xs:annotation>
+      <xs:documentation> This element contains human-readable information about the fault returned by 
+	    the SPARQL query processing service.</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:element name="malformed-query">
+    <xs:complexType>
+      <xs:all>
+	<xs:element minOccurs="0" maxOccurs="1" ref="st:fault-details"/>
+      </xs:all>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="query-request-refused">
+    <xs:complexType>
+      <xs:all>
+        <xs:element minOccurs="0" maxOccurs="1" ref="st:fault-details"/>
+      </xs:all>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

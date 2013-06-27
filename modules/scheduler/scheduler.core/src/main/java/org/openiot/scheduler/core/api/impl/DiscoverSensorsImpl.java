@@ -392,6 +392,7 @@ public class DiscoverSensorsImpl
 	private float radius;
 	
 	private SensorTypes sensorTypes = null;
+<<<<<<< HEAD
 	private Logger logger;
 
 	public DiscoverSensorsImpl(String userID, double longitude, double latitude, float radius) 
@@ -402,6 +403,14 @@ public class DiscoverSensorsImpl
 		this.radius = radius;
 		
 		logger = LoggerFactory.getLogger(DiscoverSensorsImpl.class);
+=======
+
+	final static Logger logger = LoggerFactory.getLogger(DiscoverSensorsImpl.class);
+
+	public DiscoverSensorsImpl(String userID, double longitude, double latitude, float radius) {
+
+
+>>>>>>> a0f855027ab27c2ee9735e60106621a36e59db3c
 
 		logger.debug("Recieved Parameters: " +
 				"userID=" + userID + 
