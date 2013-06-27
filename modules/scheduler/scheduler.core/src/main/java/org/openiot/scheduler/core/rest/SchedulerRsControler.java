@@ -115,10 +115,7 @@ public SchedulerRsControler(){
 
 		
 		DiscoverSensorsImpl discoverSensorsImpl = new DiscoverSensorsImpl(userID, longitude, latitude, radius);
-
 		
 		return discoverSensorsImpl.getSensorTypes();
-
 	}
-
 }
