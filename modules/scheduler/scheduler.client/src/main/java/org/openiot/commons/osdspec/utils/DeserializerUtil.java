@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory;
 public class DeserializerUtil {
 
 	/**	logger. */
-	public static final Logger logger = LoggerFactory.getLogger(DeserializerUtil.class);
+	 final static Logger logger = LoggerFactory.getLogger(DeserializerUtil.class);
 
 	
 	/**

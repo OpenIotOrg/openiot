@@ -85,7 +85,9 @@
   <!-- =========================================================== -->
              <!-- to be filled -->
 
-
+  <!-- =========================================================== -->
+  <!-- Dependencies -->
+  <!-- =========================================================== -->
     <dependencyManagement>
         <dependencies>
             <!-- JBoss distributes a complete set of Java EE 6 APIs including a Bill 
@@ -115,7 +117,12 @@
     </dependencyManagement>
     
     <dependencies>
-
+		<!--======== OpenIoT dependencies ============-->
+        <dependency>
+	        <groupId>org.openiot</groupId>
+	        <artifactId>utils.commons</artifactId>
+	        <version>0.0.1</version>
+        </dependency>
 
 		<!-- ========  CDI API Dependencies ========== -->
         <!-- We use provided scope as the API is included in JBoss AS 7 -->
@@ -200,7 +207,27 @@
 		</dependency> 
          -->
 
-       
+		<!-- ======== LSM API Dependencies ========== -->
+
+       	<dependency>
+			<groupId>org.apache.jena</groupId>
+			<artifactId>apache-jena-libs</artifactId>
+			<version>2.10.1</version>
+			<type>pom</type>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.openiot</groupId>
+			<artifactId>lsm.api</artifactId>
+			<version>0.0.1</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>dom4j</groupId>
+			<artifactId>dom4j</artifactId>
+			<version>1.6.1</version>
+		</dependency>
+               
         
         
 		<!-- ======== LogBack Dependencies ========== -->
@@ -217,6 +244,13 @@
 			<version>1.1.2</version>
 		</dependency>
 
+
+		<!-- ========javamelody (monitoring) dependency ==========-->
+		<dependency>
+			<groupId>net.bull.javamelody</groupId>
+			<artifactId>javamelody-core</artifactId>
+			<version>1.45.0</version>
+		</dependency>
 
 
 

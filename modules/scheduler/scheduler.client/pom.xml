@@ -9,7 +9,7 @@
   <version>0.0.1</version>
   <packaging>jar</packaging>
   <name>scheduler.client</name>
-
+  <description>The Scheduler Client</description>
 
     <licenses>
         <license>

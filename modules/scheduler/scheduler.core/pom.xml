@@ -125,8 +125,6 @@
 
 
 		<!--======== OpenIoT dependencies ============-->
-
-
         <dependency>
 	        <groupId>org.openiot</groupId>
 	        <artifactId>utils.commons</artifactId>
@@ -256,7 +254,12 @@
 		</dependency>
 
 
-
+		<!-- ========javamelody (monitoring) dependency ==========-->
+		<dependency>
+			<groupId>net.bull.javamelody</groupId>
+			<artifactId>javamelody-core</artifactId>
+			<version>1.45.0</version>
+		</dependency>
 
 
 
@@ -300,6 +303,11 @@
         </plugins>
     </build>
 
+
+  <!-- =========================================================== -->
+  <!-- profiles -->
+  <!-- =========================================================== -->
+
     <profiles>
         <profile>
             <!-- The default profile skips all tests, though you can tune it to run 
@@ -322,11 +330,6 @@
                 </plugins>
             </build>
         </profile>
-
-
-  <!-- =========================================================== -->
-  <!-- profiles -->
-  <!-- =========================================================== -->
 
 
         <profile>

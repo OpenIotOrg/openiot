@@ -33,11 +33,11 @@ public class DiscoverSensorsImpl {
 
 	private SensorTypes sensorTypes = null;
 
-	private Logger logger;
+	final static Logger logger = LoggerFactory.getLogger(DiscoverSensorsImpl.class);
 
 	public DiscoverSensorsImpl(String userID, double longitude, double latitude, float radius) {
 
-		logger = LoggerFactory.getLogger(DiscoverSensorsImpl.class);
+
 
 		logger.debug("Recieved Parameters: userID=" + userID + ", longitude=" + longitude + ", latitude="
 				+ latitude + ", radius=" + radius);

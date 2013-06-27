@@ -6,6 +6,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JButton;
 import javax.swing.JPanel;
+import javax.swing.UIManager;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -22,7 +23,7 @@ public class SchedulerUserInterface extends JPanel{
 	 */
 	private static final long serialVersionUID = 1L;
 
-	private JFrame frame;
+	private JFrame frmSchedulerClient;
 	
 	private static SchedulerClient schedulerClient;
 	private JTextField osdSpecpathTextField;
@@ -37,8 +38,12 @@ public class SchedulerUserInterface extends JPanel{
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
+					// Set System L&F
+					UIManager.setLookAndFeel(
+				            UIManager.getSystemLookAndFeelClassName());
+					
 					SchedulerUserInterface window = new SchedulerUserInterface();
-					window.frame.setVisible(true);
+					window.frmSchedulerClient.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -57,40 +62,41 @@ public class SchedulerUserInterface extends JPanel{
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
-		frame = new JFrame();
-		frame.setBounds(100, 100, 450, 300);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.getContentPane().setLayout(null);
+		frmSchedulerClient = new JFrame();
+		frmSchedulerClient.setTitle("Scheduler Client");
+		frmSchedulerClient.setBounds(100, 100, 450, 300);
+		frmSchedulerClient.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frmSchedulerClient.getContentPane().setLayout(null);
 		
 		JButton btnWelcome = new JButton("Welcome");
 		btnWelcome.addActionListener(new BtnWelcomeActionListener());
 		btnWelcome.setBounds(10, 11, 136, 23);
-		frame.getContentPane().add(btnWelcome);
+		frmSchedulerClient.getContentPane().add(btnWelcome);
 		
 		JButton btnDiscoverSensors = new JButton("Discover Sensors");
 		btnDiscoverSensors.addActionListener(new BtnDiscoverSensorsActionListener());
 		btnDiscoverSensors.setBounds(10, 45, 136, 23);
-		frame.getContentPane().add(btnDiscoverSensors);
+		frmSchedulerClient.getContentPane().add(btnDiscoverSensors);
 		
 		JButton btnRegisterService = new JButton("Register Service");
 		btnRegisterService.addActionListener(new BtnRegisterServiceActionListener());
 		btnRegisterService.setBounds(10, 79, 136, 23);
-		frame.getContentPane().add(btnRegisterService);
+		frmSchedulerClient.getContentPane().add(btnRegisterService);
 		
 		JButton btnOpenOsdspec = new JButton("Open OSDSpec");
 		btnOpenOsdspec.addActionListener(new BtnOpenOsdspecActionListener());
-		btnOpenOsdspec.setBounds(10, 195, 115, 23);
-		frame.getContentPane().add(btnOpenOsdspec);
+		btnOpenOsdspec.setBounds(10, 195, 124, 23);
+		frmSchedulerClient.getContentPane().add(btnOpenOsdspec);
 		
 		osdSpecpathTextField = new JTextField();
-		osdSpecpathTextField.setBounds(135, 196, 272, 20);
-		frame.getContentPane().add(osdSpecpathTextField);
+		osdSpecpathTextField.setBounds(152, 196, 272, 20);
+		frmSchedulerClient.getContentPane().add(osdSpecpathTextField);
 		osdSpecpathTextField.setColumns(10);
 		
 		JButton btnRegisterOsdspec = new JButton("Register OSDSpec");
 		btnRegisterOsdspec.addActionListener(new BtnRegisterOsdspecActionListener());
-		btnRegisterOsdspec.setBounds(135, 228, 272, 23);
-		frame.getContentPane().add(btnRegisterOsdspec);
+		btnRegisterOsdspec.setBounds(152, 227, 272, 23);
+		frmSchedulerClient.getContentPane().add(btnRegisterOsdspec);
 	}
 	private class BtnWelcomeActionListener implements ActionListener {
 		public void actionPerformed(ActionEvent e) {

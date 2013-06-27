@@ -46,16 +46,17 @@ import org.slf4j.LoggerFactory;
 @ApplicationPath("/rest")
 public class JaxRsActivator extends Application {
 
-	public static Logger logger;
-
+	// Initialize the Logger
+	final static Logger logger = LoggerFactory.getLogger(JaxRsActivator.class.getName());
+	
+	
 	private Set<Object> singletons = new HashSet<Object>();
 	private Set<Class<?>> empty = new HashSet<Class<?>>();
 
 	public JaxRsActivator() {
 		singletons.add(new ServiceDeliveryUtilityManagerRsControler());
 
-		// Initialize the Logger
-		logger = LoggerFactory.getLogger(JaxRsActivator.class.getName());
+
 
 		// print Logger's internal state (not required for initialization)
 //		LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
