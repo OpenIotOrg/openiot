@@ -85,11 +85,17 @@
 		</dependency>
 
 		<!-- MISC -->
+		
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>3.8.1</version>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.json</groupId>
+			<artifactId>json</artifactId>
+			<version>20090211</version>
 		</dependency>
 		<dependency>
 			<groupId>org.primefaces</groupId>

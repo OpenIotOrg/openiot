@@ -21,6 +21,10 @@ package org.openiot.ui.request.commons.models;
 
 import java.io.Serializable;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.openiot.ui.request.commons.logging.LoggerService;
+
 /**
  *
  * @author Achilleas Anagnostopoulos (aanag) email: aanag@sensap.eu
@@ -50,5 +54,16 @@ public class GraphNodePosition implements Serializable {
 
     public void setY(double y) {
         this.y = y;
+    }
+    
+    public JSONObject toJSON(){
+    	JSONObject spec = new JSONObject();
+    	try{
+    		spec.put("x", x);
+    		spec.put("y", y);
+    	}catch(JSONException ex){
+    		LoggerService.log(ex);
+    	}
+    	return spec;
     }
 }

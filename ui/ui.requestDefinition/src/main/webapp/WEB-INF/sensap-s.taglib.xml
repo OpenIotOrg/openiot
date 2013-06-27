@@ -9,9 +9,9 @@
 		<description><![CDATA[Node editor based on jsPlumb]]>
 		</description>
 		<component>
-			<component-type>org.openiot.ui.requestdefinition.web.jsf.components.graph.NodeGraph
+			<component-type>org.openiot.ui.request.definition.web.jsf.components.graph.NodeGraph
 			</component-type>
-			<renderer-type>org.openiot.ui.requestdefinition.web.jsf.components.graph.NodeGraphRenderer
+			<renderer-type>org.openiot.ui.request.definition.web.jsf.components.graph.NodeGraphRenderer
 			</renderer-type>
 		</component>
 		<attribute>
@@ -54,7 +54,7 @@
 	<!-- Localization functions -->
 	<function>
 		<function-name>localizedLabel</function-name>
-		<function-class>org.openiot.ui.requestdefinition.web.util.FaceletLocalization
+		<function-class>org.openiot.ui.request.definition.web.util.FaceletLocalization
 		</function-class>
 		<function-signature>
 			java.lang.String getLocalisedMessageWithFallback(java.util.ResourceBundle, java.lang.String, java.lang.String )
@@ -62,7 +62,7 @@
 	</function>
 	<function>
 		<function-name>message0</function-name>
-		<function-class>org.openiot.ui.requestdefinition.web.util.FaceletLocalization
+		<function-class>org.openiot.ui.request.definition.web.util.FaceletLocalization
 		</function-class>
 		<function-signature>
 			java.lang.String getLocalisedMessage0(java.util.ResourceBundle, java.lang.String )
@@ -70,7 +70,7 @@
 	</function>
 	<function>
 		<function-name>message1</function-name>
-		<function-class>org.openiot.ui.requestdefinition.web.util.FaceletLocalization
+		<function-class>org.openiot.ui.request.definition.web.util.FaceletLocalization
 		</function-class>
 		<function-signature>
 			java.lang.String getLocalisedMessage1(java.util.ResourceBundle, java.lang.String, java.lang.Object )
@@ -78,7 +78,7 @@
 	</function>
 	<function>
 		<function-name>message2</function-name>
-		<function-class>org.openiot.ui.requestdefinition.web.util.FaceletLocalization
+		<function-class>org.openiot.ui.request.definition.web.util.FaceletLocalization
 		</function-class>
 		<function-signature>
 			java.lang.String getLocalisedMessage2(java.util.ResourceBundle, java.lang.String, java.lang.Object, java.lang.Object )
@@ -86,7 +86,7 @@
 	</function>
 	<function>
 		<function-name>message3</function-name>
-		<function-class>org.openiot.ui.requestdefinition.web.util.FaceletLocalization
+		<function-class>org.openiot.ui.request.definition.web.util.FaceletLocalization
 		</function-class>
 		<function-signature>
 			java.lang.String getLocalisedMessage3(java.util.ResourceBundle, java.lang.String, java.lang.Object, java.lang.Object, java.lang.Object )
@@ -94,7 +94,7 @@
 	</function>
 	<function>
 		<function-name>message4</function-name>
-		<function-class>org.openiot.ui.requestdefinition.web.util.FaceletLocalization
+		<function-class>org.openiot.ui.request.definition.web.util.FaceletLocalization
 		</function-class>
 		<function-signature>
 			java.lang.String getLocalisedMessage4(java.util.ResourceBundle, java.lang.String, java.lang.Object, java.lang.Object, java.lang.Object, java.lang.Object)
@@ -102,7 +102,7 @@
 	</function>
 	<function>
 		<function-name>message5</function-name>
-		<function-class>org.openiot.ui.requestdefinition.web.util.FaceletLocalization
+		<function-class>org.openiot.ui.request.definition.web.util.FaceletLocalization
 		</function-class>
 		<function-signature>
 			java.lang.String getLocalisedMessage5(java.util.ResourceBundle, java.lang.String, java.lang.Object, java.lang.Object, java.lang.Object, java.lang.Object, java.lang.Object )
@@ -110,7 +110,7 @@
 	</function>
 	<function>
 		<function-name>message6</function-name>
-		<function-class>org.openiot.ui.requestdefinition.web.util.FaceletLocalization
+		<function-class>org.openiot.ui.request.definition.web.util.FaceletLocalization
 		</function-class>
 		<function-signature>
 			java.lang.String getLocalisedMessage6(java.util.ResourceBundle, java.lang.String, java.lang.Object, java.lang.Object, java.lang.Object, java.lang.Object, java.lang.Object, java.lang.Object )
@@ -118,7 +118,7 @@
 	</function>
 	<function>
 		<function-name>message7</function-name>
-		<function-class>org.openiot.ui.requestdefinition.web.util.FaceletLocalization
+		<function-class>org.openiot.ui.request.definition.web.util.FaceletLocalization
 		</function-class>
 		<function-signature>
 			java.lang.String getLocalisedMessage7(java.util.ResourceBundle, java.lang.String,java.lang.Object, java.lang.Object,java.lang.Object,java.lang.Object, java.lang.Object,java.lang.Object, java.lang.Object)
@@ -126,7 +126,7 @@
 	</function>
 	<function>
 		<function-name>label1</function-name>
-		<function-class>org.openiot.ui.requestdefinition.web.util.FaceletLocalization
+		<function-class>org.openiot.ui.request.definition.web.util.FaceletLocalization
 		</function-class>
 		<function-signature>
 			java.lang.String getLabelTranslation1(java.util.ResourceBundle, java.lang.String, java.lang.String)
@@ -134,7 +134,7 @@
 	</function>
 	<function>
 		<function-name>label2</function-name>
-		<function-class>org.openiot.ui.requestdefinition.web.util.FaceletLocalization
+		<function-class>org.openiot.ui.request.definition.web.util.FaceletLocalization
 		</function-class>
 		<function-signature>
 			java.lang.String getLabelTranslation2(java.util.ResourceBundle, java.lang.String, java.lang.String, java.lang.String)

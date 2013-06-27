@@ -13,19 +13,19 @@
             <supported-locale>en</supported-locale>
         </locale-config>
         <resource-bundle>
-            <base-name>org.openiot.ui.requestdefinition.web.i18n.messages</base-name>
+            <base-name>org.openiot.ui.request.definition.web.i18n.messages</base-name>
             <var>messages</var>
         </resource-bundle>
     </application>
     <component>
-        <component-type>org.openiot.ui.requestdefinition.web.jsf.components.graph.NodeGraph</component-type>
-        <component-class>org.openiot.ui.requestdefinition.web.jsf.components.graph.NodeGraph</component-class>
+        <component-type>org.openiot.ui.request.definition.web.jsf.components.graph.NodeGraph</component-type>
+        <component-class>org.openiot.ui.request.definition.web.jsf.components.graph.NodeGraph</component-class>
     </component>
     <render-kit>
         <renderer>
-            <component-family>org.openiot.ui.requestdefinition.web.jsf.components.graph</component-family>
-            <renderer-type>org.openiot.ui.requestdefinition.web.jsf.components.graph.NodeGraphRenderer</renderer-type>
-            <renderer-class>org.openiot.ui.requestdefinition.web.jsf.components.graph.NodeGraphRenderer</renderer-class>
+            <component-family>org.openiot.ui.request.definition.web.jsf.components.graph</component-family>
+            <renderer-type>org.openiot.ui.request.definition.web.jsf.components.graph.NodeGraphRenderer</renderer-type>
+            <renderer-class>org.openiot.ui.request.definition.web.jsf.components.graph.NodeGraphRenderer</renderer-class>
         </renderer>
     </render-kit>
 </faces-config>

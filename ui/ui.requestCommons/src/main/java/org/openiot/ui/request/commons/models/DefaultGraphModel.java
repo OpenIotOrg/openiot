@@ -21,19 +21,24 @@ package org.openiot.ui.request.commons.models;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.openiot.ui.request.commons.interfaces.GraphModel;
+import org.openiot.ui.request.commons.logging.LoggerService;
 import org.openiot.ui.request.commons.nodes.base.DefaultGraphNodeConnection;
 import org.openiot.ui.request.commons.nodes.enums.EndpointType;
 import org.openiot.ui.request.commons.nodes.interfaces.GraphNode;
 import org.openiot.ui.request.commons.nodes.interfaces.GraphNodeConnection;
 import org.openiot.ui.request.commons.nodes.interfaces.GraphNodeEndpoint;
 import org.openiot.ui.request.commons.nodes.interfaces.GraphNodeEventListener;
-import org.openiot.ui.request.commons.logging.LoggerService;
 
 /**
  *
@@ -213,4 +218,43 @@ public class DefaultGraphModel implements GraphModel, Serializable {
         position.setX(newX);
         position.setY(newY);
     }
+
+	@Override
+	public JSONObject toJSON() {
+		JSONObject spec = new JSONObject();
+		try{
+			spec.put("exported",  (new Date()).getTime());
+			
+			// Encode each node
+			JSONArray nodes = new JSONArray();
+			for( GraphNode node : getNodes() ){
+				nodes.put( node.toJSON() );
+			}
+			spec.put("nodes", nodes);
+
+			// Encode node positions
+			JSONObject positions = new JSONObject();
+			for( Map.Entry<String, GraphNodePosition> entry : this.positions.entrySet() ){
+				positions.put(entry.getKey(), entry.getValue().toJSON());
+			}
+			spec.put("positions", nodes);
+			
+			// Encode node connections
+			JSONArray connections = new JSONArray();
+			for( GraphNodeConnection connection : this.connections ){
+				connections.put( connection.toJSON() );
+			}
+			spec.put("connections", nodes);
+			
+		}catch(JSONException ex){
+			LoggerService.log(ex);
+		}
+		return spec;
+	}
+
+	@Override
+	public void fromJSON(JSONObject spec) {
+		// TODO Auto-generated method stub
+		
+	}
 }

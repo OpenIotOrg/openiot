@@ -19,6 +19,7 @@
  ******************************************************************************/
 package org.openiot.ui.request.commons.nodes.interfaces;
 
+import org.json.JSONObject;
 import org.openiot.ui.request.commons.nodes.enums.AnchorType;
 import org.openiot.ui.request.commons.nodes.enums.ConnectorType;
 import org.openiot.ui.request.commons.nodes.enums.EndpointType;
@@ -87,11 +88,16 @@ public interface GraphNodeEndpoint {
     /**
      * Set user data
      */
-    public Object getUserData();
+    public String getUserData();
 
-    public void setUserData(Object data);
+    public void setUserData(String data);
 
 
     /** Return a copy of this endpoint */
     public GraphNodeEndpoint getCopy();
+    
+    /**
+     * Convert to JSON
+     */
+    public JSONObject toJSON();
 }

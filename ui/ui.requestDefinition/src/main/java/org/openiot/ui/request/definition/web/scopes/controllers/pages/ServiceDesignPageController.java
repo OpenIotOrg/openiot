@@ -38,7 +38,12 @@ import javax.xml.transform.stream.StreamSource;
 import org.jboss.resteasy.client.ClientRequest;
 import org.jboss.resteasy.client.ClientRequestFactory;
 import org.jboss.resteasy.client.ClientResponse;
+import org.json.JSONException;
 import org.openiot.commons.sensortypes.model.SensorTypes;
+import org.openiot.ui.request.commons.logging.LoggerService;
+import org.openiot.ui.request.commons.nodes.impl.sensors.GenericSensor;
+import org.openiot.ui.request.commons.nodes.interfaces.GraphNode;
+import org.openiot.ui.request.commons.nodes.validation.validators.DefaultGraphNodeValidator;
 import org.openiot.ui.request.definition.web.factory.PropertyGridFormFactory;
 import org.openiot.ui.request.definition.web.generator.SparqlGenerator;
 import org.openiot.ui.request.definition.web.jsf.components.events.NodeInsertedEvent;
@@ -47,10 +52,6 @@ import org.openiot.ui.request.definition.web.scopes.session.SessionBean;
 import org.openiot.ui.request.definition.web.scopes.session.context.dialogs.FindSensorDialogContext;
 import org.openiot.ui.request.definition.web.scopes.session.context.pages.ServiceDesignPageContext;
 import org.openiot.ui.request.definition.web.util.FaceletLocalization;
-import org.openiot.ui.request.commons.logging.LoggerService;
-import org.openiot.ui.request.commons.nodes.impl.sensors.GenericSensor;
-import org.openiot.ui.request.commons.nodes.interfaces.GraphNode;
-import org.openiot.ui.request.commons.nodes.validation.validators.DefaultGraphNodeValidator;
 
 /**
  * 
@@ -102,30 +103,30 @@ public class ServiceDesignPageController implements Serializable {
 
 		// Lookup node category
 		List<GraphNode> nodesInGroup = context.getAvailableNodesByTypeMap().get(event.getNodeGroup());
-    	if( nodesInGroup == null ){
-    		return;
-    	}
+		if (nodesInGroup == null) {
+			return;
+		}
 
-    	// Lookup node type
-    	for( GraphNode node : nodesInGroup){
-    		if( !node.getLabel().equals(event.getNodeType())){
-    			continue;
-    		}
-    		
-    		// Instanciate a copy of the node
-    		GraphNode newNode = node.getCopy();
-            context.getGraphModel().insert(newNode, event.getX(), event.getY());
-            
-    		// If we added a sensor, set the search filters into the instance
-    		if (newNode instanceof GenericSensor) {
-    			GenericSensor sensor = (GenericSensor) node;
-    			sensor.setFilterLocationLat(context.getFilterLocationLat());
-    			sensor.setFilterLocationLon(context.getFilterLocationLon());
-    			sensor.setFilterLocationRadius(context.getFilterLocationRadius());
-    		}
-    		
-    		break;
-    	}
+		// Lookup node type
+		for (GraphNode node : nodesInGroup) {
+			if (!node.getLabel().equals(event.getNodeType())) {
+				continue;
+			}
+
+			// Instanciate a copy of the node
+			GraphNode newNode = node.getCopy();
+			context.getGraphModel().insert(newNode, event.getX(), event.getY());
+
+			// If we added a sensor, set the search filters into the instance
+			if (newNode instanceof GenericSensor) {
+				GenericSensor sensor = (GenericSensor) node;
+				sensor.setFilterLocationLat(context.getFilterLocationLat());
+				sensor.setFilterLocationLon(context.getFilterLocationLon());
+				sensor.setFilterLocationRadius(context.getFilterLocationRadius());
+			}
+
+			break;
+		}
 	}
 
 	public void clearGraph() {
@@ -159,6 +160,12 @@ public class ServiceDesignPageController implements Serializable {
 		context.setGraphValidationErrors(validator.getValidationErrors());
 		context.setGraphValidationWarnings(validator.getValidationWarnings());
 
+		try {
+			System.out.println(context.getGraphModel().toJSON().toString(1));
+		} catch (JSONException ex) {
+			LoggerService.log(ex);
+		}
+
 		if (success) {
 			if (validator.getValidationWarnings().isEmpty()) {
 				SparqlGenerator generator = new SparqlGenerator(context.getGraphModel());
@@ -184,7 +191,7 @@ public class ServiceDesignPageController implements Serializable {
 
 		// Execute search and populate sensor toolbox
 		SensorTypes sensorTypes = queryMiddlewareForAvailableSensors();
-		if( sensorTypes != null ){
+		if (sensorTypes != null) {
 			context.updateAvailableSensors(sensorTypes);
 		}
 	}
@@ -227,12 +234,13 @@ public class ServiceDesignPageController implements Serializable {
 			}
 
 			responseText = response.getEntity();
-
+			
 			JAXBContext jaxbContext = JAXBContext.newInstance(SensorTypes.class);
 			Unmarshaller um = jaxbContext.createUnmarshaller();
 			SensorTypes sensorTypes = (SensorTypes) um.unmarshal(new StreamSource(new StringReader(responseText)));
 			return sensorTypes;
 		} catch (Throwable ex) {
+			ex.printStackTrace();
 			LoggerService.log(ex);
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, messages.getString("GROWL_ERROR_HEADER"), FaceletLocalization.getLocalisedMessage(messages, "UI_FIND_DIALOG_ERROR_CONNECTING_TO_DISCOVERY_SERVICE")));
 		}

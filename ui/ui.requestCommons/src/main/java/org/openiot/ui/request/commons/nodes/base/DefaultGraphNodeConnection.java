@@ -20,6 +20,10 @@
 package org.openiot.ui.request.commons.nodes.base;
 
 import java.io.Serializable;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.openiot.ui.request.commons.logging.LoggerService;
 import org.openiot.ui.request.commons.nodes.interfaces.GraphNode;
 import org.openiot.ui.request.commons.nodes.interfaces.GraphNodeConnection;
 import org.openiot.ui.request.commons.nodes.interfaces.GraphNodeEndpoint;
@@ -86,4 +90,22 @@ public class DefaultGraphNodeConnection implements GraphNodeConnection, Serializ
     public void setDestinationEndpoint(GraphNodeEndpoint destinationEndpoint) {
         this.destinationEndpoint = destinationEndpoint;
     }
+
+    public JSONObject toJSON(){
+    	JSONObject spec = new JSONObject();
+    	try{
+    		spec.put("class", this.getClass().getCanonicalName());
+    		spec.put("uid", this.getUID());
+    		spec.put("srcNode", sourceNode != null ? sourceNode.getUID() : null);
+    		spec.put("srcEndpoint", sourceEndpoint != null ? sourceEndpoint.getUID() : null);
+    		spec.put("dstNode", destinationNode != null ? destinationNode.getUID() : null);
+    		spec.put("dstEndpoint", destinationEndpoint != null ? destinationEndpoint.getUID() : null);
+    	
+    	}catch(JSONException ex){
+    		LoggerService.log(ex);
+    	}
+    	
+    	return spec;
+    }
+    
 }

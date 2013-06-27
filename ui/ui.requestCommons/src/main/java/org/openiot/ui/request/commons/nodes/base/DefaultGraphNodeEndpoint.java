@@ -20,10 +20,17 @@
 package org.openiot.ui.request.commons.nodes.base;
 
 import java.io.Serializable;
+import java.util.Map;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.openiot.ui.request.commons.logging.LoggerService;
 import org.openiot.ui.request.commons.nodes.enums.AnchorType;
 import org.openiot.ui.request.commons.nodes.enums.ConnectorType;
 import org.openiot.ui.request.commons.nodes.enums.EndpointType;
 import org.openiot.ui.request.commons.nodes.interfaces.GraphNodeEndpoint;
+import org.openiot.ui.request.commons.nodes.interfaces.GraphNodeProperty;
 
 /**
  *
@@ -40,7 +47,7 @@ public class DefaultGraphNodeEndpoint implements GraphNodeEndpoint, Serializable
     private String label;
     private String scope;
     private boolean isRequired;
-    private Object userData;
+    private String userData;
 
     public DefaultGraphNodeEndpoint() {
     }
@@ -123,14 +130,34 @@ public class DefaultGraphNodeEndpoint implements GraphNodeEndpoint, Serializable
         return copy;
     }
     
-    public Object getUserData(){
+    public String getUserData(){
         return userData;
     }
 
-    public void setUserData(Object data){
+    public void setUserData(String data){
         this.userData = data;
     }
 
+    public JSONObject toJSON(){
+		JSONObject spec = new JSONObject();
+		try{
+			spec.put("class", this.getClass().getCanonicalName());
+			spec.put("uid", getUID());
+			spec.put("type", getType().toString());
+			spec.put("anchor", getAnchor().toString());
+			spec.put("connectorType", getConnectorType().toString());
+			spec.put("maxConnections", maxConnections);
+			spec.put("label", label);
+			spec.put("scope", scope);
+			spec.put("isRequired", isRequired);
+			spec.put("userData", userData);
+			
+		}catch(JSONException ex){
+			LoggerService.log(ex);
+		}
+		return spec;
+	}
+    
     @Override
     public String toString() {
         return "[type: " + getType() + ", anchor: " + anchor + ", label: " + getLabel() + ", javaType: " + getScope() + ", required: " + isRequired() + "]";

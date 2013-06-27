@@ -22,6 +22,8 @@ package org.openiot.ui.request.commons.nodes.interfaces;
 import java.util.List;
 import java.util.Map;
 
+import org.json.JSONObject;
+
 /**
  *
  * @author Achilleas Anagnostopoulos (aanag) email: aanag@sensap.eu
@@ -68,4 +70,9 @@ public interface GraphNode {
      * Return a copy of this node
      */
     public GraphNode getCopy();
+    
+    /**
+     * Generate a JSON object describing the node
+     */
+    public JSONObject toJSON();
 }

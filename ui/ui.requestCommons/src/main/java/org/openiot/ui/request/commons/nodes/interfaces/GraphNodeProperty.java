@@ -19,6 +19,7 @@
  ******************************************************************************/
 package org.openiot.ui.request.commons.nodes.interfaces;
 
+import org.json.JSONObject;
 import org.openiot.ui.request.commons.nodes.enums.PropertyType;
 
 /**
@@ -66,4 +67,9 @@ public interface GraphNodeProperty {
      * Return a copy of the original property
      */
     public GraphNodeProperty getCopy();
+    
+    /**
+     * Convert to JSON
+     */
+    public JSONObject toJSON();
 }

@@ -20,6 +20,8 @@
 package org.openiot.ui.request.commons.interfaces;
 
 import java.util.List;
+
+import org.json.JSONObject;
 import org.openiot.ui.request.commons.models.GraphNodePosition;
 import org.openiot.ui.request.commons.nodes.interfaces.GraphNode;
 import org.openiot.ui.request.commons.nodes.interfaces.GraphNodeConnection;
@@ -64,4 +66,8 @@ public interface GraphModel {
     public GraphNodePosition lookupGraphNodePosition(String nodeUID);
 
     public void updatePosition(GraphNode graphNode, double newX, double newY);
+    
+    public JSONObject toJSON();
+    
+    public void fromJSON(JSONObject spec);
 }

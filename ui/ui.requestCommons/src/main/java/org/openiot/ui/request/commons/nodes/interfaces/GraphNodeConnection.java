@@ -19,6 +19,8 @@
  ******************************************************************************/
 package org.openiot.ui.request.commons.nodes.interfaces;
 
+import org.json.JSONObject;
+
 /**
  *
  * @author Achilleas Anagnostopoulos (aanag) email: aanag@sensap.eu
@@ -51,4 +53,9 @@ public interface GraphNodeConnection {
      * Destination endpoint
      */
     public GraphNodeEndpoint getDestinationEndpoint();
+    
+    /**
+     * Convert to JSON
+     */
+    public JSONObject toJSON();
 }

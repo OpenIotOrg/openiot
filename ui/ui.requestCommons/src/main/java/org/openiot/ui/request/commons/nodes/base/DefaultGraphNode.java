@@ -25,8 +25,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Observer;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.openiot.ui.request.commons.annotations.GraphNodeClass;
 import org.openiot.ui.request.commons.annotations.scanners.GraphNodeScanner;
+import org.openiot.ui.request.commons.logging.LoggerService;
 import org.openiot.ui.request.commons.models.ObservableMap;
 import org.openiot.ui.request.commons.nodes.interfaces.GraphNode;
 import org.openiot.ui.request.commons.nodes.interfaces.GraphNodeEndpoint;
@@ -152,6 +157,41 @@ public class DefaultGraphNode implements GraphNode, Serializable {
 
 		}
 		return copy;
+	}
+	
+	public JSONObject toJSON(){
+		JSONObject spec = new JSONObject();
+		try{
+			spec.put("class", this.getClass().getCanonicalName());
+			spec.put("uid", getUID());
+			spec.put("type", getType());
+			spec.put("label", getLabel());
+			
+			// Encode property definitions
+			JSONArray propertyDefinitions = new JSONArray();
+			for(GraphNodeProperty prop : getPropertyDefinitions() ){
+				propertyDefinitions.put(prop.toJSON());
+			}
+			spec.put("propertyDefinitions", propertyDefinitions);
+			
+			// Encode endpoint definitions
+			JSONArray endpointDefinitions = new JSONArray();
+			for(GraphNodeEndpoint endpoint : getEndpointDefinitions() ){
+				endpointDefinitions.put(endpoint.toJSON());
+			}
+			spec.put("endpointDefinitions", endpointDefinitions);
+			
+			// Encode property values 
+			JSONObject propertyValues = new JSONObject();
+			for(Map.Entry<String, Object> entry : propertyMap.entrySet() ){
+				propertyValues.put(entry.getKey(), entry.getValue());
+			}
+			spec.put("propertyValues", propertyValues);
+			
+		}catch(JSONException ex){
+			LoggerService.log(ex);
+		}
+		return spec;
 	}
 
 	@Override

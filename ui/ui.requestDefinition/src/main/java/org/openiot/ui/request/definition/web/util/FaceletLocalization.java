@@ -104,7 +104,7 @@ public class FaceletLocalization {
     public static ResourceBundle getLocalizedResourceBundle() {
         FacesContext context = FacesContext.getCurrentInstance();
         if (context != null && context.getViewRoot() != null && context.getViewRoot().getLocale() != null) {
-            return ResourceBundle.getBundle("org.openiot.ui.request.commons.web.i18n.messages", FacesContext.getCurrentInstance().getViewRoot().getLocale());
+            return ResourceBundle.getBundle("org.openiot.ui.request.definition.web.i18n.messages", FacesContext.getCurrentInstance().getViewRoot().getLocale());
         }
         return null;
     }

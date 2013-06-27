@@ -20,78 +20,105 @@
 package org.openiot.ui.request.commons.nodes.base;
 
 import java.io.Serializable;
+import java.util.Arrays;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.openiot.ui.request.commons.logging.LoggerService;
 import org.openiot.ui.request.commons.nodes.enums.PropertyType;
 import org.openiot.ui.request.commons.nodes.interfaces.GraphNodeProperty;
 
 /**
- *
+ * 
  * @author Achilleas Anagnostopoulos (aanag) email: aanag@sensap.eu
  */
-public class DefaultGraphNodeProperty implements GraphNodeProperty, Serializable {
+public class DefaultGraphNodeProperty implements GraphNodeProperty,
+		Serializable {
 	private static final long serialVersionUID = 1L;
 
-    private PropertyType type;
-    private String name;
-    private Class<?> javaType;
-    private boolean isRequired;
-    private String[] allowedValues;
+	private PropertyType type;
+	private String name;
+	private Class<?> javaType;
+	private boolean isRequired;
+	private String[] allowedValues;
 
-    public DefaultGraphNodeProperty() {
-    }
+	public DefaultGraphNodeProperty() {
+	}
 
-    public PropertyType getType() {
-        return type;
-    }
+	public PropertyType getType() {
+		return type;
+	}
 
-    public void setType(PropertyType type) {
-        this.type = type;
-    }
+	public void setType(PropertyType type) {
+		this.type = type;
+	}
 
-    public String getName() {
-        return name;
-    }
+	public String getName() {
+		return name;
+	}
 
-    public void setName(String name) {
-        this.name = name;
-    }
+	public void setName(String name) {
+		this.name = name;
+	}
 
-    public Class<?> getJavaType() {
-        return this.javaType;
-    }
+	public Class<?> getJavaType() {
+		return this.javaType;
+	}
 
-    public void setJavaType(Class<?> javaType) {
-        this.javaType = javaType;
-    }
+	public void setJavaType(Class<?> javaType) {
+		this.javaType = javaType;
+	}
 
-    public String[] getAllowedValues() {
-        return allowedValues;
-    }
+	public String[] getAllowedValues() {
+		return allowedValues;
+	}
 
-    public void setAllowedValues(String[] allowedValues) {
-        this.allowedValues = allowedValues;
-    }
+	public void setAllowedValues(String[] allowedValues) {
+		this.allowedValues = allowedValues;
+	}
 
-    public boolean isRequired() {
-        return isRequired;
-    }
+	public boolean isRequired() {
+		return isRequired;
+	}
 
-    public void setRequired(boolean required) {
-        this.isRequired = required;
-    }
-    
-    public GraphNodeProperty getCopy(){
-    	DefaultGraphNodeProperty copy = new DefaultGraphNodeProperty();
-    	copy.setAllowedValues(allowedValues);
-    	copy.setJavaType(javaType);
-    	copy.setName(name);
-    	copy.setRequired(isRequired);
-    	copy.setType(type);
-    	
-    	return copy;
-    }
+	public void setRequired(boolean required) {
+		this.isRequired = required;
+	}
 
-    @Override
-    public String toString() {
-        return "[type: " + getType() + ", name: " + getName() + ", javaType: " + getJavaType() + ", required: " + isRequired() + "]";
-    }
+	public GraphNodeProperty getCopy() {
+		DefaultGraphNodeProperty copy = new DefaultGraphNodeProperty();
+		copy.setAllowedValues(allowedValues);
+		copy.setJavaType(javaType);
+		copy.setName(name);
+		copy.setRequired(isRequired);
+		copy.setType(type);
+
+		return copy;
+	}
+
+	public JSONObject toJSON() {
+		JSONObject spec = new JSONObject();
+		try {
+			spec.put("class", this.getClass().getCanonicalName());
+			spec.put("type", getType().toString());
+			spec.put("name", getName());
+			spec.put("javaClass", javaType.getCanonicalName());
+			spec.put("isRequired", isRequired());
+			if (allowedValues != null) {
+				JSONArray values = new JSONArray();
+				values.put(Arrays.asList(allowedValues));
+				spec.put("allowedValues", values);
+			}
+		} catch (JSONException ex) {
+			LoggerService.log(ex);
+		}
+		return spec;
+	}
+
+	@Override
+	public String toString() {
+		return "[type: " + getType() + ", name: " + getName() + ", javaType: "
+				+ getJavaType() + ", required: " + isRequired() + "]";
+	}
 }
