@@ -61,6 +61,7 @@
 
     <xs:sequence>
       <xs:element minOccurs="0" maxOccurs="1" ref="osd:description"/>
+      <xs:element minOccurs="0" maxOccurs="1" ref="osd:graphMeta"/>
       <xs:element maxOccurs="unbounded" ref="osd:OSMO"> </xs:element>
     </xs:sequence>
     <xs:attribute name="id" use="required" type="xs:anyURI"/>
@@ -68,7 +69,7 @@
 
   </xs:complexType>
 
-
+  <xs:element name="graphMeta" type="xs:string"> </xs:element>
 
   <xs:element name="description" type="xs:string"> </xs:element>
 
