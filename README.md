@@ -1,5 +1,11 @@
-OpenIoT - The Open Source Internet of Things
-===========================================================
+<DIV ALIGN=CENTER>
+OpenIoT
+=======
+The Open Source Internet of Things
+----------------------------------
+</DIV>
+
+
 
 
 ----------------------------
