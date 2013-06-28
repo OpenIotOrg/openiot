@@ -7,7 +7,7 @@
  xsi:schemaLocation="urn:openiot:osdspec:xsd:1 file:/C:/Development/Eclipse_Worksp/Eclipse_Worksp4.2.2/OpenIoT/GitHub/ait-develop/openiot/utils/utils.commons/src/main/resources/OSDSpec.xsd" userID="nodeID://b46876">
     <osd:OAMO id="http://www.oxygenxml.com/" name="name0">
         <osd:description>description0</osd:description>
-        <osd:graphMeta>graphMeta0</osd:graphMeta>
+        <osd:graphMeta>><![CDATA[graphMeta0]]></osd:graphMeta>
         <osd:OSMO name="name1">
             <osd:description>description1</osd:description>
             <osd:queryControls>
@@ -29,7 +29,7 @@
                 </osd:widget>
             </osd:requestPresentation>
             <prt:query-request>
-                <query>SELECT * FROM openiot WHERE {?s ?p ?o}</query>
+                <query><![CDATA[SELECT * FROM <peniot> WHERE {?s ?p ?o}]]></query>
                 <default-graph-uri>http://www.oxygenxml.com/</default-graph-uri>
                 <named-graph-uri>http://www.oxygenxml.com/</named-graph-uri>
             </prt:query-request>
