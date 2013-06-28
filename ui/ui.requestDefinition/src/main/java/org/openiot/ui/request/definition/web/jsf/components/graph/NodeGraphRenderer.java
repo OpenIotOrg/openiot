@@ -21,17 +21,18 @@ package org.openiot.ui.request.definition.web.jsf.components.graph;
 
 import java.io.IOException;
 import java.util.ResourceBundle;
+
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 
-import org.openiot.ui.request.definition.web.util.FaceletLocalization;
+import org.openiot.ui.request.commons.interfaces.GraphModel;
+import org.openiot.ui.request.commons.models.GraphNodePosition;
 import org.openiot.ui.request.commons.nodes.enums.EndpointType;
 import org.openiot.ui.request.commons.nodes.interfaces.GraphNode;
 import org.openiot.ui.request.commons.nodes.interfaces.GraphNodeConnection;
 import org.openiot.ui.request.commons.nodes.interfaces.GraphNodeEndpoint;
-import org.openiot.ui.request.commons.interfaces.GraphModel;
-import org.openiot.ui.request.commons.models.GraphNodePosition;
+import org.openiot.ui.request.definition.web.util.FaceletLocalization;
 import org.primefaces.renderkit.CoreRenderer;
 
 /**

@@ -26,6 +26,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
+
 import javax.el.ValueExpression;
 import javax.faces.application.ResourceDependencies;
 import javax.faces.application.ResourceDependency;
@@ -36,12 +37,12 @@ import javax.faces.context.FacesContext;
 import javax.faces.event.AjaxBehaviorEvent;
 import javax.faces.event.FacesEvent;
 
-import org.openiot.ui.request.definition.web.jsf.components.events.NodeInsertedEvent;
+import org.openiot.ui.request.commons.interfaces.GraphModel;
+import org.openiot.ui.request.commons.logging.LoggerService;
 import org.openiot.ui.request.commons.nodes.interfaces.GraphNode;
 import org.openiot.ui.request.commons.nodes.interfaces.GraphNodeConnection;
 import org.openiot.ui.request.commons.nodes.interfaces.GraphNodeEndpoint;
-import org.openiot.ui.request.commons.interfaces.GraphModel;
-import org.openiot.ui.request.commons.logging.LoggerService;
+import org.openiot.ui.request.definition.web.jsf.components.events.NodeInsertedEvent;
 import org.primefaces.component.api.Widget;
 import org.primefaces.util.Constants;
 
@@ -57,10 +58,10 @@ import org.primefaces.util.Constants;
     @ResourceDependency(library = "node-graph", name = "node-graph.css"),})
 public class NodeGraph extends UIComponentBase implements Widget, ClientBehaviorHolder {
 
-    public static final String COMPONENT_TYPE = "org.openiot.ui.request.commons.web.jsf.components.graph.NodeGraph";
-    public static final String COMPONENT_FAMILY = "org.openiot.ui.request.commons.web.jsf.components.graph";
-    private static final String DEFAULT_RENDERER = "org.openiot.ui.request.commons.web.jsf.components.graph.NodeGraphRenderer";
-    private static final String OPTIMIZED_PACKAGE = "org.openiot.ui.request.commons.web.jsf.components.graph.";
+    public static final String COMPONENT_TYPE = "org.openiot.ui.request.definition.web.jsf.components.graph.NodeGraph";
+    public static final String COMPONENT_FAMILY = "org.openiot.ui.request.definition.web.jsf.components.graph";
+    private static final String DEFAULT_RENDERER = "org.openiot.ui.request.definition.web.jsf.components.graph.NodeGraphRenderer";
+    private static final String OPTIMIZED_PACKAGE = "org.openiot.ui.request.definition.web.jsf.components.graph.";
     private static final Collection<String> EVENT_NAMES = Collections.unmodifiableCollection(
             Arrays.asList("create", "select", "deselect", "move", "delete", "disconnect", "connect"));
 

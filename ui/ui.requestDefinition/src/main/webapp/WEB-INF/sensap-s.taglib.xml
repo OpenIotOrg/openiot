@@ -26,7 +26,7 @@
 			</description>
 			<name>model</name>
 			<required>true</required>
-			<type>org.openiot.sensap.design.nodes.models.GraphModel</type>
+			<type>org.openiot.ui.request.commons.interfaces.GraphModel</type>
 		</attribute>
 		<attribute>
 			<description><![CDATA[Name of the client side widget.]]>

@@ -60,8 +60,21 @@ public class SparqlGenerator extends AbstractGraphNodeVisitor {
     private Set<String> visitedSensorTypes;
     private Stack<GraphNodeConnection> visitedConnectionGraphStack;
 
-    public SparqlGenerator(GraphModel model) {
-        this.model = model;
+    public SparqlGenerator() {
+    }
+
+    public String generateCode(GraphModel model, GraphNode visualizerNode) {
+    	this.model = model;
+    	reset();
+        
+    	// Generate code for passed node
+        visitViaReflection(visualizerNode);
+        
+        // Return output
+        return this.generatedCode;
+    }
+    
+    private void reset(){
         this.generatedCode = "";
         this.visitedConnectionGraphStack = new Stack<GraphNodeConnection>();
         this.visitedSensorTypes = new LinkedHashSet<String>();
@@ -69,28 +82,11 @@ public class SparqlGenerator extends AbstractGraphNodeVisitor {
         this.selectSubQueriesPerSensorPerAttribute = new LinkedHashMap<String, Map<String, Set<String>>>();
         this.whereSubQueriesPerSensorPerAttribute = new LinkedHashMap<String, Map<String, Set<String>>>();
     }
-
-    public String generateCode() {
-        this.generatedCode = "";
-
-        // Visit all 'visualization' nodes once
-        for (GraphNode node : model.getNodes()) {
-            if (node.getType().equals("VISUALIZER")) {
-                visitViaReflection(node);
-            }
-        }
-
-        return this.generatedCode;
-    }
-
-    public String getGeneratedCode() {
-        return generatedCode;
-    }
     
     private void beginService(GraphNode visNode) {
         this.visitedConnectionGraphStack.clear();        
 
-        this.generatedCommentCode = "# Service with visualization widget of type '" + visNode.getType() + "' and sensors of type:";
+        this.generatedCommentCode = "# Service with visualization widget of type '" + visNode.getLabel() + "' and sensors of type:";
         this.selectQueryFields.clear();
         this.selectSubQueriesPerSensorPerAttribute.clear();
         this.visitedSensorTypes.clear();

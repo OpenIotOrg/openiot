@@ -12,55 +12,103 @@
 	<h:head>
 		<meta content='text/html; charset=UTF-8' http-equiv="Content-Type" />
 		<h:outputStylesheet library="css" name="core.css" />
+		<h:outputScript library="js" name="core.js" />
 		<script src="http://maps.google.com/maps/api/js?sensor=false"
 			type="text/javascript"></script>
 		<title>#{messages.UI_SERVICE_DESIGNER_TITLE}</title>
 	</h:head>
 
 	<h:body styleClass="service-designer" id="body">
-		<p:growl autoUpdate="true" life="2000" showDetail="true"
-			escape="false" showSummary="true" />
+		<h:form id="util">
+			<p:growl widgetVar="growl" escape="false" autoUpdate="true"
+				showSummary="false" showDetail="true" sticky="true"
+				severity="error,fatal" />
+			<p:growl widgetVar="growl2" escape="false" autoUpdate="true"
+				showSummary="false" showDetail="true" severity="info, warn"
+				life="3000" />
+			<p:poll process="@this" update="@this" interval="600"
+				listener="#{serviceDesignPageController.keepAlivePing}" />
+		</h:form>
 
 		<pe:blockUI widgetVar="windowBlockUI"
 			targetSelector=".service-designer">
-			<span class="icon-loader-big"></span>
+			<span class="ui-icon-loader-big"></span>
 		</pe:blockUI>
 
 
-		<p:layout id="pageLayout" fullPage="true">
+		<pe:layout id="pageLayout" stateCookie="true" fullPage="true">
 
 			<!-- Menubar -->
-			<p:layoutUnit position="north" size="42"
-				styleClass="no-border no-overflow">
-				<p:toolbar id="menubar">
-					<p:toolbarGroup align="left">
-						<p:button value="#{messages.UI_MENUBAR_FIND_SENSORS}"
-							onclick="findSensorDialog.show();return false;" />
-					</p:toolbarGroup>
-					<p:toolbarGroup align="right">
+			<pe:layoutPane position="north" size="42" closable="false"
+				resizable="false"
+				styleClassContent="no-border menubar-layout-container">
+				<h:form id="menubar">
+					<p:menubar autoDisplay="false">
+						<p:submenu label="Workspace" icon="ui-icon-document">
+							<p:menuitem value="#{messages.UI_MENUBAR_NEW}"
+								icon="ui-icon-plus" />
+							<p:menuitem value="#{messages.UI_MENUBAR_OPEN}" disabled="true"
+								icon="ui-icon-plus" />
 
-						<p:button value="#{messages.UI_MENUBAR_CLEAR}"
-							onclick="confirmClearGraph.show();return false;" />
+							<p:separator />
 
-						<p:commandButton value="#{messages.UI_MENUBAR_VALIDATE}"
-							process="@this"
-							actionListener="#{serviceDesignPageController.validateGraph()}"
-							oncomplete="setTimeout(function(){if(codeMirror &amp;&amp; codeMirror.jq.is(':visible')){codeMirror.initialize();}},10);"
-							update=":consoleForm" style="margin-left:10px;" />
+							<p:menuitem
+								disabled="#{empty serviceDesignPageController.context.graphModel}"
+								value="#{messages.UI_MENUBAR_CLEAR}" icon="ui-icon-trash"
+								onclick="confirmClearGraph.show();return false;" />
 
-						<p:commandButton value="#{messages.UI_MENUBAR_COMPILE}"
-							process="@this"
-							actionListener="#{serviceDesignPageController.compileGraph()}"
-							oncomplete="setTimeout(function(){if(codeMirror &amp;&amp; codeMirror.jq.is(':visible')){codeMirror.initialize();}},10);"
-							update=":consoleForm" style="margin-left:10px;" />
+							<p:menuitem
+								disabled="#{empty serviceDesignPageController.context.graphModel}"
+								value="#{messages.UI_MENUBAR_VALIDATE}" icon="ui-icon-lightbulb"
+								process="@this" onclick="windowBlockUI.block();"
+								actionListener="#{serviceDesignPageController.validateGraph()}"
+								oncomplete="windowBlockUI.unblock();setTimeout(function(){if(codeMirror &amp;&amp; codeMirror.jq.is(':visible')){codeMirror.initialize();}},10);"
+								update=":consoleForm" />
 
-					</p:toolbarGroup>
-				</p:toolbar>
-			</p:layoutUnit>
+							<p:menuitem
+								disabled="#{empty serviceDesignPageController.context.graphModel}"
+								value="#{messages.UI_MENUBAR_COMPILE}" icon="ui-icon-gear"
+								process="@this" onclick="windowBlockUI.block();"
+								actionListener="#{serviceDesignPageController.compileGraph()}"
+								oncomplete="windowBlockUI.unblock();setTimeout(function(){if(codeMirror &amp;&amp; codeMirror.jq.is(':visible')){codeMirror.initialize();}},10);"
+								update=":consoleForm" />
+
+							<p:menuitem
+								disabled="#{empty serviceDesignPageController.context.graphModel}"
+								value="#{messages.UI_MENUBAR_SAVE}" icon="ui-icon-disk"
+								process="@this" onclick="windowBlockUI.block();"
+								actionListener="#{serviceDesignPageController.saveGraph()}"
+								oncomplete="windowBlockUI.unblock();setTimeout(function(){if(codeMirror &amp;&amp; codeMirror.jq.is(':visible')){codeMirror.initialize();}},10);"
+								update=":consoleForm" />
+
+							<p:separator />
+
+							<p:menuitem
+								disabled="#{empty serviceDesignPageController.context.graphModel}"
+								value="#{messages.UI_MENUBAR_EXPORT}"
+								icon="ui-icon-circle-arrow-e" />
+
+							<p:menuitem
+								disabled="#{empty serviceDesignPageController.context.graphModel}"
+								value="#{messages.UI_MENUBAR_IMPORT}"
+								icon="ui-icon-circle-arrow-w" />
+
+						</p:submenu>
+					</p:menubar>
+				</h:form>
+			</pe:layoutPane>
 
 			<!-- Toolbox -->
-			<p:layoutUnit position="west" size="175"
-				header="#{messages.UI_TOOLBOX}">
+			<pe:layoutPane position="west" size="175" closable="false">
+				<f:facet name="header">
+					#{messages.UI_TOOLBOX}
+					<div class="ui-panel-titlebar-icon ui-corner-all ui-state-default"
+						style="display: inline-block; float: right; cursor: pointer;"
+						onclick="findSensorDialog.show();return false;">
+						<h:outputText styleClass="ui-icon ui-icon-search" />
+					</div>
+				</f:facet>
+
 				<h:form id="toolboxForm">
 					<p:accordionPanel multiple="true" styleClass="toolbox">
 						<c:forEach var="type"
@@ -86,195 +134,190 @@
 						</c:forEach>
 					</p:accordionPanel>
 				</h:form>
-			</p:layoutUnit>
+			</pe:layoutPane>
 
-			<p:layoutUnit position="center" styleClass="no-border">
+			<pe:layoutPane position="center" styleClass="no-border">
 
 				<!-- Nested layout:
                          - Node graph canvas (center)
                          - Property editor (east)
                          - Problems/Code viewer (south)
                     -->
-				<p:layout>
+				<!-- Main canvas -->
+				<pe:layoutPane position="center">
+					<h:form id="nodeGraphForm" styleClass="vbox-wrap">
+						<s:nodeGraph id="nodeGraph"
+							model="#{serviceDesignPageController.context.graphModel}"
+							widgetVar="nodeGraph" styleClass="vbox-flex"
+							translations="#{messages}">
+							<p:ajax event="select"
+								listener="#{serviceDesignPageController.onGraphNodeSelected()}"
+								process="@this" update=":propertyGridForm" />
+							<p:ajax event="deselect" process="@this"
+								update=":propertyGridForm" />
+							<p:ajax event="move" process="@this" />
+							<p:ajax event="connect" process="@this" update="@this" />
+							<p:ajax event="disconnect" process="@this" update="@this" />
+							<p:ajax event="create" process="@this" update="@this"
+								listener="#{serviceDesignPageController.onGraphNodeInserted}" />
+							<p:ajax event="delete" process="@this"
+								update="@this,:propertyGridForm" />
+						</s:nodeGraph>
+						<p:hotkey bind="del" handler="confirmDeleteNode.show();" />
+					</h:form>
+				</pe:layoutPane>
 
-					<!-- Main canvas -->
-					<p:layoutUnit position="center">
-						<h:form id="nodeGraphForm" styleClass="vbox-wrap">
-							<s:nodeGraph id="nodeGraph"
-								model="#{serviceDesignPageController.context.graphModel}"
-								widgetVar="nodeGraph" styleClass="vbox-flex"
-								translations="#{messages}">
-								<p:ajax event="select"
-									listener="#{serviceDesignPageController.onGraphNodeSelected()}"
-									process="@this" update=":propertyGridForm" />
-								<p:ajax event="deselect" process="@this"
-									update=":propertyGridForm" />
-								<p:ajax event="move" process="@this" />
-								<p:ajax event="connect" process="@this" update="@this" />
-								<p:ajax event="disconnect" process="@this" update="@this" />
-								<p:ajax event="create" process="@this" update="@this"
-									listener="#{serviceDesignPageController.onGraphNodeInserted}" />
-								<p:ajax event="delete" process="@this"
-									update="@this,:propertyGridForm" />
-							</s:nodeGraph>
-							<p:hotkey bind="del" handler="confirmDeleteNode.show();" />
-						</h:form>
-					</p:layoutUnit>
+				<!-- Property grid -->
+				<pe:layoutPane position="east" size="350"
+					header="#{messages.UI_PROPERTY_GRID}" collapsible="true"
+					resizable="true">
+					<h:form id="propertyGridForm">
+						<p:outputPanel
+							rendered="#{empty serviceDesignPageController.context.graphModel.selectedNode}"
+							styleClass="ui-empty-message">
+							<p:outputLabel
+								value="#{messages.UI_PROPERTY_GRID_NO_NODE_SELECTED}" />
+						</p:outputPanel>
 
-					<!-- Property grid -->
-					<p:layoutUnit position="east" size="350"
-						header="#{messages.UI_PROPERTY_GRID}" collapsible="true"
-						resizable="true">
-						<h:form id="propertyGridForm">
-							<p:outputPanel
-								rendered="#{empty serviceDesignPageController.context.graphModel.selectedNode}"
-								styleClass="ui-empty-message">
-								<p:outputLabel
-									value="#{messages.UI_PROPERTY_GRID_NO_NODE_SELECTED}" />
-							</p:outputPanel>
-
-							<p:outputPanel
-								rendered="#{(!empty serviceDesignPageController.context.graphModel.selectedNode) and 
+						<p:outputPanel
+							rendered="#{(!empty serviceDesignPageController.context.graphModel.selectedNode) and 
                                                            (serviceDesignPageController.context.graphModel.selectedNode.propertyDefinitions.isEmpty())}"
-								styleClass="ui-empty-message">
-								<p:outputLabel
-									value="#{messages.UI_PROPERTY_GRID_NO_PROPERTIES}" />
-							</p:outputPanel>
+							styleClass="ui-empty-message">
+							<p:outputLabel value="#{messages.UI_PROPERTY_GRID_NO_PROPERTIES}" />
+						</p:outputPanel>
 
-							<pe:dynaForm
-								rendered="#{(!empty serviceDesignPageController.context.graphModel.selectedNode) and 
+						<pe:dynaForm
+							rendered="#{(!empty serviceDesignPageController.context.graphModel.selectedNode) and 
                                                          (!serviceDesignPageController.context.graphModel.selectedNode.propertyDefinitions.isEmpty())}"
-								value="#{serviceDesignPageController.context.propertyEditorModel}"
-								var="control" styleClass="table table-striped"
-								style="width:100%">
+							value="#{serviceDesignPageController.context.propertyEditorModel}"
+							var="control" styleClass="table table-striped" style="width:100%">
 
-								<pe:dynaFormControl type="StringList" for="stringList">
-									<p:selectOneMenu id="stringList"
-										value="#{serviceDesignPageController.context.graphModel.selectedNode.propertyValueMap[control.valueKey]}"
-										required="#{control.required}">
-										<p:ajax event="change" process="@this"
-											update=":nodeGraphForm:nodeGraph" />
-										<f:selectItem itemLabel="--" itemValue="#{null}" />
-										<f:selectItems value="#{control.allowedValues}" />
-									</p:selectOneMenu>
-								</pe:dynaFormControl>
-								<pe:dynaFormControl type="Date" for="date">
-									<p:calendar id="date"
-										value="#{serviceDesignPageController.context.graphModel.selectedNode.propertyValueMap[control.valueKey]}"
-										required="#{control.required}" showOn="button"
-										pattern="MM/dd/yyyy HH:mm">
-										<p:ajax event="change" process="@this"
-											update=":nodeGraphForm:nodeGraph" />
-									</p:calendar>
-								</pe:dynaFormControl>
-								<pe:dynaFormControl type="String" for="string">
-									<p:inputText id="string"
-										value="#{serviceDesignPageController.context.graphModel.selectedNode.propertyValueMap[control.valueKey]}"
-										required="#{control.required}">
-										<p:ajax event="change" process="@this"
-											update=":nodeGraphForm:nodeGraph" />
-									</p:inputText>
-								</pe:dynaFormControl>
-								<pe:dynaFormControl type="Number" for="number">
-									<pe:inputNumber id="number"
-										value="#{serviceDesignPageController.context.graphModel.selectedNode.propertyValueMap[control.valueKey]}"
-										required="#{control.required}">
-										<p:ajax event="change" process="@this"
-											update=":nodeGraphForm:nodeGraph" />
-									</pe:inputNumber>
-								</pe:dynaFormControl>
-								<pe:dynaFormControl type="Long" for="long">
-									<pe:inputNumber id="long"
-										value="#{serviceDesignPageController.context.graphModel.selectedNode.propertyValueMap[control.valueKey]}"
-										required="#{control.required}" decimalPlaces="0">
-										<p:ajax event="change" process="@this"
-											update=":nodeGraphForm:nodeGraph" />
-									</pe:inputNumber>
-								</pe:dynaFormControl>
-							</pe:dynaForm>
-						</h:form>
-					</p:layoutUnit>
+							<pe:dynaFormControl type="StringList" for="stringList">
+								<p:selectOneMenu id="stringList"
+									value="#{serviceDesignPageController.context.graphModel.selectedNode.propertyValueMap[control.valueKey]}"
+									required="#{control.required}">
+									<p:ajax event="change" process="@this"
+										update=":nodeGraphForm:nodeGraph" />
+									<f:selectItem itemLabel="--" itemValue="#{null}" />
+									<f:selectItems value="#{control.allowedValues}" />
+								</p:selectOneMenu>
+							</pe:dynaFormControl>
+							<pe:dynaFormControl type="Date" for="date">
+								<p:calendar id="date"
+									value="#{serviceDesignPageController.context.graphModel.selectedNode.propertyValueMap[control.valueKey]}"
+									required="#{control.required}" showOn="button"
+									pattern="MM/dd/yyyy HH:mm">
+									<p:ajax event="change" process="@this"
+										update=":nodeGraphForm:nodeGraph" />
+								</p:calendar>
+							</pe:dynaFormControl>
+							<pe:dynaFormControl type="String" for="string">
+								<p:inputText id="string"
+									value="#{serviceDesignPageController.context.graphModel.selectedNode.propertyValueMap[control.valueKey]}"
+									required="#{control.required}">
+									<p:ajax event="change" process="@this"
+										update=":nodeGraphForm:nodeGraph" />
+								</p:inputText>
+							</pe:dynaFormControl>
+							<pe:dynaFormControl type="Number" for="number">
+								<pe:inputNumber id="number"
+									value="#{serviceDesignPageController.context.graphModel.selectedNode.propertyValueMap[control.valueKey]}"
+									required="#{control.required}">
+									<p:ajax event="change" process="@this"
+										update=":nodeGraphForm:nodeGraph" />
+								</pe:inputNumber>
+							</pe:dynaFormControl>
+							<pe:dynaFormControl type="Long" for="long">
+								<pe:inputNumber id="long"
+									value="#{serviceDesignPageController.context.graphModel.selectedNode.propertyValueMap[control.valueKey]}"
+									required="#{control.required}" decimalPlaces="0">
+									<p:ajax event="change" process="@this"
+										update=":nodeGraphForm:nodeGraph" />
+								</pe:inputNumber>
+							</pe:dynaFormControl>
+						</pe:dynaForm>
+					</h:form>
+				</pe:layoutPane>
 
-					<p:layoutUnit position="south" size="250"
-						header="#{messages.UI_CONSOLE}" collapsible="true"
-						resizable="true" styleClass="no-border">
+				<pe:layoutPane position="south" size="250"
+					header="#{messages.UI_CONSOLE}" collapsible="true" resizable="true"
+					styleClass="no-border">
 
-						<h:form id="consoleForm" styleClass="vbox-wrap">
-							<p:tabView styleClass="vbox-wrap vbox-flex" dynamic="false"
-								cache="false"
-								activeIndex="#{serviceDesignPageController.context.selectedConsoleTabIndex}">
+					<h:form id="consoleForm" styleClass="vbox-wrap">
+						<p:tabView styleClass="vbox-wrap vbox-flex" dynamic="false"
+							cache="false"
+							activeIndex="#{serviceDesignPageController.context.selectedConsoleTabIndex}">
 
-								<p:ajax event="tabChange" process="@this"
-									oncomplete="setTimeout(function(){if(codeMirror &amp;&amp; codeMirror.jq.is(':visible')){codeMirror.initialize();}},10);" />
+							<p:ajax event="tabChange" process="@this"
+								oncomplete="setTimeout(function(){if(codeMirror &amp;&amp; codeMirror.jq.is(':visible')){codeMirror.initialize();}},10);" />
 
-								<!-- Problems -->
+							<!-- Problems -->
 
-								<p:tab
-									title="#{s:message1(messages, 'UI_CONSOLE_PROBLEMS_TAB', serviceDesignPageController.context.graphValidationErrors.size())}">
-									<p:outputPanel
-										rendered="#{serviceDesignPageController.context.graphValidationErrors.isEmpty()}"
-										styleClass="ui-empty-message">
-										<p:outputLabel value="#{messages.UI_CONSOLE_NO_PROBLEMS}" />
-									</p:outputPanel>
+							<p:tab
+								title="#{s:message1(messages, 'UI_CONSOLE_PROBLEMS_TAB', serviceDesignPageController.context.graphValidationErrors.size())}">
+								<p:outputPanel
+									rendered="#{serviceDesignPageController.context.graphValidationErrors.isEmpty()}"
+									styleClass="ui-empty-message">
+									<p:outputLabel value="#{messages.UI_CONSOLE_NO_PROBLEMS}" />
+								</p:outputPanel>
 
-									<h:panelGrid columns="1" width="100%"
-										styleClass="table table-striped"
-										rendered="#{!(serviceDesignPageController.context.graphValidationErrors.isEmpty())}">
-										<c:forEach var="issue"
-											items="#{serviceDesignPageController.context.graphValidationErrors}">
+								<h:panelGrid columns="1" width="100%"
+									styleClass="table table-striped"
+									rendered="#{!(serviceDesignPageController.context.graphValidationErrors.isEmpty())}">
+									<c:forEach var="issue"
+										items="#{serviceDesignPageController.context.graphValidationErrors}">
 
-											<h:outputLink
-												onclick="nodeGraph.flash('#{issue.elementId}');return false;">
-												<h:outputText escape="false"
-													value="#{s:message1(messages, 'UI_CONSOLE_PROBLEM_'.concat(issue.type), s:label2(messages, issue.details, 'UI_NODE_PROPERTY_'.concat(issue.nodeClassName).concat('_').concat(issue.details), 'UI_NODE_PROPERTY_'.concat(issue.details)))}" />
-											</h:outputLink>
+										<h:outputLink
+											onclick="nodeGraph.flash('#{issue.elementId}');return false;">
+											<h:outputText escape="false"
+												value="#{s:message1(messages, 'UI_CONSOLE_PROBLEM_'.concat(issue.type), s:label2(messages, issue.details, 'UI_NODE_PROPERTY_'.concat(issue.nodeClassName).concat('_').concat(issue.details), 'UI_NODE_PROPERTY_'.concat(issue.details)))}" />
+										</h:outputLink>
 
-										</c:forEach>
-									</h:panelGrid>
-								</p:tab>
+									</c:forEach>
+								</h:panelGrid>
+							</p:tab>
 
-								<!-- Warnings -->
+							<!-- Warnings -->
 
-								<p:tab
-									title="#{s:message1(messages, 'UI_CONSOLE_WARNINGS_TAB', serviceDesignPageController.context.graphValidationWarnings.size())}">
-									<p:outputPanel
-										rendered="#{serviceDesignPageController.context.graphValidationWarnings.isEmpty()}"
-										styleClass="ui-empty-message">
-										<p:outputLabel value="#{messages.UI_CONSOLE_NO_WARNINGS}" />
-									</p:outputPanel>
+							<p:tab
+								title="#{s:message1(messages, 'UI_CONSOLE_WARNINGS_TAB', serviceDesignPageController.context.graphValidationWarnings.size())}">
+								<p:outputPanel
+									rendered="#{serviceDesignPageController.context.graphValidationWarnings.isEmpty()}"
+									styleClass="ui-empty-message">
+									<p:outputLabel value="#{messages.UI_CONSOLE_NO_WARNINGS}" />
+								</p:outputPanel>
 
-									<h:panelGrid columns="1" width="100%"
-										styleClass="table table-striped"
-										rendered="#{!(serviceDesignPageController.context.graphValidationWarnings.isEmpty())}">
-										<c:forEach var="issue"
-											items="#{serviceDesignPageController.context.graphValidationWarnings}">
+								<h:panelGrid columns="1" width="100%"
+									styleClass="table table-striped"
+									rendered="#{!(serviceDesignPageController.context.graphValidationWarnings.isEmpty())}">
+									<c:forEach var="issue"
+										items="#{serviceDesignPageController.context.graphValidationWarnings}">
 
-											<h:outputLink
-												onclick="nodeGraph.flash('#{issue.elementId}');return false;">
-												<h:outputText escape="false"
-													value="#{s:message1(messages, 'UI_CONSOLE_WARNING_'.concat(issue.type), s:label2(messages, issue.details, 'UI_NODE_PROPERTY_'.concat(issue.nodeClassName).concat('_').concat(issue.details), 'UI_NODE_PROPERTY_'.concat(issue.details)))}" />
-											</h:outputLink>
-										</c:forEach>
-									</h:panelGrid>
-								</p:tab>
+										<h:outputLink
+											onclick="nodeGraph.flash('#{issue.elementId}');return false;">
+											<h:outputText escape="false"
+												value="#{s:message1(messages, 'UI_CONSOLE_WARNING_'.concat(issue.type), s:label2(messages, issue.details, 'UI_NODE_PROPERTY_'.concat(issue.nodeClassName).concat('_').concat(issue.details), 'UI_NODE_PROPERTY_'.concat(issue.details)))}" />
+										</h:outputLink>
+									</c:forEach>
+								</h:panelGrid>
+							</p:tab>
 
-								<!-- Generated code -->
+							<!-- Generated code -->
 
-								<p:tab title="#{messages.UI_CONSOLE_CODE_VIEW_TAB}">
-									<pe:codeMirror id="codeMirror"
-										value="#{serviceDesignPageController.context.generatedCode}"
-										lineNumbers="true" readOnly="true" theme="eclipse"
-										matchBrackets="true" mode="sparql" widgetVar="codeMirror" />
-								</p:tab>
-							</p:tabView>
-						</h:form>
+							<p:tab title="#{messages.UI_CONSOLE_CODE_VIEW_TAB}">
+								<pe:codeMirror id="codeMirror"
+									value="#{serviceDesignPageController.context.generatedCode}"
+									lineNumbers="true" readOnly="true" theme="eclipse"
+									matchBrackets="true" mode="sparql" widgetVar="codeMirror" />
+							</p:tab>
+						</p:tabView>
+					</h:form>
 
-					</p:layoutUnit>
+				</pe:layoutPane>
 
-				</p:layout>
-			</p:layoutUnit>
+			</pe:layoutPane>
 
-		</p:layout>
+		</pe:layout>
 
 		<h:form id="confirmDialogs">
 			<p:confirmDialog header="#{messages.DIALOG_CONFIRM}" severity="alert"

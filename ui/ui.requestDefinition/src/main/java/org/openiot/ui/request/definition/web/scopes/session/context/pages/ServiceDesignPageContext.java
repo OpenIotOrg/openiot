@@ -246,7 +246,7 @@ public class ServiceDesignPageContext extends DisposableContext{
 		availableNodesByTypeMap.clear();
 		availableNodesByTypeMap.put("SENSOR", new ArrayList<GraphNode>());
 
-		LoggerService.log(Level.INFO, "[ServiceDesignPageContext] Scanning for available graph node classes");
+		LoggerService.log(Level.FINE, "[ServiceDesignPageContext] Scanning for available graph node classes");
 		Set<Class<?>> graphNodeClasses = GraphNodeScanner.detectGraphNodeClasses();
 		if (graphNodeClasses == null) {
 			LoggerService.log(Level.WARNING, "[ServiceDesignPageContext] No graph node classes detected");
@@ -255,7 +255,7 @@ public class ServiceDesignPageContext extends DisposableContext{
 
 		for (Class<?> classDefinition : graphNodeClasses) {
 			try {
-				LoggerService.log(Level.INFO, "[ServiceDesignPageContext]   Detected graph node class: " + classDefinition.getCanonicalName());
+				LoggerService.log(Level.FINE, "[ServiceDesignPageContext]   Detected graph node class: " + classDefinition.getCanonicalName());
 				GraphNode instance = (GraphNode) (classDefinition.newInstance());
 
 				// Lookup type

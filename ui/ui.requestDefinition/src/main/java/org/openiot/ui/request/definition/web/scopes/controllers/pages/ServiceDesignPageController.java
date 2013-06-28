@@ -21,7 +21,9 @@ package org.openiot.ui.request.definition.web.scopes.controllers.pages;
 
 import java.io.Serializable;
 import java.io.StringReader;
+import java.io.StringWriter;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 
@@ -32,14 +34,22 @@ import javax.faces.bean.RequestScoped;
 import javax.faces.context.FacesContext;
 import javax.ws.rs.core.UriBuilder;
 import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.stream.StreamSource;
 
 import org.jboss.resteasy.client.ClientRequest;
 import org.jboss.resteasy.client.ClientRequestFactory;
 import org.jboss.resteasy.client.ClientResponse;
-import org.json.JSONException;
+import org.openiot.commons.osdspec.model.OAMO;
+import org.openiot.commons.osdspec.model.OSDSpec;
+import org.openiot.commons.osdspec.model.OSMO;
+import org.openiot.commons.osdspec.model.PresentationAttr;
+import org.openiot.commons.osdspec.model.RequestPresentation;
+import org.openiot.commons.osdspec.model.Widget;
 import org.openiot.commons.sensortypes.model.SensorTypes;
+import org.openiot.commons.sparql.protocoltypes.model.QueryRequest;
+import org.openiot.ui.request.commons.interfaces.GraphModel;
 import org.openiot.ui.request.commons.logging.LoggerService;
 import org.openiot.ui.request.commons.nodes.impl.sensors.GenericSensor;
 import org.openiot.ui.request.commons.nodes.interfaces.GraphNode;
@@ -88,6 +98,10 @@ public class ServiceDesignPageController implements Serializable {
 	// ------------------------------------
 	// Controller entrypoints
 	// ------------------------------------
+	public void keepAlivePing() {
+
+	}
+
 	public void onGraphNodeSelected() {
 		ServiceDesignPageContext context = getContext();
 
@@ -160,19 +174,98 @@ public class ServiceDesignPageController implements Serializable {
 		context.setGraphValidationErrors(validator.getValidationErrors());
 		context.setGraphValidationWarnings(validator.getValidationWarnings());
 
-		try {
-			System.out.println(context.getGraphModel().toJSON().toString(1));
-		} catch (JSONException ex) {
-			LoggerService.log(ex);
+		if (success) {
+			if (validator.getValidationWarnings().isEmpty()) {
+				String codeOutput = "";
+				SparqlGenerator generator = new SparqlGenerator();
+
+				// Generate code for each visualization node
+				GraphModel model = context.getGraphModel();
+				for (GraphNode node : model.getNodes()) {
+					if (node.getType().equals("VISUALIZER")) {
+						codeOutput += generator.generateCode(model, node);
+					}
+				}
+				context.setGeneratedCode(codeOutput);
+
+				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, messages.getString("GROWL_INFO_HEADER"), FaceletLocalization.getLocalisedMessage(messages, "UI_GRAPH_COMPILER_SUCCESS")));
+			}
+		} else {
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, messages.getString("GROWL_ERROR_HEADER"), FaceletLocalization.getLocalisedMessage(messages, "UI_VALIDATION_FAILED", validator.getValidationErrors().size(), validator.getValidationWarnings().size())));
 		}
+	}
+
+	public void saveGraph() {
+		ServiceDesignPageContext context = getContext();
+		DefaultGraphNodeValidator validator = new DefaultGraphNodeValidator(context.getGraphModel());
+		boolean success = validator.validate();
+		context.setGraphValidationErrors(validator.getValidationErrors());
+		context.setGraphValidationWarnings(validator.getValidationWarnings());
 
 		if (success) {
 			if (validator.getValidationWarnings().isEmpty()) {
-				SparqlGenerator generator = new SparqlGenerator(context.getGraphModel());
-				generator.generateCode();
+				String codeOutput = "";
+				SparqlGenerator generator = new SparqlGenerator();
+				GraphModel model = context.getGraphModel();
 
-				context.setGeneratedCode(generator.getGeneratedCode());
-				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, messages.getString("GROWL_INFO_HEADER"), FaceletLocalization.getLocalisedMessage(messages, "UI_GRAPH_COMPILER_SUCCESS")));
+				// Generate root OSDSpec
+				OSDSpec osdSpec = new OSDSpec();
+				osdSpec.setUserID("user0000");
+				{
+					// Generate OAMO for current workspace
+					OAMO oamo = new OAMO();
+					oamo.setName(model.getLabel());
+					oamo.setId(model.getUID());
+
+					// Generate an OSMO object for each visualization node
+					for (GraphNode node : model.getNodes()) {
+						if (node.getType().equals("VISUALIZER")) {
+							OSMO osmo = new OSMO();
+							osmo.setId("osmo-" + node.getUID());
+
+							// Setup query request
+							QueryRequest queryRequest = new QueryRequest();
+							String codeBlock = generator.generateCode(model, node);
+							codeOutput += codeBlock;
+							queryRequest.setQuery(codeBlock);
+							osmo.setQueryRequest(queryRequest);
+
+							// Setup visualization params
+							RequestPresentation requestPresentation = new RequestPresentation();
+							{
+								Widget widget = new Widget();
+								widget.setWidgetID(node.getUID());
+								for (Map.Entry<String, Object> entry : node.getPropertyValueMap().entrySet()) {
+									PresentationAttr attr = new PresentationAttr();
+									attr.setName(entry.getKey());
+									attr.setValue(entry.getValue() != null ? entry.getValue().toString() : null);
+									widget.getPresentationAttr().add(attr);
+								}
+
+								// Add an extra attribute for the widget class
+								// so we know what type of widget to instanciate
+								// at the presentation layer
+								PresentationAttr attr = new PresentationAttr();
+								attr.setName("widgetClass");
+								attr.setValue(node.getClass().getCanonicalName());
+								widget.getPresentationAttr().add(attr);
+								requestPresentation.getWidget().add(widget);
+								osmo.setRequestPresentation(requestPresentation);
+							}
+							
+							oamo.getOSMO().add(osmo);
+						}
+					}
+
+					// Append OAMO to OSD
+					osdSpec.getOAMO().add(oamo);
+				}
+				context.setGeneratedCode(codeOutput);
+
+				boolean saveSuccess = registerService(osdSpec);
+				if (saveSuccess) {
+					FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, messages.getString("GROWL_INFO_HEADER"), FaceletLocalization.getLocalisedMessage(messages, "UI_GRAPH_SAVE_SUCCESS")));
+				}
 			}
 		} else {
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, messages.getString("GROWL_ERROR_HEADER"), FaceletLocalization.getLocalisedMessage(messages, "UI_VALIDATION_FAILED", validator.getValidationErrors().size(), validator.getValidationWarnings().size())));
@@ -227,14 +320,14 @@ public class ServiceDesignPageController implements Serializable {
 			response = discoverSensorsClientRequest.get(String.class);
 
 			if (response.getStatus() != 200) {
-				LoggerService.log(Level.SEVERE, "Error connecting to sensor discovery service (HTTP error code : " + response.getStatus() + ")");
+				LoggerService.log(Level.SEVERE, "Error communicating with scheduler sensor discovery service (HTTP error code : " + response.getStatus() + ")");
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, messages.getString("GROWL_ERROR_HEADER"), FaceletLocalization.getLocalisedMessage(messages, "UI_FIND_DIALOG_ERROR_CONNECTING_TO_DISCOVERY_SERVICE")));
 
 				return null;
 			}
 
 			responseText = response.getEntity();
-			
+
 			JAXBContext jaxbContext = JAXBContext.newInstance(SensorTypes.class);
 			Unmarshaller um = jaxbContext.createUnmarshaller();
 			SensorTypes sensorTypes = (SensorTypes) um.unmarshal(new StreamSource(new StringReader(responseText)));
@@ -247,4 +340,49 @@ public class ServiceDesignPageController implements Serializable {
 
 		return null;
 	}
+
+	private boolean registerService(OSDSpec osdSpec) {
+		ClientRequestFactory clientRequestFactory = new ClientRequestFactory(UriBuilder.fromUri("http://localhost:8080/scheduler.core").build());
+		ClientRequest registerServiceRequest = clientRequestFactory.createRelativeRequest("/rest/services/registerService");
+
+		String osdSpecString = "";
+		try {
+			JAXBContext jc = JAXBContext.newInstance(OSDSpec.class);
+			Marshaller marshaller = jc.createMarshaller();
+			marshaller.setProperty(Marshaller.JAXB_ENCODING, "UTF-8");
+			java.io.StringWriter sw = new StringWriter();
+			marshaller.marshal(osdSpec, sw);
+			osdSpecString = sw.toString();
+
+			LoggerService.log(Level.INFO, osdSpecString);
+
+			registerServiceRequest.body("application/xml", osdSpecString);
+
+			ClientResponse<String> response;
+
+			try {
+				response = registerServiceRequest.post(String.class);
+
+				if (response.getStatus() != 200) {
+					LoggerService.log(Level.SEVERE, "Error communicating with scheduler service registration service (HTTP error code : " + response.getStatus() + ")");
+					FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, messages.getString("GROWL_ERROR_HEADER"), FaceletLocalization.getLocalisedMessage(messages, "UI_FIND_DIALOG_ERROR_CONNECTING_TO_REGISTRATION_SERVICE")));
+
+					return false;
+				}
+
+				return true;
+
+			} catch (Throwable ex) {
+				ex.printStackTrace();
+				LoggerService.log(ex);
+				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, messages.getString("GROWL_ERROR_HEADER"), FaceletLocalization.getLocalisedMessage(messages, "UI_FIND_DIALOG_ERROR_CONNECTING_TO_DISCOVERY_SERVICE")));
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			LoggerService.log(ex);
+		}
+
+		return false;
+	}
+
 }
