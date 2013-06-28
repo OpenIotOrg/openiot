@@ -28,51 +28,28 @@ import org.openiot.commons.sensortypes.model.Unit;
 
 
 
-
 /**
  * @author Stavros Petris (spet) e-mail: spet@ait.edu.gr
  * @author Nikos Kefalakis (nkef) e-mail: nkef@ait.edu.gr
  *
  */
-public class SensorTypesPopulation {
-
-	
+public class SensorTypesPopulation 
+{
 	
 	private SensorTypes testSensorTypes;
-	
-	
-	
-	public SensorTypesPopulation (){
 		
-		
-		
+	
+	public SensorTypesPopulation ()
+	{
 		
         //Test sensortypes to return 
         testSensorTypes = new SensorTypes();
         
         
-        /*
-        * select ?sensor ?p ?o
-                       from <http://lsm.deri.ie/sensormeta#>
-                       where
-                       {
-                         {
-                         select ?sensor
-                         where
-                         {
-                             ?sensor <http://lsm.deri.ie/ont/lsm.owl#hasSensorType> ?typeId.
-                             ?typeId <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://lsm.deri.ie/ont/lsm.owl#SensorType>.
-                             ?typeId <http://www.w3.org/2000/01/rdf-schema#label> 'weather'.
-                         } limit 1
-                         }
-                         
-                         ?sensor ?p ?o.
-                       }
-        * */
-        SensorType testSensorType1 = new SensorType();                              
+        SensorType testSensorType1 = new SensorType();//gsn                              
         //http://lsm.deri.ie/ont/lsm.owl#hasSensorType
         testSensorType1.setId("http://lsm.deri.ie/resource/8a8291b7321534e701321534ee3f0015"); 
-        testSensorType1.setName("weather");
+        testSensorType1.setName("gsn");
         
         MeasurementCapability mc1Weather = new MeasurementCapability();
         //http://purl.oclc.ie/NET/ssnx/ssn#observes
@@ -223,18 +200,12 @@ public class SensorTypesPopulation {
         testSensorType2.getMeasurementCapability().add(mc2BikeHire);
         
         testSensorTypes.getSensorType().add(testSensorType2);
-        
-        
-		
-		
-	}
-	
-	public SensorTypes getSensorTypes(){
-		
-		
-		return testSensorTypes;
-		
+        		
 	}
 	
 	
+	public SensorTypes getSensorTypes()
+	{		
+		return testSensorTypes;		
+	}	
 }

@@ -22,22 +22,6 @@ import com.hp.hpl.jena.vocabulary.RDF;
 import com.hp.hpl.jena.vocabulary.RDFS;
 import com.hp.hpl.jena.vocabulary.XSD;
 
-
-//private String id;
-//private String name;
-//private String email;
-//private String description;
-//private Access access;
-////private String userType;
-//private ArrayList<Service> serviceList = new ArrayList<Service>();
-
-//ontClsUserClass = myOnt.getClass("http://openiot.eu/ontology/ns/User");
-//ontPName = myOnt.createProperty("http://openiot.eu/ontology/ns/userName");
-//ontPemail = myOnt.createProperty("http://openiot.eu/ontology/ns/userMail");
-//ontPdescription = myOnt.createProperty("http://openiot.eu/ontology/ns/userDescription");
-//ontPaccess = myOnt.getProperty("http://openiot.eu/ontology/ns/access");
-//ontPuserOf = myOnt.getProperty("http://openiot.eu/ontology/ns/userOf");
-
 public class User 
 {
 	public static class Queries
@@ -278,12 +262,12 @@ public class User
 		
 	private void initOnt_USer()
 	{
-		ontClsUserClass = myOnt.getClass("http://openiot.eu/ontology/ns/User");
+		ontClsUserClass = myOnt.createClass("http://openiot.eu/ontology/ns/User");
 		ontPName = myOnt.createProperty("http://openiot.eu/ontology/ns/userName");
 		ontPemail = myOnt.createProperty("http://openiot.eu/ontology/ns/userMail");
 		ontPdescription = myOnt.createProperty("http://openiot.eu/ontology/ns/userDescription");
-		ontPaccess = myOnt.getProperty("http://openiot.eu/ontology/ns/access");
-		ontPuserOf = myOnt.getProperty("http://openiot.eu/ontology/ns/userOf");
+		ontPaccess = myOnt.createProperty("http://openiot.eu/ontology/ns/access");
+		ontPuserOf = myOnt.createProperty("http://openiot.eu/ontology/ns/userOf");
 	}
 	
 	public void createClassIdv()

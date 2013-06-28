@@ -281,8 +281,8 @@ public class ServiceStatus
 		//serviceStatusClass = myOnt.getClass("http://openiot.eu/ontology/ns/ServiceStatus");
 		//serviceStatusClass = myOnt.getClass("http://openiot.eu/ontology/ns/Initializing");
 		ontClsserviceStatusClass = myOnt.createClass(status.getCode());		
-		ontPsrvcStatusTime = myOnt.getProperty("http://openiot.eu/ontology/ns/serviceStatusTime");
-		ontPsrvcStatusOf =  myOnt.getProperty("http://openiot.eu/ontology/ns/serviceStatusOf");
+		ontPsrvcStatusTime = myOnt.createProperty("http://openiot.eu/ontology/ns/serviceStatusTime");
+		ontPsrvcStatusOf =  myOnt.createProperty("http://openiot.eu/ontology/ns/serviceStatusOf");
 	}
 	
 	public void createClassIdv()
