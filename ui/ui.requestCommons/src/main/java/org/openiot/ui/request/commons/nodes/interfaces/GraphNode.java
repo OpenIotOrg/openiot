@@ -69,6 +69,8 @@ public interface GraphNode {
 
     public void setEndpointDefinitions(List<GraphNodeEndpoint> endpointDefinitions);
     
+    public GraphNodeEndpoint getEndpointByLabel(String label);
+
     /** 
      * Return a copy of this node
      */

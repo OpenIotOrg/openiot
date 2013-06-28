@@ -135,6 +135,16 @@ public class DefaultGraphNode implements GraphNode, Serializable {
 	public void setEndpointDefinitions(List<GraphNodeEndpoint> endpointDefinitions) {
 		this.endpointDefinitions = endpointDefinitions;
 	}
+	
+	public GraphNodeEndpoint getEndpointByLabel(String label){
+		for( GraphNodeEndpoint ep : endpointDefinitions ){
+			if( ep.getLabel().equals(label) ){
+				return ep;
+			}
+		}
+		
+		return null;
+	}
 
 	public void addPropertyChangeObserver(Observer o) {
 		this.propertyMap.addObserver(o);

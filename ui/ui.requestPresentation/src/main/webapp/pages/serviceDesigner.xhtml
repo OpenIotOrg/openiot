@@ -6,7 +6,7 @@
 	xmlns:pe="http://primefaces.org/ui/extensions"
 	xmlns:s="http://www.sensap.eu/jsf"
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
-	xmlns:dialogs="http://java.sun.com/jsf/composite/components/dialogs">
+	xmlns:dialogs="http://java.sun.com/jsf/composite/components/sensap/dialogs">
 
 <f:view contentType="text/html">
 	<h:head>
@@ -205,8 +205,8 @@
 									value="#{serviceDesignPageController.context.graphModel.selectedNode.propertyValueMap[control.valueKey]}"
 									required="#{control.required}">
 									<p:ajax event="change" process="@this"
-										update=":nodeGraphForm:nodeGraph, :propertyGridForm" />
-									<f:selectItem itemLabel="--" itemValue="#{null}" rendered="#{!control.required}" />
+										update=":nodeGraphForm:nodeGraph" />
+									<f:selectItem itemLabel="--" itemValue="#{null}" />
 									<f:selectItems value="#{control.allowedValues}" />
 								</p:selectOneMenu>
 							</pe:dynaFormControl>
@@ -216,7 +216,7 @@
 									required="#{control.required}" showOn="button"
 									pattern="MM/dd/yyyy HH:mm">
 									<p:ajax event="change" process="@this"
-										update=":nodeGraphForm:nodeGraph, :propertyGridForm" />
+										update=":nodeGraphForm:nodeGraph" />
 								</p:calendar>
 							</pe:dynaFormControl>
 							<pe:dynaFormControl type="String" for="string">
@@ -228,7 +228,7 @@
 									value="#{control.property.variable ? control.property.variableName : serviceDesignPageController.context.graphModel.selectedNode.propertyValueMap[control.valueKey]}"
 									required="#{control.required}">
 									<p:ajax event="change" process="@this"
-										update=":nodeGraphForm:nodeGraph, :propertyGridForm" />
+										update=":nodeGraphForm:nodeGraph" />
 								</p:inputText>
 								<p:commandButton disabled="#{!control.variablizable}"
 									icon="ui-icon-tag" process="@this"
@@ -246,14 +246,14 @@
 									value="#{serviceDesignPageController.context.graphModel.selectedNode.propertyValueMap[control.valueKey]}"
 									required="#{control.required}">
 									<p:ajax event="change" process="@this"
-										update=":nodeGraphForm:nodeGraph, :propertyGridForm" />
+										update=":nodeGraphForm:nodeGraph" />
 								</pe:inputNumber>
 
 								<p:inputText rendered="#{control.property.variable}"
 									readonly="true" value="#{control.property.variableName}"
 									required="#{control.required}">
 									<p:ajax event="change" process="@this"
-										update=":nodeGraphForm:nodeGraph, :propertyGridForm" />
+										update=":nodeGraphForm:nodeGraph" />
 								</p:inputText>
 								<p:commandButton disabled="#{!control.variablizable}"
 									icon="ui-icon-tag" process="@this"
@@ -271,14 +271,14 @@
 									value="#{serviceDesignPageController.context.graphModel.selectedNode.propertyValueMap[control.valueKey]}"
 									required="#{control.required}" decimalPlaces="0">
 									<p:ajax event="change" process="@this"
-										update=":nodeGraphForm:nodeGraph, :propertyGridForm" />
+										update=":nodeGraphForm:nodeGraph" />
 								</pe:inputNumber>
 
 								<p:inputText rendered="#{control.property.variable}"
 									readonly="true" value="#{control.property.variableName}"
 									required="#{control.required}">
 									<p:ajax event="change" process="@this"
-										update=":nodeGraphForm:nodeGraph, :propertyGridForm" />
+										update=":nodeGraphForm:nodeGraph" />
 								</p:inputText>
 								<p:commandButton disabled="#{!control.variablizable}"
 									icon="ui-icon-tag" process="@this"

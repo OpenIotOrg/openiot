@@ -25,23 +25,24 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
+
 import org.openiot.commons.sensortypes.model.MeasurementCapability;
 import org.openiot.commons.sensortypes.model.SensorType;
 import org.openiot.commons.sensortypes.model.SensorTypes;
-import org.openiot.ui.request.definition.web.scopes.session.base.DisposableContext;
 import org.openiot.ui.request.commons.annotations.scanners.GraphNodeScanner;
 import org.openiot.ui.request.commons.interfaces.GraphModel;
-import org.openiot.ui.request.commons.models.DefaultGraphModel;
-import org.openiot.ui.request.commons.nodes.interfaces.GraphNode;
-import org.openiot.ui.request.commons.nodes.validation.GraphValidationError;
-import org.openiot.ui.request.commons.nodes.validation.GraphValidationWarning;
 import org.openiot.ui.request.commons.logging.LoggerService;
+import org.openiot.ui.request.commons.models.DefaultGraphModel;
 import org.openiot.ui.request.commons.nodes.base.DefaultGraphNodeEndpoint;
 import org.openiot.ui.request.commons.nodes.enums.AnchorType;
 import org.openiot.ui.request.commons.nodes.enums.ConnectorType;
 import org.openiot.ui.request.commons.nodes.enums.EndpointType;
-import org.openiot.ui.request.commons.nodes.impl.sensors.GenericSensor;
+import org.openiot.ui.request.commons.nodes.interfaces.GraphNode;
 import org.openiot.ui.request.commons.nodes.interfaces.GraphNodeEndpoint;
+import org.openiot.ui.request.commons.nodes.validation.GraphValidationError;
+import org.openiot.ui.request.commons.nodes.validation.GraphValidationWarning;
+import org.openiot.ui.request.definition.web.model.nodes.impl.sensors.GenericSensor;
+import org.openiot.ui.request.definition.web.scopes.session.base.DisposableContext;
 import org.primefaces.extensions.model.dynaform.DynaFormModel;
 
 /**
@@ -248,7 +249,7 @@ public class ServiceDesignPageContext extends DisposableContext{
 		availableNodesByTypeMap.put("SENSOR", new ArrayList<GraphNode>());
 
 		LoggerService.log(Level.FINE, "[ServiceDesignPageContext] Scanning for available graph node classes");
-		Set<Class<?>> graphNodeClasses = GraphNodeScanner.detectGraphNodeClasses();
+		Set<Class<?>> graphNodeClasses = GraphNodeScanner.detectGraphNodeClasses("org.openiot.ui.request.definition.web.model.nodes.impl");
 		if (graphNodeClasses == null) {
 			LoggerService.log(Level.WARNING, "[ServiceDesignPageContext] No graph node classes detected");
 			return;

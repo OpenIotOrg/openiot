@@ -34,12 +34,12 @@ import org.openiot.ui.request.commons.interfaces.GraphModel;
 import org.openiot.ui.request.commons.logging.LoggerService;
 import org.openiot.ui.request.commons.nodes.base.AbstractGraphNodeVisitor;
 import org.openiot.ui.request.commons.nodes.enums.EndpointType;
-import org.openiot.ui.request.commons.nodes.impl.generators.TimestampGenerator;
-import org.openiot.ui.request.commons.nodes.impl.sensors.GenericSensor;
 import org.openiot.ui.request.commons.nodes.interfaces.GraphNode;
 import org.openiot.ui.request.commons.nodes.interfaces.GraphNodeConnection;
 import org.openiot.ui.request.commons.nodes.interfaces.GraphNodeEndpoint;
 import org.openiot.ui.request.commons.nodes.interfaces.GraphNodeProperty;
+import org.openiot.ui.request.definition.web.model.nodes.impl.generators.TimestampGenerator;
+import org.openiot.ui.request.definition.web.model.nodes.impl.sensors.GenericSensor;
 
 /**
  * 
@@ -354,7 +354,7 @@ public class SparqlGenerator extends AbstractGraphNodeVisitor {
 	// -------------------------------------------------------------------------
 	// Filter node visitors
 	// -------------------------------------------------------------------------
-	public void visit(org.openiot.ui.request.commons.nodes.impl.filters.SelectionFilter node) {
+	public void visit(org.openiot.ui.request.definition.web.model.nodes.impl.filters.SelectionFilter node) {
 
 		// Visit all outgoing connections except the one connecting to the
 		// sensor
@@ -379,7 +379,7 @@ public class SparqlGenerator extends AbstractGraphNodeVisitor {
 	// -------------------------------------------------------------------------
 	// Comparator node visitors
 	// -------------------------------------------------------------------------
-	public void visit(org.openiot.ui.request.commons.nodes.impl.comparators.Compare node) {
+	public void visit(org.openiot.ui.request.definition.web.model.nodes.impl.comparators.Compare node) {
 		/*
 		 * // Since the filter node cloned the original attribute endpoint, we
 		 * need to // match the incoming endpoint from the last connection on
@@ -410,7 +410,7 @@ public class SparqlGenerator extends AbstractGraphNodeVisitor {
 		 */
 	}
 
-	public void visit(org.openiot.ui.request.commons.nodes.impl.comparators.CompareAbsoluteDateTime node) {
+	public void visit(org.openiot.ui.request.definition.web.model.nodes.impl.comparators.CompareAbsoluteDateTime node) {
 		// Since the filter node cloned the original attribute endpoint, we need
 		// to
 		// match the incoming endpoint from the last connection on stack to the
@@ -463,7 +463,7 @@ public class SparqlGenerator extends AbstractGraphNodeVisitor {
 		}
 	}
 
-	public void visit(org.openiot.ui.request.commons.nodes.impl.comparators.CompareRelativeDateTime node) {
+	public void visit(org.openiot.ui.request.definition.web.model.nodes.impl.comparators.CompareRelativeDateTime node) {
 		// Since the filter node cloned the original attribute endpoint, we need
 		// to
 		// match the incoming endpoint from the last connection on stack to the
@@ -523,7 +523,7 @@ public class SparqlGenerator extends AbstractGraphNodeVisitor {
 		}
 	}
 
-	public void visit(org.openiot.ui.request.commons.nodes.impl.comparators.Between node) {
+	public void visit(org.openiot.ui.request.definition.web.model.nodes.impl.comparators.Between node) {
 		/*
 		 * // Since the filter node cloned the original attribute endpoint, we
 		 * need to // match the incoming endpoint from the last connection on
@@ -555,7 +555,7 @@ public class SparqlGenerator extends AbstractGraphNodeVisitor {
 		 */
 	}
 
-	public void visit(org.openiot.ui.request.commons.nodes.impl.comparators.BetweenDateTime node) {
+	public void visit(org.openiot.ui.request.definition.web.model.nodes.impl.comparators.BetweenDateTime node) {
 		// Since the filter node cloned the original attribute endpoint, we need
 		// to
 		// match the incoming endpoint from the last connection on stack to the
@@ -621,31 +621,31 @@ public class SparqlGenerator extends AbstractGraphNodeVisitor {
 	// -------------------------------------------------------------------------
 	// Aggregator node visitors
 	// -------------------------------------------------------------------------
-	public void visit(org.openiot.ui.request.commons.nodes.impl.aggegators.Min node) {
+	public void visit(org.openiot.ui.request.definition.web.model.nodes.impl.aggegators.Min node) {
 		this.generatedAttributeAggregationCode += "MIN( ";
 		visitIncomingConnections(node);
 		this.generatedAttributeAggregationCode += " )";
 	}
 
-	public void visit(org.openiot.ui.request.commons.nodes.impl.aggegators.Max node) {
+	public void visit(org.openiot.ui.request.definition.web.model.nodes.impl.aggegators.Max node) {
 		this.generatedAttributeAggregationCode += "MAX( ";
 		visitIncomingConnections(node);
 		this.generatedAttributeAggregationCode += " )";
 	}
 
-	public void visit(org.openiot.ui.request.commons.nodes.impl.aggegators.Count node) {
+	public void visit(org.openiot.ui.request.definition.web.model.nodes.impl.aggegators.Count node) {
 		this.generatedAttributeAggregationCode += "COUNT( ";
 		visitIncomingConnections(node);
 		this.generatedAttributeAggregationCode += " )";
 	}
 
-	public void visit(org.openiot.ui.request.commons.nodes.impl.aggegators.Sum node) {
+	public void visit(org.openiot.ui.request.definition.web.model.nodes.impl.aggegators.Sum node) {
 		this.generatedAttributeAggregationCode += "SUM( ";
 		visitIncomingConnections(node);
 		this.generatedAttributeAggregationCode += " )";
 	}
 
-	public void visit(org.openiot.ui.request.commons.nodes.impl.aggegators.Average node) {
+	public void visit(org.openiot.ui.request.definition.web.model.nodes.impl.aggegators.Average node) {
 		this.generatedAttributeAggregationCode += "AVG( ";
 		visitIncomingConnections(node);
 		this.generatedAttributeAggregationCode += " )";

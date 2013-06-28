@@ -95,9 +95,9 @@ public class GraphNodeScanner {
         return endpointDefinitions;
     }
 
-    public static Set<Class<?>> detectGraphNodeClasses() {
+    public static Set<Class<?>> detectGraphNodeClasses(String rootPackage) {
         try {
-        	Reflections reflections = new Reflections("org.openiot.ui.request.commons.nodes.impl");
+        	Reflections reflections = new Reflections(rootPackage);
         	Set<Class<?>> detectedClasses =reflections.getTypesAnnotatedWith(GraphNodeClass.class);
         	Iterator<Class<?>> setIt = detectedClasses.iterator();
         	while( setIt.hasNext() ){
