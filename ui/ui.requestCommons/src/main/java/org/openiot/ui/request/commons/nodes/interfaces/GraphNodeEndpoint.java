@@ -19,85 +19,92 @@
  ******************************************************************************/
 package org.openiot.ui.request.commons.nodes.interfaces;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.openiot.ui.request.commons.nodes.enums.AnchorType;
 import org.openiot.ui.request.commons.nodes.enums.ConnectorType;
 import org.openiot.ui.request.commons.nodes.enums.EndpointType;
 
 /**
- *
+ * 
  * @author Achilleas Anagnostopoulos (aanag) email: aanag@sensap.eu
  */
 public interface GraphNodeEndpoint {
 
-    /**
-     * A unique identifier for the node
-     */
-    public String getUID();
+	/**
+	 * A unique identifier for the node
+	 */
+	public String getUID();
 
-    public void setUID(String UID);
+	public void setUID(String UID);
 
-    /**
-     * The type of endpoint
-     */
-    public EndpointType getType();
+	/**
+	 * The type of endpoint
+	 */
+	public EndpointType getType();
 
-    public void setType(EndpointType type);
+	public void setType(EndpointType type);
 
-    /**
-     * Endpoint anchor point
-     */
-    public AnchorType getAnchor();
+	/**
+	 * Endpoint anchor point
+	 */
+	public AnchorType getAnchor();
 
-    public void setAnchor(AnchorType type);
-    
-    /** 
-     * Endpoint connector type
-     */
-    public ConnectorType getConnectorType();
-    public void setConnectorType( ConnectorType type );
+	public void setAnchor(AnchorType type);
 
-    /**
-     * Endpoint max number of connections
-     */
-    public int getMaxConnections();
+	/**
+	 * Endpoint connector type
+	 */
+	public ConnectorType getConnectorType();
 
-    public void setMaxConnections(int maxConnections);
+	public void setConnectorType(ConnectorType type);
 
-    /**
-     * The endpoint label
-     */
-    public String getLabel();
+	/**
+	 * Endpoint max number of connections
+	 */
+	public int getMaxConnections();
 
-    public void setLabel(String label);
+	public void setMaxConnections(int maxConnections);
 
-    /**
-     * The type of objects that can be connected to this endpoint
-     */
-    public String getScope();
+	/**
+	 * The endpoint label
+	 */
+	public String getLabel();
 
-    public void setScope(String scope);
+	public void setLabel(String label);
 
-    /**
-     * Flag whether this field has to be connected
-     */
-    public boolean isRequired();
+	/**
+	 * The type of objects that can be connected to this endpoint
+	 */
+	public String getScope();
 
-    public void setRequired(boolean required);
-    
-    /**
-     * Set user data
-     */
-    public String getUserData();
+	public void setScope(String scope);
 
-    public void setUserData(String data);
+	/**
+	 * Flag whether this field has to be connected
+	 */
+	public boolean isRequired();
 
+	public void setRequired(boolean required);
 
-    /** Return a copy of this endpoint */
-    public GraphNodeEndpoint getCopy();
-    
-    /**
-     * Convert to JSON
-     */
-    public JSONObject toJSON();
+	/**
+	 * Set user data
+	 */
+	public String getUserData();
+
+	public void setUserData(String data);
+
+	/** Return a copy of this endpoint */
+	public GraphNodeEndpoint getCopy();
+
+	/**
+	 * Convert to JSON
+	 */
+	public JSONObject toJSON();
+
+	/**
+	 * Import data from JSON object
+	 */
+	public void importJSON(JSONObject spec) throws JSONException;
+
 }

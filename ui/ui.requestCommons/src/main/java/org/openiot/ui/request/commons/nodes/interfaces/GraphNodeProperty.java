@@ -19,6 +19,7 @@
  ******************************************************************************/
 package org.openiot.ui.request.commons.nodes.interfaces;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.openiot.ui.request.commons.nodes.enums.PropertyType;
 
@@ -72,4 +73,9 @@ public interface GraphNodeProperty {
      * Convert to JSON
      */
     public JSONObject toJSON();
+    
+    /**
+     * Import data from JSON object
+     */
+    public void importJSON(JSONObject spec) throws JSONException;
 }

@@ -29,6 +29,7 @@ import org.openiot.ui.request.commons.logging.LoggerService;
 import org.openiot.ui.request.commons.nodes.enums.AnchorType;
 import org.openiot.ui.request.commons.nodes.enums.ConnectorType;
 import org.openiot.ui.request.commons.nodes.enums.EndpointType;
+import org.openiot.ui.request.commons.nodes.enums.PropertyType;
 import org.openiot.ui.request.commons.nodes.interfaces.GraphNodeEndpoint;
 import org.openiot.ui.request.commons.nodes.interfaces.GraphNodeProperty;
 
@@ -156,6 +157,18 @@ public class DefaultGraphNodeEndpoint implements GraphNodeEndpoint, Serializable
 			LoggerService.log(ex);
 		}
 		return spec;
+	}
+    
+    public void importJSON(JSONObject spec) throws JSONException {
+		setUID(spec.getString("uid"));
+		setType( EndpointType.valueOf(spec.getString("type")));
+		setAnchor( AnchorType.valueOf(spec.getString("anchor")));
+		setConnectorType( ConnectorType.valueOf(spec.getString("connectorType")));
+		setMaxConnections(spec.getInt("maxConnections"));
+		setLabel(spec.getString("label"));
+		setScope(spec.getString("scope"));
+		setRequired(spec.getBoolean("isRequired"));
+		setUserData(spec.optString("userData"));
 	}
     
     @Override

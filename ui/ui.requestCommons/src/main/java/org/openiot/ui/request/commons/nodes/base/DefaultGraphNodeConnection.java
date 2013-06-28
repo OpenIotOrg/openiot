@@ -107,5 +107,9 @@ public class DefaultGraphNodeConnection implements GraphNodeConnection, Serializ
     	
     	return spec;
     }
+
+    public void importJSON(JSONObject spec) throws JSONException{
+    	setUID(spec.getString("uid"));
+    }
     
 }

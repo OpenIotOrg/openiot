@@ -33,8 +33,7 @@ import org.openiot.ui.request.commons.nodes.interfaces.GraphNodeProperty;
  * 
  * @author Achilleas Anagnostopoulos (aanag) email: aanag@sensap.eu
  */
-public class DefaultGraphNodeProperty implements GraphNodeProperty,
-		Serializable {
+public class DefaultGraphNodeProperty implements GraphNodeProperty, Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private PropertyType type;
@@ -107,7 +106,9 @@ public class DefaultGraphNodeProperty implements GraphNodeProperty,
 			spec.put("isRequired", isRequired());
 			if (allowedValues != null) {
 				JSONArray values = new JSONArray();
-				values.put(Arrays.asList(allowedValues));
+				for( String value : allowedValues ){
+					values.put(value);
+				}
 				spec.put("allowedValues", values);
 			}
 		} catch (JSONException ex) {
@@ -116,9 +117,26 @@ public class DefaultGraphNodeProperty implements GraphNodeProperty,
 		return spec;
 	}
 
+	public void importJSON(JSONObject spec) throws JSONException {
+		setType(PropertyType.valueOf(spec.getString("type")));
+		setName(spec.getString("name"));
+		try {
+			setJavaType(Class.forName(spec.getString("javaClass")));
+		} catch (Throwable ex) {
+			throw new JSONException("Unsupported java class type value '" + spec.getString("javaClass") + "'");
+		}
+		setRequired(spec.getBoolean("isRequired"));
+		if (spec.has("allowedValues")) {
+			JSONArray values = spec.getJSONArray("allowedValues");
+			allowedValues = new String[values.length()];
+			for (int index = 0; index < values.length(); index++) {
+				allowedValues[index] = values.getString(index);
+			}
+		}
+	}
+
 	@Override
 	public String toString() {
-		return "[type: " + getType() + ", name: " + getName() + ", javaType: "
-				+ getJavaType() + ", required: " + isRequired() + "]";
+		return "[type: " + getType() + ", name: " + getName() + ", javaType: " + getJavaType() + ", required: " + isRequired() + "]";
 	}
 }

@@ -31,6 +31,7 @@ import java.util.logging.Level;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.openiot.ui.request.commons.factory.GraphFactory;
 import org.openiot.ui.request.commons.interfaces.GraphModel;
 import org.openiot.ui.request.commons.logging.LoggerService;
 import org.openiot.ui.request.commons.nodes.base.DefaultGraphNodeConnection;
@@ -47,7 +48,9 @@ import org.openiot.ui.request.commons.nodes.interfaces.GraphNodeEventListener;
 public class DefaultGraphModel implements GraphModel, Serializable {
 	private static final long serialVersionUID = 1L;
 
+	private String UID = "graph_" + System.nanoTime();
     private GraphNode selectedNode;
+    private String label;
     private List<GraphNode> nodes;
     private List<GraphNodeConnection> connections;
     private Map<String, GraphNodePosition> positions;
@@ -58,6 +61,22 @@ public class DefaultGraphModel implements GraphModel, Serializable {
         this.positions = new HashMap<String, GraphNodePosition>();
     }
 
+	public String getUID() {
+		return UID;
+	}
+
+	public void setUID(String UID) {
+		this.UID = UID;
+	}
+
+    public String getLabel(){
+    	return label;
+    }
+    
+	public void setLabel(String label){
+		this.label = label;
+	}
+    
     public List<GraphNode> getNodes() {
         return nodes;
     }
@@ -219,11 +238,12 @@ public class DefaultGraphModel implements GraphModel, Serializable {
         position.setY(newY);
     }
 
-	@Override
 	public JSONObject toJSON() {
 		JSONObject spec = new JSONObject();
 		try{
-			spec.put("exported",  (new Date()).getTime());
+			spec.put("class", this.getClass().getCanonicalName());
+			spec.put("uid",  getUID());
+			spec.put("label",  getLabel());
 			
 			// Encode each node
 			JSONArray nodes = new JSONArray();
@@ -237,14 +257,14 @@ public class DefaultGraphModel implements GraphModel, Serializable {
 			for( Map.Entry<String, GraphNodePosition> entry : this.positions.entrySet() ){
 				positions.put(entry.getKey(), entry.getValue().toJSON());
 			}
-			spec.put("positions", nodes);
+			spec.put("positions", positions);
 			
 			// Encode node connections
 			JSONArray connections = new JSONArray();
 			for( GraphNodeConnection connection : this.connections ){
 				connections.put( connection.toJSON() );
 			}
-			spec.put("connections", nodes);
+			spec.put("connections", connections);
 			
 		}catch(JSONException ex){
 			LoggerService.log(ex);
@@ -252,9 +272,47 @@ public class DefaultGraphModel implements GraphModel, Serializable {
 		return spec;
 	}
 
-	@Override
-	public void fromJSON(JSONObject spec) {
-		// TODO Auto-generated method stub
+	public void importJSON(JSONObject spec) throws JSONException {
+		setUID(spec.getString("uid"));
+		setLabel(spec.getString("label"));
 		
+		// Parse nodes
+		JSONArray nodes = spec.getJSONArray("nodes");
+		this.nodes.clear();
+		for( int index = 0; index< nodes.length(); index++){
+			this.nodes.add( GraphFactory.createGraphNode(nodes.getJSONObject(index)));
+		}
+		
+		// Parse node positions
+		JSONObject positions = spec.getJSONObject("positions");
+		Iterator<?> keyIt = positions.keys();
+		this.positions.clear();
+		while( keyIt.hasNext() ){
+			String nodeId = (String)keyIt.next();
+			GraphNodePosition pos = new GraphNodePosition(0, 0);
+			pos.importJSON(positions.getJSONObject(nodeId));
+			this.positions.put( nodeId, pos );
+		}
+		
+		// Parse node connections
+		JSONArray connections = spec.getJSONArray("connections");
+		this.connections.clear();
+		for( int index = 0; index< connections.length(); index++){
+			JSONObject conSpec = connections.getJSONObject(index);
+			GraphNodeConnection connection = GraphFactory.createGraphNodeConnection(conSpec);
+			
+			// Lookup connection nodes
+			GraphNode srcNode = this.lookupGraphNode(conSpec.getString("srcNode"));
+			GraphNodeEndpoint srcEndpoint = this.lookupGraphEndpoint(srcNode, conSpec.getString("srcEndpoint"));
+			GraphNode dstNode = this.lookupGraphNode(conSpec.getString("dstNode"));
+			GraphNodeEndpoint dstEndpoint = this.lookupGraphEndpoint(dstNode, conSpec.getString("dstEndpoint"));
+			
+			// Setup connection
+			connection.setSourceNode(srcNode);			
+			connection.setSourceEndpoint(srcEndpoint);
+			connection.setDestinationNode(dstNode);
+			connection.setDestinationEndpoint(dstEndpoint);
+			this.connections.add(connection);
+		}
 	}
 }

@@ -22,6 +22,7 @@ package org.openiot.ui.request.commons.nodes.interfaces;
 import java.util.List;
 import java.util.Map;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
@@ -75,4 +76,10 @@ public interface GraphNode {
      * Generate a JSON object describing the node
      */
     public JSONObject toJSON();
+
+    /**
+     * Import data from JSON object
+     */
+    public void importJSON(JSONObject spec) throws JSONException;
+
 }

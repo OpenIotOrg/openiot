@@ -66,4 +66,9 @@ public class GraphNodePosition implements Serializable {
     	}
     	return spec;
     }
+    
+    public void importJSON(JSONObject spec) throws JSONException{
+    	x = spec.getDouble("x");
+    	y = spec.getDouble("y");
+    }
 }

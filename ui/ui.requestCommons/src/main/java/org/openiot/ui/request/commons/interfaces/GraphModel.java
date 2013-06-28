@@ -21,6 +21,7 @@ package org.openiot.ui.request.commons.interfaces;
 
 import java.util.List;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.openiot.ui.request.commons.models.GraphNodePosition;
 import org.openiot.ui.request.commons.nodes.interfaces.GraphNode;
@@ -33,6 +34,14 @@ import org.openiot.ui.request.commons.nodes.interfaces.GraphNodeEndpoint;
  */
 public interface GraphModel {
 
+    public String getUID();
+
+    public void setUID(String UID);
+    
+	public String getLabel();
+
+	public void setLabel(String label);
+	
     public List<GraphNode> getNodes();
 
     public List<GraphNodeConnection> getConnections();
@@ -69,5 +78,5 @@ public interface GraphModel {
     
     public JSONObject toJSON();
     
-    public void fromJSON(JSONObject spec);
+    public void importJSON(JSONObject spec) throws JSONException;
 }

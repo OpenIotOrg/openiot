@@ -92,7 +92,7 @@ public class SchedulerRsControler {
 	 */
 	@POST
 	@Path("/registerService")
-//	@Consumes("application/xml")
+	@Consumes("application/xml")
 	public String registerService(OSDSpec osdSpec) {
 
 		

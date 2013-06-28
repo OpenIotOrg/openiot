@@ -22,6 +22,7 @@ package org.openiot.ui.request.commons.nodes.base;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Observer;
@@ -31,6 +32,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.openiot.ui.request.commons.annotations.GraphNodeClass;
 import org.openiot.ui.request.commons.annotations.scanners.GraphNodeScanner;
+import org.openiot.ui.request.commons.factory.GraphFactory;
 import org.openiot.ui.request.commons.logging.LoggerService;
 import org.openiot.ui.request.commons.models.ObservableMap;
 import org.openiot.ui.request.commons.nodes.interfaces.GraphNode;
@@ -194,6 +196,35 @@ public class DefaultGraphNode implements GraphNode, Serializable {
 		return spec;
 	}
 
+    public void importJSON(JSONObject spec) throws JSONException {
+		setUID(spec.getString("uid"));
+		setType( spec.getString("type"));
+		setLabel(spec.getString("label"));
+		
+		// Parse property definitions
+		JSONArray propertyDefinitions = spec.getJSONArray("propertyDefinitions");
+		this.propertyDefinitions.clear();
+		for( int index = 0; index< propertyDefinitions.length(); index++){
+			this.propertyDefinitions.add( GraphFactory.createGraphNodeProperty(propertyDefinitions.getJSONObject(index)));
+		}
+		
+		// Parse endpoint definitions
+		JSONArray endpointDefinitions = spec.getJSONArray("endpointDefinitions");
+		this.endpointDefinitions.clear();
+		for( int index = 0; index< endpointDefinitions.length(); index++){
+			this.endpointDefinitions.add( GraphFactory.createGraphNodeEndpoint(endpointDefinitions.getJSONObject(index)));
+		}
+				
+		// Parse property values
+		JSONObject propertyValues = spec.getJSONObject("propertyValues");
+		Iterator<?> keyIt = propertyValues.keys();
+		this.propertyMap.clear();
+		while( keyIt.hasNext() ){
+			String key = (String)keyIt.next();
+			this.propertyMap.getWrappedMap().put(key, propertyValues.optString(key));
+		}
+	}
+    
 	@Override
 	public String toString() {
 		return "[type: " + getType() + ", label: " + getLabel() + ", properties: " + getPropertyDefinitions() + ", endPoints: " + endpointDefinitions + "]";

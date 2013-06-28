@@ -19,43 +19,53 @@
  ******************************************************************************/
 package org.openiot.ui.request.commons.nodes.interfaces;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
- *
+ * 
  * @author Achilleas Anagnostopoulos (aanag) email: aanag@sensap.eu
  */
 public interface GraphNodeConnection {
 
-    /**
-     * A unique identifier for the node
-     */
-    public String getUID();
+	/**
+	 * A unique identifier for the node
+	 */
+	public String getUID();
 
-    public void setUID(String UID);
+	public void setUID(String UID);
 
-    /**
-     * Source node
-     */
-    public GraphNode getSourceNode();
+	/**
+	 * Source node
+	 */
+	public GraphNode getSourceNode();
+	public void setSourceNode(GraphNode node);
 
-    /**
-     * Source endpoint
-     */
-    public GraphNodeEndpoint getSourceEndpoint();
+	/**
+	 * Source endpoint
+	 */
+	public GraphNodeEndpoint getSourceEndpoint();
+	public void setSourceEndpoint(GraphNodeEndpoint endpoint);
 
-    /**
-     * Destination node
-     */
-    public GraphNode getDestinationNode();
+	/**
+	 * Destination node
+	 */
+	public GraphNode getDestinationNode();
+	public void setDestinationNode(GraphNode node);
 
-    /**
-     * Destination endpoint
-     */
-    public GraphNodeEndpoint getDestinationEndpoint();
-    
-    /**
-     * Convert to JSON
-     */
-    public JSONObject toJSON();
+	/**
+	 * Destination endpoint
+	 */
+	public GraphNodeEndpoint getDestinationEndpoint();
+	public void setDestinationEndpoint(GraphNodeEndpoint endpoint);
+
+	/**
+	 * Convert to JSON
+	 */
+	public JSONObject toJSON();
+
+	/**
+	 * Import data from JSON object
+	 */
+	public void importJSON(JSONObject spec) throws JSONException;
 }
