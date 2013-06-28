@@ -17,33 +17,48 @@
  *  
  *  Contact: OpenIoT mailto: info@openiot.eu
  ******************************************************************************/
-package org.openiot.ui.request.commons.annotations;
+package org.openiot.ui.request.definition.web.scopes.session.context.dialogs;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.io.Serializable;
+import java.util.Map;
+
+import org.openiot.ui.request.commons.nodes.interfaces.GraphNode;
+import org.openiot.ui.request.definition.web.model.EditablePropertyField;
+import org.openiot.ui.request.definition.web.scopes.session.base.DisposableContext;
 
 /**
- *
+ * 
  * @author Achilleas Anagnostopoulos (aanag) email: aanag@sensap.eu
  */
-@Target(ElementType.TYPE)
-@Retention(RetentionPolicy.RUNTIME)
-public @interface GraphNodeClass {
+public class EditVariableDialogContext extends DisposableContext implements Serializable {
+	private static final long serialVersionUID = 1L;
 
-    public String type();
+	private GraphNode node;
+	private EditablePropertyField field;
 
-    public String label();
+	public EditVariableDialogContext(GraphNode node, EditablePropertyField field) {
+		super();
+		this.register();
 
-    /**
-     * Set to true to automagically initialize the endpoint and property lists
-     * using an annotation scanner
-     */
-    boolean scanProperties() default false;
+		this.node = node;
+		this.field = field;
+	}
 
-    /**
-     * Set to true to prevent this class from being discovered by the node scanner
-     */
-    boolean hideFromScanner() default false;
+	@Override
+	public String getContextUID() {
+		return "editVariableDialogContext";
+	}
+	
+	public GraphNode getNode() {
+		return node;
+	}
+
+	public EditablePropertyField getField() {
+		return field;
+	}
+
+	public void setField(EditablePropertyField field) {
+		this.field = field;
+	}
+
 }

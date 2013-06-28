@@ -73,6 +73,7 @@ public class ServiceDesignPageContext extends DisposableContext{
 		this.register();
 
 		graphModel = new DefaultGraphModel();
+		graphModel.setLabel("New application");
 		graphValidationErrors = new ArrayList<GraphValidationError>();
 		graphValidationWarnings = new ArrayList<GraphValidationWarning>();
 		availableNodesByTypeMap = new LinkedHashMap<String, List<GraphNode>>();
@@ -183,9 +184,9 @@ public class ServiceDesignPageContext extends DisposableContext{
 			sensor.setType("SENSOR");
 			
 			// Copy selected filter params
-			sensor.setFilterLocationLat(filterLocationLat);
-			sensor.setFilterLocationLon(filterLocationLon);
-			sensor.setFilterLocationRadius(filterLocationRadius);
+			sensor.getPropertyValueMap().put("LAT", filterLocationLat);
+			sensor.getPropertyValueMap().put("LON", filterLocationLon);
+			sensor.getPropertyValueMap().put("RADIUS", filterLocationRadius);
 
 			// Initialize sensor endpoints
 			List<GraphNodeEndpoint> endpointList = new ArrayList<GraphNodeEndpoint>();

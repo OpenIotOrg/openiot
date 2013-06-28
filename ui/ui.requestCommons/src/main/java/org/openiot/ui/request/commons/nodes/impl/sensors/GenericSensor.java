@@ -20,58 +20,21 @@
 package org.openiot.ui.request.commons.nodes.impl.sensors;
 
 import java.io.Serializable;
+
+import org.openiot.ui.request.commons.annotations.GraphNodeClass;
+import org.openiot.ui.request.commons.annotations.NodeProperties;
+import org.openiot.ui.request.commons.annotations.NodeProperty;
 import org.openiot.ui.request.commons.nodes.base.DefaultGraphNode;
-import org.openiot.ui.request.commons.nodes.interfaces.GraphNode;
+import org.openiot.ui.request.commons.nodes.enums.PropertyType;
 
 /**
- * Generic node that models sensors. Since sensors are instanciated on the fly
- * this class contains no annotations and will not be detected by the node
- * scanner.
- *
  * @author Achilleas Anagnostopoulos (aanag) email: aanag@sensap.eu
  */
+@GraphNodeClass(label = "GenericSensor", type = "SENSOR", scanProperties = true, hideFromScanner = true)
+@NodeProperties({
+    @NodeProperty(type = PropertyType.Writable, javaType = java.lang.Number.class, name = "LAT", required = true),
+    @NodeProperty(type = PropertyType.Writable, javaType = java.lang.Number.class, name = "LON", required = true),
+    @NodeProperty(type = PropertyType.Writable, javaType = java.lang.Number.class, name = "RADIUS", required = true)})
 public class GenericSensor extends DefaultGraphNode implements Serializable {
 	private static final long serialVersionUID = 1L;
-
-    private double filterLocationLat;
-    private double filterLocationLon;
-    private double filterLocationRadius;
-
-    public GenericSensor() {
-        super();
-    }
-
-    public double getFilterLocationLat() {
-        return filterLocationLat;
-    }
-
-    public void setFilterLocationLat(double filterLocationLat) {
-        this.filterLocationLat = filterLocationLat;
-    }
-
-    public double getFilterLocationLon() {
-        return filterLocationLon;
-    }
-
-    public void setFilterLocationLon(double filterLocationLon) {
-        this.filterLocationLon = filterLocationLon;
-    }
-
-    public double getFilterLocationRadius() {
-        return filterLocationRadius;
-    }
-
-    public void setFilterLocationRadius(double filterLocationRadius) {
-        this.filterLocationRadius = filterLocationRadius;
-    }
-
-	@Override
-	public GraphNode getCopy() {
-		GenericSensor copy = (GenericSensor)super.getCopy();
-		copy.setFilterLocationLat(filterLocationLat);
-		copy.setFilterLocationLon(filterLocationLon);
-		copy.setFilterLocationRadius(filterLocationRadius);
-		
-		return copy;
-	}
 }

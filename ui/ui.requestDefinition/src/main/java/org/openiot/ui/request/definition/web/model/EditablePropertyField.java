@@ -19,24 +19,46 @@
  ******************************************************************************/
 package org.openiot.ui.request.definition.web.model;
 
+import java.io.Serializable;
+
+import org.openiot.ui.request.commons.nodes.enums.PropertyType;
+import org.openiot.ui.request.commons.nodes.interfaces.GraphNodeProperty;
+
 /**
  *
  * @author Achilleas Anagnostopoulos (aanag) email: aanag@sensap.eu
  */
-public class EditablePropertyField {
-    private String valueKey;
+public class EditablePropertyField implements Serializable{
+	private static final long serialVersionUID = 1L;
+	private String valueKey;
     private boolean isRequired;
     private boolean isEditable;
+    private boolean isVariablizable;
     private String[] allowedValues;
+    private GraphNodeProperty property;
+    private String controlType;
 
-    public EditablePropertyField(String valueKey, boolean isRequired, boolean isEditable, String[] allowedValues) {
-        this.valueKey = valueKey;
-        this.isRequired = isRequired;
-        this.isEditable = isEditable;
-        this.allowedValues = allowedValues;
+    public EditablePropertyField(String nodeType, GraphNodeProperty property) {
+    	
+    	this.controlType = property.getAllowedValues() != null ? "StringList" : property.getJavaType().getSimpleName();
+    	this.property = property;
+        this.valueKey = property.getName();
+        this.isRequired = property.isRequired();
+        this.isEditable = property.getType().equals(PropertyType.Writable);
+        this.isVariablizable = this.isEditable && ! "SENSOR".equals(nodeType);
+        this.allowedValues = property.getAllowedValues();
     }
+    
+    
+    public String getControlType() {
+		return controlType;
+	}
 
-    public String getValueKey() {
+	public GraphNodeProperty getProperty() {
+		return property;
+	}
+
+	public String getValueKey() {
         return valueKey;
     }
 
@@ -67,4 +89,12 @@ public class EditablePropertyField {
     public void setAllowedValues(String[] allowedValues) {
         this.allowedValues = allowedValues;
     }
+
+	public boolean isVariablizable() {
+		return isVariablizable;
+	}
+
+	public void setVariablizable(boolean isVariablizable) {
+		this.isVariablizable = isVariablizable;
+	}
 }

@@ -28,7 +28,7 @@ import org.openiot.ui.request.commons.nodes.enums.PropertyType;
  * @author Achilleas Anagnostopoulos (aanag) email: aanag@sensap.eu
  */
 public interface GraphNodeProperty {
-
+	
     /**
      * The type of property
      */
@@ -43,6 +43,19 @@ public interface GraphNodeProperty {
 
     public void setName(String name);
 
+	/**
+	 * Variable property
+	 */
+	public boolean isVariable();
+	public void setVariable( boolean isVariable );
+
+    /**
+     * Variable name
+     */
+    public String getVariableName();
+
+    public void setVariableName(String name);
+    
     /**
      * The property value type
      */

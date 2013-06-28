@@ -38,8 +38,10 @@ public class DefaultGraphNodeProperty implements GraphNodeProperty, Serializable
 
 	private PropertyType type;
 	private String name;
+	private String variableName;
 	private Class<?> javaType;
 	private boolean isRequired;
+	private boolean isVariable;
 	private String[] allowedValues;
 
 	public DefaultGraphNodeProperty() {
@@ -59,6 +61,14 @@ public class DefaultGraphNodeProperty implements GraphNodeProperty, Serializable
 
 	public void setName(String name) {
 		this.name = name;
+	}
+	
+	public String getVariableName() {
+		return variableName;
+	}
+
+	public void setVariableName(String variableName) {
+		this.variableName = variableName;
 	}
 
 	public Class<?> getJavaType() {
@@ -102,11 +112,13 @@ public class DefaultGraphNodeProperty implements GraphNodeProperty, Serializable
 			spec.put("class", this.getClass().getCanonicalName());
 			spec.put("type", getType().toString());
 			spec.put("name", getName());
+			spec.put("variableName", getVariableName());
 			spec.put("javaClass", javaType.getCanonicalName());
 			spec.put("isRequired", isRequired());
+			spec.put("isVariable", isVariable());
 			if (allowedValues != null) {
 				JSONArray values = new JSONArray();
-				for( String value : allowedValues ){
+				for (String value : allowedValues) {
 					values.put(value);
 				}
 				spec.put("allowedValues", values);
@@ -120,12 +132,14 @@ public class DefaultGraphNodeProperty implements GraphNodeProperty, Serializable
 	public void importJSON(JSONObject spec) throws JSONException {
 		setType(PropertyType.valueOf(spec.getString("type")));
 		setName(spec.getString("name"));
+		setVariableName(spec.optString("variableName"));
 		try {
 			setJavaType(Class.forName(spec.getString("javaClass")));
 		} catch (Throwable ex) {
 			throw new JSONException("Unsupported java class type value '" + spec.getString("javaClass") + "'");
 		}
 		setRequired(spec.getBoolean("isRequired"));
+		setVariable(spec.getBoolean("isVariable"));
 		if (spec.has("allowedValues")) {
 			JSONArray values = spec.getJSONArray("allowedValues");
 			allowedValues = new String[values.length()];
@@ -135,8 +149,16 @@ public class DefaultGraphNodeProperty implements GraphNodeProperty, Serializable
 		}
 	}
 
+	public boolean isVariable() {
+		return isVariable;
+	}
+
+	public void setVariable(boolean isVariable) {
+		this.isVariable = isVariable;
+	}
+
 	@Override
 	public String toString() {
-		return "[type: " + getType() + ", name: " + getName() + ", javaType: " + getJavaType() + ", required: " + isRequired() + "]";
+		return "[type: " + getType() + ", name: " + getName() + ", javaType: " + getJavaType() + ", required: " + isRequired() + ", variable: " + isVariable + ", varName: " + variableName + "]";
 	}
 }

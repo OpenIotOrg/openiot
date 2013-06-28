@@ -32,37 +32,37 @@ import org.openiot.ui.request.commons.nodes.base.DefaultGraphNode;
 import org.openiot.ui.request.commons.nodes.enums.AnchorType;
 import org.openiot.ui.request.commons.nodes.enums.EndpointType;
 import org.openiot.ui.request.commons.nodes.enums.PropertyType;
+import org.openiot.ui.request.commons.nodes.interfaces.GraphNodeProperty;
 
 /**
- *
+ * 
  * @author Achilleas Anagnostopoulos (aanag) email: aanag@sensap.eu
  */
 @GraphNodeClass(label = "CompareRelativeDateTime", type = "COMPARATOR", scanProperties = true)
-@Endpoints({
-    @Endpoint(type = EndpointType.Input, anchorType = AnchorType.Left, scope = "Compare.Date", label = "IN", required = true),
-})
-@NodeProperties({
-    @NodeProperty(type = PropertyType.Writable, javaType = java.lang.String.class, name = "OPERATOR", allowedValues = {"<", "<=", ">", ">="}, required = true),
-    @NodeProperty(type = PropertyType.Writable, javaType = java.lang.Long.class, name = "CMP_VALUE", required = true),
-    @NodeProperty(type = PropertyType.Writable, javaType = java.lang.String.class, name = "CMP_VALUE_UNIT", allowedValues = {"SECOND(S)", "MINUTE(S)", "HOUR(S)", "DAY(S)", "MONTH(S)", "YEAR(S)"}, required = true)
-})
+@Endpoints({ @Endpoint(type = EndpointType.Input, anchorType = AnchorType.Left, scope = "Compare.Date", label = "IN", required = true), })
+@NodeProperties({ @NodeProperty(type = PropertyType.Writable, javaType = java.lang.String.class, name = "OPERATOR", allowedValues = { "<", "<=", ">", ">=" }, required = true), @NodeProperty(type = PropertyType.Writable, javaType = java.lang.Long.class, name = "CMP_VALUE", required = true), @NodeProperty(type = PropertyType.Writable, javaType = java.lang.String.class, name = "CMP_VALUE_UNIT", allowedValues = { "SECOND(S)", "MINUTE(S)", "HOUR(S)", "DAY(S)", "MONTH(S)", "YEAR(S)" }, required = true) })
 public class CompareRelativeDateTime extends DefaultGraphNode implements Serializable, Observer {
 	private static final long serialVersionUID = 1L;
 
-    public CompareRelativeDateTime() {
-        super();
+	public CompareRelativeDateTime() {
+		super();
 
-        // Listen for property change events
-        addPropertyChangeObserver(this);
-    }
+		// Listen for property change events
+		addPropertyChangeObserver(this);
+	}
 
-    public void update(Observable o, Object arg) {
-        // Mutate our label
-        Map<String, Object> propertyMap = getPropertyValueMap();
-        if (propertyMap.get("OPERATOR") != null && propertyMap.get("CMP_VALUE") != null && propertyMap.get("CMP_VALUE_UNIT") != null) {
-            setLabel(propertyMap.get("OPERATOR") + "<br/>" + propertyMap.get("CMP_VALUE") + " " + propertyMap.get("CMP_VALUE_UNIT"));
-        } else {
-            setLabel("CompareRelativeDateTime");
-        }
-    }
+	public void update(Observable o, Object arg) {
+		// Mutate our label
+		Map<String, Object> propertyMap = getPropertyValueMap();
+		if (propertyMap.get("OPERATOR") != null && propertyMap.get("CMP_VALUE") != null && propertyMap.get("CMP_VALUE_UNIT") != null) {
+			String value = propertyMap.get("CMP_VALUE").toString();
+			GraphNodeProperty prop = getPropertyByName("CMP_VALUE");
+			if (prop.isVariable()) {
+				value = prop.getVariableName();
+			}
+			setLabel(propertyMap.get("OPERATOR") + "<br/>" + value + " " + propertyMap.get("CMP_VALUE_UNIT"));
+		} else {
+			setLabel("CompareRelativeDateTime");
+		}
+	}
 }

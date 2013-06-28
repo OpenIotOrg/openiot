@@ -94,6 +94,14 @@
 								icon="ui-icon-circle-arrow-w" />
 
 						</p:submenu>
+
+						<f:facet name="options">
+							<p:outputLabel value="#{messages.UI_MENUBAR_ACTIVE_APP}" />
+							<p:button icon="ui-icon-document" style="margin-left:10px;"
+								value="#{empty serviceDesignPageController.context.graphModel ? '-' : serviceDesignPageController.context.graphModel.label}"
+								onclick="return false;" />
+						</f:facet>
+
 					</p:menubar>
 				</h:form>
 			</pe:layoutPane>
@@ -212,28 +220,72 @@
 								</p:calendar>
 							</pe:dynaFormControl>
 							<pe:dynaFormControl type="String" for="string">
-								<p:inputText id="string"
-									value="#{serviceDesignPageController.context.graphModel.selectedNode.propertyValueMap[control.valueKey]}"
+
+								<p:inputText id="string" style="display:none;" />
+
+								<p:inputText
+									readonly="#{(!control.editable) or (control.property.variable)}"
+									value="#{control.property.variable ? control.property.variableName : serviceDesignPageController.context.graphModel.selectedNode.propertyValueMap[control.valueKey]}"
 									required="#{control.required}">
 									<p:ajax event="change" process="@this"
 										update=":nodeGraphForm:nodeGraph" />
 								</p:inputText>
+								<p:commandButton disabled="#{!control.variablizable}"
+									icon="ui-icon-tag" process="@this"
+									update=":editVariableDialog:editVariableDialogForm"
+									actionListener="#{editVariableDialogController.prepareDialog(serviceDesignPageController.context.graphModel.selectedNode, control)}"
+									onclick="windowBlockUI.block();"
+									oncomplete="windowBlockUI.unblock();editVariableDialog.show();" />
+
 							</pe:dynaFormControl>
 							<pe:dynaFormControl type="Number" for="number">
-								<pe:inputNumber id="number"
+								<p:inputText id="number" style="display:none;" />
+
+								<pe:inputNumber rendered="#{!control.property.variable}"
+									readonly="#{!control.editable}"
 									value="#{serviceDesignPageController.context.graphModel.selectedNode.propertyValueMap[control.valueKey]}"
 									required="#{control.required}">
 									<p:ajax event="change" process="@this"
 										update=":nodeGraphForm:nodeGraph" />
 								</pe:inputNumber>
+
+								<p:inputText rendered="#{control.property.variable}"
+									readonly="true" value="#{control.property.variableName}"
+									required="#{control.required}">
+									<p:ajax event="change" process="@this"
+										update=":nodeGraphForm:nodeGraph" />
+								</p:inputText>
+								<p:commandButton disabled="#{!control.variablizable}"
+									icon="ui-icon-tag" process="@this"
+									update=":editVariableDialog:editVariableDialogForm"
+									actionListener="#{editVariableDialogController.prepareDialog(serviceDesignPageController.context.graphModel.selectedNode, control)}"
+									onclick="windowBlockUI.block();"
+									oncomplete="windowBlockUI.unblock();editVariableDialog.show();" />
+
 							</pe:dynaFormControl>
 							<pe:dynaFormControl type="Long" for="long">
-								<pe:inputNumber id="long"
+								<p:inputText id="long" style="display:none;" />
+
+								<pe:inputNumber rendered="#{!control.property.variable}"
+									readonly="#{!control.editable}"
 									value="#{serviceDesignPageController.context.graphModel.selectedNode.propertyValueMap[control.valueKey]}"
 									required="#{control.required}" decimalPlaces="0">
 									<p:ajax event="change" process="@this"
 										update=":nodeGraphForm:nodeGraph" />
 								</pe:inputNumber>
+
+								<p:inputText rendered="#{control.property.variable}"
+									readonly="true" value="#{control.property.variableName}"
+									required="#{control.required}">
+									<p:ajax event="change" process="@this"
+										update=":nodeGraphForm:nodeGraph" />
+								</p:inputText>
+								<p:commandButton disabled="#{!control.variablizable}"
+									icon="ui-icon-tag" process="@this"
+									update=":editVariableDialog:editVariableDialogForm"
+									actionListener="#{editVariableDialogController.prepareDialog(serviceDesignPageController.context.graphModel.selectedNode, control)}"
+									onclick="windowBlockUI.block();"
+									oncomplete="windowBlockUI.unblock();editVariableDialog.show();" />
 							</pe:dynaFormControl>
 						</pe:dynaForm>
 					</h:form>
@@ -353,6 +405,7 @@
 		</h:form>
 
 		<dialogs:findSensorDialog id="findSensorDialog" />
+		<dialogs:editVariableDialog id="editVariableDialog" />
 
 	</h:body>
 

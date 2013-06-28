@@ -41,10 +41,13 @@ import javax.xml.transform.stream.StreamSource;
 import org.jboss.resteasy.client.ClientRequest;
 import org.jboss.resteasy.client.ClientRequestFactory;
 import org.jboss.resteasy.client.ClientResponse;
+import org.openiot.commons.osdspec.model.DynamicAttrMaxValue;
 import org.openiot.commons.osdspec.model.OAMO;
 import org.openiot.commons.osdspec.model.OSDSpec;
 import org.openiot.commons.osdspec.model.OSMO;
 import org.openiot.commons.osdspec.model.PresentationAttr;
+import org.openiot.commons.osdspec.model.QueryControls;
+import org.openiot.commons.osdspec.model.QuerySchedule;
 import org.openiot.commons.osdspec.model.RequestPresentation;
 import org.openiot.commons.osdspec.model.Widget;
 import org.openiot.commons.sensortypes.model.SensorTypes;
@@ -53,6 +56,7 @@ import org.openiot.ui.request.commons.interfaces.GraphModel;
 import org.openiot.ui.request.commons.logging.LoggerService;
 import org.openiot.ui.request.commons.nodes.impl.sensors.GenericSensor;
 import org.openiot.ui.request.commons.nodes.interfaces.GraphNode;
+import org.openiot.ui.request.commons.nodes.interfaces.GraphNodeProperty;
 import org.openiot.ui.request.commons.nodes.validation.validators.DefaultGraphNodeValidator;
 import org.openiot.ui.request.definition.web.factory.PropertyGridFormFactory;
 import org.openiot.ui.request.definition.web.generator.SparqlGenerator;
@@ -134,9 +138,9 @@ public class ServiceDesignPageController implements Serializable {
 			// If we added a sensor, set the search filters into the instance
 			if (newNode instanceof GenericSensor) {
 				GenericSensor sensor = (GenericSensor) node;
-				sensor.setFilterLocationLat(context.getFilterLocationLat());
-				sensor.setFilterLocationLon(context.getFilterLocationLon());
-				sensor.setFilterLocationRadius(context.getFilterLocationRadius());
+				sensor.getPropertyValueMap().put("LAT", context.getFilterLocationLat());
+				sensor.getPropertyValueMap().put("LON", context.getFilterLocationLon());
+				sensor.getPropertyValueMap().put("RADIUS", context.getFilterLocationRadius());
 			}
 
 			break;
@@ -216,19 +220,34 @@ public class ServiceDesignPageController implements Serializable {
 					OAMO oamo = new OAMO();
 					oamo.setName(model.getLabel());
 					oamo.setId(model.getUID());
+					oamo.setGraphMeta("<![CDATA[" + model.toJSON().toString() + "]]>");
 
 					// Generate an OSMO object for each visualization node
 					for (GraphNode node : model.getNodes()) {
 						if (node.getType().equals("VISUALIZER")) {
 							OSMO osmo = new OSMO();
-							osmo.setId("osmo-" + node.getUID());
+							
+							// Setup query controlls
+							QueryControls queryControls = new QueryControls();
+							queryControls.setReportIfEmpty(false);
+							QuerySchedule querySchedule = new QuerySchedule();
+							queryControls.setQuerySchedule(querySchedule);
+							osmo.setQueryControls(queryControls);
 
 							// Setup query request
 							QueryRequest queryRequest = new QueryRequest();
 							String codeBlock = generator.generateCode(model, node);
 							codeOutput += codeBlock;
-							queryRequest.setQuery(codeBlock);
+							queryRequest.setQuery("<![CDATA[" + codeBlock + "]]>");
 							osmo.setQueryRequest(queryRequest);
+							
+							// Encode dynamic attributes
+							for( Map.Entry<GraphNodeProperty, Object> entry : generator.getVariableMap().entrySet()){
+								DynamicAttrMaxValue attr = new DynamicAttrMaxValue();
+								attr.setName(entry.getKey().getVariableName());
+								attr.setValue(entry.getValue().toString());
+								osmo.getDynamicAttrMaxValue().add(attr);
+							}							
 
 							// Setup visualization params
 							RequestPresentation requestPresentation = new RequestPresentation();

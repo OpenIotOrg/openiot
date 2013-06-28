@@ -33,6 +33,7 @@ import org.openiot.ui.request.commons.nodes.base.DefaultGraphNode;
 import org.openiot.ui.request.commons.nodes.enums.AnchorType;
 import org.openiot.ui.request.commons.nodes.enums.EndpointType;
 import org.openiot.ui.request.commons.nodes.enums.PropertyType;
+import org.openiot.ui.request.commons.nodes.interfaces.GraphNodeProperty;
 
 /**
  *
@@ -61,7 +62,12 @@ public class CompareAbsoluteDateTime extends DefaultGraphNode implements Seriali
         Map<String, Object> propertyMap = getPropertyValueMap();
         if (propertyMap.get("OPERATOR") != null && propertyMap.get("CMP_VALUE") != null) {
         	SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy HH:mm");
-            setLabel(propertyMap.get("OPERATOR") + "<br/>" + sdf.format(propertyMap.get("CMP_VALUE")));
+        	String value = sdf.format(propertyMap.get("CMP_VALUE"));
+        	GraphNodeProperty prop =getPropertyByName("CMP_VALUE");
+        	if( prop.isVariable()){
+        		value = prop.getVariableName();
+        	}
+            setLabel(propertyMap.get("OPERATOR") + "<br/>" + value);
         } else {
             setLabel("CompareAbsoluteDateTime");
         }

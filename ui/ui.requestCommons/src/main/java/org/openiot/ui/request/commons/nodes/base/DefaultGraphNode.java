@@ -109,6 +109,16 @@ public class DefaultGraphNode implements GraphNode, Serializable {
 	public void setPropertyDefinitions(List<GraphNodeProperty> propertyDefinitions) {
 		this.propertyDefinitions = propertyDefinitions;
 	}
+	
+	public GraphNodeProperty getPropertyByName(String name){
+		for( GraphNodeProperty property : propertyDefinitions ){
+			if( property.getName().equals(name) ){
+				return property;
+			}
+		}
+		
+		return null;
+	}
 
 	public Map<String, Object> getPropertyValueMap() {
 		return propertyMap;

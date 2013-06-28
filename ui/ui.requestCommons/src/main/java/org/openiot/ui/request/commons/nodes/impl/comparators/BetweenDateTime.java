@@ -33,6 +33,7 @@ import org.openiot.ui.request.commons.nodes.base.DefaultGraphNode;
 import org.openiot.ui.request.commons.nodes.enums.AnchorType;
 import org.openiot.ui.request.commons.nodes.enums.EndpointType;
 import org.openiot.ui.request.commons.nodes.enums.PropertyType;
+import org.openiot.ui.request.commons.nodes.interfaces.GraphNodeProperty;
 
 /**
  *
@@ -61,7 +62,18 @@ public class BetweenDateTime extends DefaultGraphNode implements Serializable, O
         Map<String, Object> propertyMap = getPropertyValueMap();
         if (propertyMap.get("CMP_VALUE1") != null && propertyMap.get("CMP_VALUE2") != null) {
         	SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy HH:mm");
-            setLabel(sdf.format(propertyMap.get("CMP_VALUE1")) + "<br/> &lt;= IN &lt;= <br/>" + sdf.format(propertyMap.get("CMP_VALUE2")));
+        	String lValue = sdf.format(propertyMap.get("CMP_VALUE1"));
+        	GraphNodeProperty prop =getPropertyByName("CMP_VALUE1"); 
+        	if( prop.isVariable()){
+        		lValue = prop.getVariableName();
+        	}
+        	String rValue = sdf.format(propertyMap.get("CMP_VALUE2"));
+        	prop = getPropertyByName("CMP_VALUE2"); 
+        	if( prop.isVariable()){
+        		rValue = prop.getVariableName();        	
+    		}
+        	
+        	setLabel(lValue + "<br/> &lt;= IN &lt;= <br/>" + rValue);
         } else {
             setLabel("BetweenDateTime");
         }

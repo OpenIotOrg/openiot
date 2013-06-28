@@ -32,6 +32,7 @@ import org.openiot.ui.request.commons.nodes.base.DefaultGraphNode;
 import org.openiot.ui.request.commons.nodes.enums.AnchorType;
 import org.openiot.ui.request.commons.nodes.enums.EndpointType;
 import org.openiot.ui.request.commons.nodes.enums.PropertyType;
+import org.openiot.ui.request.commons.nodes.interfaces.GraphNodeProperty;
 
 /**
  *
@@ -59,7 +60,17 @@ public class Between extends DefaultGraphNode implements Serializable, Observer 
         // Mutate our label
         Map<String, Object> propertyMap = getPropertyValueMap();
         if (propertyMap.get("CMP_VALUE1") != null && propertyMap.get("CMP_VALUE2") != null) {
-            setLabel(propertyMap.get("CMP_VALUE1") + "<br/> &lt;= IN &lt;= <br/>" + propertyMap.get("CMP_VALUE2"));
+        	String lValue = propertyMap.get("CMP_VALUE1").toString();
+        	GraphNodeProperty prop =getPropertyByName("CMP_VALUE1"); 
+        	if( prop.isVariable()){
+        		lValue = prop.getVariableName();
+        	}
+        	String rValue = propertyMap.get("CMP_VALUE2").toString();
+        	prop = getPropertyByName("CMP_VALUE2"); 
+        	if( prop.isVariable()){
+        		rValue = prop.getVariableName();
+        	}
+            setLabel(lValue + "<br/> &lt;= IN &lt;= <br/>" + rValue);
         } else {
             setLabel("Between");
         }

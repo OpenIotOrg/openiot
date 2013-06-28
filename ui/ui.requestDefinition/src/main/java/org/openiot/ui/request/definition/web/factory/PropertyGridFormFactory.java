@@ -21,11 +21,10 @@ package org.openiot.ui.request.definition.web.factory;
 
 import java.util.ResourceBundle;
 
-import org.openiot.ui.request.definition.web.model.EditablePropertyField;
-import org.openiot.ui.request.definition.web.util.FaceletLocalization;
-import org.openiot.ui.request.commons.nodes.enums.PropertyType;
 import org.openiot.ui.request.commons.nodes.interfaces.GraphNode;
 import org.openiot.ui.request.commons.nodes.interfaces.GraphNodeProperty;
+import org.openiot.ui.request.definition.web.model.EditablePropertyField;
+import org.openiot.ui.request.definition.web.util.FaceletLocalization;
 import org.primefaces.extensions.model.dynaform.DynaFormControl;
 import org.primefaces.extensions.model.dynaform.DynaFormLabel;
 import org.primefaces.extensions.model.dynaform.DynaFormModel;
@@ -45,9 +44,9 @@ public class PropertyGridFormFactory {
         for (GraphNodeProperty property : node.getPropertyDefinitions()) {
             DynaFormRow modelRow = model.createRegularRow();
             DynaFormLabel label = modelRow.addLabel(FaceletLocalization.lookupLabelTranslation(mesages, property.getName(), "UI_NODE_PROPERTY_" + node.getClass().getSimpleName() + "_" + property.getName(), "UI_NODE_PROPERTY_" + property.getName()), false, 1, 1);
-
             String controlType = property.getAllowedValues() != null ? "StringList" : property.getJavaType().getSimpleName();
-            DynaFormControl control = modelRow.addControl(new EditablePropertyField(property.getName(), property.isRequired(), property.getType().equals(PropertyType.Writable), property.getAllowedValues()), controlType, 1, 1);
+
+            DynaFormControl control = modelRow.addControl(new EditablePropertyField(node.getType(), property), controlType, 1, 1);
             label.setForControl(control);
         }
 

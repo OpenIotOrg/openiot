@@ -32,36 +32,37 @@ import org.openiot.ui.request.commons.nodes.base.DefaultGraphNode;
 import org.openiot.ui.request.commons.nodes.enums.AnchorType;
 import org.openiot.ui.request.commons.nodes.enums.EndpointType;
 import org.openiot.ui.request.commons.nodes.enums.PropertyType;
+import org.openiot.ui.request.commons.nodes.interfaces.GraphNodeProperty;
 
 /**
- *
+ * 
  * @author Achilleas Anagnostopoulos (aanag) email: aanag@sensap.eu
  */
 @GraphNodeClass(label = "Compare", type = "COMPARATOR", scanProperties = true)
-@Endpoints({
-    @Endpoint(type = EndpointType.Input, anchorType = AnchorType.Left, scope = "Compare.Number", label = "IN", required = true),
-})
-@NodeProperties({
-    @NodeProperty(type = PropertyType.Writable, javaType = java.lang.String.class, name = "OPERATOR", allowedValues = {"=", "<", "<=", ">", ">="}, required = true),
-    @NodeProperty(type = PropertyType.Writable, javaType = java.lang.Number.class, name = "CMP_VALUE", required = true)
-})
+@Endpoints({ @Endpoint(type = EndpointType.Input, anchorType = AnchorType.Left, scope = "Compare.Number", label = "IN", required = true), })
+@NodeProperties({ @NodeProperty(type = PropertyType.Writable, javaType = java.lang.String.class, name = "OPERATOR", allowedValues = { "=", "<", "<=", ">", ">=" }, required = true), @NodeProperty(type = PropertyType.Writable, javaType = java.lang.Number.class, name = "CMP_VALUE", required = true) })
 public class Compare extends DefaultGraphNode implements Serializable, Observer {
 	private static final long serialVersionUID = 1L;
 
-    public Compare() {
-        super();
+	public Compare() {
+		super();
 
-        // Listen for property change events
-        addPropertyChangeObserver(this);
-    }
+		// Listen for property change events
+		addPropertyChangeObserver(this);
+	}
 
-    public void update(Observable o, Object arg) {
-        // Mutate our label
-        Map<String, Object> propertyMap = getPropertyValueMap();
-        if (propertyMap.get("OPERATOR") != null && propertyMap.get("CMP_VALUE") != null) {
-            setLabel(propertyMap.get("OPERATOR") + "<br/>" + propertyMap.get("CMP_VALUE"));
-        } else {
-            setLabel("Compare");
-        }
-    }
+	public void update(Observable o, Object arg) {
+		// Mutate our label
+		Map<String, Object> propertyMap = getPropertyValueMap();
+		if (propertyMap.get("OPERATOR") != null && propertyMap.get("CMP_VALUE") != null) {
+			String value = propertyMap.get("CMP_VALUE").toString();
+			GraphNodeProperty prop = getPropertyByName("CMP_VALUE");
+			if (prop.isVariable()) {
+				value = prop.getVariableName();
+			}
+			setLabel(propertyMap.get("OPERATOR") + "<br/>" + value);
+		} else {
+			setLabel("Compare");
+		}
+	}
 }

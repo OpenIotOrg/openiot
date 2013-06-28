@@ -20,18 +20,20 @@
 package org.openiot.ui.request.commons.annotations.scanners;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+
 import org.openiot.ui.request.commons.annotations.Endpoint;
 import org.openiot.ui.request.commons.annotations.Endpoints;
 import org.openiot.ui.request.commons.annotations.GraphNodeClass;
 import org.openiot.ui.request.commons.annotations.NodeProperties;
 import org.openiot.ui.request.commons.annotations.NodeProperty;
+import org.openiot.ui.request.commons.logging.LoggerService;
 import org.openiot.ui.request.commons.nodes.base.DefaultGraphNodeEndpoint;
 import org.openiot.ui.request.commons.nodes.base.DefaultGraphNodeProperty;
 import org.openiot.ui.request.commons.nodes.interfaces.GraphNodeEndpoint;
 import org.openiot.ui.request.commons.nodes.interfaces.GraphNodeProperty;
-import org.openiot.ui.request.commons.logging.LoggerService;
 import org.reflections.Reflections;
 
 /**
@@ -96,7 +98,15 @@ public class GraphNodeScanner {
     public static Set<Class<?>> detectGraphNodeClasses() {
         try {
         	Reflections reflections = new Reflections("org.openiot.ui.request.commons.nodes.impl");
-            return reflections.getTypesAnnotatedWith(GraphNodeClass.class);
+        	Set<Class<?>> detectedClasses =reflections.getTypesAnnotatedWith(GraphNodeClass.class);
+        	Iterator<Class<?>> setIt = detectedClasses.iterator();
+        	while( setIt.hasNext() ){
+        		GraphNodeClass annotation = setIt.next().getAnnotation(GraphNodeClass.class);
+        		if( annotation.hideFromScanner() ){
+        			setIt.remove();
+        		}
+        	}
+            return detectedClasses; 
         } catch (Exception ex) {
             LoggerService.log(ex);
         }

@@ -54,6 +54,8 @@ public interface GraphNode {
     public List<GraphNodeProperty> getPropertyDefinitions();
 
     public void setPropertyDefinitions(List<GraphNodeProperty> propertyDefinitions);
+    
+    public GraphNodeProperty getPropertyByName(String name);
 
     /**
      * Node property value map
