@@ -18,9 +18,15 @@ import java.util.ArrayList;
 import java.util.Set;
 import java.util.UUID;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.core.util.StatusPrinter;
+
 public class SesameSPARQLClient
-<<<<<<< HEAD
 {
+	//Initialize the Logger
+	final static Logger logger = LoggerFactory.getLogger(SesameSPARQLClient.class.getName()); 
 	private SPARQLRepository therepository = null;
 		
 	public SesameSPARQLClient()
@@ -34,18 +40,15 @@ public class SesameSPARQLClient
 		catch (RepositoryException e) 
 		{			
 			e.printStackTrace();
-		}		
-	}
-=======
-{	
+		}
+		
+		 // print Logger's internal state (not required for initialization)
+	    LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory(); 
+	    StatusPrinter.print(lc);
+	   
+	    logger.debug("Hello world Debug by Logger. From : {}",SesameSPARQLClient.class.getName());
+	}	
 	
-	
-    //Initialize the Logger
-	final static Logger logger = LoggerFactory.getLogger(SesameSPARQLClient.class.getName()); 
-	
-	SPARQLRepository therepository = null;
-	
->>>>>>> a0f855027ab27c2ee9735e60106621a36e59db3c
 	public SesameSPARQLClient(String url)
 	{					
 		therepository = new SPARQLRepository(url);
@@ -56,24 +59,13 @@ public class SesameSPARQLClient
 		catch (RepositoryException e) 
 		{			
 			e.printStackTrace();
-		}		
-<<<<<<< HEAD
-=======
+		}
 		
-		
-		
-
-	    
-	    // print Logger's internal state (not required for initialization)
+		 // print Logger's internal state (not required for initialization)
 	    LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory(); 
 	    StatusPrinter.print(lc);
 	   
 	    logger.debug("Hello world Debug by Logger. From : {}",SesameSPARQLClient.class.getName());
-
-		
-		
-		
->>>>>>> a0f855027ab27c2ee9735e60106621a36e59db3c
 	}
 	
 		

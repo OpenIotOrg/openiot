@@ -62,8 +62,7 @@ public class RegisterServiceImpl {
 	
 	
 	
-	public RegisterServiceImpl (OSDSpec osdSpec){
-		
+	public RegisterServiceImpl (OSDSpec osdSpec){	
 
 		
 		this.osdSpec = osdSpec;
@@ -152,7 +151,7 @@ public class RegisterServiceImpl {
 				schedulerUser.addService(srvc);
 				schedulerUser.createPuserOf();
 				
-<<<<<<< HEAD
+
 								
 				WidgetPresentation widgetPre = null;
 				for (Widget widget : osmo.getRequestPresentation().getWidget())
@@ -199,21 +198,8 @@ public class RegisterServiceImpl {
 				}//widget
 			}//osmo
 		}//oamo
-=======
-				logger.debug("OSMO Query: {}",osmo.getQueryRequest().getQuery());
-					
-				
-				//keep going in....
-				
-				
-				
-				
-			}
-			
-		}
 
->>>>>>> a0f855027ab27c2ee9735e60106621a36e59db3c
-		
+				
 		logger.debug(myOntInstance.exportToTriples("TURTLE"));
 		lsmStore.pushRDF("http://lsm.deri.ie/OpenIoT/testSchema#",myOntInstance.exportToTriples("N-TRIPLE"));
 		replyMessage= "successfuly";
