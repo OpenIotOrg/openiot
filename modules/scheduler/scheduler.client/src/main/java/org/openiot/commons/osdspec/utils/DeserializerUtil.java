@@ -46,10 +46,10 @@ public class DeserializerUtil {
 			String JAXB_CONTEXT = "org.openiot.commons.osdspec.model";
 			
 			// initialize jaxb context and unmarshaller
-			JAXBContext context = JAXBContext.newInstance(JAXB_CONTEXT);
+			JAXBContext context = JAXBContext.newInstance(OSDSpec.class);
 			Unmarshaller unmarshaller = context.createUnmarshaller();	
 			 
-			 osdspec = (OSDSpec)unmarshaller.unmarshal( inputStream );
+			osdspec = (OSDSpec)unmarshaller.unmarshal( inputStream );
 
 						
 		} catch (JAXBException e) {

@@ -254,13 +254,13 @@ public class Service
 	
 	private void initOnt_Service()
 	{
-		ontClsServiceClass = myOnt.getClass("http://openiot.eu/ontology/ns/Service");
-		ontPserviceName = myOnt.getProperty("http://openiot.eu/ontology/ns/serviceName");
-		ontPserviceDescription = myOnt.getProperty("http://openiot.eu/ontology/ns/serviceDescription");
+		ontClsServiceClass = myOnt.createClass("http://openiot.eu/ontology/ns/Service");
+		ontPserviceName = myOnt.createProperty("http://openiot.eu/ontology/ns/serviceName");
+		ontPserviceDescription = myOnt.createProperty("http://openiot.eu/ontology/ns/serviceDescription");
 		//lExecuted = myOnt.getProperty("http://openiot.eu/ontology/ns/lastExecuted");
-		ontPqString = myOnt.getProperty("http://openiot.eu/ontology/ns/queryString");
-		ontPserviceStatus = myOnt.getProperty("http://openiot.eu/ontology/ns/serviceStatus");
-		ontPuser = myOnt.getProperty("http://openiot.eu/ontology/ns/user");
+		ontPqString = myOnt.createProperty("http://openiot.eu/ontology/ns/queryString");
+		ontPserviceStatus = myOnt.createProperty("http://openiot.eu/ontology/ns/serviceStatus");
+		ontPuser = myOnt.createProperty("http://openiot.eu/ontology/ns/user");
 		ontPwidgePres= myOnt.createProperty("http://openiot.eu/ontology/ns/widgetPres");
 	}
 	

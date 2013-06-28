@@ -28,6 +28,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 
+import org.openiot.commons.sdum.serviceresultset.model.SdumServiceResultSet;
+import org.openiot.sdum.core.api.impl.PollForReportImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -74,11 +76,15 @@ public class ServiceDeliveryUtilityManagerRsControler {
 	}
 	
 	
-//	@GET
-//	@Path("/pollforreport")
-//	public String pollForReport(){
-//		
-//	}
+	@GET
+	@Path("/pollforreport")
+	public SdumServiceResultSet pollForReport(@QueryParam("serviceID") String serviceID){
+		
+		PollForReportImpl pollForReportImpl = new PollForReportImpl(serviceID);
+		
+		return pollForReportImpl.getSdumServiceResultSet();
+		
+	}
 	
 	
 	

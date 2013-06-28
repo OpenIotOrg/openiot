@@ -219,13 +219,18 @@
 
 		<!-- ======== LSM API Dependencies ========== -->
 
-       	<dependency>
+       <!-- 	<dependency>
 			<groupId>org.apache.jena</groupId>
 			<artifactId>apache-jena-libs</artifactId>
 			<version>2.10.1</version>
 			<type>pom</type>
-		</dependency>
-		
+		</dependency> -->
+		<dependency>
+			<groupId>com.hp.hpl.jena</groupId>
+			<artifactId>jena</artifactId>
+			<version>2.6.4</version>
+		</dependency>	
+			
 		<dependency>
 			<groupId>org.openiot</groupId>
 			<artifactId>lsm.api</artifactId>
@@ -263,6 +268,14 @@
 
 
 
+
+
+		<dependency>
+			<groupId>dom4j</groupId>
+			<artifactId>dom4j</artifactId>
+			<version>1.6.1</version>
+			
+		</dependency>
     </dependencies>
 
   <!-- =========================================================== -->

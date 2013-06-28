@@ -92,7 +92,7 @@ public class SchedulerRsControler {
 	 */
 	@POST
 	@Path("/registerService")
-	@Consumes("application/xml")
+//	@Consumes("application/xml")
 	public String registerService(OSDSpec osdSpec) {
 
 		
@@ -112,10 +112,7 @@ public class SchedulerRsControler {
 
 		
 		DiscoverSensorsImpl discoverSensorsImpl = new DiscoverSensorsImpl(userID, longitude, latitude, radius);
-
 		
 		return discoverSensorsImpl.getSensorTypes();
-
 	}
-
 }

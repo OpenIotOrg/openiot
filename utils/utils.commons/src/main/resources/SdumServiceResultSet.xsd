@@ -1,37 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
     targetNamespace="urn:openiot:sdum:serviceresultset:xsd:1"
-    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-    xmlns:vbr="http://www.w3.org/2007/SPARQL/results#"
     xmlns:prt="http://www.w3.org/2007/SPARQL/protocol-types#"
     xmlns:srs="urn:openiot:sdum:serviceresultset:xsd:1">
+    
+    <xs:import namespace="http://www.w3.org/2007/SPARQL/protocol-types#" schemaLocation="sparql/protocol-types.xsd"/>
 
-
-
-    <xs:import namespace="http://www.w3.org/2007/SPARQL/results#" schemaLocation="sparql/result.xsd"/>
-    <xs:import namespace="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-        schemaLocation="sparql/rdf.xsd"/>
-    <xs:import namespace="http://www.w3.org/2007/SPARQL/protocol-types#"
-        schemaLocation="sparql/protocol-types.xsd"/>
-
-
-
-
-
-    <xs:element name="SdumServiceResultSet" type="srs:SdumServiceResultSet"/>
-
-
-
-
-
-    <xs:complexType name="SdumServiceResultSet">
-
+    <xs:element name="SdumServiceResultSet">
+        <xs:complexType>
         <xs:sequence>
             <xs:element ref="srs:requestPresentation" maxOccurs="1"/>
             <xs:element ref="prt:query-result"/>
         </xs:sequence>
-
     </xs:complexType>
+    </xs:element>	
 
     <xs:element name="requestPresentation">
         <xs:complexType>
@@ -50,13 +32,10 @@
         </xs:complexType>
     </xs:element>
 
-
     <xs:element name="presentationAttr">
         <xs:complexType>
             <xs:attribute name="name" use="required" type="xs:string"/>
             <xs:attribute name="value" use="required" type="xs:string"/>
         </xs:complexType>
     </xs:element>
-
-
 </xs:schema>

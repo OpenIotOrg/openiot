@@ -76,9 +76,9 @@ public class SchedulerClient {
 		
 		//Prepare the request
 		discoverSensorsClientRequest.queryParameter("userID", "userIDString");
-		discoverSensorsClientRequest.queryParameter("longitude", 100.1);
-		discoverSensorsClientRequest.queryParameter("latitude", 200.2);
-		discoverSensorsClientRequest.queryParameter("radius", 30F);
+		discoverSensorsClientRequest.queryParameter("longitude", 6.631622);
+		discoverSensorsClientRequest.queryParameter("latitude", 46.520131);
+		discoverSensorsClientRequest.queryParameter("radius", 5F);
 
 		discoverSensorsClientRequest.accept("application/xml");
 
