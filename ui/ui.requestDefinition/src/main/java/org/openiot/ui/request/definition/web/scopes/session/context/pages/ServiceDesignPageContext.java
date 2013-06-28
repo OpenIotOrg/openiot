@@ -226,7 +226,7 @@ public class ServiceDesignPageContext extends DisposableContext{
 
 				String scope = "Number";
 				String capScope = cap.getUnit().get(0).getType();
-				if (!capScope.equals("double") && !capScope.equals("int")) {
+				if (!capScope.contains("double") && !capScope.contains("int") && !capScope.contains("decimal")) {
 					scope = capScope;
 				}
 				endpoint.setScope(scope);
