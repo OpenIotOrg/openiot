@@ -89,20 +89,20 @@ public class LineChart extends DefaultGraphNode implements Serializable, Observe
     			ep.setType(EndpointType.Input);
     			ep.setAnchor(AnchorType.Left);
     			ep.setConnectorType(ConnectorType.Rectangle);
-    			ep.setScope("number");
+    			ep.setScope("Number");
     			ep.setLabel(epLabel);
     			ep.setRequired(true);
     			getEndpointDefinitions().add(ep);
     			
     	        GraphNodeProperty prop = new DefaultGraphNodeProperty();
-    	        String propKey = "SERIES" + i + "_LABEL";
+    	        String propKey = "SERIES_" + i + "_LABEL";
     	        prop.setType(PropertyType.Writable);    	        
     	        prop.setName(propKey);
     	        prop.setJavaType(java.lang.String.class);
     	        prop.setRequired(true);
     	        getPropertyDefinitions().add(prop);    		
     	        
-    	        ((ObservableMap<String, Object>)getPropertyValueMap()).getWrappedMap().put(propKey, null);
+    	        ((ObservableMap<String, Object>)getPropertyValueMap()).getWrappedMap().put(propKey, "Series " + (i+1));
     		}
     	}
     	
@@ -123,7 +123,7 @@ public class LineChart extends DefaultGraphNode implements Serializable, Observe
                 
                 getEndpointDefinitions().remove(ep);
                 
-                String propKey = "SERIES" + i + "_LABEL";
+                String propKey = "SERIES_" + i + "_LABEL";
                 GraphNodeProperty prop = getPropertyByName(propKey);
                 if( prop != null ){
                 	getPropertyDefinitions().remove(prop);

@@ -45,7 +45,7 @@
 				<h:form id="menubar">
 					<p:menubar autoDisplay="false">
 						<p:submenu label="Workspace" icon="ui-icon-document">
-							<p:menuitem value="#{messages.UI_MENUBAR_NEW}"
+							<p:menuitem value="#{messages.UI_MENUBAR_NEW}" disabled="true"
 								icon="ui-icon-plus" />
 							<p:menuitem value="#{messages.UI_MENUBAR_OPEN}" disabled="true"
 								icon="ui-icon-plus" />
@@ -83,14 +83,10 @@
 
 							<p:separator />
 
-							<p:menuitem
-								disabled="#{empty serviceDesignPageController.context.graphModel}"
-								value="#{messages.UI_MENUBAR_EXPORT}"
+							<p:menuitem disabled="true" value="#{messages.UI_MENUBAR_EXPORT}"
 								icon="ui-icon-circle-arrow-e" />
 
-							<p:menuitem
-								disabled="#{empty serviceDesignPageController.context.graphModel}"
-								value="#{messages.UI_MENUBAR_IMPORT}"
+							<p:menuitem disabled="true" value="#{messages.UI_MENUBAR_IMPORT}"
 								icon="ui-icon-circle-arrow-w" />
 
 						</p:submenu>
@@ -205,8 +201,9 @@
 									value="#{serviceDesignPageController.context.graphModel.selectedNode.propertyValueMap[control.valueKey]}"
 									required="#{control.required}">
 									<p:ajax event="change" process="@this"
-										update=":nodeGraphForm:nodeGraph, :propertyGridForm" />
-									<f:selectItem itemLabel="--" itemValue="#{null}" rendered="#{!control.required}" />
+										update=":nodeGraphForm:nodeGraph" />
+									<f:selectItem itemLabel="--" itemValue="#{null}"
+										rendered="#{!control.required}" />
 									<f:selectItems value="#{control.allowedValues}" />
 								</p:selectOneMenu>
 							</pe:dynaFormControl>
@@ -216,20 +213,25 @@
 									required="#{control.required}" showOn="button"
 									pattern="MM/dd/yyyy HH:mm">
 									<p:ajax event="change" process="@this"
-										update=":nodeGraphForm:nodeGraph, :propertyGridForm" />
+										update=":nodeGraphForm:nodeGraph" />
 								</p:calendar>
 							</pe:dynaFormControl>
 							<pe:dynaFormControl type="String" for="string">
 
 								<p:inputText id="string" style="display:none;" />
 
-								<p:inputText
-									readonly="#{(!control.editable) or (control.property.variable)}"
-									value="#{control.property.variable ? control.property.variableName : serviceDesignPageController.context.graphModel.selectedNode.propertyValueMap[control.valueKey]}"
+								<p:inputText rendered="#{!control.property.variable}"
+									readonly="#{(!control.editable)}"
+									value="#{serviceDesignPageController.context.graphModel.selectedNode.propertyValueMap[control.valueKey]}"
 									required="#{control.required}">
 									<p:ajax event="change" process="@this"
-										update=":nodeGraphForm:nodeGraph, :propertyGridForm" />
+										update=":nodeGraphForm:nodeGraph" />
 								</p:inputText>
+								<p:inputText rendered="#{control.property.variable}"
+									readonly="true" value="#{control.property.variableName}"
+									required="#{control.required}">
+								</p:inputText>
+
 								<p:commandButton disabled="#{!control.variablizable}"
 									icon="ui-icon-tag" process="@this"
 									update=":editVariableDialog:editVariableDialogForm"
@@ -246,14 +248,14 @@
 									value="#{serviceDesignPageController.context.graphModel.selectedNode.propertyValueMap[control.valueKey]}"
 									required="#{control.required}">
 									<p:ajax event="change" process="@this"
-										update=":nodeGraphForm:nodeGraph, :propertyGridForm" />
+										update=":nodeGraphForm:nodeGraph" />
 								</pe:inputNumber>
 
 								<p:inputText rendered="#{control.property.variable}"
 									readonly="true" value="#{control.property.variableName}"
 									required="#{control.required}">
 									<p:ajax event="change" process="@this"
-										update=":nodeGraphForm:nodeGraph, :propertyGridForm" />
+										update=":nodeGraphForm:nodeGraph" />
 								</p:inputText>
 								<p:commandButton disabled="#{!control.variablizable}"
 									icon="ui-icon-tag" process="@this"
@@ -271,14 +273,14 @@
 									value="#{serviceDesignPageController.context.graphModel.selectedNode.propertyValueMap[control.valueKey]}"
 									required="#{control.required}" decimalPlaces="0">
 									<p:ajax event="change" process="@this"
-										update=":nodeGraphForm:nodeGraph, :propertyGridForm" />
+										update=":nodeGraphForm:nodeGraph" />
 								</pe:inputNumber>
 
 								<p:inputText rendered="#{control.property.variable}"
 									readonly="true" value="#{control.property.variableName}"
 									required="#{control.required}">
 									<p:ajax event="change" process="@this"
-										update=":nodeGraphForm:nodeGraph, :propertyGridForm" />
+										update=":nodeGraphForm:nodeGraph" />
 								</p:inputText>
 								<p:commandButton disabled="#{!control.variablizable}"
 									icon="ui-icon-tag" process="@this"

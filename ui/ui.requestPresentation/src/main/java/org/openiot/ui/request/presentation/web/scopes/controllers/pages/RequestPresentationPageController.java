@@ -20,12 +20,21 @@
 package org.openiot.ui.request.presentation.web.scopes.controllers.pages;
 
 import java.io.Serializable;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.RequestScoped;
 
+import org.openiot.commons.sdum.serviceresultset.model.SdumServiceResultSet;
+import org.openiot.commons.sparql.protocoltypes.model.QueryResult;
+import org.openiot.commons.sparql.result.model.Binding;
+import org.openiot.commons.sparql.result.model.Literal;
+import org.openiot.commons.sparql.result.model.Result;
+import org.openiot.commons.sparql.result.model.Results;
+import org.openiot.commons.sparql.result.model.Sparql;
+import org.openiot.ui.request.presentation.web.model.nodes.interfaces.VisualizationWidget;
 import org.openiot.ui.request.presentation.web.scopes.application.ApplicationBean;
 import org.openiot.ui.request.presentation.web.scopes.session.SessionBean;
 import org.openiot.ui.request.presentation.web.scopes.session.context.pages.RequestPresentationPageContext;
@@ -70,13 +79,37 @@ public class RequestPresentationPageController implements Serializable {
 
 	}
 
-	public void switchApplication(String applicationName){
+	public void updateDashboard() {
+		RequestPresentationPageContext context = getContext();
+		if( context.getDashboard() == null ){
+			return;
+		}
 		
+		// Simulate data retrieval
+		for( Map.Entry<String, VisualizationWidget> entry : context.getServiceIdToWidgetMap().entrySet() ){
+			SdumServiceResultSet resultSet = new SdumServiceResultSet();
+			QueryResult qr = new QueryResult();
+			resultSet.setQueryResult(qr);
+			
+			Sparql sparqlResult = new Sparql();
+			qr.setSparql(sparqlResult);
+			Results results = new Results();
+			sparqlResult.setResults(results);
+			
+			Result result = new Result();
+			results.getResult().add(result);
+			
+			Binding binding = new Binding();
+			binding.setName("y1");
+			Literal literal = new Literal();
+			literal.setContent((Math.random() * 40.0) + "");
+			binding.setLiteral(literal);			
+			result.getBinding().add(binding);
+			
+			entry.getValue().processData(resultSet);
+		}
 	}
 	
-	// ------------------------------------
-	// Helpers
-	// ------------------------------------
 	public void setApplicationBean(ApplicationBean applicationBean) {
 		this.applicationBean = applicationBean;
 	}
@@ -85,5 +118,4 @@ public class RequestPresentationPageController implements Serializable {
 		this.sessionBean = sessionBean;
 	}
 
-	
 }

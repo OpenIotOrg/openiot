@@ -1,53 +1,57 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<ns2:OSDSpec xmlns:ns2="urn:openiot:osdspec:xsd:1" xmlns:ns3="http://www.w3.org/2007/SPARQL/protocol-types#" userID="user0000">
-<ns2:OAMO name="New application" id="graph_795492116139662">
-    <ns2:graphMeta><![CDATA[{"uid":"graph_795492116139662","positions":{"graphNode_795520011219641":{"y":35,"x":56},"graphNode_795502576983235":{"y":148,"x":68},"graphNode_795525216427089":{"y":76,"x":615},"graphNode_795510809657350":{"y":230,"x":346}},"nodes":[{"uid":"graphNode_795502576983235","propertyValues":{"LAT":37.983715,"LON":23.72931,"RADIUS":15},"propertyDefinitions":[{"isVariable":false,"isRequired":true,"name":"LAT","javaClass":"java.lang.Number","class":"org.openiot.ui.request.commons.nodes.base.DefaultGraphNodeProperty","type":"Writable"},{"isVariable":false,"isRequired":true,"name":"LON","javaClass":"java.lang.Number","class":"org.openiot.ui.request.commons.nodes.base.DefaultGraphNodeProperty","type":"Writable"},{"isVariable":false,"isRequired":true,"name":"RADIUS","javaClass":"java.lang.Number","class":"org.openiot.ui.request.commons.nodes.base.DefaultGraphNodeProperty","type":"Writable"}],"class":"org.openiot.ui.request.commons.nodes.impl.sensors.GenericSensor","label":"gsn","endpointDefinitions":[{"connectorType":"Rectangle","uid":"graphNodeEndpoint_795502577062705","maxConnections":1,"scope":"Sensor","isRequired":false,"class":"org.openiot.ui.request.commons.nodes.base.DefaultGraphNodeEndpoint","label":"SEL_FILTER_IN","type":"Input","anchor":"Left"},{"connectorType":"Rectangle","uid":"graphNodeEndpoint_795502577085667","maxConnections":-1,"scope":"Number","isRequired":false,"class":"org.openiot.ui.request.commons.nodes.base.DefaultGraphNodeEndpoint","label":"Temperature (C)","userData":"Temperature","type":"Output","anchor":"Right"}],"type":"SENSOR"},{"uid":"graphNode_795510809657350","propertyValues":{},"propertyDefinitions":[],"class":"org.openiot.ui.request.commons.nodes.impl.aggegators.Average","label":"Average","endpointDefinitions":[{"connectorType":"Rectangle","uid":"graphNodeEndpoint_795510809692682","maxConnections":1,"scope":"Number","isRequired":true,"class":"org.openiot.ui.request.commons.nodes.base.DefaultGraphNodeEndpoint","label":"IN","type":"Input","anchor":"Left"},{"connectorType":"Rectangle","uid":"graphNodeEndpoint_795510809694831","maxConnections":1,"scope":"Number","isRequired":true,"class":"org.openiot.ui.request.commons.nodes.base.DefaultGraphNodeEndpoint","label":"OUT","type":"Output","anchor":"Right"}],"type":"AGGREGATOR"},{"uid":"graphNode_795520011219641","propertyValues":{},"propertyDefinitions":[],"class":"org.openiot.ui.request.commons.nodes.impl.generators.TimestampGenerator","label":"TimestampGenerator","endpointDefinitions":[{"connectorType":"Rectangle","uid":"graphNodeEndpoint_795520011252254","maxConnections":1,"scope":"Date","isRequired":true,"class":"org.openiot.ui.request.commons.nodes.base.DefaultGraphNodeEndpoint","label":"timestamp","type":"Output","anchor":"Right"}],"type":"GENERATOR"},{"uid":"graphNode_795525216427089","propertyValues":{"Y_AXIS_LABEL":"y axis","X_AXIS_LABEL":"x axis","SERIES1_LABEL":"series1","X_AXIS_TYPE":"Date"},"propertyDefinitions":[{"isVariable":false,"isRequired":true,"name":"X_AXIS_TYPE","javaClass":"java.lang.String","class":"org.openiot.ui.request.commons.nodes.base.DefaultGraphNodeProperty","allowedValues":["Date","Number"],"type":"Writable"},{"isVariable":false,"isRequired":true,"name":"X_AXIS_LABEL","javaClass":"java.lang.String","class":"org.openiot.ui.request.commons.nodes.base.DefaultGraphNodeProperty","type":"Writable"},{"isVariable":false,"isRequired":true,"name":"Y_AXIS_LABEL","javaClass":"java.lang.String","class":"org.openiot.ui.request.commons.nodes.base.DefaultGraphNodeProperty","type":"Writable"},{"isVariable":false,"isRequired":true,"name":"SERIES1_LABEL","javaClass":"java.lang.String","class":"org.openiot.ui.request.commons.nodes.base.DefaultGraphNodeProperty","type":"Writable"}],"class":"org.openiot.ui.request.commons.nodes.impl.vizualizers.LineChart1","label":"LineChart1","endpointDefinitions":[{"connectorType":"Rectangle","uid":"graphNodeEndpoint_795525216523292","maxConnections":1,"scope":"Date","isRequired":true,"class":"org.openiot.ui.request.commons.nodes.base.DefaultGraphNodeEndpoint","label":"x","type":"Input","anchor":"Left"},{"connectorType":"Rectangle","uid":"graphNodeEndpoint_795525216527308","maxConnections":1,"scope":"Number","isRequired":true,"class":"org.openiot.ui.request.commons.nodes.base.DefaultGraphNodeEndpoint","label":"y","type":"Input","anchor":"Left"}],"type":"VISUALIZER"}],"class":"org.openiot.ui.request.commons.models.DefaultGraphModel","label":"New application","connections":[{"srcNode":"graphNode_795502576983235","uid":"graphNodeConnection_1372419124762","srcEndpoint":"graphNodeEndpoint_795502577085667","dstEndpoint":"graphNodeEndpoint_795510809692682","class":"org.openiot.ui.request.commons.nodes.base.DefaultGraphNodeConnection","dstNode":"graphNode_795510809657350"},{"srcNode":"graphNode_795520011219641","uid":"graphNodeConnection_1372419141341","srcEndpoint":"graphNodeEndpoint_795520011252254","dstEndpoint":"graphNodeEndpoint_795525216523292","class":"org.openiot.ui.request.commons.nodes.base.DefaultGraphNodeConnection","dstNode":"graphNode_795525216427089"},{"srcNode":"graphNode_795510809657350","uid":"graphNodeConnection_1372419143268","srcEndpoint":"graphNodeEndpoint_795510809694831","dstEndpoint":"graphNodeEndpoint_795525216527308","class":"org.openiot.ui.request.commons.nodes.base.DefaultGraphNodeConnection","dstNode":"graphNode_795525216427089"}]}]]></ns2:graphMeta>
-    <ns2:OSMO>
-        <ns2:queryControls>
-            <ns2:QuerySchedule/>
-            <ns2:reportIfEmpty>false</ns2:reportIfEmpty>
-        </ns2:queryControls>
-        <ns2:requestPresentation>
-            <ns2:widget widgetID="graphNode_795525216427089">
-                <ns2:presentationAttr value="y axis" name="Y_AXIS_LABEL"/>
-                <ns2:presentationAttr value="x axis" name="X_AXIS_LABEL"/>
-                <ns2:presentationAttr value="series1" name="SERIES1_LABEL"/>
-                <ns2:presentationAttr value="Date" name="X_AXIS_TYPE"/>
-                <ns2:presentationAttr value="org.openiot.ui.request.commons.nodes.impl.vizualizers.LineChart1" name="widgetClass"/>
-            </ns2:widget>
-        </ns2:requestPresentation>
-        <ns3:query-request>
-            <query><![CDATA[# Service with visualization widget of type 'LineChart1' and sensors of type:
-            #	 - gsn
-            # Generated: Fri Jun 28 14:32:33 EEST 2013
-            
-            SELECT ?y
-            
-            FROM &lt;http://lsm.deri.ie/OpenIoT/sensordata#&gt;
-            
-            WHERE
-            {
-            	{
-            		SELECT AVG( ?graphNodeEndpoint_795502577085667 ) AS ?y
-            		WHERE
-            		{
-            			?graphNode_795502576983235_record &lt;http://lsm.deri.ie/ont/lsm.owl#value&gt; ?graphNodeEndpoint_795502577085667.
-            			FILTER EXISTS {
-            				?graphNode_795502576983235_record &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt; &lt;Temperature&gt;.
-            				?graphNode_795502576983235_record &lt;http://lsm.deri.ie/ont/lsm.owl#isObservedPropertyOf&gt; ?graphNode_795502576983235_propertyOf.
-            				?graphNode_795502576983235_propertyOf &lt;http://purl.oclc.org/NET/ssnx/ssn#observedBy&gt; ?graphNode_795502576983235.
-            				?graphNode_795502576983235 &lt;http://lsm.deri.ie/ont/lsm.owl#hasSensorType&gt; ?graphNode_795502576983235_typeId.
-            				?graphNode_795502576983235_typeId &lt;http://www.w3.org/2000/01/rdf-schema#label&gt; 'gsn'.
-            				?graphNode_795502576983235 &lt;http://www.loa-cnr.it/ontologies/DUL.owl#hasLocation&gt; ?graphNode_795502576983235_place.
-            				?graphNode_795502576983235_place geo:geometry ?graphNode_795502576983235_geo.
-            				FILTER (&lt;bif:st_intersects&gt;(?graphNode_795502576983235_geo,&lt;bif:st_point&gt;(37.983715,23.72931),15.0)).
-            			}
-            		}
-            	}
-            
-            }
-            ]]></query>
-        </ns3:query-request>
-    </ns2:OSMO>
-</ns2:OAMO>
+<ns2:OSDSpec userID="user0000" xmlns:ns2="urn:openiot:osdspec:xsd:1"
+	xmlns:ns3="http://www.w3.org/2007/SPARQL/protocol-types#">
+	<ns2:OAMO name="New application" id="graph_810149135707184">
+		<ns2:graphMeta><![CDATA[{"uid":"graph_810149135707184","positions":{"graphNode_810183587170552":{"y":125,"x":109},"graphNode_810194902626354":{"y":233,"x":455},"graphNode_810188914206564":{"y":98,"x":685},"graphNode_810208802578357":{"y":17,"x":83}},"nodes":[{"uid":"graphNode_810183587170552","propertyValues":{"LAT":37.983715,"LON":23.72931,"RADIUS":15},"propertyDefinitions":[{"isVariable":false,"isRequired":true,"name":"LAT","javaClass":"java.lang.Number","class":"org.openiot.ui.request.commons.nodes.base.DefaultGraphNodeProperty","type":"Writable"},{"isVariable":false,"isRequired":true,"name":"LON","javaClass":"java.lang.Number","class":"org.openiot.ui.request.commons.nodes.base.DefaultGraphNodeProperty","type":"Writable"},{"isVariable":false,"isRequired":true,"name":"RADIUS","javaClass":"java.lang.Number","class":"org.openiot.ui.request.commons.nodes.base.DefaultGraphNodeProperty","type":"Writable"}],"class":"org.openiot.ui.request.definition.web.model.nodes.impl.sensors.GenericSensor","label":"gsn","endpointDefinitions":[{"connectorType":"Rectangle","uid":"graphNodeEndpoint_810183587248447","maxConnections":1,"scope":"Sensor","isRequired":false,"class":"org.openiot.ui.request.commons.nodes.base.DefaultGraphNodeEndpoint","label":"SEL_FILTER_IN","type":"Input","anchor":"Left"},{"connectorType":"Rectangle","uid":"graphNodeEndpoint_810183587271637","maxConnections":-1,"scope":"Number","isRequired":false,"class":"org.openiot.ui.request.commons.nodes.base.DefaultGraphNodeEndpoint","label":"Temperature (C)","userData":"Temperature","type":"Output","anchor":"Right"}],"type":"SENSOR"},{"uid":"graphNode_810188914206564","propertyValues":{"Y_AXIS_LABEL":"y axis","X_AXIS_LABEL":"x axis","SERIES_0_LABEL":"Series 1","SERIES":"1","X_AXIS_TYPE":"Date"},"propertyDefinitions":[{"isVariable":false,"isRequired":true,"name":"SERIES","javaClass":"java.lang.String","class":"org.openiot.ui.request.commons.nodes.base.DefaultGraphNodeProperty","allowedValues":["1","2","3","4","5"],"type":"Writable"},{"isVariable":false,"isRequired":true,"name":"X_AXIS_TYPE","javaClass":"java.lang.String","class":"org.openiot.ui.request.commons.nodes.base.DefaultGraphNodeProperty","allowedValues":["Date","Number"],"type":"Writable"},{"isVariable":false,"isRequired":true,"name":"X_AXIS_LABEL","javaClass":"java.lang.String","class":"org.openiot.ui.request.commons.nodes.base.DefaultGraphNodeProperty","type":"Writable"},{"isVariable":false,"isRequired":true,"name":"Y_AXIS_LABEL","javaClass":"java.lang.String","class":"org.openiot.ui.request.commons.nodes.base.DefaultGraphNodeProperty","type":"Writable"},{"isVariable":false,"isRequired":true,"name":"SERIES_0_LABEL","javaClass":"java.lang.String","class":"org.openiot.ui.request.commons.nodes.base.DefaultGraphNodeProperty","type":"Writable"}],"class":"org.openiot.ui.request.definition.web.model.nodes.impl.vizualizers.LineChart","label":"LineChart","endpointDefinitions":[{"connectorType":"Rectangle","uid":"graphNodeEndpoint_810188914289188","maxConnections":1,"scope":"Date","isRequired":true,"class":"org.openiot.ui.request.commons.nodes.base.DefaultGraphNodeEndpoint","label":"x","type":"Input","anchor":"Left"},{"connectorType":"Rectangle","uid":"graphNodeEndpoint_810188914291663","maxConnections":0,"scope":"Number","isRequired":true,"class":"org.openiot.ui.request.commons.nodes.base.DefaultGraphNodeEndpoint","label":"y1","type":"Input","anchor":"Left"}],"type":"VISUALIZER"},{"uid":"graphNode_810194902626354","propertyValues":{},"propertyDefinitions":[],"class":"org.openiot.ui.request.definition.web.model.nodes.impl.aggegators.Average","label":"Average","endpointDefinitions":[{"connectorType":"Rectangle","uid":"graphNodeEndpoint_810194902662140","maxConnections":1,"scope":"Number","isRequired":true,"class":"org.openiot.ui.request.commons.nodes.base.DefaultGraphNodeEndpoint","label":"IN","type":"Input","anchor":"Left"},{"connectorType":"Rectangle","uid":"graphNodeEndpoint_810194902664431","maxConnections":1,"scope":"Number","isRequired":true,"class":"org.openiot.ui.request.commons.nodes.base.DefaultGraphNodeEndpoint","label":"OUT","type":"Output","anchor":"Right"}],"type":"AGGREGATOR"},{"uid":"graphNode_810208802578357","propertyValues":{},"propertyDefinitions":[],"class":"org.openiot.ui.request.definition.web.model.nodes.impl.generators.TimestampGenerator","label":"TimestampGenerator","endpointDefinitions":[{"connectorType":"Rectangle","uid":"graphNodeEndpoint_810208802612085","maxConnections":1,"scope":"Date","isRequired":true,"class":"org.openiot.ui.request.commons.nodes.base.DefaultGraphNodeEndpoint","label":"timestamp","type":"Output","anchor":"Right"}],"type":"GENERATOR"}],"class":"org.openiot.ui.request.commons.models.DefaultGraphModel","label":"New application","connections":[{"srcNode":"graphNode_810183587170552","uid":"graphNodeConnection_1372433812152","srcEndpoint":"graphNodeEndpoint_810183587271637","dstEndpoint":"graphNodeEndpoint_810194902662140","class":"org.openiot.ui.request.commons.nodes.base.DefaultGraphNodeConnection","dstNode":"graphNode_810194902626354"},{"srcNode":"graphNode_810194902626354","uid":"graphNodeConnection_1372433814106","srcEndpoint":"graphNodeEndpoint_810194902664431","dstEndpoint":"graphNodeEndpoint_810188914291663","class":"org.openiot.ui.request.commons.nodes.base.DefaultGraphNodeConnection","dstNode":"graphNode_810188914206564"},{"srcNode":"graphNode_810208802578357","uid":"graphNodeConnection_1372433820236","srcEndpoint":"graphNodeEndpoint_810208802612085","dstEndpoint":"graphNodeEndpoint_810188914289188","class":"org.openiot.ui.request.commons.nodes.base.DefaultGraphNodeConnection","dstNode":"graphNode_810188914206564"}]}]]></ns2:graphMeta>
+		<ns2:OSMO>
+			<ns2:queryControls>
+				<ns2:QuerySchedule />
+				<ns2:reportIfEmpty>false</ns2:reportIfEmpty>
+			</ns2:queryControls>
+			<ns2:requestPresentation>
+				<ns2:widget widgetID="graphNode_810188914206564">
+					<ns2:presentationAttr value="Temp (C)" name="Y_AXIS_LABEL" />
+					<ns2:presentationAttr value="Time" name="X_AXIS_LABEL" />
+					<ns2:presentationAttr value="Avg Temp (C)" name="SERIES_0_LABEL" />
+					<ns2:presentationAttr value="Date" name="X_AXIS_TYPE" />
+					<ns2:presentationAttr value="1" name="SERIES" />
+					<ns2:presentationAttr
+						value="org.openiot.ui.request.definition.web.model.nodes.impl.vizualizers.LineChart"
+						name="widgetClass" />
+				</ns2:widget>
+			</ns2:requestPresentation>
+			<ns3:query-request>
+				<query><![CDATA[# Service with visualization widget of type 'LineChart' and sensors of type:
+#	 - gsn
+# Generated: Fri Jun 28 18:37:22 EEST 2013
+
+SELECT ?y1
+
+FROM &lt;http://lsm.deri.ie/OpenIoT/sensordata#&gt;
+
+WHERE
+{
+	{
+		SELECT AVG( ?graphNodeEndpoint_810183587271637 ) AS ?y0
+		WHERE
+		{
+			?graphNode_810183587170552_record &lt;http://lsm.deri.ie/ont/lsm.owl#value&gt; ?graphNodeEndpoint_810183587271637.
+			FILTER EXISTS {
+				?graphNode_810183587170552_record &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt; &lt;Temperature&gt;.
+				?graphNode_810183587170552_record &lt;http://lsm.deri.ie/ont/lsm.owl#isObservedPropertyOf&gt; ?graphNode_810183587170552_propertyOf.
+				?graphNode_810183587170552_propertyOf &lt;http://purl.oclc.org/NET/ssnx/ssn#observedBy&gt; ?graphNode_810183587170552.
+				?graphNode_810183587170552 &lt;http://lsm.deri.ie/ont/lsm.owl#hasSensorType&gt; ?graphNode_810183587170552_typeId.
+				?graphNode_810183587170552_typeId &lt;http://www.w3.org/2000/01/rdf-schema#label&gt; 'gsn'.
+				?graphNode_810183587170552 &lt;http://www.loa-cnr.it/ontologies/DUL.owl#hasLocation&gt; ?graphNode_810183587170552_place.
+				?graphNode_810183587170552_place geo:geometry ?graphNode_810183587170552_geo.
+				FILTER (&lt;bif:st_intersects&gt;(?graphNode_810183587170552_geo,&lt;bif:st_point&gt;(37.983715,23.72931),15.0)).
+			}
+		}
+	}
+
+}
+]]></query>
+			</ns3:query-request>
+		</ns2:OSMO>
+	</ns2:OAMO>
 </ns2:OSDSpec>

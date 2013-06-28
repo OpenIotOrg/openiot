@@ -40,7 +40,7 @@ public class ApplicationBean implements Serializable {
 
     @PostConstruct
     public void init() {
-    	LoggerService.setApplicationName("OpenIoT:RequestDefinition");
+    	LoggerService.setApplicationName("OpenIoT:RequestPresentation");
         LoggerService.setLevel(Level.FINE);
         LoggerService.log(Level.INFO, "Initializing");
     }
