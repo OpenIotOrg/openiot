@@ -43,7 +43,6 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-
 		<!-- JBoss dependency versions -->
 		<version.jboss.maven.plugin>7.3.Final</version.jboss.maven.plugin>
 
@@ -55,8 +54,6 @@
 		<!-- maven-compiler-plugin -->
 		<maven.compiler.source>1.6</maven.compiler.source>
 		<maven.compiler.target>1.7</maven.compiler.target>
-
-
 
 	</properties>
 
@@ -148,6 +145,12 @@
 			<groupId>org.jboss.resteasy</groupId>
 			<artifactId>resteasy-jaxrs</artifactId>
 			<version>2.3.1.GA</version>
+		</dependency>
+		<!-- javamelody (monitoring) dependency-->
+		<dependency>
+			<groupId>net.bull.javamelody</groupId>
+			<artifactId>javamelody-core</artifactId>
+			<version>1.45.0</version>
 		</dependency>
 	</dependencies>
 
