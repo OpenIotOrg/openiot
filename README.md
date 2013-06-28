@@ -1,12 +1,5 @@
-<DIV ALIGN=CENTER>
-OpenIoT
-=======
-The Open Source Internet of Things
-----------------------------------
-</DIV>
-
-
-
+OpenIoT - The Open Source Internet of Things
+============================================
 
 ----------------------------
 Under Construction
@@ -47,6 +40,10 @@ Internetconnected Objects*
 ----------------------------
 ----------------------------
 
+<DIV ALIGN=CENTER>
 
 <a href="http://www2.clustrmaps.com/user/06410c614"><img src="http://www2.clustrmaps.com/stats/maps-no_clusters/https---github.com-OpenIotOrg-openiot-wiki-thumb.jpg" alt="Locations of visitors to this page" />
 </a>
+
+</DIV>
+
