@@ -8,7 +8,7 @@
     <osd:OAMO id="OpenIoTApplicationModelObject1ID" name="OpenIoTApplicationModelObject1Name">
         <osd:description>OpenIoTApplicationModelObject1Descreption</osd:description>
         <osd:graphMeta>><![CDATA[Here You Will Adde The Request Definition Meta Data]]></osd:graphMeta>
-        <osd:OSMO id="http://www.oxygenxml.com/" name="only one oamo test osmo_name">
+        <osd:OSMO id="http://www.oxygenxml.com/" name="only_one_oamo_test_osmo_name">
             <osd:description>only one oamo test osmo_description</osd:description>
             <osd:queryControls>
                 <osd:QuerySchedule>
