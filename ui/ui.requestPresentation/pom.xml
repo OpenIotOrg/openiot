@@ -147,6 +147,11 @@
 			<artifactId>resteasy-jaxrs</artifactId>
 			<version>2.3.1.GA</version>
 		</dependency>
+		<dependency>
+			<groupId>net.bull.javamelody</groupId>
+			<artifactId>javamelody-core</artifactId>
+			<version>1.45.0</version>
+		</dependency>
 	</dependencies>
 
 
