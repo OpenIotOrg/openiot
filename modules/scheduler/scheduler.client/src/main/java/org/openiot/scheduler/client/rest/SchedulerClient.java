@@ -68,7 +68,7 @@ public class SchedulerClient {
 				"http://localhost:8080/scheduler.core").build());
 	}
 
-	public void discoverSensors() {
+	public void discoverSensors(double longitude, double lat, float radius) {
 
 		ClientRequest discoverSensorsClientRequest = clientRequestFactory
 				.createRelativeRequest("/rest/services/discoverSensors");
@@ -76,9 +76,9 @@ public class SchedulerClient {
 		
 		//Prepare the request
 		discoverSensorsClientRequest.queryParameter("userID", "userIDString");
-		discoverSensorsClientRequest.queryParameter("longitude", 6.631622);
-		discoverSensorsClientRequest.queryParameter("latitude", 46.520131);
-		discoverSensorsClientRequest.queryParameter("radius", 5F);
+		discoverSensorsClientRequest.queryParameter("longitude", longitude);//6.631622
+		discoverSensorsClientRequest.queryParameter("latitude", lat);//46.520131
+		discoverSensorsClientRequest.queryParameter("radius", radius);//5f
 
 		discoverSensorsClientRequest.accept("application/xml");
 

@@ -156,7 +156,7 @@ public class Service
 			String str=("SELECT ?serviceID from <"+graph+"> "
 								+"WHERE "
 								+"{"								
-								+"?serviceID <http://openiot.eu/ontology/ns/queryString> ?email FILTER regex(?email, \"" +qString+ "\" )  . "								
+								+"?serviceID <http://openiot.eu/ontology/ns/queryString> ?qs FILTER regex(?qs, \"" +qString+ "\" )  . "								
 								+"}");								
 			
 			update.append(str);
@@ -174,6 +174,24 @@ public class Service
 								+"?serviceID <http://openiot.eu/ontology/ns/serviceName> ?srvcName . "
 								+"?serviceID <http://openiot.eu/ontology/ns/serviceDescription> ?srvcDesc . "
 								+"?serviceID <http://openiot.eu/ontology/ns/queryString> ?srvcQstring . "
+								+"?serviceID <http://openiot.eu/ontology/ns/user> <"+usr.getId()+"> . "								
+								+"}");								
+			
+			update.append(str);
+			return update.toString();
+		}
+		public static String selectSrvcByUserByNameByDescByQuery(User usr,String name,String desc,String query)
+		{
+			StringBuilder update = new StringBuilder();
+	        update.append(getNamespaceDeclarations());
+			
+			String str=("SELECT ?serviceID from <"+graph+"> "
+								+"WHERE "
+								+"{"
+								
+								+"?serviceID <http://openiot.eu/ontology/ns/queryString> <"+query+"> . "
+								+"?serviceID <http://openiot.eu/ontology/ns/serviceName> <"+name+"> . "
+								+"?serviceID <http://openiot.eu/ontology/ns/serviceDescription> <"+desc+"> . "								
 								+"?serviceID <http://openiot.eu/ontology/ns/user> <"+usr.getId()+"> . "								
 								+"}");								
 			
@@ -266,7 +284,7 @@ public class Service
 	
 	public void createClassIdv()
 	{
-		if(id==null)
+		if(id==null || id.isEmpty())
 			serviceClassIdv = ontInstance.createIndividual(ontClsServiceClass);
 		else
 			serviceClassIdv = ontInstance.createIndividual(id,ontClsServiceClass);

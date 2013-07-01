@@ -90,7 +90,7 @@ public class SchedulerUserInterface {
 		public void widgetSelected(SelectionEvent e) {
 			
 			
-			schedulerClient.discoverSensors();
+			schedulerClient.discoverSensors(6.631622,46.520131,5f);
 			
 			
 		}

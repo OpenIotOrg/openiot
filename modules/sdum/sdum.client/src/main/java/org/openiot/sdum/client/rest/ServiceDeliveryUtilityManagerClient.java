@@ -42,12 +42,21 @@ import org.openiot.commons.sparql.result.model.Variable;
 
 /**
  * @author Nikos Kefalakis (nkef) e-mail: nkef@ait.edu.gr
- * 
+ * @author Stavros Petris (spet) e-mail: spet@ait.edu.gr
  */
 public class ServiceDeliveryUtilityManagerClient {
 
 	static ClientRequestFactory clientRequestFactory;
 
+	 public static void main(String[] args) throws Exception
+	 {
+		 ServiceDeliveryUtilityManagerClient serviceDeliveryUtilityManagerClient
+		 	= new ServiceDeliveryUtilityManagerClient();
+		
+		 serviceDeliveryUtilityManagerClient.welcomeMessage();
+		 serviceDeliveryUtilityManagerClient.pollForReport("nodeID://b47007");	
+	 }
+	
 	public ServiceDeliveryUtilityManagerClient(String sdumURL) 
 	{
 		clientRequestFactory = new ClientRequestFactory(UriBuilder.fromUri(sdumURL).build());
@@ -58,22 +67,14 @@ public class ServiceDeliveryUtilityManagerClient {
 		clientRequestFactory = new ClientRequestFactory(UriBuilder.fromUri("http://localhost:8080/sdum.core").build());
 	}
 
-	// public static void main(String[] args) throws Exception {
-	//
-	// clientRequestFactory = new ClientRequestFactory(UriBuilder.fromUri(
-	// "http://localhost:8080/sdum.core").build());
-	//
-	// welcomeMessage();
-	// //discoverSensors();
-	//
-	// }
+	
 
-	public void pollForReport() 
+	public void pollForReport(String serviceID) 
 	{
 		ClientRequest pollForReportClientRequest = clientRequestFactory
 				.createRelativeRequest("/rest/services/pollforreport");
 
-		pollForReportClientRequest.queryParameter("serviceID","nodeID://b47007");
+		pollForReportClientRequest.queryParameter("serviceID",serviceID);
 
 		pollForReportClientRequest.accept("application/xml");
 

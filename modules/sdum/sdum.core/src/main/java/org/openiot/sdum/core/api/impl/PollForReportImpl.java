@@ -270,15 +270,6 @@ public class PollForReportImpl
 		
 		ArrayList<String> distinctWidgetP = new ArrayList<String>();
 		
-//		widgetPreID 	widgetID 	widgetAttrID 	widgetAttrName 	widgetAttrDesc
-//		nodeID://b44791 	nodeID://b44789 	nodeID://b44793 	"attr desc"^^<http://www.w3.org/2001/XMLSchema#string> 	"attr name"^^<http://www.w3.org/2001/XMLSchema#string>
-//		nodeID://b44795 	nodeID://b44790 	nodeID://b44794 	"attr desc 3"^^<http://www.w3.org/2001/XMLSchema#string> 	"attr name 2"^^<http://www.w3.org/2001/XMLSchema#string>
-//		nodeID://b44795 	nodeID://b44790 	nodeID://b44796 	"attr desc 4"^^<http://www.w3.org/2001/XMLSchema#string> 	"attr name 3"^^<http://www.w3.org/2001/XMLSchema#string>
-//		nodeID://b44802 	nodeID://b44801 	nodeID://b44803 	"pie desc "^^<http://www.w3.org/2001/XMLSchema#string> 	"pie attr name"^^<http://www.w3.org/2001/XMLSchema#string>
-//		nodeID://b44802 	nodeID://b44801 	nodeID://b44804 	"pie desc 2"^^<http://www.w3.org/2001/XMLSchema#string> 	"pie attr name 2"^^<http://www.w3.org/2001/XMLSchema#string>
-//		nodeID://b44802 	nodeID://b44801 	nodeID://b44805 	"pie desc 3"^^<http://www.w3.org/2001/XMLSchema#string> 	"pie attr name 3"^^<http://www.w3.org/2001/XMLSchema#string>
-		
-		
 		//Fill the RequestPresentation
 		RequestPresentation requestPresentation = new RequestPresentation();
 		
@@ -303,39 +294,6 @@ public class PollForReportImpl
 		}
 		
 		testSdumServiceResultSet2.setRequestPresentation(requestPresentation);
-		
-//		//Set Widget
-//		Widget widget = new Widget();
-//		widget.setWidgetID("graphNode_722933770218514");
-//		//Add PresentationAttr1
-//		PresentationAttr presentationAttr1 = new PresentationAttr();
-//		presentationAttr1.setName("Y_AXIS_LABEL");
-//		presentationAttr1.setValue("y axis");
-//		widget.getPresentationAttr().add(presentationAttr1);
-//		//Add PresentationAttr2
-//		PresentationAttr presentationAttr2 = new PresentationAttr();
-//		presentationAttr2.setName("X_AXIS_LABEL");
-//		presentationAttr2.setValue("x axis");
-//		widget.getPresentationAttr().add(presentationAttr2);
-//		//Add PresentationAttr3
-//		PresentationAttr presentationAttr3 = new PresentationAttr();
-//		presentationAttr3.setName("SERIES1_LABEL");
-//		presentationAttr3.setValue("series1s");
-//		widget.getPresentationAttr().add(presentationAttr3);
-//		//Add PresentationAttr4
-//		PresentationAttr presentationAttr4 = new PresentationAttr();
-//		presentationAttr4.setName("X_AXIS_TYPE");
-//		presentationAttr4.setValue("Number");
-//		widget.getPresentationAttr().add(presentationAttr4);
-//		//Add PresentationAttr5
-//		PresentationAttr presentationAttr5 = new PresentationAttr();
-//		presentationAttr5.setName("widgetClass");
-//		presentationAttr5.setValue("org.openiot.ui.request.commons.nodes.impl.vizualizers.LineChart1");
-//		widget.getPresentationAttr().add(presentationAttr5);
-//		
-//		requestPresentation.getWidget().add(widget);
-//		
-//		testSdumServiceResultSet2.setRequestPresentation(requestPresentation);		
 	
 		this.sdumServiceResultSet = testSdumServiceResultSet2;
 	}
