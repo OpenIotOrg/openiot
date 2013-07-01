@@ -38,11 +38,7 @@ public interface GraphModel {
 
     public void setUID(String UID);
     
-	public String getLabel();
-
-	public void setLabel(String label);
-	
-    public List<GraphNode> getNodes();
+	public List<GraphNode> getNodes();
 
     public List<GraphNodeConnection> getConnections();
 

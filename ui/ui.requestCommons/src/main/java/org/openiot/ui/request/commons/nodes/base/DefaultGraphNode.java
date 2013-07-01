@@ -238,7 +238,7 @@ public class DefaultGraphNode implements GraphNode, Serializable {
 		// Parse property values
 		JSONObject propertyValues = spec.getJSONObject("propertyValues");
 		Iterator<?> keyIt = propertyValues.keys();
-		this.propertyMap.clear();
+		this.propertyMap.getWrappedMap().clear();
 		while( keyIt.hasNext() ){
 			String key = (String)keyIt.next();
 			this.propertyMap.getWrappedMap().put(key, propertyValues.optString(key));

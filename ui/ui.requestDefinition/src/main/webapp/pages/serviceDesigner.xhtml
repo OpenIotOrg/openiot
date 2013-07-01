@@ -44,49 +44,76 @@
 				styleClassContent="no-border menubar-layout-container">
 				<h:form id="menubar">
 					<p:menubar autoDisplay="false">
-						<p:submenu label="Workspace" icon="ui-icon-document">
-							<p:menuitem value="#{messages.UI_MENUBAR_NEW}" disabled="true"
-								icon="ui-icon-plus" />
-							<p:menuitem value="#{messages.UI_MENUBAR_OPEN}" disabled="true"
-								icon="ui-icon-plus" />
+						<p:submenu label="#{messages.UI_MENUBAR_FILE}"
+							icon="ui-icon-document">
+							<p:menuitem value="#{messages.UI_MENUBAR_FILE_NEW}"
+								icon="ui-icon-plus" process="@this"
+								update=":newServiceDialog:newServiceDialogForm"
+								actionListener="#{serviceDesignPageController.prepareNewServiceDialog()}"
+								onclick="windowBlockUI.block();"
+								onsuccess="windowBlockUI.unblock();newServiceDialog.show();" />
+
+							<p:submenu label="#{messages.UI_MENUBAR_FILE_OPEN}"
+								rendered="#{! serviceDesignPageController.context.OAMOMap.isEmpty()}"
+								icon="ui-icon-folder-open">
+
+								<c:forEach
+									items="#{serviceDesignPageController.context.OAMOMap.entrySet()}"
+									var="entry">
+									<p:menuitem value="#{entry.key}"
+										actionListener="#{serviceDesignPageController.activateOAMO(entry.value)}"
+										process="@this" onclick="windowBlockUI.block();"
+										oncomplete="windowBlockUI.unblock();"
+										update=":consoleForm, :nodeGraphForm :toolboxForm, @(.find-sensor-button), :propertyGridForm, :menubar" />
+								</c:forEach>
+
+							</p:submenu>
 
 							<p:separator />
 
-							<p:menuitem
-								disabled="#{empty serviceDesignPageController.context.graphModel}"
-								value="#{messages.UI_MENUBAR_CLEAR}" icon="ui-icon-trash"
+							<p:menuitem value="#{messages.UI_MENUBAR_FILE_REFRESH}"
+								icon="ui-icon-refresh"
+								actionListener="#{serviceDesignPageController.reloadServices()}"
+								process="@this" onclick="windowBlockUI.block();"
+								oncomplete="windowBlockUI.unblock();" />
+
+							<p:menuitem value="#{messages.UI_MENUBAR_FILE_RESET}"
+								icon="ui-icon-close"
+								actionListener="#{serviceDesignPageController.resetServices()}"
+								process="@this" onclick="windowBlockUI.block();"
+								oncomplete="windowBlockUI.unblock();" />
+						</p:submenu>
+
+						<p:submenu label="#{messages.UI_MENUBAR_APP}" icon="ui-icon-gear">
+
+							<p:menuitem value="#{messages.UI_MENUBAR_APP_CLEAR}"
+								disabled="#{empty serviceDesignPageController.context.selectedOAMO}"
+								icon="ui-icon-trash"
 								onclick="confirmClearGraph.show();return false;" />
 
-							<p:menuitem
-								disabled="#{empty serviceDesignPageController.context.graphModel}"
-								value="#{messages.UI_MENUBAR_VALIDATE}" icon="ui-icon-lightbulb"
-								process="@this" onclick="windowBlockUI.block();"
-								actionListener="#{serviceDesignPageController.validateGraph()}"
-								oncomplete="windowBlockUI.unblock();setTimeout(function(){if(codeMirror &amp;&amp; codeMirror.jq.is(':visible')){codeMirror.initialize();}},10);"
-								update=":consoleForm" />
-
-							<p:menuitem
-								disabled="#{empty serviceDesignPageController.context.graphModel}"
-								value="#{messages.UI_MENUBAR_COMPILE}" icon="ui-icon-gear"
-								process="@this" onclick="windowBlockUI.block();"
-								actionListener="#{serviceDesignPageController.compileGraph()}"
-								oncomplete="windowBlockUI.unblock();setTimeout(function(){if(codeMirror &amp;&amp; codeMirror.jq.is(':visible')){codeMirror.initialize();}},10);"
-								update=":consoleForm" />
-
-							<p:menuitem
-								disabled="#{empty serviceDesignPageController.context.graphModel}"
-								value="#{messages.UI_MENUBAR_SAVE}" icon="ui-icon-disk"
-								process="@this" onclick="windowBlockUI.block();"
-								actionListener="#{serviceDesignPageController.saveGraph()}"
+							<p:menuitem value="#{messages.UI_MENUBAR_APP_VALIDATE}"
+								disabled="#{empty serviceDesignPageController.context.selectedOAMO}"
+								icon="ui-icon-lightbulb" process="@this"
+								onclick="windowBlockUI.block();"
+								actionListener="#{serviceDesignPageController.validateDesign()}"
 								oncomplete="windowBlockUI.unblock();setTimeout(function(){if(codeMirror &amp;&amp; codeMirror.jq.is(':visible')){codeMirror.initialize();}},10);"
 								update=":consoleForm" />
 
 							<p:separator />
 
-							<p:menuitem disabled="true" value="#{messages.UI_MENUBAR_EXPORT}"
+							<p:menuitem value="#{messages.UI_MENUBAR_APP_SAVE}"
+								icon="ui-icon-disk" process="@this"
+								actionListener="#{serviceDesignPageController.saveServices()}"
+								process="@this" onclick="windowBlockUI.block();"
+								oncomplete="windowBlockUI.unblock();"
+								update=":consoleForm, :nodeGraphForm :toolboxForm, @(.find-sensor-button), :propertyGridForm, :menubar" />
+
+							<p:menuitem disabled="true"
+								value="#{messages.UI_MENUBAR_APP_EXPORT}"
 								icon="ui-icon-circle-arrow-e" />
 
-							<p:menuitem disabled="true" value="#{messages.UI_MENUBAR_IMPORT}"
+							<p:menuitem disabled="true"
+								value="#{messages.UI_MENUBAR_APP_IMPORT}"
 								icon="ui-icon-circle-arrow-w" />
 
 						</p:submenu>
@@ -94,7 +121,7 @@
 						<f:facet name="options">
 							<p:outputLabel value="#{messages.UI_MENUBAR_ACTIVE_APP}" />
 							<p:button icon="ui-icon-document" style="margin-left:10px;"
-								value="#{empty serviceDesignPageController.context.graphModel ? '-' : serviceDesignPageController.context.graphModel.label}"
+								value="#{empty serviceDesignPageController.context.selectedOAMO ? '-' : serviceDesignPageController.context.selectedOAMO.name}"
 								onclick="return false;" />
 						</f:facet>
 
@@ -106,11 +133,12 @@
 			<pe:layoutPane position="west" size="175" closable="false">
 				<f:facet name="header">
 					#{messages.UI_TOOLBOX}
-					<div class="ui-panel-titlebar-icon ui-corner-all ui-state-default"
+					<h:outputLink value="#"
+						styleClass="ui-panel-titlebar-icon ui-corner-all #{! empty serviceDesignPageController.context.selectedOAMO ? 'ui-state-default' : 'ui-state-disabled'} find-sensor-button"
 						style="display: inline-block; float: right; cursor: pointer;"
-						onclick="findSensorDialog.show();return false;">
+						onclick="#{! empty serviceDesignPageController.context.selectedOAMO ? 'findSensorDialog.show();' : ''}return false;">
 						<h:outputText styleClass="ui-icon ui-icon-search" />
-					</div>
+					</h:outputLink>
 				</f:facet>
 
 				<h:form id="toolboxForm">
@@ -119,7 +147,8 @@
 							items="#{serviceDesignPageController.context.availableNodesByTypeMap.keySet()}">
 							<p:tab
 								title="#{messages['UI_NODE_GROUP_'.concat(type)]} (#{serviceDesignPageController.context.availableNodesByTypeMap[type].size()})"
-								titleStyleClass="ellipsis">
+								titleStyleClass="ellipsis"
+								disabled="#{empty serviceDesignPageController.context.selectedOAMO}">
 								<h:dataTable var="entry"
 									value="#{serviceDesignPageController.context.availableNodesByTypeMap[type]}"
 									width="100%" style="box-sizing:border-box;"
@@ -384,8 +413,8 @@
 				</f:facet>
 
 				<p:commandButton value="#{messages.DIALOG_YES}" process="@this"
-					actionListener="#{serviceDesignPageController.clearGraph()}"
-					update=":consoleForm, :nodeGraphForm :toolboxForm, :propertyGridForm, :menubar"
+					actionListener="#{serviceDesignPageController.clearOAMO()}"
+					update=":consoleForm, :nodeGraphForm :toolboxForm, @(.find-sensor-button), :propertyGridForm, :menubar"
 					oncomplete="setTimeout(function(){if(codeMirror &amp;&amp; codeMirror.jq.is(':visible')){codeMirror.initialize();}},10);confirmClearGraph.hide();" />
 				<p:commandButton value="#{messages.DIALOG_NO}"
 					onclick="confirmClearGraph.hide();" type="button" />
@@ -408,6 +437,7 @@
 
 		<dialogs:findSensorDialog id="findSensorDialog" />
 		<dialogs:editVariableDialog id="editVariableDialog" />
+		<dialogs:newServiceDialog id="newServiceDialog" />
 
 	</h:body>
 

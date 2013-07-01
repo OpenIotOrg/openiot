@@ -17,4 +17,9 @@ public interface VisualizationWidget {
 	 * Process incoming data
 	 */
 	public void processData(SdumServiceResultSet resultSet);
+	
+	/**
+	 * Clear displayed data
+	 */
+	public void clearData();
 }

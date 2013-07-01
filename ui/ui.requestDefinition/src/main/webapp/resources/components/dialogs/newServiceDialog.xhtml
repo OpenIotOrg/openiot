@@ -1,0 +1,64 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:cc="http://java.sun.com/jsf/composite"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:s="http://www.sensap.eu/jsf"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:pe="http://primefaces.org/ui/extensions">
+
+<!-- INTERFACE -->
+<cc:interface>
+	<cc:attribute name="id" />
+</cc:interface>
+
+<!-- IMPLEMENTATION -->
+<cc:implementation>
+	<p:dialog header="#{messages.UI_NEW_SERVICE_DIALOG_HEADER}"
+		modal="true" closable="false" closeOnEscape="true" resizable="false"
+		widgetVar="#{cc.attrs.id}">
+		<h:form id="newServiceDialogForm">
+
+			<h:panelGrid columns="2" style="width:100%;box-sizing:border-box;"
+				columnClasses="half-available-width">
+
+				<p:outputPanel>
+					<p:outputLabel for="serviceName"
+						value="#{messages.UI_NEW_SERVICE_DIALOG_NAME}" />
+				</p:outputPanel>
+				<p:outputPanel>
+					<p:inputText id="serviceName" required="true"
+						value="#{serviceDesignPageController.context.newServiceName}" />
+				</p:outputPanel>
+
+				<p:outputPanel>
+					<p:outputLabel for="serviceDescription"
+						value="#{messages.UI_NEW_SERVICE_DIALOG_DESCRIPTION}" />
+				</p:outputPanel>
+				<p:outputPanel>
+					<p:inputText id="serviceDescription"
+						value="#{serviceDesignPageController.context.newServiceDescription}" />
+				</p:outputPanel>
+
+			</h:panelGrid>
+
+			<p:outputPanel layout="block" styleClass="ui-dialog-footer"
+				style="text-align:right;">
+				<p:separator />
+
+				<p:commandButton value="#{messages.DIALOG_CONFIRM}" process="@form"
+					actionListener="#{serviceDesignPageController.createNewOAMO()}"
+					update="@form,:consoleForm, :nodeGraphForm :toolboxForm, @(.find-sensor-button), :propertyGridForm, :menubar"
+					onstart="windowBlockUI.block();"
+					oncomplete="windowBlockUI.unblock();if( args &amp;&amp; (args.notValid || args.validationFailed ) ){return false;}#{cc.attrs.id}.hide();return false;" />
+
+				<p:button value="#{messages.DIALOG_CANCEL}"
+					style="margin-left:10px;"
+					onclick="#{cc.attrs.id}.hide();return false;" />
+			</p:outputPanel>
+		</h:form>
+	</p:dialog>
+</cc:implementation>
+</html>

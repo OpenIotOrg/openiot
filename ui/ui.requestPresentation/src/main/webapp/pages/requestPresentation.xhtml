@@ -6,6 +6,7 @@
 	xmlns:pe="http://primefaces.org/ui/extensions"
 	xmlns:s="http://www.sensap.eu/jsf"
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:dialogs="http://java.sun.com/jsf/composite/components/sensap/dialogs">
 
 <f:view contentType="text/html">
@@ -46,37 +47,63 @@
 				resizable="false"
 				styleClassContent="no-border menubar-layout-container">
 				<h:form id="menubar">
-					<p:toolbar>
-						<p:toolbarGroup align="left">
-							<p:button value="#{messages.UI_MENUBAR_ACTIVE_APP}" onclick="return false;"/>
+					<p:menubar autoDisplay="false">
+						<p:submenu label="#{messages.UI_MENUBAR_FILE}"
+							icon="ui-icon-document">
 
-							<p:selectOneMenu
-								value="#{requestPresentationPageController.context.activeApplication}"
-								style="margin-left:10px;position:absolute;top:6px;">
-								<p:ajax event="change" process="@this"
-									update="@this, :dashboardForm" />
-								<f:selectItems
-									value="#{requestPresentationPageController.context.applicationMap.entrySet()}"
-									var="entry" itemLabelEscaped="false" itemLabel="#{entry.key}"
-									itemValue="#{entry.key}" />
-							</p:selectOneMenu>
-						</p:toolbarGroup>
-						<p:toolbarGroup align="right">
+							<p:submenu label="#{messages.UI_MENUBAR_FILE_OPEN}"
+								rendered="#{! requestPresentationPageController.context.OAMOMap.isEmpty()}"
+								icon="ui-icon-folder-open">
 
-							<p:commandButton icon="ui-icon-refresh" value="#{messages.UI_MENUBAR_REFRESH}"
-								process="@this"
+								<c:forEach
+									items="#{requestPresentationPageController.context.OAMOMap.entrySet()}"
+									var="entry">
+									<p:menuitem value="#{entry.key}"
+										actionListener="#{requestPresentationPageController.activateOAMO(entry.value)}"
+										process="@this" update=":dashboardForm, :menubar"
+										onclick="windowBlockUI.block();"
+										oncomplete="windowBlockUI.unblock();" />
+								</c:forEach>
+
+							</p:submenu>
+
+							<p:separator />
+
+							<p:menuitem value="#{messages.UI_MENUBAR_FILE_REFRESH}"
+								icon="ui-icon-refresh"
+								actionListener="#{requestPresentationPageController.reloadServices()}"
+								process="@this" onclick="windowBlockUI.block();"
+								oncomplete="windowBlockUI.unblock();" />
+
+						</p:submenu>
+
+						<p:submenu label="#{messages.UI_MENUBAR_APP}" icon="ui-icon-gear">
+
+							<p:menuitem value="#{messages.UI_MENUBAR_APP_REFRESH}"
+								disabled="#{empty requestPresentationPageController.context.selectedOAMO}"
+								icon="ui-icon-refresh" process="@this"
 								actionListener="#{requestPresentationPageController.updateDashboard()}" />
+						</p:submenu>
 
-						</p:toolbarGroup>
-					</p:toolbar>
+						<f:facet name="options">
+							<p:outputLabel value="#{messages.UI_MENUBAR_ACTIVE_APP}" />
+							<p:button icon="ui-icon-document" style="margin-left:10px;"
+								value="#{empty requestPresentationPageController.context.selectedOAMO ? '-' : requestPresentationPageController.context.selectedOAMO.name}"
+								onclick="return false;" />
+						</f:facet>
+
+					</p:menubar>
 				</h:form>
 			</pe:layoutPane>
 
 			<pe:layoutPane position="center" styleClass="no-border">
 				<h:form id="dashboardForm">
-					<p:dashboard
-						rendered="#{! empty requestPresentationPageController.context.dashboard}"
-						binding="#{requestPresentationPageController.context.dashboard}" />
+					<p:dashboard binding="#{requestPresentationPageController.context.dashboard}" />
+
+					<p:outputLabel
+						rendered="#{empty requestPresentationPageController.context.selectedOAMO}"
+						value="#{messages.UI_WIDGET_NO_APPLICATION_SELECTED}"
+						styleClass="no-application-selected" />
 				</h:form>
 
 			</pe:layoutPane>

@@ -1,7 +1,5 @@
 package org.openiot.ui.request.presentation.web.model.nodes.impl;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 import javax.faces.application.Application;
@@ -22,21 +20,18 @@ import org.openiot.ui.request.presentation.web.util.FaceletLocalization;
 import org.primefaces.component.commandlink.CommandLink;
 import org.primefaces.component.panel.Panel;
 import org.primefaces.context.RequestContext;
-import org.primefaces.model.chart.CartesianChartModel;
-import org.primefaces.model.chart.ChartSeries;
+import org.primefaces.model.chart.MeterGaugeChartModel;
 
-public class LineChart implements VisualizationWidget {
+public class Gauge implements VisualizationWidget {
 
-	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-	private org.primefaces.component.chart.line.LineChart widget;
+	private org.primefaces.component.chart.metergauge.MeterGaugeChart widget;
 	private HtmlOutputText emptyMessage;
 	private Panel panel;
-	private CartesianChartModel model;
+	private MeterGaugeChartModel model;
+	private String unit;
 	private String title;
-	private String xAxisLabel;
-	private String yAxisLabel;
-	private int numSeries;
-	private String[] seriesLabels;
+	private Number min;
+	private Number max;
 
 	@Override
 	public UIComponent createWidget(List<PresentationAttr> presentationAttributes) {
@@ -46,14 +41,12 @@ public class LineChart implements VisualizationWidget {
 		parseAttributes(presentationAttributes);
 
 		// Instanciate linechart widget
-		widget = (org.primefaces.component.chart.line.LineChart) application.createComponent(fc, "org.primefaces.component.chart.LineChart", "org.primefaces.component.chart.LineChartRenderer");
-		widget.setId("lineChart_" + System.nanoTime());
-		widget.setStyleClass("line-chart");
-		widget.setXaxisLabel(xAxisLabel);
-		widget.setYaxisLabel(yAxisLabel);
-		widget.setXaxisAngle(90);
-		widget.setShowMarkers(true);
-		widget.setLegendPosition("s");
+		widget = (org.primefaces.component.chart.metergauge.MeterGaugeChart) application.createComponent(fc, "org.primefaces.component.chart.MeterGaugeChart", "org.primefaces.component.chart.MeterGaugeChartRenderer");
+		widget.setId("gauge_" + System.nanoTime());
+		widget.setStyleClass("gauge");
+		widget.setLabel(unit);
+		widget.setMin(min.doubleValue());
+		widget.setMax(max.doubleValue());
 		widget.setRendered(false);
 
 		// Instanciate a panel to host the widget
@@ -92,10 +85,8 @@ public class LineChart implements VisualizationWidget {
 		panel.getChildren().add(emptyMessage);
 
 		// Setup model
-		model = new CartesianChartModel();
-		for (String seriesLabel : seriesLabels) {
-			model.addSeries(new ChartSeries(seriesLabel));
-		}
+		model = new MeterGaugeChartModel();
+		model.setValue(min);
 		widget.setValue(model);
 
 		return panel;
@@ -107,26 +98,17 @@ public class LineChart implements VisualizationWidget {
 
 		for (Result result : resultSet.getQueryResult().getSparql().getResults().getResult()) {
 			// Parse data
-			Object xValue = sdf.format(new Date());
-			Double[] yValues = new Double[numSeries];
+			Double value = null;
+
 			for (Binding binding : result.getBinding()) {
-				if ("x".equals(binding.getName())) {
-					xValue = Double.valueOf(binding.getLiteral().getContent());
-				} else if (binding.getName().startsWith("y")) {
-					// y values start at index 1 (y1, y2 e.t.c)
-					int yValueIndex = Integer.valueOf(binding.getName().substring(1)) - 1;
-					yValues[yValueIndex] = Double.valueOf(binding.getLiteral().getContent());
+				if ("VALUE".equals(binding.getName())) {
+					value = Double.valueOf(binding.getLiteral().getContent());
 				}
 			}
 
 			// Update series
-			for (int seriesIndex = 0; seriesIndex < numSeries; seriesIndex++) {
-				ChartSeries series = model.getSeries().get(seriesIndex);
-				Double yValue = yValues[seriesIndex];
-				if (yValue == null) {
-					continue;
-				}
-				series.getData().put(xValue, yValue);
+			if (value != null) {
+				model.setValue(value);
 				triggerUpdate = true;
 			}
 		}
@@ -139,40 +121,26 @@ public class LineChart implements VisualizationWidget {
 				requestContext.update(panel.getClientId());
 			}
 		}
-
 	}
 
 	private void parseAttributes(List<PresentationAttr> presentationAttributes) {
-		seriesLabels = null;
-		// Figure out number of series
-		for (PresentationAttr attr : presentationAttributes) {
-			if ("SERIES".equals(attr.getName())) {
-				numSeries = Integer.valueOf(attr.getValue());
-				seriesLabels = new String[numSeries];
-				break;
-			}
-		}
-		//
 		for (PresentationAttr attr : presentationAttributes) {
 			if ("TITLE".equals(attr.getName())) {
 				title = attr.getValue();
-			} else if ("X_AXIS_LABEL".equals(attr.getName())) {
-				xAxisLabel = attr.getValue();
-			} else if ("Y_AXIS_LABEL".equals(attr.getName())) {
-				yAxisLabel = attr.getValue();
-			} else if (attr.getName().startsWith("SERIES_")) {
-				int seriesIndex = Integer.valueOf(attr.getName().split("_")[1]);
-				seriesLabels[seriesIndex] = attr.getValue();
+			} else if ("UNIT".equals(attr.getName())) {
+				unit = attr.getValue();
+			} else if ("MIN".equals(attr.getName())) {
+				min = Double.valueOf(attr.getValue());
+			} else if ("MAX".equals(attr.getName())) {
+				max = Double.valueOf(attr.getValue());
 			}
 		}
 	}
 
 	@Override
 	public void clearData() {
-		for (ChartSeries series : model.getSeries()) {
-			series.getData().clear();
-		}
-		
+		model.setValue(min);
+
 		widget.setRendered(false);
 		emptyMessage.setRendered(true);
 
@@ -181,5 +149,4 @@ public class LineChart implements VisualizationWidget {
 			requestContext.update(panel.getClientId());
 		}
 	}
-
 }

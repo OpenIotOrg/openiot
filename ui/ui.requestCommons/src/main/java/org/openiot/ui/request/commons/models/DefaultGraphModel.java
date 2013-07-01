@@ -50,7 +50,6 @@ public class DefaultGraphModel implements GraphModel, Serializable {
 
 	private String UID = "graph_" + System.nanoTime();
     private GraphNode selectedNode;
-    private String label;
     private List<GraphNode> nodes;
     private List<GraphNodeConnection> connections;
     private Map<String, GraphNodePosition> positions;
@@ -69,14 +68,6 @@ public class DefaultGraphModel implements GraphModel, Serializable {
 		this.UID = UID;
 	}
 
-    public String getLabel(){
-    	return label;
-    }
-    
-	public void setLabel(String label){
-		this.label = label;
-	}
-    
     public List<GraphNode> getNodes() {
         return nodes;
     }
@@ -243,7 +234,6 @@ public class DefaultGraphModel implements GraphModel, Serializable {
 		try{
 			spec.put("class", this.getClass().getCanonicalName());
 			spec.put("uid",  getUID());
-			spec.put("label",  getLabel());
 			
 			// Encode each node
 			JSONArray nodes = new JSONArray();
@@ -274,7 +264,6 @@ public class DefaultGraphModel implements GraphModel, Serializable {
 
 	public void importJSON(JSONObject spec) throws JSONException {
 		setUID(spec.getString("uid"));
-		setLabel(spec.getString("label"));
 		
 		// Parse nodes
 		JSONArray nodes = spec.getJSONArray("nodes");

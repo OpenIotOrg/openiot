@@ -23,16 +23,21 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.logging.Level;
 
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
+
+import org.openiot.commons.osdspec.model.OAMO;
+import org.openiot.commons.osdspec.model.OSDSpec;
 import org.openiot.commons.sensortypes.model.MeasurementCapability;
 import org.openiot.commons.sensortypes.model.SensorType;
 import org.openiot.commons.sensortypes.model.SensorTypes;
 import org.openiot.ui.request.commons.annotations.scanners.GraphNodeScanner;
 import org.openiot.ui.request.commons.interfaces.GraphModel;
 import org.openiot.ui.request.commons.logging.LoggerService;
-import org.openiot.ui.request.commons.models.DefaultGraphModel;
 import org.openiot.ui.request.commons.nodes.base.DefaultGraphNodeEndpoint;
 import org.openiot.ui.request.commons.nodes.enums.AnchorType;
 import org.openiot.ui.request.commons.nodes.enums.ConnectorType;
@@ -41,17 +46,23 @@ import org.openiot.ui.request.commons.nodes.interfaces.GraphNode;
 import org.openiot.ui.request.commons.nodes.interfaces.GraphNodeEndpoint;
 import org.openiot.ui.request.commons.nodes.validation.GraphValidationError;
 import org.openiot.ui.request.commons.nodes.validation.GraphValidationWarning;
+import org.openiot.ui.request.commons.providers.SchedulerAPIWrapper;
+import org.openiot.ui.request.commons.providers.exceptions.APIException;
 import org.openiot.ui.request.definition.web.model.nodes.impl.sensors.GenericSensor;
+import org.openiot.ui.request.definition.web.scopes.application.ApplicationBean;
 import org.openiot.ui.request.definition.web.scopes.session.base.DisposableContext;
+import org.openiot.ui.request.definition.web.util.FaceletLocalization;
 import org.primefaces.extensions.model.dynaform.DynaFormModel;
 
 /**
  * 
  * @author Achilleas Anagnostopoulos (aanag) email: aanag@sensap.eu
  */
-public class ServiceDesignPageContext extends DisposableContext{
+public class ServiceDesignPageContext extends DisposableContext {
 
 	// The Node graph model
+	private OSDSpec osdSpec;
+	private OAMO selectedOAMO;
 	private GraphModel graphModel;
 	// The active property editor form model
 	private DynaFormModel propertyEditorModel;
@@ -68,13 +79,14 @@ public class ServiceDesignPageContext extends DisposableContext{
 	private double filterLocationLat;
 	private double filterLocationLon;
 	private double filterLocationRadius;
+	// New application
+	private String newServiceName;
+	private String newServiceDescription;
 
 	public ServiceDesignPageContext() {
 		super();
 		this.register();
 
-		graphModel = new DefaultGraphModel();
-		graphModel.setLabel("New application");
 		graphValidationErrors = new ArrayList<GraphValidationError>();
 		graphValidationWarnings = new ArrayList<GraphValidationWarning>();
 		availableNodesByTypeMap = new LinkedHashMap<String, List<GraphNode>>();
@@ -87,6 +99,10 @@ public class ServiceDesignPageContext extends DisposableContext{
 	public String getContextUID() {
 		return "serviceDesignPageContext";
 	}
+
+	// --------------------------------------------------------------------------
+	// Workspace
+	// --------------------------------------------------------------------------
 
 	public GraphModel getGraphModel() {
 		return graphModel;
@@ -140,6 +156,24 @@ public class ServiceDesignPageContext extends DisposableContext{
 		this.selectedConsoleTabIndex = selectedConsoleTabIndex;
 	}
 
+	public void cleanupWorkspace() {
+		if( graphModel != null ){
+			graphModel.clear();
+		}
+		graphValidationErrors.clear();
+		graphValidationWarnings.clear();
+		generatedCode = null;
+
+		filterLocationLat = 0;
+		filterLocationLon = 0;
+		filterLocationRadius = 0;
+		availableNodesByTypeMap.get("SENSOR").clear();
+	}
+
+	// --------------------------------------------------------------------------
+	// Sensor lookup
+	// --------------------------------------------------------------------------
+
 	public double getFilterLocationLat() {
 		return filterLocationLat;
 	}
@@ -164,18 +198,6 @@ public class ServiceDesignPageContext extends DisposableContext{
 		this.filterLocationRadius = filterLocationRadius;
 	}
 
-	public void clear() {
-		graphModel.clear();
-		graphValidationErrors.clear();
-		graphValidationWarnings.clear();
-		generatedCode = null;
-
-		filterLocationLat = 0;
-		filterLocationLon = 0;
-		filterLocationRadius = 0;
-		availableNodesByTypeMap.get("SENSOR").clear();
-	}
-
 	public void updateAvailableSensors(SensorTypes sensorTypes) {
 		List<GraphNode> sensorList = availableNodesByTypeMap.get("SENSOR");
 		sensorList.clear();
@@ -183,7 +205,7 @@ public class ServiceDesignPageContext extends DisposableContext{
 			GenericSensor sensor = new GenericSensor();
 			sensor.setLabel(sensorType.getName());
 			sensor.setType("SENSOR");
-			
+
 			// Copy selected filter params
 			sensor.getPropertyValueMap().put("LAT", filterLocationLat);
 			sensor.getPropertyValueMap().put("LON", filterLocationLon);
@@ -192,7 +214,7 @@ public class ServiceDesignPageContext extends DisposableContext{
 			// Initialize sensor endpoints
 			List<GraphNodeEndpoint> endpointList = new ArrayList<GraphNodeEndpoint>();
 			sensor.setEndpointDefinitions(endpointList);
-			
+
 			// Add an additional endpoint for filtering options
 			GraphNodeEndpoint endpoint = new DefaultGraphNodeEndpoint();
 			endpoint.setAnchor(AnchorType.Left);
@@ -216,13 +238,13 @@ public class ServiceDesignPageContext extends DisposableContext{
 				endpoint.setRequired(false);
 				endpoint.setType(EndpointType.Output);
 				String label = cap.getType();
-				if( label.contains("#")){
+				if (label.contains("#")) {
 					label = label.substring(label.indexOf('#') + 1);
 				}
-				if( !cap.getUnit().isEmpty() && cap.getUnit().get(0).getName() != null && !cap.getUnit().get(0).getName().equals("null") && !cap.getUnit().get(0).getName().isEmpty()){
+				if (!cap.getUnit().isEmpty() && cap.getUnit().get(0).getName() != null && !cap.getUnit().get(0).getName().equals("null") && !cap.getUnit().get(0).getName().isEmpty()) {
 					label += " (" + cap.getUnit().get(0).getName() + ")";
 				}
-				endpoint.setLabel(label); 
+				endpoint.setLabel(label);
 				endpoint.setUserData(cap.getType());
 
 				String scope = "Number";
@@ -239,6 +261,56 @@ public class ServiceDesignPageContext extends DisposableContext{
 			// Add sensor to toolbox
 			sensorList.add(sensor);
 		}
+	}
+
+	// --------------------------------------------------------------------------
+	// Service management
+	// --------------------------------------------------------------------------
+
+	public OSDSpec getOsdSpec() {
+		return osdSpec;
+	}
+
+	public void setOsdSpec(OSDSpec osdSpec) {
+		this.osdSpec = osdSpec;
+		cleanupWorkspace();
+		setSelectedOAMO(null);
+	}
+
+	public OAMO getSelectedOAMO() {
+		return selectedOAMO;
+	}
+
+	public void setSelectedOAMO(OAMO selectedOAMO) {
+		this.selectedOAMO = selectedOAMO;
+	}
+
+	public Map<String, OAMO> getOAMOMap() {
+		Map<String, OAMO> map = new LinkedHashMap<String, OAMO>();
+		for (OAMO oamo : osdSpec.getOAMO()) {
+			map.put(oamo.getName(), oamo);
+		}
+		return map;
+	}
+
+	// --------------------------------------------------------------------------
+	// New service
+	// --------------------------------------------------------------------------
+
+	public String getNewServiceName() {
+		return newServiceName;
+	}
+
+	public void setNewServiceName(String newServiceName) {
+		this.newServiceName = newServiceName;
+	}
+
+	public String getNewServiceDescription() {
+		return newServiceDescription;
+	}
+
+	public void setNewServiceDescription(String newServiceDescription) {
+		this.newServiceDescription = newServiceDescription;
 	}
 
 	// --------------------------------------------------------------------------

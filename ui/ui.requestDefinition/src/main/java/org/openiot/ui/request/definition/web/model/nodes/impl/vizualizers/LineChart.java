@@ -54,6 +54,7 @@ import org.openiot.ui.request.commons.nodes.interfaces.GraphNodeProperty;
     @Endpoint(type = EndpointType.Input, anchorType = AnchorType.Left, scope = "Number", label = "x", required = true),
 })
 @NodeProperties({
+    @NodeProperty(type = PropertyType.Writable, javaType = java.lang.String.class, name = "TITLE", required = true),
     @NodeProperty(type = PropertyType.Writable, javaType = java.lang.String.class, name = "SERIES", required = true, allowedValues = {"1", "2","3", "4", "5"}),
     @NodeProperty(type = PropertyType.Writable, javaType = java.lang.String.class, name = "X_AXIS_TYPE", required = true, allowedValues = {"Date", "Number"}),
     @NodeProperty(type = PropertyType.Writable, javaType = java.lang.String.class, name = "X_AXIS_LABEL", required = true),
@@ -68,6 +69,7 @@ public class LineChart extends DefaultGraphNode implements Serializable, Observe
         super();
 
         // Setup some defaults
+        setProperty("TITLE", LineChart.class.getSimpleName());
         setProperty("SERIES", "1");
         setProperty("X_AXIS_TYPE", "Number");
         setProperty("X_AXIS_LABEL", "x axis");
