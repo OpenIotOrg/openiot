@@ -1,4 +1,4 @@
-package org.openiot.scheduler.client.rest;
+package org.openiot.scheduler.client.ui.cli;
 
 
 
