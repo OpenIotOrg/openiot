@@ -3,26 +3,18 @@
 *.class
 
 
-
-
 # Eclipse Settings #
 ####################
 .project
 **/.project
 .classpath
 **/.classpath
-.settings
-**/.settings
 org.eclipse.core.resources.prefs
 org.eclipse.m2e.core.prefs
-.factorypath
-
 
 # Eclipse Plug-In Settings #
 ############################
 .pmd
-
-
 
 
 # Maven Generated #
@@ -30,22 +22,17 @@ org.eclipse.m2e.core.prefs
 pom.xml.versionsBackup
 
 
-
-
 # Mac Generated #
 #################
 .DS_Store
 
 
-
-
 # Binary Folders #
 #################
 bin
-*/bin/
+**/bin
 target/
 */target/
-
 
 # Packages #
 ############
@@ -60,15 +47,12 @@ target/
 #*.tar
 #*.zip
 
-
 # Logs and databases #
 ######################
-*.log
-logs/
-*/logs/
+#*.log
 #*.sql
 #*.sqlite
 
-
 # OS generated files #
 ######################
+
