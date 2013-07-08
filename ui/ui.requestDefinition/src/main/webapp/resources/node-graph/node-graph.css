@@ -1,0 +1,62 @@
+
+.graph-node-wrapper *{
+    -moz-user-select:none;
+    -webkit-user-select:none;
+}
+.graph-node-wrapper ._jsPlumb_endpoint {
+    z-index:1;
+}
+.graph-node-wrapper ._jsPlumb_endpoint.ui-draggable{
+    cursor:pointer;
+}
+.graph-node-wrapper .graph-node {
+    border: 2px solid #346789;
+    background-color:white;
+    z-index: 20;
+    position: absolute;
+    font-size: 0.8em;
+}
+.graph-node-wrapper .ui-draggable-dragging._jsPlumb_endpoint{
+    z-index:4 !important;
+}
+.graph-node-wrapper .ui-draggable-dragging {
+    z-index:5 !important;
+}
+.graph-node-wrapper .graph-node.graph-node-selected{
+    box-shadow: #4B5C50 0px 0px 15px;
+}
+
+.graph-node-wrapper .graph-endpoint-label {
+    z-index: 3;
+    color:#346789;
+}
+.graph-node-wrapper .graph-node .graph-node-label{
+	text-align:center;
+    margin-top:3px;
+    position:relative;
+    font-weight: bold;
+    font-size:1.2em;
+}
+
+.graph-node-wrapper .graph-node{
+    z-index:2;
+
+    display: -webkit-box;
+    -webkit-box-pack: center;
+
+    display: -moz-box;
+    -moz-box-pack: center;
+
+    display: -ms-flexbox;
+    -ms-flex-pack: center;
+
+    display: box;
+    box-pack: center;
+}
+
+.graph-node-wrapper .active {
+    border:2px dotted green;
+}
+.graph-node-wrapper .hover {
+    border:2px dotted red;
+}

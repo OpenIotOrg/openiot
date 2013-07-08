@@ -1,0 +1,103 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:cc="http://java.sun.com/jsf/composite"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:s="http://www.sensap.eu/jsf"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:pe="http://primefaces.org/ui/extensions">
+
+<!-- INTERFACE -->
+<cc:interface>
+	<cc:attribute name="id" />
+</cc:interface>
+
+<!-- IMPLEMENTATION -->
+<cc:implementation>
+	<p:dialog header="#{messages.UI_EDIT_VARIABLE_DIALOG_HEADER}"
+		modal="true" closable="false" closeOnEscape="true" resizable="false"
+		widgetVar="#{cc.attrs.id}">
+		<h:form id="editVariableDialogForm">
+
+			<h:panelGrid columns="2" style="width:100%;box-sizing:border-box;"
+				rendered="#{! empty editVariableDialogController.context}"
+				columnClasses="half-available-width">
+
+				<p:outputPanel>
+					<p:outputLabel for="useVariable"
+						value="#{messages.UI_EDIT_VARIABLE_DIALOG_IS_VARIABLE}" />
+				</p:outputPanel>
+				<p:outputPanel>
+					<p:selectBooleanCheckbox id="useVariable"
+						value="#{editVariableDialogController.context.field.property.variable}">
+						<p:ajax event="change" process="@this" update="@form" />
+					</p:selectBooleanCheckbox>
+				</p:outputPanel>
+
+				<p:outputPanel>
+					<p:outputLabel for="variableName"
+						value="#{messages.UI_EDIT_VARIABLE_DIALOG_VARIABLE_NAME}" />
+				</p:outputPanel>
+				<p:outputPanel>
+					<p:inputText id="variableName"
+						disabled="#{!editVariableDialogController.context.field.property.variable}"
+						required="#{editVariableDialogController.context.field.property.variable}"
+						value="#{editVariableDialogController.context.field.property.variableName}" />
+				</p:outputPanel>
+
+				<p:outputPanel>
+					<p:outputLabel for="variableDefaultValue"
+						value="#{messages.UI_EDIT_VARIABLE_DIALOG_VARIABLE_DEFAULT}" />
+				</p:outputPanel>
+				<p:outputPanel>
+					<c:choose>
+						<c:when
+							test="#{editVariableDialogController.context.field.controlType eq 'String'}">
+							<p:inputText id="variableDefaultValue"
+								disabled="#{!editVariableDialogController.context.field.property.variable}"
+								required="#{editVariableDialogController.context.field.property.variable}"
+								value="#{editVariableDialogController.context.node.propertyValueMap[ editVariableDialogController.context.field.valueKey ]}"
+								/>
+
+						</c:when>
+						<c:when
+							test="#{editVariableDialogController.context.field.controlType eq 'Number'}">
+							<pe:inputNumber id="variableDefaultValue"
+								disabled="#{!editVariableDialogController.context.field.property.variable}"
+								required="#{editVariableDialogController.context.field.property.variable}"
+								value="#{editVariableDialogController.context.node.propertyValueMap[ editVariableDialogController.context.field.valueKey ]}" 
+								/>
+						</c:when>
+						<c:when
+							test="#{editVariableDialogController.context.field.controlType eq 'Long'}">
+							<pe:inputNumber id="variableDefaultValue"
+								disabled="#{!editVariableDialogController.context.field.property.variable}"
+								required="#{editVariableDialogController.context.field.property.variable}"
+								value="#{editVariableDialogController.context.node.propertyValueMap[ editVariableDialogController.context.field.valueKey ]}"
+								decimalPlaces="0" 
+								/>
+						</c:when>
+					</c:choose>
+				</p:outputPanel>
+
+			</h:panelGrid>
+
+			<p:outputPanel layout="block" styleClass="ui-dialog-footer"
+				style="text-align:right;">
+				<p:separator />
+
+				<p:commandButton value="#{messages.DIALOG_CONFIRM}" process="@form"
+					actionListener="#{editVariableDialogController.applyChanges}"
+					update="@form, :propertyGridForm, :nodeGraphForm:nodeGraph" onstart="windowBlockUI.block();"
+					oncomplete="windowBlockUI.unblock();if( args &amp;&amp; (args.notValid || args.validationFailed ) ){return false;}#{cc.attrs.id}.hide();return false;" />
+
+				<p:button value="#{messages.DIALOG_CANCEL}"
+					style="margin-left:10px;"
+					onclick="#{cc.attrs.id}.hide();return false;" />
+			</p:outputPanel>
+		</h:form>
+	</p:dialog>
+</cc:implementation>
+</html>

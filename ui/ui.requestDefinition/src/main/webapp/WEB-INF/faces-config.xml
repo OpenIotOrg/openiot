@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='UTF-8'?>
+
+<!-- =========== FULL CONFIGURATION FILE ================================== -->
+
+<faces-config version="2.1"
+              xmlns="http://java.sun.com/xml/ns/javaee" 
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+              xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_2_1.xsd">
+
+    <application>
+        <locale-config>
+            <default-locale>en</default-locale>
+            <supported-locale>en</supported-locale>
+        </locale-config>
+        <resource-bundle>
+            <base-name>org.openiot.ui.request.definition.web.i18n.messages</base-name>
+            <var>messages</var>
+        </resource-bundle>
+    </application>
+    <component>
+        <component-type>org.openiot.ui.request.definition.web.jsf.components.graph.NodeGraph</component-type>
+        <component-class>org.openiot.ui.request.definition.web.jsf.components.graph.NodeGraph</component-class>
+    </component>
+    <render-kit>
+        <renderer>
+            <component-family>org.openiot.ui.request.definition.web.jsf.components.graph</component-family>
+            <renderer-type>org.openiot.ui.request.definition.web.jsf.components.graph.NodeGraphRenderer</renderer-type>
+            <renderer-class>org.openiot.ui.request.definition.web.jsf.components.graph.NodeGraphRenderer</renderer-class>
+        </renderer>
+    </render-kit>
+</faces-config>
