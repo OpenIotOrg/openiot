@@ -1,0 +1,37 @@
+<jxb:bindings version="1.0" xmlns:jxb="http://java.sun.com/xml/ns/jaxb"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+
+	<jxb:bindings schemaLocation="SdumServiceResultSet.xsd" node="/xs:schema">
+		<jxb:schemaBindings>
+            <jxb:package name="org.openiot.commons.sdum.serviceresultset.model" />
+        </jxb:schemaBindings>
+	</jxb:bindings>
+	
+
+
+
+	<jxb:bindings schemaLocation="sparql/protocol-types.xsd" node="/xs:schema">
+		<jxb:schemaBindings>
+            <jxb:package name="org.openiot.commons.sparql.protocoltypes.model" />
+        </jxb:schemaBindings>
+	</jxb:bindings>
+    
+	<jxb:bindings schemaLocation="sparql/rdf.xsd" node="/xs:schema">
+		<jxb:schemaBindings>
+            <jxb:package name="org.openiot.commons.sparql.rdf.model" />
+        </jxb:schemaBindings>
+	</jxb:bindings>
+
+	<jxb:bindings schemaLocation="sparql/result.xsd" node="/xs:schema">
+		<jxb:schemaBindings>
+            <jxb:package name="org.openiot.commons.sparql.result.model" />
+        </jxb:schemaBindings>
+	</jxb:bindings>
+	
+	
+	
+
+	
+	
+</jxb:bindings> 

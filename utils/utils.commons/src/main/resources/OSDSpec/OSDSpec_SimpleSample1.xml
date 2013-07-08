@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OSDSpec xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="file:/C:/Development/Eclipse_Worksp/Eclipse_Worksp4.2.2/OpenIoT/GitHub/ait-develop/openiot/utils/openIotCommons/src/main/resources/OSDSpec/OSDSpec.xsd"
+	userID="nodeID://b46876">
+	<OAMO id="OpenIoTApplicationModelObject1ID" name="OpenIoTApplicationModelObject1Name">
+		<description>OpenIoTApplicationModelObject1Descreption</description>
+		<OSMO id="http://SensorModelObject1ServiceID/" name="SensorModelObject1Name">
+			<description>OpenIoT Sensor Model Object 1</description>
+			<queryControls>
+				<QuerySchedule>
+					<second>M9y7aLQSxSj3s-NiLVNoDgz</second>
+					<minute>vuL0v.3s_jsB</minute>
+					<hour>qbBht_g</hour>
+					<dayOfMonth>K5dKF-Vki7X</dayOfMonth>
+					<month>CZw9WuVoztWeN1lV7Q-rOckNZR</month>
+					<dayOfWeek>Yvz_omXZU7yTpPa1V8NiSqaL</dayOfWeek>
+				</QuerySchedule>
+				<trigger>http://vyfDxLWN/</trigger>
+				<initialRecordTime>2013-11-20T22:54:08</initialRecordTime>
+				<reportIfEmpty>true</reportIfEmpty>
+			</queryControls>
+			<requestPresentation>
+				<widget widgetID="http://TheYperwidgetID/">
+					<presentationAttr name="widget1PresentationAttr1Name"
+						value="widget1PresentationAttr1Value" />
+					<presentationAttr name="widget1PresentationAttr2Name"
+						value="widget1PresentationAttr2Value" />
+				</widget>
+				<widget widgetID="http://TheYperwidget2ID/">
+					<presentationAttr name="widget2PresentationAttr1Name"
+						value="widget2PresentationAttr1Value" />
+					<presentationAttr name="widget2PresentationAttr2Name"
+						value="widget2PresentationAttr2Value" />
+				</widget>
+			</requestPresentation>
+			<query-request>
+				<query>SELECT * FROM #openiot# WHERE {?s ?p ?o}</query>
+				<default-graph-uri>http://AaQuDPSJ/</default-graph-uri>
+				<named-graph-uri>http://kHGZizGZ/</named-graph-uri>
+				<dynamicAttrMaxValue name="HMIJ_yAks5E"
+					value="_kKKOBxL4fMVWVN.yW0CM0v" />
+				<dynamicAttrMaxValue name="JEOs6Rt"
+					value="P4yO.t2R0ky5V2Vo9shr-dkgC" />
+				<dynamicAttrMaxValue name="khsITns1Dj.m5Di.c"
+					value="dizQ.h2cLctlMQuB7tAEBpmxWi" />
+			</query-request>
+		</OSMO>
+	</OAMO>
+</OSDSpec>

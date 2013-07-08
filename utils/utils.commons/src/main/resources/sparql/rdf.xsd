@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.w3.org/1999/02/22-rdf-syntax-ns#" version="$Id: rdf.xsd,v 1.1 2007/10/17 14:48:47 eric Exp $">
+
+<!-- http://www.w3.org/TR/rdf-syntax-grammar/ -->
+  <!-- "Define" rdf:RDF -->
+  <xs:element name="RDF" type="xs:anyType">
+    <xs:annotation>
+      <xs:documentation xml:lang="en">
+        The content of the root RDF element must be valid RDF/XML as 
+        defined in the RDF/XML Syntax Specification (Revised):
+          http://www.w3.org/TR/rdf-syntax-grammar/
+      </xs:documentation>
+    </xs:annotation>
+  </xs:element>
+</xs:schema>

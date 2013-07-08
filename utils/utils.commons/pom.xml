@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+ <!-- 
+ * Copyright (c) 2011-2014, OpenIoT
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it either under the terms of the GNU Lesser General Public
+ * License version 2.1 as published by the Free Software Foundation
+ * (the "LGPL"). If you do not alter this
+ * notice, a recipient may use your version of this file under the LGPL.
+ *
+ * You should have received a copy of the LGPL along with this library
+ * in the file COPYING-LGPL-2.1; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ *
+ * This software is distributed on an "AS IS" basis, WITHOUT WARRANTY
+ * OF ANY KIND, either express or implied. See the LGPL  for
+ * the specific language governing rights and limitations.
+ *
+ * Contact: OpenIoT mailto: info@openiot.eu
+ -->
+
+ <!-- 
+   @author Nikos Kefalakis (nkef) e-mail: nkef@ait.edu.gr
+  -->
+
+
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+   
+  <!-- =========================================================== -->
+  <!-- Basics -->
+  <!-- =========================================================== -->
+   
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.openiot</groupId>
+    <artifactId>utils.commons</artifactId>
+    <version>0.0.1</version>
+    <packaging>jar</packaging>
+    <name>OpenIoT Common files</name>
+    <description>OpenIoT Commons library</description>
+    <url>https://github.com/OpenIotOrg/openiot</url>
+
+    <licenses>
+        <license>
+            <name>GNU Lesser General Public License, version 2.1</name>
+            <distribution>repo</distribution>
+            <url>http://www.gnu.org/licenses/lgpl-2.1.html</url>
+        </license>
+    </licenses>
+
+
+  <!-- =========================================================== -->
+  <!-- Properties -->
+  <!-- =========================================================== -->
+
+    <properties>
+      
+        <!-- other plugin versions -->
+        <version.compiler.plugin>2.3.2</version.compiler.plugin>
+        <version.surefire.plugin>2.4.3</version.surefire.plugin>
+
+        <!-- maven-compiler-plugin -->
+        <maven.compiler.target>1.7</maven.compiler.target>
+        <maven.compiler.source>1.7</maven.compiler.source>
+    </properties>
+
+  <!-- =========================================================== -->
+  <!-- Parent -->
+  <!-- =========================================================== -->
+             <!-- to be filled -->
+
+
+
+
+
+
+
+
+
+
+
+
+  <!-- =========================================================== -->
+  <!-- Dependencies -->
+  <!-- =========================================================== -->
+
+
+    <dependencyManagement>
+        <dependencies>
+         </dependencies>
+    </dependencyManagement>
+    
+    
+    
+    <dependencies>
+       
+		<!-- ======== LogBack Dependencies ========== -->
+
+<!--  
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>1.0.11</version>
+		</dependency>
+ -->
+         <!-- Apache commons-logging Required By Sesame -->
+<!--
+		<dependency>
+			<groupId>commons-logging</groupId>
+			<artifactId>commons-logging</artifactId>
+			<version>1.1.2</version>
+		</dependency>
+ -->
+    </dependencies>
+
+
+  <!-- =========================================================== -->
+  <!-- Plugins -->
+  <!-- =========================================================== -->
+
+
+    <build>
+        <!-- Maven will append the version to the finalName -->
+        <finalName>${project.artifactId}</finalName>
+
+
+        <plugins>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${version.compiler.plugin}</version>
+                <configuration>
+                    <source>${maven.compiler.source}</source>
+                    <target>${maven.compiler.target}</target>
+                </configuration>
+            </plugin>
+            
+        </plugins>
+
+    </build>
+
+  <!-- =========================================================== -->
+  <!-- profiles -->
+  <!-- =========================================================== -->
+
+
+    <profiles>
+    
+<!--     
+        <profile>
+ -->
+            <!-- The default profile skips all tests, though you can tune it to run 
+                just unit tests based on a custom pattern -->
+            <!-- Separate profiles are provided for running all tests, including Arquillian 
+                tests that execute in the specified container -->
+<!--             <id>default</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <version>${version.surefire.plugin}</version>
+                        <configuration>
+                            <skip>true</skip>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+ -->
+    </profiles>
+    
+  <!-- =========================================================== -->
+  <!-- Repositories -->
+  <!-- =========================================================== -->
+
+  <repositories>
+  </repositories>
+
+  <pluginRepositories>
+  </pluginRepositories>
+</project>

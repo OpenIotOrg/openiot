@@ -1,0 +1,793 @@
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix ssn: <http://purl.oclc.org/NET/ssnx/ssn#> .
+@prefix spt: <http://spitfire-project.eu/ontology/ns/> .
+@prefix : <http://openiot.eu/ontology/ns/> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix oiot: <http://openiot.eu/ontology/ns/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix dul: <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#> .
+@base <http://openiot.eu/ontology/ns/clouddb> .
+
+<http://openiot.eu/ontology/ns/clouddb> rdf:type owl:Ontology ;
+                                        
+                                        rdfs:comment " Please report any error to myriam.leggieri_at_deri.org"^^xsd:string ,
+                                                     "This ontology is a sub-module of the OpenIoT ontology for representing Cloud DB concepts ."^^xsd:string ,
+                                                     "This ontology is developed by DERI ( http://www.deri.ie ) for the OpenIoT project ( http://openiot.eu ) ."^^xsd:string ;
+                                        
+                                        rdfs:seeAlso "http://openiot.eu" ;
+                                        
+                                        <http://purl.org/dc/elements/1.1/rights> "Copyright 2010 - 2013 OpenIoT." ;
+                                        
+                                        <http://purl.org/dc/elements/1.1/title> "OpenIoT Ontology - Cloud DB"@en ;
+                                        
+                                        <http://purl.org/dc/elements/1.1/identifier> "http://openiot.eu/ontology/ns/clouddb" ;
+                                        
+                                        <http://purl.org/dc/elements/1.1/creator> <http://myr.altervista.org/foaf.rdf#me> ;
+                                        
+                                        <http://purl.org/dc/terms/license> <http://www.w3.org/Consortium/Legal/2002/copyright-software-20021231.html> .
+
+
+#################################################################
+#
+#    Annotation properties
+#
+#################################################################
+
+
+:requestsVolume rdf:type owl:AnnotationProperty ;
+                
+                rdfs:isDefinedBy <http://openiot.eu/ontology/ns> ;
+                
+                rdfs:domain :UtilityUsageHistory .
+
+
+
+:execProp rdf:type owl:AnnotationProperty ;
+          
+          rdfs:isDefinedBy <http://openiot.eu/ontology/ns> ;
+          
+          rdfs:domain :Service .
+
+
+
+:script rdf:type owl:AnnotationProperty ;
+        
+        rdfs:isDefinedBy <http://openiot.eu/ontology/ns> ;
+        
+        rdfs:domain :Service .
+
+
+
+:password rdf:type owl:AnnotationProperty ;
+          
+          rdfs:isDefinedBy <http://openiot.eu/ontology/ns> ;
+          
+          rdfs:domain :User .
+
+
+
+
+
+#################################################################
+#
+#    Datatypes
+#
+#################################################################
+
+
+
+
+#################################################################
+#
+#    Object Properties
+#
+#################################################################
+
+
+###  http://openiot.eu/ontology/ns/access
+
+:access rdf:type owl:ObjectProperty ;
+        
+        rdfs:isDefinedBy <http://openiot.eu/ontology/ns> ;
+        
+        rdfs:range :Access ;
+        
+        rdfs:domain :User ;
+        
+        owl:inverseOf :accessOf .
+
+
+
+###  http://openiot.eu/ontology/ns/accessOf
+
+:accessOf rdf:type owl:ObjectProperty ;
+          
+          rdfs:isDefinedBy <http://openiot.eu/ontology/ns> ;
+          
+          rdfs:domain :Access ;
+          
+          rdfs:range :User .
+
+
+
+###  http://openiot.eu/ontology/ns/dataStorage
+
+:dataStorage rdf:type owl:ObjectProperty ;
+             
+             rdfs:isDefinedBy <http://openiot.eu/ontology/ns> ;
+             
+             rdfs:domain :VirtualSensor ;
+             
+             rdfs:range :VirtualSensorDataStorage ;
+             
+             owl:inverseOf :dataStorageOf .
+
+
+
+###  http://openiot.eu/ontology/ns/dataStorageOf
+
+:dataStorageOf rdf:type owl:ObjectProperty ;
+               
+               rdfs:isDefinedBy <http://openiot.eu/ontology/ns> ;
+               
+               rdfs:range :VirtualSensor ;
+               
+               rdfs:domain :VirtualSensorDataStorage .
+
+
+
+###  http://openiot.eu/ontology/ns/resourceUsed
+
+:resourceUsed rdf:type owl:ObjectProperty ;
+              
+              rdfs:isDefinedBy <http://openiot.eu/ontology/ns> ;
+              
+              rdfs:range :ServiceResource ;
+              
+              rdfs:domain :UtilityUsageHistory .
+
+
+
+###  http://openiot.eu/ontology/ns/restriction
+
+:restriction rdf:type owl:ObjectProperty ;
+             
+             rdfs:isDefinedBy <http://openiot.eu/ontology/ns> ;
+             
+             rdfs:range :Restriction ;
+             
+             owl:inverseOf :restrictionOf .
+
+
+
+###  http://openiot.eu/ontology/ns/restrictionOf
+
+:restrictionOf rdf:type owl:ObjectProperty ;
+               
+               rdfs:isDefinedBy <http://openiot.eu/ontology/ns> ;
+               
+               rdfs:domain :Restriction .
+
+
+
+###  http://openiot.eu/ontology/ns/right
+
+:right rdf:type owl:ObjectProperty ;
+       
+       rdfs:isDefinedBy <http://openiot.eu/ontology/ns> ;
+       
+       rdfs:domain :Access ;
+       
+       rdfs:range :Right .
+
+
+
+###  http://openiot.eu/ontology/ns/rightOf
+
+:rightOf rdf:type owl:ObjectProperty ;
+         
+         rdfs:isDefinedBy <http://openiot.eu/ontology/ns> ;
+         
+         rdfs:domain :Right ;
+         
+         rdfs:range :User ;
+         
+         owl:inverseOf :right .
+
+
+
+###  http://openiot.eu/ontology/ns/schema
+
+:schema rdf:type owl:ObjectProperty ;
+        
+        rdfs:isDefinedBy <http://openiot.eu/ontology/ns> ;
+        
+        rdfs:range :SensorSchema ;
+        
+        rdfs:domain :VirtualSensor ;
+        
+        owl:inverseOf :schemaOf ;
+        
+        rdfs:subPropertyOf dul:isDescribedBy .
+
+
+
+###  http://openiot.eu/ontology/ns/schemaOf
+
+:schemaOf rdf:type owl:ObjectProperty ;
+          
+          rdfs:isDefinedBy <http://openiot.eu/ontology/ns> ;
+          
+          rdfs:domain :SensorSchema ;
+          
+          rdfs:range :VirtualSensor ;
+          
+          rdfs:subPropertyOf dul:isDescribedBy .
+
+
+
+###  http://openiot.eu/ontology/ns/sensorConnected
+
+:sensorConnected rdf:type owl:ObjectProperty ;
+                 
+                 rdfs:isDefinedBy <http://openiot.eu/ontology/ns> ;
+                 
+                 rdfs:domain :SensorServiceConnection ;
+                 
+                 rdfs:range ssn:Sensor .
+
+
+
+###  http://openiot.eu/ontology/ns/sensorConnectedOf
+
+:sensorConnectedOf rdf:type owl:ObjectProperty ;
+                   
+                   rdfs:isDefinedBy <http://openiot.eu/ontology/ns> ;
+                   
+                   rdfs:range :SensorServiceConnection ;
+                   
+                   owl:inverseOf :sensorConnected ;
+                   
+                   rdfs:domain ssn:Sensor .
+
+
+
+###  http://openiot.eu/ontology/ns/sensorStatus
+
+:sensorStatus rdf:type owl:ObjectProperty ;
+              
+              rdfs:isDefinedBy <http://openiot.eu/ontology/ns> ;
+              
+              rdfs:range :SensorStatus ;
+              
+              rdfs:domain :VirtualSensor ;
+              
+              owl:inverseOf :sensorStatusOf .
+
+
+
+###  http://openiot.eu/ontology/ns/sensorStatusOf
+
+:sensorStatusOf rdf:type owl:ObjectProperty ;
+                
+                rdfs:isDefinedBy <http://openiot.eu/ontology/ns> ;
+                
+                rdfs:domain :SensorStatus ;
+                
+                rdfs:range :VirtualSensor .
+
+
+
+###  http://openiot.eu/ontology/ns/serviceConnected
+
+:serviceConnected rdf:type owl:ObjectProperty ;
+                  
+                  rdfs:isDefinedBy <http://openiot.eu/ontology/ns> ;
+                  
+                  rdfs:domain :SensorServiceConnection ;
+                  
+                  rdfs:range :Service ;
+                  
+                  owl:inverseOf :serviceConnectedOf .
+
+
+
+###  http://openiot.eu/ontology/ns/serviceConnectedOf
+
+:serviceConnectedOf rdf:type owl:ObjectProperty ;
+                    
+                    rdfs:isDefinedBy <http://openiot.eu/ontology/ns> ;
+                    
+                    rdfs:range :SensorServiceConnection ;
+                    
+                    rdfs:domain :Service .
+
+
+
+###  http://openiot.eu/ontology/ns/serviceHistory
+
+:serviceHistory rdf:type owl:ObjectProperty ;
+                
+                rdfs:isDefinedBy <http://openiot.eu/ontology/ns> ;
+                
+                rdfs:range :Service ;
+                
+                rdfs:domain :UtilityUsageHistory .
+
+
+
+###  http://openiot.eu/ontology/ns/serviceHistoryOf
+
+:serviceHistoryOf rdf:type owl:ObjectProperty ;
+                  
+                  rdfs:isDefinedBy <http://openiot.eu/ontology/ns> ;
+                  
+                  rdfs:domain :Service ;
+                  
+                  rdfs:range :UtilityUsageHistory ;
+                  
+                  owl:inverseOf :serviceHistory .
+
+
+
+###  http://openiot.eu/ontology/ns/serviceStatus
+
+:serviceStatus rdf:type owl:ObjectProperty ;
+               
+               rdfs:isDefinedBy <http://openiot.eu/ontology/ns> ;
+               
+               rdfs:domain :Service ;
+               
+               rdfs:range :ServiceStatus .
+
+
+
+###  http://openiot.eu/ontology/ns/serviceStatusOf
+
+:serviceStatusOf rdf:type owl:ObjectProperty ;
+                 
+                 rdfs:isDefinedBy <http://openiot.eu/ontology/ns> ;
+                 
+                 rdfs:range :Service ;
+                 
+                 rdfs:domain :ServiceStatus ;
+                 
+                 owl:inverseOf :serviceStatus .
+
+
+
+###  http://openiot.eu/ontology/ns/serviceUse
+
+:serviceUse rdf:type owl:ObjectProperty ;
+            
+            rdfs:isDefinedBy <http://openiot.eu/ontology/ns> ;
+            
+            rdfs:domain :Service ;
+            
+            rdfs:range :ServiceUse ;
+            
+            owl:inverseOf :serviceUseOf .
+
+
+
+###  http://openiot.eu/ontology/ns/serviceUseOf
+
+:serviceUseOf rdf:type owl:ObjectProperty ;
+              
+              rdfs:isDefinedBy <http://openiot.eu/ontology/ns> ;
+              
+              rdfs:range :Service ;
+              
+              rdfs:domain :ServiceUse .
+
+
+
+###  http://openiot.eu/ontology/ns/user
+
+:user rdf:type owl:ObjectProperty ;
+      
+      rdfs:isDefinedBy <http://openiot.eu/ontology/ns> ;
+      
+      rdfs:domain :SensorService ;
+      
+      rdfs:range :User ;
+      
+      owl:inverseOf :userOf .
+
+
+
+###  http://openiot.eu/ontology/ns/userOf
+
+:userOf rdf:type owl:ObjectProperty ;
+        
+        rdfs:isDefinedBy <http://openiot.eu/ontology/ns> ;
+        
+        rdfs:range :SensorService ;
+        
+        rdfs:domain :User .
+
+
+
+###  http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#isDescribedBy
+
+dul:isDescribedBy rdf:type owl:ObjectProperty .
+
+
+
+
+
+#################################################################
+#
+#    Data properties
+#
+#################################################################
+
+
+###  http://openiot.eu/ontology/ns/execProp
+
+:execProp rdf:type owl:DatatypeProperty ;
+          
+          rdfs:isDefinedBy <http://openiot.eu/ontology/ns> ;
+          
+          rdfs:range xsd:string .
+
+
+
+###  http://openiot.eu/ontology/ns/requestsVolume
+
+:requestsVolume rdf:type owl:DatatypeProperty ;
+                
+                rdfs:isDefinedBy <http://openiot.eu/ontology/ns> ;
+                
+                rdfs:range xsd:double .
+
+
+
+###  http://openiot.eu/ontology/ns/script
+
+:script rdf:type owl:DatatypeProperty ;
+        
+        rdfs:isDefinedBy <http://openiot.eu/ontology/ns> ;
+        
+        rdfs:range xsd:string .
+
+###
+###  http://openiot.eu/ontology/ns/serviceName
+###
+
+:serviceName rdf:type owl:DatatypeProperty ;
+        
+        rdfs:range xsd:string .
+
+###		
+###  http://openiot.eu/ontology/ns/serviceDescription
+###
+
+:serviceDescription rdf:type owl:DatatypeProperty ;
+        
+        rdfs:range xsd:string .
+
+###		
+###  http://openiot.eu/ontology/ns/lastExecuted
+###
+
+:lastExecuted rdf:type owl:DatatypeProperty ;
+        
+        rdfs:range xsd:dateTime .
+		
+###		
+###  http://openiot.eu/ontology/ns/queryString
+###
+
+:queryString rdf:type owl:DatatypeProperty ;
+        
+        rdfs:range xsd:string .
+	
+
+###		
+###  http://openiot.eu/ontology/ns/serviceStatusTime
+###
+
+:serviceStatusTime rdf:type owl:DatatypeProperty ;
+        
+        rdfs:range xsd:dateTime .
+
+
+#################################################################
+#
+#    Classes
+#
+#################################################################
+
+
+###  http://openiot.eu/ontology/ns/Access
+
+:Access rdf:type owl:Class ;
+        
+        rdfs:subClassOf owl:Class ;
+        
+        rdfs:isDefinedBy <http://openiot.eu/ontology/ns> .
+
+
+
+###  http://openiot.eu/ontology/ns/AccessRight
+
+:AccessRight rdf:type owl:Class ;
+             
+             rdfs:subClassOf owl:Class ;
+             
+             rdfs:isDefinedBy <http://openiot.eu/ontology/ns> .
+
+
+
+###  http://openiot.eu/ontology/ns/Restriction
+
+:Restriction rdf:type owl:Class ;
+             
+             rdfs:subClassOf owl:Class ;
+             
+             rdfs:isDefinedBy <http://openiot.eu/ontology/ns> .
+
+
+
+###  http://openiot.eu/ontology/ns/Right
+
+:Right rdf:type owl:Class .
+
+
+
+###  http://openiot.eu/ontology/ns/SensorSchema
+
+:SensorSchema rdf:type owl:Class ;
+              
+              rdfs:subClassOf dul:InformationObject ;
+              
+              rdfs:isDefinedBy <http://openiot.eu/ontology/ns> .
+
+
+
+###  http://openiot.eu/ontology/ns/SensorService
+
+:SensorService rdf:type owl:Class .
+
+
+
+###  http://openiot.eu/ontology/ns/SensorServiceConnection
+
+:SensorServiceConnection rdf:type owl:Class ;
+                         
+                         rdfs:subClassOf owl:Class ;
+                         
+                         rdfs:isDefinedBy <http://openiot.eu/ontology/ns> .
+
+
+
+###  http://openiot.eu/ontology/ns/SensorStatus
+
+:SensorStatus rdf:type owl:Class ;
+              
+              rdfs:subClassOf owl:Class ;
+              
+              rdfs:isDefinedBy <http://openiot.eu/ontology/ns> .
+
+
+
+###  http://openiot.eu/ontology/ns/Service
+
+:Service rdf:type owl:Class ;
+         
+         rdfs:subClassOf owl:Class ;
+         
+         rdfs:isDefinedBy <http://openiot.eu/ontology/ns> .
+
+
+
+###  http://openiot.eu/ontology/ns/ServiceResource
+
+:ServiceResource rdf:type owl:Class ;
+                 
+                 rdfs:subClassOf owl:Class ;
+                 
+                 rdfs:isDefinedBy <http://openiot.eu/ontology/ns> .
+
+
+
+###  http://openiot.eu/ontology/ns/ServiceStatus
+
+:ServiceStatus rdf:type owl:Class ;
+               
+               rdfs:subClassOf owl:Class ;
+               
+               rdfs:isDefinedBy <http://openiot.eu/ontology/ns> .
+
+
+
+###  http://openiot.eu/ontology/ns/ServiceUse
+
+:ServiceUse rdf:type owl:Class ;
+            
+            rdfs:subClassOf owl:Class ;
+            
+            rdfs:isDefinedBy <http://openiot.eu/ontology/ns> .
+
+
+
+###  http://openiot.eu/ontology/ns/User
+
+:User rdf:type owl:Class ;
+      
+      rdfs:subClassOf spt:Agent ;
+      
+      rdfs:isDefinedBy <http://openiot.eu/ontology/ns> .
+
+
+
+###  http://openiot.eu/ontology/ns/UtilityUsageHistory
+
+:UtilityUsageHistory rdf:type owl:Class ;
+                     
+                     rdfs:subClassOf owl:Class ;
+                     
+                     rdfs:isDefinedBy <http://openiot.eu/ontology/ns> .
+
+
+
+###  http://openiot.eu/ontology/ns/VirtualSensor
+
+:VirtualSensor rdf:type owl:Class .
+
+
+
+###  http://openiot.eu/ontology/ns/VirtualSensorDataStorage
+
+:VirtualSensorDataStorage rdf:type owl:Class ;
+                          
+                          rdfs:subClassOf owl:Class ;
+                          
+                          rdfs:isDefinedBy <http://openiot.eu/ontology/ns> .
+
+
+
+###  http://purl.oclc.org/NET/ssnx/ssn#Sensor
+
+ssn:Sensor rdf:type owl:Class .
+
+
+
+###  http://spitfire-project.eu/ontology/ns/Agent
+
+spt:Agent rdf:type owl:Class .
+
+
+
+###  http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#InformationObject
+
+dul:InformationObject rdf:type owl:Class .
+
+
+
+###  http://www.w3.org/2002/07/owl#Class
+
+owl:Class rdf:type owl:Class .
+
+
+
+###  http://www.w3.org/2002/07/owl#DataProperty
+
+owl:DataProperty rdf:type owl:Class .
+
+
+
+
+
+#################################################################
+#
+#    Individuals
+#
+#################################################################
+
+
+###  http://openiot.eu/ontology/ns/Available
+
+:Available rdf:type :SensorStatus ,
+                    owl:NamedIndividual .
+
+
+
+###  http://openiot.eu/ontology/ns/Enabled
+
+:Enabled rdf:type :ServiceStatus ,
+                  owl:NamedIndividual .
+
+
+
+###  http://openiot.eu/ontology/ns/Error
+
+:Error rdf:type :ServiceStatus ,
+                owl:NamedIndividual .
+
+
+
+###  http://openiot.eu/ontology/ns/InProgress
+
+:InProgress rdf:type :ServiceStatus ,
+                     owl:NamedIndividual .
+
+
+
+###  http://openiot.eu/ontology/ns/Initializing
+
+:Initializing rdf:type :ServiceStatus ,
+                       owl:NamedIndividual .
+
+
+
+###  http://openiot.eu/ontology/ns/MobileSensorUse
+
+:MobileSensorUse rdf:type :ServiceUse ,
+                          owl:NamedIndividual .
+
+
+
+###  http://openiot.eu/ontology/ns/Suspended
+
+:Suspended rdf:type :ServiceStatus ,
+                    owl:NamedIndividual .
+
+
+
+###  http://openiot.eu/ontology/ns/Unavailable
+
+:Unavailable rdf:type :SensorStatus ,
+                      owl:NamedIndividual .
+
+
+
+###  http://openiot.eu/ontology/ns/Unsatisfied
+
+:Unsatisfied rdf:type :ServiceStatus ,
+                      owl:NamedIndividual .
+
+
+
+###  http://openiot.eu/ontology/ns/execProp
+
+:execProp rdf:type owl:DataProperty ,
+                   owl:NamedIndividual ;
+          
+          rdfs:isDefinedBy <http://openiot.eu/ontology/ns> .
+
+
+
+###  http://openiot.eu/ontology/ns/password
+
+:password rdf:type owl:DataProperty ,
+                   owl:NamedIndividual ;
+          
+          rdfs:isDefinedBy <http://openiot.eu/ontology/ns> .
+
+
+
+###  http://openiot.eu/ontology/ns/requestsVolume
+
+:requestsVolume rdf:type owl:DataProperty ,
+                         owl:NamedIndividual ;
+                
+                rdfs:isDefinedBy <http://openiot.eu/ontology/ns> .
+
+
+
+###  http://openiot.eu/ontology/ns/script
+
+:script rdf:type owl:DataProperty ,
+                 owl:NamedIndividual ;
+        
+        rdfs:isDefinedBy <http://openiot.eu/ontology/ns> .
+
+
+
+
+###  Generated by the OWL API (version 3.2.3.1824) http://owlapi.sourceforge.net
+

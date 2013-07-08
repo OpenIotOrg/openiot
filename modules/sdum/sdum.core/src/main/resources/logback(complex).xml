@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+ <!-- For assistance related to logback-translator or configuration -->
+ <!-- files in general, please contact the logback user mailing list -->
+ <!-- at http://www.qos.ch/mailman/listinfo/logback-user -->
+ <!-- -->
+ <!-- For professional support please see -->
+ <!-- http://www.qos.ch/shop/products/professionalSupport -->
+ <!-- -->
+
+<configuration> <!-- scan="true" scanPeriod="180 seconds" --> 
+	
+
+	<property name="module.name" value="openIoT" />
+
+	<appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		 <!-- See http://logback.qos.ch/manual/appenders.html#RollingFileAppender -->
+		 <!-- and http://logback.qos.ch/manual/appenders.html#TimeBasedRollingPolicy -->
+		 <!-- for further documentation -->
+		<File>${user.dir}\logs\${module.name}.log</File>
+
+		<encoder>
+			<pattern>%5p (%d{yyyy-MM-dd HH:mm:ss,SSS}) [%C:%L] - %m%n</pattern>
+		</encoder>
+		
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<!-- daily rollover --> 
+			<fileNamePattern>logFile.%d{yyyy-MM-dd}.log</fileNamePattern>
+		
+			<!-- keep 30 days' worth of history --> 
+		    <maxHistory>30</maxHistory> 
+
+		</rollingPolicy>
+	</appender>n/;
+	
+	<appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
+		
+		<encoder>
+			<pattern>%5p [%t] (%F:%L) - %m%n</pattern>
+		</encoder>
+	</appender>
+	
+	<appender name="Info"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		 <!-- See also http://logback.qos.ch/manual/appenders.html#RollingFileAppender -->
+		<File>${user.dir}\logs\${module.name}.log</File>
+		
+		<encoder>
+			<pattern>%-4relative [%thread] %-5level %logger{35} - %msg%n</pattern>
+		</encoder>
+		
+		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+			<level>INFO</level>
+		</filter>
+		
+		<rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+			<maxIndex>1</maxIndex>
+			<FileNamePattern>.\log\Info.log.%i</FileNamePattern>
+		</rollingPolicy>
+		
+		<triggeringPolicy
+			class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+			<MaxFileSize>20000KB</MaxFileSize>
+		</triggeringPolicy>
+	</appender>
+	
+	<logger name="org.openiot" level="DEBUG">
+		<appender-ref ref="FILE" />
+		<appender-ref ref="stdout" />
+		<appender-ref ref="Info" />
+	</logger>
+	<!-- 	
+	<logger name="org.fosstrak" level="DEBUG">
+		<appender-ref ref="FILE" />
+		<appender-ref ref="stdout" />
+		<appender-ref ref="Info" />
+	</logger>
+	 -->
+	<root level="ALL" />
+</configuration>

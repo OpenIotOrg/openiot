@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OSDSpec xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="file:/C:/Development/Eclipse_Worksp/Eclipse_Worksp4.2.2/OpenIoT/GitHub/ait-develop/openiot/utils/openIotCommons/src/main/resources/OSDSpec/OSDSpec.xsd"
+	userID="nodeID://b46876">
+	<OAMO id="oamo_test_1" name="oamo_name_1">
+		<description>oamo test 1 description</description>
+		<OSMO name="osmo test service 1">
+			<description>osmo test service description 1</description>			
+			<requestPresentation>
+				<widget widgetID="nodeID://b44801">
+					<presentationAttr name="widget b44801 attr1"
+						value="widget b44801 value1 " />
+					<presentationAttr name="widget b44801 attr2"
+						value="widget b44801 value2" />
+				</widget>
+				<widget widgetID="nodeID://b44790">
+					<presentationAttr name="widget b44790 attr1"
+						value="widget b44790 value1" />
+					<presentationAttr name="widget b44790 attr2"
+						value="widget b44790 value2" />
+				</widget>
+			</requestPresentation>
+			<query-request>
+				<query>SELECT * FROM #openiot# WHERE {?s ?p ?o}</query>
+				<default-graph-uri>http://AaQuDPSJ/</default-graph-uri>
+				<named-graph-uri>http://kHGZizGZ/</named-graph-uri>
+				<dynamicAttrMaxValue name="HMIJ_yAks5E"
+					value="_kKKOBxL4fMVWVN.yW0CM0v" />
+				<dynamicAttrMaxValue name="JEOs6Rt"
+					value="P4yO.t2R0ky5V2Vo9shr-dkgC" />
+				<dynamicAttrMaxValue name="khsITns1Dj.m5Di.c"
+					value="dizQ.h2cLctlMQuB7tAEBpmxWi" />
+			</query-request>
+		</OSMO>
+	</OAMO>
+	<OAMO id="oamo_test_2" name="oamo_desc_2">
+		<description>oamo test 2 description</description>
+		<OSMO name="osmo test service 2">
+			<description>osmo test service description 2</description>			
+			<requestPresentation>
+				<widget widgetID="nodeID://b44801">
+					<presentationAttr name="widget b44801 attr1"
+						value="widget b44801 value1 " />
+					<presentationAttr name="widget b44801 attr2"
+						value="widget b44801 value2" />
+				</widget>
+				<widget widgetID="nodeID://b44790">
+					<presentationAttr name="widget b44790 attr1"
+						value="widget b44790 value1" />
+					<presentationAttr name="widget b44790 attr2"
+						value="widget b44790 value2" />
+				</widget>
+				<widget widgetID="nodeID://b44789">
+					<presentationAttr name="widget b44789 attr1"
+						value="widget b44789 value1" />
+					<presentationAttr name="widget b44789 attr2"
+						value="widget b44789 value2" />
+					<presentationAttr name="widget b44789 attr3"
+						value="widget b44789 value3" />
+				</widget>
+			</requestPresentation>
+			<query-request>
+				<query>SELECT * FROM #openiot# WHERE {?s ?p ?o}</query>
+				<default-graph-uri>http://AaQuDPSJ/</default-graph-uri>
+				<named-graph-uri>http://kHGZizGZ/</named-graph-uri>
+				<dynamicAttrMaxValue name="HMIJ_yAks5E"
+					value="_kKKOBxL4fMVWVN.yW0CM0v" />
+				<dynamicAttrMaxValue name="JEOs6Rt"
+					value="P4yO.t2R0ky5V2Vo9shr-dkgC" />
+				<dynamicAttrMaxValue name="khsITns1Dj.m5Di.c"
+					value="dizQ.h2cLctlMQuB7tAEBpmxWi" />
+			</query-request>
+		</OSMO>
+	</OAMO>
+	
+</OSDSpec>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<osd:OSDSpec xmlns:res="http://www.w3.org/2007/SPARQL/results#"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xmlns:osd="urn:openiot:osdspec:xsd:1"
+ xmlns:prt="http://www.w3.org/2007/SPARQL/protocol-types#"
+ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+ xsi:schemaLocation="urn:openiot:osdspec:xsd:1 file:/C:/Development/Eclipse_Worksp/Eclipse_Worksp4.2.2/OpenIoT/GitHub/ait-develop/openiot/utils/utils.commons/src/main/resources/OSDSpec.xsd" userID="nodeID://b46876">
+    <osd:OAMO id="http://www.oxygenxml.com/" name="name0">
+        <osd:description>description0</osd:description>
+        <osd:graphMeta>><![CDATA[graphMeta0]]></osd:graphMeta>
+        <osd:OSMO name="name1">
+            <osd:description>description1</osd:description>
+            <osd:queryControls>
+                <osd:QuerySchedule>
+                    <osd:second>second0</osd:second>
+                    <osd:minute>minute0</osd:minute>
+                    <osd:hour>hour0</osd:hour>
+                    <osd:dayOfMonth>dayOfMonth0</osd:dayOfMonth>
+                    <osd:month>month0</osd:month>
+                    <osd:dayOfWeek>dayOfWeek0</osd:dayOfWeek>
+                </osd:QuerySchedule>
+                <osd:trigger>http://www.oxygenxml.com/</osd:trigger>
+                <osd:initialRecordTime>2006-05-04T18:13:51.0Z</osd:initialRecordTime>
+                <osd:reportIfEmpty>false</osd:reportIfEmpty>
+            </osd:queryControls>
+            <osd:requestPresentation>
+                <osd:widget widgetID="nodeID://b44801">
+                    <osd:presentationAttr name="name2" value="value0"/>
+                </osd:widget>
+            </osd:requestPresentation>
+            <prt:query-request>
+                <query><![CDATA[SELECT * FROM <peniot> WHERE {?s ?p ?o}]]></query>
+                <default-graph-uri>http://www.oxygenxml.com/</default-graph-uri>
+                <named-graph-uri>http://www.oxygenxml.com/</named-graph-uri>
+            </prt:query-request>
+            <osd:dynamicAttrMaxValue name="name3" value="value1"/>
+        </osd:OSMO>
+    </osd:OAMO>
+</osd:OSDSpec>
