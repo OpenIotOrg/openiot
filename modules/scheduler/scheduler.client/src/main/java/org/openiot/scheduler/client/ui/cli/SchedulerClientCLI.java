@@ -45,7 +45,7 @@ import org.openiot.commons.sensortypes.model.Unit;
  * @author Nikos Kefalakis (nkef) e-mail: nkef@ait.edu.gr
  *
  */
-public class SchedulerClientFromConsole {
+public class SchedulerClientCLI {
 
 	static ClientRequestFactory clientRequestFactory;
 

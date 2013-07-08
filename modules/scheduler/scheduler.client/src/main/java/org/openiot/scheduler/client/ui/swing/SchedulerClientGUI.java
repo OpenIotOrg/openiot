@@ -21,7 +21,7 @@ import javax.swing.border.TitledBorder;
 import javax.swing.JLabel;
 import javax.swing.LayoutStyle.ComponentPlacement;
 
-public class SchedulerUserInterface extends JPanel
+public class SchedulerClientGUI extends JPanel
 {
 	private static final long serialVersionUID = 1L;
 	
@@ -34,7 +34,7 @@ public class SchedulerUserInterface extends JPanel
 	private JTextField textFieldRad;
 
 	
-	public SchedulerUserInterface() 
+	public SchedulerClientGUI() 
 	{
 		schedulerClient = new SchedulerClient("http://localhost:8080/scheduler.core");
 		
@@ -227,7 +227,7 @@ public class SchedulerUserInterface extends JPanel
 			// filter.accept(f);
 			// fc.setFileFilter(filter);
 			
-			 int returnVal = fc.showOpenDialog(SchedulerUserInterface.this);
+			 int returnVal = fc.showOpenDialog(SchedulerClientGUI.this);
 		        if (returnVal == JFileChooser.APPROVE_OPTION) {
 		            File file = fc.getSelectedFile();
 //		            System.out.println("Opening: " + file.getName() + "." + "\n");
@@ -259,7 +259,7 @@ public class SchedulerUserInterface extends JPanel
 					// Set System L&F
 					UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());					
 					
-					SchedulerUserInterface window = new SchedulerUserInterface();
+					SchedulerClientGUI window = new SchedulerClientGUI();
 					window.frmSchedulerClient.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
