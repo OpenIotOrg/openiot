@@ -21,48 +21,23 @@ import javax.swing.border.TitledBorder;
 import javax.swing.JLabel;
 import javax.swing.LayoutStyle.ComponentPlacement;
 
-public class SchedulerUserInterface extends JPanel{
-
-	/**
-	 * 
-	 */
+public class SchedulerUserInterface extends JPanel
+{
 	private static final long serialVersionUID = 1L;
-
-	private JFrame frmSchedulerClient;
 	
 	private static SchedulerClient schedulerClient;
+
+	private JFrame frmSchedulerClient;	
 	private JTextField osdSpecpathTextField;
 	private JTextField textFieldLong;
 	private JTextField textFieldLat;
 	private JTextField textFieldRad;
 
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		
+	
+	public SchedulerUserInterface() 
+	{
 		schedulerClient = new SchedulerClient("http://localhost:8080/scheduler.core");
 		
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					// Set System L&F
-					UIManager.setLookAndFeel(
-				            UIManager.getSystemLookAndFeelClassName());
-					
-					SchedulerUserInterface window = new SchedulerUserInterface();
-					window.frmSchedulerClient.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
-
-	/**
-	 * Create the application.
-	 */
-	public SchedulerUserInterface() {
 		initialize();
 	}
 
@@ -216,32 +191,33 @@ public class SchedulerUserInterface extends JPanel{
 		btnDiscoverSensors.addActionListener(new BtnDiscoverSensorsActionListener());
 		btnWelcome.addActionListener(new BtnWelcomeActionListener());
 	}
-	private class BtnWelcomeActionListener implements ActionListener {
-		public void actionPerformed(ActionEvent e) {
-			
-			schedulerClient.welcomeMessage();	
-			
+	private class BtnWelcomeActionListener implements ActionListener 
+	{
+		public void actionPerformed(ActionEvent e) 
+		{			
+			schedulerClient.welcomeMessage();
 		}
 	}
-	private class BtnDiscoverSensorsActionListener implements ActionListener {
-		public void actionPerformed(ActionEvent e) {
-			
+	private class BtnDiscoverSensorsActionListener implements ActionListener 
+	{
+		public void actionPerformed(ActionEvent e) 
+		{			
 			schedulerClient.discoverSensors(Double.valueOf(textFieldLong.getText()),
 					Double.valueOf(textFieldLat.getText()),
-					Float.valueOf(textFieldRad.getText()));
-			
+					Float.valueOf(textFieldRad.getText()));			
 		}
 	}
-	private class BtnRegisterServiceActionListener implements ActionListener {
-		public void actionPerformed(ActionEvent e) {
-			
-			schedulerClient.registerService();
-			
+	private class BtnRegisterServiceActionListener implements ActionListener 
+	{
+		public void actionPerformed(ActionEvent e) 
+		{			
+			schedulerClient.registerService();			
 		}
 	}
-	private class BtnOpenOsdspecActionListener implements ActionListener {
-		public void actionPerformed(ActionEvent e) {
-			
+	private class BtnOpenOsdspecActionListener implements ActionListener 
+	{
+		public void actionPerformed(ActionEvent e) 
+		{			
 			JFileChooser fc = new JFileChooser();
 
 
@@ -254,23 +230,41 @@ public class SchedulerUserInterface extends JPanel{
 			 int returnVal = fc.showOpenDialog(SchedulerUserInterface.this);
 		        if (returnVal == JFileChooser.APPROVE_OPTION) {
 		            File file = fc.getSelectedFile();
-		            //This is where a real application would open the file.
 //		            System.out.println("Opening: " + file.getName() + "." + "\n");
 //		            
-//		            osdSpecpathTextField.setText(file.getAbsolutePath());
+		            osdSpecpathTextField.setText(file.getAbsolutePath());
 		            
 		        } else {
 		        	System.out.println("Open command cancelled by user." + "\n");
-		        }
-
-			
+		        }			
 		}
 	}
-	private class BtnRegisterOsdspecActionListener implements ActionListener {
-		public void actionPerformed(ActionEvent e) {
-			
-			schedulerClient.registerFromFile(osdSpecpathTextField.getText());
-			
+	private class BtnRegisterOsdspecActionListener implements ActionListener 
+	{
+		public void actionPerformed(ActionEvent e) 
+		{			
+			schedulerClient.registerFromFile(osdSpecpathTextField.getText());			
 		}
+	}
+	
+	
+	//launch swing client
+	public static void main(String[] args) 
+	{	
+		EventQueue.invokeLater(new Runnable() 
+		{
+			public void run() 
+			{
+				try {
+					// Set System L&F
+					UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());					
+					
+					SchedulerUserInterface window = new SchedulerUserInterface();
+					window.frmSchedulerClient.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
 	}
 }

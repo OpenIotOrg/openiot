@@ -45,13 +45,11 @@ import org.openiot.commons.osdspec.model.OSMO;
 import org.openiot.commons.osdspec.model.PresentationAttr;
 import org.openiot.commons.osdspec.model.Widget;
 
-
-
-import org.openiot.commons.osdspec.utils.DeserializerUtil;
+import org.openiot.commons.osdspec.utils.Utilities;
 
 /**
  * @author Nikos Kefalakis (nkef) e-mail: nkef@ait.edu.gr
- * 
+ * @author Stavros Petris (spet) e-mail: spet@ait.edu.gr
  */
 public class SchedulerClient {
 
@@ -267,7 +265,7 @@ public class SchedulerClient {
 		
 		//Open and Deserialize OSDSPec form file
 		try {
-			osdSpec = DeserializerUtil.deserializeOSDSpecFile(osdSpecFilePathName);
+			osdSpec = Utilities.Deserializer.deserializeOSDSpecFile(osdSpecFilePathName);
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
