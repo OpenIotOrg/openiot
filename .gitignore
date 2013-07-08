@@ -3,55 +3,40 @@
 *.class
 
 
-<<<<<<< HEAD
 
 
-=======
->>>>>>> 68eaf37ba251aa642ae53903ee4eeaae016fec8c
 # Eclipse Settings #
 ####################
 .project
 **/.project
 .classpath
 **/.classpath
-<<<<<<< HEAD
 .settings
 **/.settings
 org.eclipse.core.resources.prefs
 org.eclipse.m2e.core.prefs
 .factorypath
 
-=======
-org.eclipse.core.resources.prefs
-org.eclipse.m2e.core.prefs
->>>>>>> 68eaf37ba251aa642ae53903ee4eeaae016fec8c
 
 # Eclipse Plug-In Settings #
 ############################
 .pmd
 
 
-<<<<<<< HEAD
 
 
-=======
->>>>>>> 68eaf37ba251aa642ae53903ee4eeaae016fec8c
 # Maven Generated #
 ###################
 pom.xml.versionsBackup
 
 
-<<<<<<< HEAD
 
 
-=======
->>>>>>> 68eaf37ba251aa642ae53903ee4eeaae016fec8c
 # Mac Generated #
 #################
 .DS_Store
 
 
-<<<<<<< HEAD
 
 
 # Binary Folders #
@@ -62,15 +47,6 @@ target/
 */target/
 
 
-=======
-# Binary Folders #
-#################
-bin
-**/bin
-target/
-*/target/
-
->>>>>>> 68eaf37ba251aa642ae53903ee4eeaae016fec8c
 # Packages #
 ############
 # it's better to unpack these files and commit the raw source
@@ -96,7 +72,3 @@ logs/
 
 # OS generated files #
 ######################
-<<<<<<< HEAD
-=======
-
->>>>>>> 68eaf37ba251aa642ae53903ee4eeaae016fec8c
