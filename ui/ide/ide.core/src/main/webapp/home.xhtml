@@ -13,7 +13,6 @@
 	<title>OpenIOT IDE</title>
 </h:head>
 
-
 <h:body>
 	<pe:layout id="page" fullPage="true">
 
@@ -22,7 +21,7 @@
 			resizable="false">
 			<ui:param name="logoNav" value="#{nav.welcomePage}" />
 			<p:commandLink actionListener="#{layout.setNavigation(logoNav)}"
-				update=":centerpanel">
+				update=":centerPanel">
 				<p:graphicImage value="/resources/img/openiotlogo_left_IDE.jpg"
 					style="max-width: 100% !important; max-height:100% !important; margin-left: 10px" />
 			</p:commandLink>
@@ -33,30 +32,55 @@
 			collapsible="true" effect="slide" resizable="false" spacingClosed="6"
 			spacingOpen="6" styleClassHeader="menuBar">
 			<f:facet name="header">Menu</f:facet>
-			<h:form id="form1">
+			<h:form id="form1" prependId="false">
 				<p:panelMenu
 					style="background: none; border: none; width: 190px !important; maxWidth: 100% !important">
 
 					<p:submenu label="Components" style="font-size: 10px !important;">
+
+						<!-- Request Definition Tool -->
 						<ui:param name="rqDefTool" value="#{nav.requestDefinition}" />
-						<p:menuitem value="Request Definition Tool" update=":centerpanel"
+						<p:menuitem value="Request Definition Tool" update=":centerPanel"
 							icon="ui-icon-triangle-1-e"
-							actionListener="#{layout.setNavigation(rqDefTool)}" />
+							actionListener="#{layout.setNavigation(rqDefTool)}"
+							rendered="#{layout.isLoaded(rqDefTool)}" />
 					</p:submenu>
 
 					<p:submenu label="Monitors" style="font-size: 10px !important;">
+
+						<!-- Request Definition Monitor -->
 						<ui:param name="rqDefMon" value="#{nav.requestDefinitionMonitor}" />
 						<p:menuitem value="Request Definition Monitor"
-							update=":centerpanel" icon="ui-icon-triangle-1-e"
-							actionListener="#{layout.setNavigation(rqDefMon)}" />
+							update=":centerPanel" icon="ui-icon-triangle-1-e"
+							actionListener="#{layout.setNavigation(rqDefMon)}"
+							rendered="#{layout.isLoaded(rqDefMon)}" />
 
+						<!-- IDE Monitor -->
 						<ui:param name="ideMon" value="#{nav.ideMonitor}" />
-						<p:menuitem value="IDE Monitor" update=":centerpanel"
+						<p:menuitem value="IDE Monitor" update=":centerPanel"
 							icon="ui-icon-triangle-1-e"
-							actionListener="#{layout.setNavigation(ideMon)}" />
+							actionListener="#{layout.setNavigation(ideMon)}"
+							rendered="#{layout.isLoaded(ideMon)}" />
+
+						<!-- SDUM Monitor -->
+						<ui:param name="sdumMon" value="#{nav.sdumMonitor}" />
+						<p:menuitem value="SDUM Monitor" update=":centerPanel"
+							icon="ui-icon-triangle-1-e"
+							actionListener="#{layout.setNavigation(sdumMon)}"
+							rendered="#{layout.isLoaded(sdumMon)}" />
+
+						<!-- Scheduler Monitor -->
+						<ui:param name="schedMon" value="#{nav.schedulerMonitor}" />
+						<p:menuitem value="Scheduler Monitor" update=":centerPanel"
+							icon="ui-icon-triangle-1-e"
+							actionListener="#{layout.setNavigation(schedMon)}"
+							rendered="#{layout.isLoaded(schedMon)}" />
 					</p:submenu>
+					
 
 				</p:panelMenu>
+				<p:commandButton value="Refresh Menu"
+						actionListener="#{layout.init}" update=":centerPanel @form" />
 			</h:form>
 		</pe:layoutPane>
 
@@ -64,7 +88,7 @@
 		<pe:layoutPane id="center" position="center" maskContents="true"
 			resizable="false">
 
-			<h:panelGroup id="centerpanel" layout="block">
+			<h:panelGroup id="centerPanel" layout="block">
 				<iframe id="navigation" src="#{layout.navigation}"
 					onload="hideDialog()"
 					style="position: absolute; top: 0px; left: 0px; bottom: 0px; right: 0px; width: 100%; height: 100%; border: none; margin: 0; padding: 0; overflow: hidden; z-index: 999999;">
@@ -81,7 +105,6 @@
 		draggable="false" closable="false">
 		<p:graphicImage value="/resources/img/progress.gif" />
 	</p:dialog>
-
 
 	<script>
 		var hasLoaded = false;
