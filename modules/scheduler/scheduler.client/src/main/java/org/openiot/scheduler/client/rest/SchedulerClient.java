@@ -46,28 +46,60 @@ import org.openiot.commons.osdspec.model.PresentationAttr;
 import org.openiot.commons.osdspec.model.Widget;
 
 import org.openiot.commons.osdspec.utils.Utilities;
+import org.openiot.commons.osdspec.utils.Utilities.Deserializer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Nikos Kefalakis (nkef) e-mail: nkef@ait.edu.gr
  * @author Stavros Petris (spet) e-mail: spet@ait.edu.gr
  */
-public class SchedulerClient {
-
+public class SchedulerClient 
+{
+	//logger
+	final static Logger logger = LoggerFactory.getLogger(SchedulerClient.class);
+	
 	private ClientRequestFactory clientRequestFactory;
-
-	public SchedulerClient(String schedulerURL) {
-
-		clientRequestFactory = new ClientRequestFactory(UriBuilder.fromUri(schedulerURL).build());
-	}
-
-	public SchedulerClient() {
-
+	
+	public SchedulerClient() 
+	{
 		clientRequestFactory = new ClientRequestFactory(UriBuilder.fromUri(
 				"http://localhost:8080/scheduler.core").build());
 	}
+	public SchedulerClient(String schedulerURL) 
+	{
+		clientRequestFactory = new ClientRequestFactory(UriBuilder.fromUri(
+				schedulerURL).build());
+	}
 
-	public void discoverSensors(double longitude, double lat, float radius) {
+	/**
+	 * WelcomeMessage Prints the available services of the scheduler interface. 
+	 * Used to check that the scheduler service is alive.
+	 */
+	public void welcomeMessage() 
+	{
+		ClientRequest welcomeMessageClientRequest = clientRequestFactory
+				.createRelativeRequest("/rest/services");
 
+		welcomeMessageClientRequest.accept(MediaType.TEXT_PLAIN);
+		try {
+			String str = welcomeMessageClientRequest.get(String.class).getEntity();
+			logger.debug(str);
+		} catch (Exception e) {
+			logger.error("WelcomeMessage getEntity error",e);
+		}
+	}
+
+	/**
+	 * Returns the properties of all the sensors deployed in the area defined 
+	 * by lon,lat and radius.
+	 *  
+	 * @param longitude
+	 * @param lat
+	 * @param radius
+	 */
+	public void discoverSensors(double longitude, double lat, float radius) 
+	{
 		ClientRequest discoverSensorsClientRequest = clientRequestFactory
 				.createRelativeRequest("/rest/services/discoverSensors");
 
@@ -81,8 +113,6 @@ public class SchedulerClient {
 		discoverSensorsClientRequest.accept("application/xml");
 
 		
-		
-		
 		//Handle the response
 		ClientResponse<String> response;
 		String str = null;
@@ -95,65 +125,44 @@ public class SchedulerClient {
 			}
 
 			str = response.getEntity();
-			System.out.println(str);
+			logger.debug(str);
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("discoverSensors getEntity error",e);
 		}
 
 		try {
-			String sensorTypes_JAXB_CONTEXT = "org.openiot.commons.sensortypes.model";
-			
-			
+			String sensorTypes_JAXB_CONTEXT = "org.openiot.commons.sensortypes.model";						
 			
 			JAXBContext context = JAXBContext.newInstance(sensorTypes_JAXB_CONTEXT);
 			Unmarshaller um = context.createUnmarshaller();
 			SensorTypes sensorTypes = (SensorTypes) um.unmarshal(new StreamSource(new StringReader(str)));
 
 			for (SensorType sensorType : sensorTypes.getSensorType()) {
-				System.out.println("sensorType.getId():" + sensorType.getId());
-				System.out.println("sensorType.getName():" + sensorType.getName());
+				logger.debug("sensorType.getId():" + sensorType.getId());
+				logger.debug("sensorType.getName():" + sensorType.getName());
 				for (MeasurementCapability measurementCapability : sensorType.getMeasurementCapability()) {
-					System.out.println("measurementCapability.getId():" + measurementCapability.getId());
-					System.out.println("measurementCapability.getName():" + measurementCapability.getType());
+					logger.debug("measurementCapability.getId():" + measurementCapability.getId());
+					logger.debug("measurementCapability.getName():" + measurementCapability.getType());
 
 					for (Unit unit : measurementCapability.getUnit()) {
-						System.out.println("unit.getName():" + unit.getName());
-						System.out.println("unit.getType():" + unit.getType());
+						logger.debug("unit.getName():" + unit.getName());
+						logger.debug("unit.getType():" + unit.getType());
 
 					}
 				}
 			}
-
 		}
-
 		catch (Exception e) {
-
-			e.printStackTrace();
-
-		}
-
-	}
-
-	/**
-	 * welcomeMessage
-	 */
-	public void welcomeMessage() {
-		ClientRequest welcomeMessageClientRequest = clientRequestFactory
-				.createRelativeRequest("/rest/services");
-
-		welcomeMessageClientRequest.accept(MediaType.TEXT_PLAIN);
-		try {
-			String str = welcomeMessageClientRequest.get(String.class).getEntity();
-			System.out.println(str);
-		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("Unmarshal SensorTypes error",e);
 		}
 	}
 
+	
 	/**
 	 * registerService
 	 */
-	public void registerService() {
+	public void registerService() 
+	{
 
 		ClientRequest registerServiceClientRequest = clientRequestFactory
 				.createRelativeRequest("/rest/services/registerService");
@@ -240,20 +249,18 @@ public class SchedulerClient {
 			}
 
 			str = response.getEntity();
-			System.out.println("===============Registered: " + str);
+			logger.debug("===============Registered: " + str);
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("register service get response entity error",e);
 		}
-
 	}
 
 	
 	/**
 	 * @param osdSpecFilePathName
 	 */
-	public void registerFromFile(String osdSpecFilePathName) {
-		
-		
+	public void registerFromFile(String osdSpecFilePathName) 
+	{		
 		ClientRequest registerServiceClientRequest = clientRequestFactory
 				.createRelativeRequest("/rest/services/registerService");
 
@@ -267,10 +274,8 @@ public class SchedulerClient {
 		try {
 			osdSpec = Utilities.Deserializer.deserializeOSDSpecFile(osdSpecFilePathName);
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
@@ -295,8 +300,7 @@ public class SchedulerClient {
 			System.out.println("===============Registered: " + str);
 		} catch (Exception e) {
 			e.printStackTrace();
-		}
-		
+		}		
 	}
 
 }
