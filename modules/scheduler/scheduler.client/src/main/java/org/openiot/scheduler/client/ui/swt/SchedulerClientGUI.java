@@ -100,7 +100,7 @@ public class SchedulerClientGUI {
 		public void widgetSelected(SelectionEvent e) {
 			
 			
-			schedulerClient.registerService();
+			schedulerClient.registerDemoService();
 			
 			
 		}
