@@ -5,14 +5,19 @@ import java.awt.EventQueue;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JButton;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.io.File;
+import java.io.FileNotFoundException;
 
 import org.openiot.scheduler.client.rest.SchedulerClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.swing.JTextField;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.GroupLayout;
@@ -22,7 +27,9 @@ import javax.swing.JLabel;
 import javax.swing.LayoutStyle.ComponentPlacement;
 
 public class SchedulerClientGUI extends JPanel
-{
+{	
+	final static Logger logger = LoggerFactory.getLogger(SchedulerClientGUI.class);
+	
 	private static final long serialVersionUID = 1L;
 	
 	private static SchedulerClient schedulerClient;
@@ -195,14 +202,15 @@ public class SchedulerClientGUI extends JPanel
 	{
 		public void actionPerformed(ActionEvent e) 
 		{			
-			schedulerClient.welcomeMessage();
+			String welcomeMsg = schedulerClient.welcomeMessage();
 		}
 	}
 	private class BtnDiscoverSensorsActionListener implements ActionListener 
 	{
 		public void actionPerformed(ActionEvent e) 
 		{			
-			schedulerClient.discoverSensors(Double.valueOf(textFieldLong.getText()),
+			schedulerClient.discoverSensors(
+					Double.valueOf(textFieldLong.getText()),
 					Double.valueOf(textFieldLat.getText()),
 					Float.valueOf(textFieldRad.getText()));			
 		}
@@ -211,15 +219,14 @@ public class SchedulerClientGUI extends JPanel
 	{
 		public void actionPerformed(ActionEvent e) 
 		{			
-			schedulerClient.registerService();			
+			String registerMsg = schedulerClient.registerDemoService();			
 		}
 	}
 	private class BtnOpenOsdspecActionListener implements ActionListener 
 	{
 		public void actionPerformed(ActionEvent e) 
-		{			
+		{
 			JFileChooser fc = new JFileChooser();
-
 
 			// FileFilter filter = null;
 			// File f = null;
@@ -227,23 +234,38 @@ public class SchedulerClientGUI extends JPanel
 			// filter.accept(f);
 			// fc.setFileFilter(filter);
 			
-			 int returnVal = fc.showOpenDialog(SchedulerClientGUI.this);
-		        if (returnVal == JFileChooser.APPROVE_OPTION) {
-		            File file = fc.getSelectedFile();
-//		            System.out.println("Opening: " + file.getName() + "." + "\n");
-//		            
-		            osdSpecpathTextField.setText(file.getAbsolutePath());
-		            
-		        } else {
-		        	System.out.println("Open command cancelled by user." + "\n");
-		        }			
+			int returnVal = fc.showOpenDialog(SchedulerClientGUI.this);
+	        if (returnVal == JFileChooser.APPROVE_OPTION){
+	            File file = fc.getSelectedFile();	        
+	            osdSpecpathTextField.setText(file.getAbsolutePath());	            
+	        } else {
+	        	logger.debug("Open command cancelled by user." + "\n");
+	        }			
 		}
 	}
 	private class BtnRegisterOsdspecActionListener implements ActionListener 
 	{
 		public void actionPerformed(ActionEvent e) 
 		{			
-			schedulerClient.registerFromFile(osdSpecpathTextField.getText());			
+			try {
+				String responseMsg = schedulerClient.registerFromFile(osdSpecpathTextField.getText());
+				if (responseMsg==null){
+					JOptionPane.showMessageDialog(SchedulerClientGUI.this, 
+							"Error registering service. Check log.", 
+							"Register service error.", 
+							JOptionPane.ERROR_MESSAGE);
+				}				
+			} catch (FileNotFoundException ex) {
+				JOptionPane.showMessageDialog(SchedulerClientGUI.this, 
+						"File not found. Please check the path of the file.", 
+						"File not found.", 
+						JOptionPane.ERROR_MESSAGE);
+			} catch (Exception ex) {
+				JOptionPane.showMessageDialog(SchedulerClientGUI.this, 
+						"Error opening file.", 
+						"Error opening file.", 
+						JOptionPane.ERROR_MESSAGE);
+			}			
 		}
 	}
 	
