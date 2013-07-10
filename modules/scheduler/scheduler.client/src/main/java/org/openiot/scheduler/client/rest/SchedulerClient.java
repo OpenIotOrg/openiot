@@ -71,12 +71,14 @@ public class SchedulerClient
 		clientRequestFactory = new ClientRequestFactory(UriBuilder.fromUri(
 				schedulerURL).build());
 	}
-
+	
 	/**
-	 * WelcomeMessage Prints the available services of the scheduler interface. 
-	 * Used to check that the scheduler service is alive.
+ 	 * Prints the available services of the scheduler interface. 
+	 * Can be used to check that the scheduler service is alive.
+	 * 
+	 * @return the welcome message 
 	 */
-	public void welcomeMessage() 
+	public String welcomeMessage() 
 	{
 		ClientRequest welcomeMessageClientRequest = clientRequestFactory
 				.createRelativeRequest("/rest/services");
@@ -85,8 +87,10 @@ public class SchedulerClient
 		try {
 			String str = welcomeMessageClientRequest.get(String.class).getEntity();
 			logger.debug(str);
+			return str;
 		} catch (Exception e) {
 			logger.error("WelcomeMessage getEntity error",e);
+			return null;
 		}
 	}
 
@@ -94,31 +98,29 @@ public class SchedulerClient
 	 * Returns the properties of all the sensors deployed in the area defined 
 	 * by lon,lat and radius.
 	 *  
-	 * @param longitude
+	 * @param longitude 
 	 * @param lat
 	 * @param radius
+	 * 
+	 * @return the sensortypes discovered 
 	 */
-	public void discoverSensors(double longitude, double lat, float radius) 
+	public SensorTypes discoverSensors(double longitude, double lat, float radius) 
 	{
 		ClientRequest discoverSensorsClientRequest = clientRequestFactory
 				.createRelativeRequest("/rest/services/discoverSensors");
-
 		
 		//Prepare the request
 		discoverSensorsClientRequest.queryParameter("userID", "userIDString");
-		discoverSensorsClientRequest.queryParameter("longitude", longitude);//6.631622
-		discoverSensorsClientRequest.queryParameter("latitude", lat);//46.520131
-		discoverSensorsClientRequest.queryParameter("radius", radius);//5f
+		discoverSensorsClientRequest.queryParameter("longitude", longitude);
+		discoverSensorsClientRequest.queryParameter("latitude", lat);
+		discoverSensorsClientRequest.queryParameter("radius", radius);
 
 		discoverSensorsClientRequest.accept("application/xml");
-
 		
-		//Handle the response
-		ClientResponse<String> response;
+		//Handle the response		
 		String str = null;
-
 		try {
-			response = discoverSensorsClientRequest.get(String.class);
+			ClientResponse<String> response = discoverSensorsClientRequest.get(String.class);
 
 			if (response.getStatus() != 200) {
 				throw new RuntimeException("Failed : HTTP error code : " + response.getStatus());
@@ -128,6 +130,8 @@ public class SchedulerClient
 			logger.debug(str);
 		} catch (Exception e) {
 			logger.error("discoverSensors getEntity error",e);
+			//no need to proceed to umarshalling
+			return null;
 		}
 
 		try {
@@ -137,9 +141,11 @@ public class SchedulerClient
 			Unmarshaller um = context.createUnmarshaller();
 			SensorTypes sensorTypes = (SensorTypes) um.unmarshal(new StreamSource(new StringReader(str)));
 
+			//debug
 			for (SensorType sensorType : sensorTypes.getSensorType()) {
 				logger.debug("sensorType.getId():" + sensorType.getId());
 				logger.debug("sensorType.getName():" + sensorType.getName());
+				
 				for (MeasurementCapability measurementCapability : sensorType.getMeasurementCapability()) {
 					logger.debug("measurementCapability.getId():" + measurementCapability.getId());
 					logger.debug("measurementCapability.getName():" + measurementCapability.getType());
@@ -147,30 +153,65 @@ public class SchedulerClient
 					for (Unit unit : measurementCapability.getUnit()) {
 						logger.debug("unit.getName():" + unit.getName());
 						logger.debug("unit.getType():" + unit.getType());
-
 					}
 				}
 			}
+			
+			return sensorTypes;
 		}
 		catch (Exception e) {
 			logger.error("Unmarshal SensorTypes error",e);
+			return null;
 		}
 	}
-
 	
 	/**
-	 * registerService
-	 */
-	public void registerService() 
+	 * Stores a service created by the user.
+	 * 
+	 * @param osdSpec the service specification
+	 * 
+	 * @return the response from the server, null if something went wrong
+	 * 
+	 */	
+	public String registerService(OSDSpec osdSpec) 
 	{
-
 		ClientRequest registerServiceClientRequest = clientRequestFactory
 				.createRelativeRequest("/rest/services/registerService");
 
 		registerServiceClientRequest.accept("application/xml");
 
+		registerServiceClientRequest.body("application/xml", osdSpec);
+	
 		
-		
+		//Handle the response
+		try {
+			ClientResponse<String> response = registerServiceClientRequest.post(String.class);
+
+			if (response.getStatus() != 200) {
+				throw new RuntimeException("Failed : HTTP error code : " + response.getStatus());
+			}
+
+			String responseStr = response.getEntity();
+			logger.debug("Service registered successfully: " + responseStr);
+			return responseStr;
+		} catch (Exception e) {
+			logger.error("register service get response entity error",e);
+			return null;
+		}
+	}
+
+	
+	
+	// helper methods //	
+	
+	/**
+	 * Creates a predifined spec and calls registerService(OSDSpec osdSpec) to
+	 * register it. 
+	 * 
+	 * @return the response from the server, null if something went wrong
+	 */
+	public String registerDemoService() 
+	{
 		//Prepare the request
 		OSDSpec osdSpec = new OSDSpec();
 		osdSpec.setUserID("Nikos-Kefalakis");
@@ -227,80 +268,31 @@ public class SchedulerClient
 //		
 //		osdSpec.getOAMO().add(oamo1);
 		
-		
-		
-		
-		
-		
-		
-
-		registerServiceClientRequest.body("application/xml", osdSpec);
-
-		
-		
-		//Handle the response
-		ClientResponse<String> response;
-		String str = null;
-		try {
-			response = registerServiceClientRequest.post(String.class);
-
-			if (response.getStatus() != 200) {
-				throw new RuntimeException("Failed : HTTP error code : " + response.getStatus());
-			}
-
-			str = response.getEntity();
-			logger.debug("===============Registered: " + str);
-		} catch (Exception e) {
-			logger.error("register service get response entity error",e);
-		}
+		return registerService(osdSpec);
 	}
-
-	
+		
 	/**
-	 * @param osdSpecFilePathName
+	 * Registers a service that 
+	 * 
+	 * @param osdSpec  the path of the osdspec XML file
+	 * 
+	 * @return the response from the server, null if something went wrong
 	 */
-	public void registerFromFile(String osdSpecFilePathName) 
-	{		
-		ClientRequest registerServiceClientRequest = clientRequestFactory
-				.createRelativeRequest("/rest/services/registerService");
-
-		registerServiceClientRequest.accept("application/xml");
-		
-		
-		
-		OSDSpec osdSpec = new OSDSpec();
+	public String registerFromFile(String osdSpecFilePathName) throws FileNotFoundException,Exception
+	{				
+		OSDSpec osdSpec = null;
 		
 		//Open and Deserialize OSDSPec form file
 		try {
 			osdSpec = Utilities.Deserializer.deserializeOSDSpecFile(osdSpecFilePathName);
 		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+			logger.error("File Not Found",e);
+			throw e;
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("error creating osdspec object",e);
+			throw e;
 		}
 		
-		
-		
-		
-		registerServiceClientRequest.body("application/xml", osdSpec);
-
-		
-		
-		//Handle the response
-		ClientResponse<String> response;
-		String str = null;
-		try {
-			response = registerServiceClientRequest.post(String.class);
-
-			if (response.getStatus() != 200) {
-				throw new RuntimeException("Failed : HTTP error code : " + response.getStatus());
-			}
-
-			str = response.getEntity();
-			System.out.println("===============Registered: " + str);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}		
+		return registerService(osdSpec);		
 	}
-
 }
