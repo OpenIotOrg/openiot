@@ -1,0 +1,24 @@
+grant Principal eu.openiot.auth.UserPrincipal "user"
+{
+ // not granted anything
+}; 
+
+grant Principal eu.openiot.auth.SysAdminPrincipal "sysadmin"
+{
+  permission java.io.FilePermission "/media/mehdi/C/D/epfl/OpenIOT/dev/auth/conf/openiot.policy", "read";
+}; 
+
+
+grant codeBase "file:/media/mehdi/C/D/epfl/OpenIOT/dev/auth/bin" 
+{
+  permission javax.security.auth.AuthPermission "modifyPrincipals";
+  permission javax.security.auth.AuthPermission "modifyPublicCredentials";
+  permission javax.security.auth.AuthPermission "modifyPrivateCredentials";
+  permission javax.security.auth.AuthPermission "createLoginContext.*";
+  permission javax.security.auth.AuthPermission "doAs";
+  permission javax.security.auth.AuthPermission "doAsPrivileged";
+  permission java.security.SecurityPermission "setPolicy";
+  permission java.security.SecurityPermission "getPolicy";
+  permission java.lang.RuntimePermission "accessClassInPackage.sun.security.provider";
+  permission java.lang.RuntimePermission "getProtectionDomain";
+};
