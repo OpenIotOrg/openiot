@@ -131,7 +131,7 @@ public class ObservableMap<K, V> extends Observable implements Map<K, V>, Serial
         // Update map value and notify observers
         wrappedMap.put(key, valueIn);
         setChanged();
-        notifyObservers();
+        notifyObservers(key);
 
         return valueIn;
     }

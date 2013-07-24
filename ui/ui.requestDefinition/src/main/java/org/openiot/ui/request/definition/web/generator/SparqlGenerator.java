@@ -38,8 +38,7 @@ import org.openiot.ui.request.commons.nodes.interfaces.GraphNode;
 import org.openiot.ui.request.commons.nodes.interfaces.GraphNodeConnection;
 import org.openiot.ui.request.commons.nodes.interfaces.GraphNodeEndpoint;
 import org.openiot.ui.request.commons.nodes.interfaces.GraphNodeProperty;
-import org.openiot.ui.request.definition.web.model.nodes.impl.generators.TimestampGenerator;
-import org.openiot.ui.request.definition.web.model.nodes.impl.sensors.GenericSensor;
+import org.openiot.ui.request.definition.web.model.nodes.impl.sources.GenericSource;
 
 /**
  * 
@@ -53,7 +52,7 @@ public class SparqlGenerator extends AbstractGraphNodeVisitor {
 	// Visitor service construction state
 	private String generatedCommentCode;
 	//
-	private GenericSensor targetSensor;
+	private GenericSource targetSensor;
 	private GraphNodeEndpoint targetAttribute;
 	private String generatedAttributeAggregationCode;
 	private Set<String> selectQueryFields;
@@ -155,7 +154,7 @@ public class SparqlGenerator extends AbstractGraphNodeVisitor {
 		generatedCode += "\n}\n";
 	}
 
-	private void genereteAttributeSubQuerySelectCode(GenericSensor sensorNode, GraphNodeEndpoint attributeEndpoint, String attributeExpression) {
+	private void genereteAttributeSubQuerySelectCode(GenericSource sensorNode, GraphNodeEndpoint attributeEndpoint, String attributeExpression) {
 		Map<String, Set<String>> subQueriesPerSensor = this.selectSubQueriesPerSensorPerAttribute.get(sensorNode.getUID());
 		if (subQueriesPerSensor == null) {
 			subQueriesPerSensor = new LinkedHashMap<String, Set<String>>();
@@ -171,7 +170,7 @@ public class SparqlGenerator extends AbstractGraphNodeVisitor {
 		subQueryCode.add(attributeExpression);
 	}
 
-	private void generateAttributeSubQueryWhereCode(GenericSensor sensorNode, GraphNodeEndpoint attributeEndpoint) {
+	private void generateAttributeSubQueryWhereCode(GenericSource sensorNode, GraphNodeEndpoint attributeEndpoint) {
 		// Check if it already exists
 		Map<String, Set<String>> subQueriesPerSensor = this.whereSubQueriesPerSensorPerAttribute.get(sensorNode.getUID());
 		if (subQueriesPerSensor == null) {
@@ -236,12 +235,12 @@ public class SparqlGenerator extends AbstractGraphNodeVisitor {
 	// -------------------------------------------------------------------------
 	@Override
 	public void defaultVisit(GraphNode node) {
-		if (node instanceof GenericSensor) {
-			visit((GenericSensor) node);
+		if (node instanceof GenericSource) {
+			visit((GenericSource) node);
 			return;
 		}
 
-		if (node.getType().equals("VISUALIZER")) {
+		if (node.getType().equals("SINK")) {
 			visitVisualizer(node);
 			return;
 		}
@@ -261,10 +260,6 @@ public class SparqlGenerator extends AbstractGraphNodeVisitor {
 
 			List<GraphNodeConnection> incomingConnections = model.findGraphEndpointConnections(endpoint);
 			for (GraphNodeConnection connection : incomingConnections) {
-				// Skip generator nodes
-				if (connection.getSourceNode() instanceof TimestampGenerator) {
-					continue;
-				}
 
 				// Explore graph till we reach a sensor node.
 				// At the same time build the aggregation function on the
@@ -308,7 +303,7 @@ public class SparqlGenerator extends AbstractGraphNodeVisitor {
 	// -------------------------------------------------------------------------
 	// Node-specific visitors
 	// -------------------------------------------------------------------------
-	public void visit(GenericSensor node) {
+	public void visit(GenericSource node) {
 		visitedSensorTypes.add(node.getLabel());
 
 		// Examine the connection endpoint that lead us to the sensor
@@ -326,7 +321,7 @@ public class SparqlGenerator extends AbstractGraphNodeVisitor {
 
 		// If we are directly connected to a visualizer node then add the
 		// distinct keyword on the aggregation query
-		if (outgoingConnection.getDestinationNode().getType().equals("VISUALIZER")) {
+		if (outgoingConnection.getDestinationNode().getType().equals("SINK")) {
 			if (!generatedAttributeAggregationCode.contains("DISTINCT")) {
 				generatedAttributeAggregationCode = "DISTINCT " + generatedAttributeAggregationCode;
 			}
@@ -354,7 +349,7 @@ public class SparqlGenerator extends AbstractGraphNodeVisitor {
 	// -------------------------------------------------------------------------
 	// Filter node visitors
 	// -------------------------------------------------------------------------
-	public void visit(org.openiot.ui.request.definition.web.model.nodes.impl.filters.SelectionFilter node) {
+	public void visit(org.openiot.ui.request.definition.web.model.nodes.impl.filters.SelectionAndGroupingFilter node) {
 
 		// Visit all outgoing connections except the one connecting to the
 		// sensor
@@ -365,7 +360,7 @@ public class SparqlGenerator extends AbstractGraphNodeVisitor {
 
 			List<GraphNodeConnection> incomingConnections = model.findGraphEndpointConnections(endpoint);
 			for (GraphNodeConnection connection : incomingConnections) {
-				if (connection.getDestinationNode() instanceof GenericSensor) {
+				if (connection.getDestinationNode() instanceof GenericSource) {
 					continue;
 				}
 

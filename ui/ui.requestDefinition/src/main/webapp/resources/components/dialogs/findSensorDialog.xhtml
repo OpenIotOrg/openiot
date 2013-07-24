@@ -16,7 +16,7 @@
 
 <!-- IMPLEMENTATION -->
 <cc:implementation>
-	<p:dialog header="#{messages.UI_FIND_SENSOR_DIALOG_HEADER}"
+	<p:dialog header="#{messages.UI_FIND_SOURCE_DIALOG_HEADER}"
 		modal="true" closable="false" closeOnEscape="true" resizable="false"
 		widgetVar="#{cc.attrs.id}">
 		<h:form id="findSensorDialogForm">
@@ -39,27 +39,27 @@
 
 				<p:outputPanel>
 					<p:outputLabel for="searchLocation"
-						value="#{messages.UI_FIND_SENSOR_DIALOG_LOCATION}" />
+						value="#{messages.UI_FIND_SOURCE_DIALOG_LOCATION}" />
 					<p:spacer width="10" />
 					<p:inputText id="searchLocation"
 						value="#{findSensorDialogController.context.searchLocation}"
 						widgetVar="searchLocation" />
 					<p:spacer width="10" />
 					<p:commandButton
-						value="#{messages.UI_FIND_SENSOR_DIALOG_LOCATION_FIND}"
+						value="#{messages.UI_FIND_SOURCE_DIALOG_LOCATION_FIND}"
 						process="searchLocation"
 						onsuccess="lookupAddress(searchLocation.jq.val());" />
 				</p:outputPanel>
 
 				<p:outputPanel>
 					<p:outputLabel for="searchRadius"
-						value="#{messages.UI_FIND_SENSOR_DIALOG_LOCATION_RADIUS}" />
+						value="#{messages.UI_FIND_SOURCE_DIALOG_LOCATION_RADIUS}" />
 					<p:spacer width="10" />
 					<pe:inputNumber id="searchRadius" required="true"
-						requiredMessage="#{messages.UI_FIND_SENSOR_DIALOG_LOCATION_RADIUS_KM} : #{messages.UI_VALIDATION_FIELD_REQUIRED}"
+						requiredMessage="#{messages.UI_FIND_SOURCE_DIALOG_LOCATION_RADIUS_KM} : #{messages.UI_VALIDATION_FIELD_REQUIRED}"
 						value="#{findSensorDialogController.context.searchRadius}"
 						symbolPosition="suffix"
-						symbol="#{messages.UI_FIND_SENSOR_DIALOG_LOCATION_RADIUS_KM}" />
+						symbol="#{messages.UI_FIND_SOURCE_DIALOG_LOCATION_RADIUS_KM}" />
 				</p:outputPanel>
 			</p:panelGrid>
 
@@ -68,7 +68,7 @@
 				<p:separator />
 
 				<p:commandButton id="findSensorsButton"
-					value="#{messages.UI_FIND_SENSOR_DIALOG_RUN_SEARCH}"
+					value="#{messages.UI_FIND_SOURCE_DIALOG_RUN_SEARCH}"
 					process="@form" 
 					update="searchRadius, :toolboxForm, :nodeGraphForm"
 					actionListener="#{serviceDesignPageController.executeSensorDiscoveryQuery}"
@@ -95,7 +95,7 @@
                         if (status != google.maps.GeocoderStatus.OK) {
                             growl.renderMessage({
                                 summary : '',
-                                detail : '#{messages.UI_FIND_SENSOR_DIALOG_ADDRESS_NOT_FOUND}',
+                                detail : '#{messages.UI_FIND_SOURCE_DIALOG_ADDRESS_NOT_FOUND}',
                                 serverity : 0
                             });
                             return;

@@ -48,7 +48,7 @@ public class FindSensorDialogContext extends DisposableContext implements Serial
         
         // Initialize defaults
         mapCenter = new LatLng(37.983715,23.72931);
-        searchCenter = new Marker(mapCenter, FaceletLocalization.getLocalizedResourceBundle().getString("UI_FIND_SENSOR_DIALOG_LOCATION_CENTER"));
+        searchCenter = new Marker(mapCenter, FaceletLocalization.getLocalizedResourceBundle().getString("UI_FIND_SOURCE_DIALOG_LOCATION_CENTER"));
         searchRadius = 15;
         mapZoom = 13;
         

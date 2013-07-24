@@ -30,6 +30,7 @@ import java.util.logging.Level;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 
+import org.apache.commons.lang3.StringUtils;
 import org.openiot.commons.osdspec.model.OAMO;
 import org.openiot.commons.osdspec.model.OSDSpec;
 import org.openiot.commons.sensortypes.model.MeasurementCapability;
@@ -48,7 +49,7 @@ import org.openiot.ui.request.commons.nodes.validation.GraphValidationError;
 import org.openiot.ui.request.commons.nodes.validation.GraphValidationWarning;
 import org.openiot.ui.request.commons.providers.SchedulerAPIWrapper;
 import org.openiot.ui.request.commons.providers.exceptions.APIException;
-import org.openiot.ui.request.definition.web.model.nodes.impl.sensors.GenericSensor;
+import org.openiot.ui.request.definition.web.model.nodes.impl.sources.GenericSource;
 import org.openiot.ui.request.definition.web.scopes.application.ApplicationBean;
 import org.openiot.ui.request.definition.web.scopes.session.base.DisposableContext;
 import org.openiot.ui.request.definition.web.util.FaceletLocalization;
@@ -167,7 +168,7 @@ public class ServiceDesignPageContext extends DisposableContext {
 		filterLocationLat = 0;
 		filterLocationLon = 0;
 		filterLocationRadius = 0;
-		availableNodesByTypeMap.get("SENSOR").clear();
+		clearAvailableSensors();
 	}
 
 	// --------------------------------------------------------------------------
@@ -198,22 +199,27 @@ public class ServiceDesignPageContext extends DisposableContext {
 		this.filterLocationRadius = filterLocationRadius;
 	}
 
+	public void clearAvailableSensors(){
+		List<GraphNode> sensorList = availableNodesByTypeMap.get("SOURCE");
+		sensorList.clear();
+	}
+	
 	public void updateAvailableSensors(SensorTypes sensorTypes) {
-		List<GraphNode> sensorList = availableNodesByTypeMap.get("SENSOR");
+		List<GraphNode> sensorList = availableNodesByTypeMap.get("SOURCE");
 		sensorList.clear();
 		for (SensorType sensorType : sensorTypes.getSensorType()) {
-			GenericSensor sensor = new GenericSensor();
-			sensor.setLabel(sensorType.getName());
-			sensor.setType("SENSOR");
+			GenericSource source = new GenericSource();
+			source.setLabel(sensorType.getName());
+			source.setType("SOURCE");
 
 			// Copy selected filter params
-			sensor.getPropertyValueMap().put("LAT", filterLocationLat);
-			sensor.getPropertyValueMap().put("LON", filterLocationLon);
-			sensor.getPropertyValueMap().put("RADIUS", filterLocationRadius);
+			source.getPropertyValueMap().put("LAT", filterLocationLat);
+			source.getPropertyValueMap().put("LON", filterLocationLon);
+			source.getPropertyValueMap().put("RADIUS", filterLocationRadius);
 
 			// Initialize sensor endpoints
 			List<GraphNodeEndpoint> endpointList = new ArrayList<GraphNodeEndpoint>();
-			sensor.setEndpointDefinitions(endpointList);
+			source.setEndpointDefinitions(endpointList);
 
 			// Add an additional endpoint for filtering options
 			GraphNodeEndpoint endpoint = new DefaultGraphNodeEndpoint();
@@ -249,17 +255,54 @@ public class ServiceDesignPageContext extends DisposableContext {
 
 				String scope = "Number";
 				String capScope = cap.getUnit().get(0).getType();
-				if (!capScope.contains("double") && !capScope.contains("int") && !capScope.contains("decimal")) {
-					scope = capScope;
+				if( StringUtils.containsIgnoreCase(capScope, "Int")){
+					endpoint.setScope("Integer");
+				} else if( StringUtils.containsIgnoreCase(capScope, "Long")){
+					endpoint.setScope("Long");
+				} else if( StringUtils.containsIgnoreCase(capScope, "Float")){
+					endpoint.setScope("Float");
+				} else if( StringUtils.containsIgnoreCase(capScope, "Double")){
+					endpoint.setScope("Double");
+				} else if( StringUtils.containsIgnoreCase(capScope, "Decimal")){
+					endpoint.setScope("Number");
+				} else if( StringUtils.containsIgnoreCase(capScope, "Date")){
+					endpoint.setScope("Date");
+				}else{
+					endpoint.setScope(scope);
 				}
-				endpoint.setScope(scope);
+				
+				LoggerService.log(Level.INFO, "Set scope: " + endpoint.getScope() + ", label: " + endpoint.getLabel());
 
 				// Add to endpoint list
 				endpointList.add(endpoint);
 			}
+			
+			// Add additional endpoint for sensor lat
+			endpoint = new DefaultGraphNodeEndpoint();
+			endpoint.setAnchor(AnchorType.Right);
+			endpoint.setConnectorType(ConnectorType.Rectangle);
+			endpoint.setMaxConnections(-1);
+			endpoint.setRequired(false);
+			endpoint.setType(EndpointType.Output);
+			endpoint.setLabel("LAT");
+			endpoint.setUserData("geo:lat");
+			endpoint.setScope("geo_lat");
+			endpointList.add(endpoint);
+
+			// Add additional endpoint for sensor lon
+			endpoint = new DefaultGraphNodeEndpoint();
+			endpoint.setAnchor(AnchorType.Right);
+			endpoint.setConnectorType(ConnectorType.Rectangle);
+			endpoint.setMaxConnections(-1);
+			endpoint.setRequired(false);
+			endpoint.setType(EndpointType.Output);
+			endpoint.setLabel("LON");
+			endpoint.setUserData("geo:lon");
+			endpoint.setScope("geo_lon");
+			endpointList.add(endpoint);
 
 			// Add sensor to toolbox
-			sensorList.add(sensor);
+			sensorList.add(source);
 		}
 	}
 
@@ -318,7 +361,7 @@ public class ServiceDesignPageContext extends DisposableContext {
 	// --------------------------------------------------------------------------
 	private void detectAvailableNodes() {
 		availableNodesByTypeMap.clear();
-		availableNodesByTypeMap.put("SENSOR", new ArrayList<GraphNode>());
+		availableNodesByTypeMap.put("SOURCE", new ArrayList<GraphNode>());
 
 		LoggerService.log(Level.FINE, "[ServiceDesignPageContext] Scanning for available graph node classes");
 		Set<Class<?>> graphNodeClasses = GraphNodeScanner.detectGraphNodeClasses("org.openiot.ui.request.definition.web.model.nodes.impl");

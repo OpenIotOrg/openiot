@@ -33,9 +33,11 @@ import org.json.JSONObject;
 import org.openiot.ui.request.commons.annotations.GraphNodeClass;
 import org.openiot.ui.request.commons.annotations.scanners.GraphNodeScanner;
 import org.openiot.ui.request.commons.factory.GraphFactory;
+import org.openiot.ui.request.commons.interfaces.GraphModel;
 import org.openiot.ui.request.commons.logging.LoggerService;
 import org.openiot.ui.request.commons.models.ObservableMap;
 import org.openiot.ui.request.commons.nodes.interfaces.GraphNode;
+import org.openiot.ui.request.commons.nodes.interfaces.GraphNodeConnection;
 import org.openiot.ui.request.commons.nodes.interfaces.GraphNodeEndpoint;
 import org.openiot.ui.request.commons.nodes.interfaces.GraphNodeProperty;
 
@@ -52,6 +54,7 @@ public class DefaultGraphNode implements GraphNode, Serializable {
 	private List<GraphNodeProperty> propertyDefinitions;
 	private List<GraphNodeEndpoint> endpointDefinitions;
 	private ObservableMap<String, Object> propertyMap;
+	private GraphModel graphModel;
 
 	public DefaultGraphNode() {
 		propertyMap = new ObservableMap<String, Object>(new HashMap<String, Object>());
@@ -75,6 +78,25 @@ public class DefaultGraphNode implements GraphNode, Serializable {
 		} else {
 			propertyDefinitions = new ArrayList<GraphNodeProperty>();
 			endpointDefinitions = new ArrayList<GraphNodeEndpoint>();
+		}
+	}
+	
+	public void setGraphModel( GraphModel model ){
+		this.graphModel = model;
+	}
+	
+	public GraphModel getGraphModel(){
+		return this.graphModel;
+	}
+	
+	protected void disconnectEndpoint(GraphNodeEndpoint ep){
+		// If we have a connection to this node, kill it
+		if (graphModel != null) {
+			List<GraphNodeConnection> connections = graphModel.findGraphEndpointConnections(ep);
+			if (!connections.isEmpty()) {
+				GraphNodeConnection connection = connections.get(0);
+				graphModel.disconnect(connection);
+			}
 		}
 	}
 

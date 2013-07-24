@@ -38,7 +38,8 @@
 						value="#{messages.UI_NEW_SERVICE_DIALOG_DESCRIPTION}" />
 				</p:outputPanel>
 				<p:outputPanel>
-					<p:inputText id="serviceDescription"
+					<p:inputTextarea
+						id="serviceDescription"
 						value="#{serviceDesignPageController.context.newServiceDescription}" />
 				</p:outputPanel>
 
@@ -50,7 +51,7 @@
 
 				<p:commandButton value="#{messages.DIALOG_CONFIRM}" process="@form"
 					actionListener="#{serviceDesignPageController.createNewOAMO()}"
-					update="@form,:consoleForm, :nodeGraphForm :toolboxForm, @(.find-sensor-button), :propertyGridForm, :menubar"
+					update="@form,:consoleForm, :nodeGraphForm, :toolboxForm, :propertyGridForm, :menubar"
 					onstart="windowBlockUI.block();"
 					oncomplete="windowBlockUI.unblock();if( args &amp;&amp; (args.notValid || args.validationFailed ) ){return false;}#{cc.attrs.id}.hide();return false;" />
 

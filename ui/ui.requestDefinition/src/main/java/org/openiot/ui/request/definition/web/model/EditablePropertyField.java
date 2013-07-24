@@ -45,7 +45,7 @@ public class EditablePropertyField implements Serializable{
         this.valueKey = property.getName();
         this.isRequired = property.isRequired();
         this.isEditable = property.getType().equals(PropertyType.Writable);
-        this.isVariablizable = this.isEditable && ! "VISUALIZER".equals(nodeType);
+        this.isVariablizable = this.isEditable && ! "SINK".equals(nodeType);
         this.allowedValues = property.getAllowedValues();
     }
     

@@ -34,8 +34,8 @@ import org.openiot.ui.request.commons.nodes.enums.EndpointType;
  */
 @GraphNodeClass(label = "Sum", type = "AGGREGATOR", scanProperties = true)
 @Endpoints({
-    @Endpoint(type = EndpointType.Input, anchorType = AnchorType.Left, scope = "Number", label = "IN", required = true),
-    @Endpoint(type = EndpointType.Output, anchorType = AnchorType.Right, scope = "Number", label = "OUT", required = true)
+    @Endpoint(type = EndpointType.Input, anchorType = AnchorType.Left, scope = "Number Integer Long Double Float force_agr_Number force_agr_Integer force_agr_Long force_agr_Double force_agr_Float", label = "IN", required = true),
+    @Endpoint(type = EndpointType.Output, anchorType = AnchorType.Right, scope = "agr_Number", label = "OUT", required = true)
 })
 public class Sum extends DefaultGraphNode implements Serializable {
 	private static final long serialVersionUID = 1L;

@@ -55,7 +55,7 @@ import org.openiot.ui.request.commons.providers.exceptions.APIException;
 import org.openiot.ui.request.definition.web.factory.PropertyGridFormFactory;
 import org.openiot.ui.request.definition.web.generator.SparqlGenerator;
 import org.openiot.ui.request.definition.web.jsf.components.events.NodeInsertedEvent;
-import org.openiot.ui.request.definition.web.model.nodes.impl.sensors.GenericSensor;
+import org.openiot.ui.request.definition.web.model.nodes.impl.sources.GenericSource;
 import org.openiot.ui.request.definition.web.scopes.application.ApplicationBean;
 import org.openiot.ui.request.definition.web.scopes.session.SessionBean;
 import org.openiot.ui.request.definition.web.scopes.session.context.dialogs.FindSensorDialogContext;
@@ -136,11 +136,11 @@ public class ServiceDesignPageController implements Serializable {
 			context.getGraphModel().insert(newNode, event.getX(), event.getY());
 
 			// If we added a sensor, set the search filters into the instance
-			if (newNode instanceof GenericSensor) {
-				GenericSensor sensor = (GenericSensor) node;
-				sensor.getPropertyValueMap().put("LAT", context.getFilterLocationLat());
-				sensor.getPropertyValueMap().put("LON", context.getFilterLocationLon());
-				sensor.getPropertyValueMap().put("RADIUS", context.getFilterLocationRadius());
+			if (newNode instanceof GenericSource) {
+				GenericSource source = (GenericSource) node;
+				source.getPropertyValueMap().put("LAT", context.getFilterLocationLat());
+				source.getPropertyValueMap().put("LON", context.getFilterLocationLon());
+				source.getPropertyValueMap().put("RADIUS", context.getFilterLocationRadius());
 			}
 
 			break;
@@ -162,7 +162,7 @@ public class ServiceDesignPageController implements Serializable {
 				// Generate code for each visualization node
 				GraphModel model = context.getGraphModel();
 				for (GraphNode node : model.getNodes()) {
-					if (node.getType().equals("VISUALIZER")) {
+					if (node.getType().equals("SINK")) {
 						codeOutput += generator.generateCode(model, node);
 					}
 				}
@@ -246,6 +246,7 @@ public class ServiceDesignPageController implements Serializable {
 
 		context.setSelectedOAMO(oamo);
 		context.setGraphModel(graphModel);
+		context.clearAvailableSensors();
 	}
 
 	public void saveServices() {
@@ -311,11 +312,11 @@ public class ServiceDesignPageController implements Serializable {
 
 				OAMO oamo = context.getSelectedOAMO();
 				oamo.setId("node://" + model.getUID());
-				oamo.setGraphMeta("<![CDATA[" + model.toJSON().toString() + "]]>");
+				oamo.setGraphMeta(model.toJSON().toString());
 
 				// Generate an OSMO object for each visualization node
 				for (GraphNode node : model.getNodes()) {
-					if (node.getType().equals("VISUALIZER")) {
+					if (node.getType().equals("SINK")) {
 						OSMO osmo = new OSMO();
 
 						// Setup query controlls
@@ -329,7 +330,7 @@ public class ServiceDesignPageController implements Serializable {
 						QueryRequest queryRequest = new QueryRequest();
 						String codeBlock = generator.generateCode(model, node);
 						codeOutput += codeBlock;
-						queryRequest.setQuery("<![CDATA[" + codeBlock + "]]>");
+						queryRequest.setQuery(codeBlock);
 						osmo.setQueryRequest(queryRequest);
 
 						// Encode dynamic attributes

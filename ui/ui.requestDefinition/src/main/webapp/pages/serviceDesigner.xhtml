@@ -64,7 +64,7 @@
 										actionListener="#{serviceDesignPageController.activateOAMO(entry.value)}"
 										process="@this" onclick="windowBlockUI.block();"
 										oncomplete="windowBlockUI.unblock();"
-										update=":consoleForm, :nodeGraphForm :toolboxForm, @(.find-sensor-button), :propertyGridForm, :menubar" />
+										update=":consoleForm, :nodeGraphForm :toolboxForm, :propertyGridForm, :menubar" />
 								</c:forEach>
 
 							</p:submenu>
@@ -106,7 +106,7 @@
 								actionListener="#{serviceDesignPageController.saveServices()}"
 								onclick="windowBlockUI.block();"
 								oncomplete="windowBlockUI.unblock();"
-								update=":consoleForm, :nodeGraphForm :toolboxForm, @(.find-sensor-button), :propertyGridForm, :menubar" />
+								update=":consoleForm, :nodeGraphForm :toolboxForm, :propertyGridForm, :menubar" />
 
 							<p:menuitem disabled="true"
 								value="#{messages.UI_MENUBAR_APP_EXPORT}"
@@ -133,22 +133,25 @@
 			<pe:layoutPane position="west" size="175" closable="false">
 				<f:facet name="header">
 					#{messages.UI_TOOLBOX}
-					<h:outputLink value="#"
-						styleClass="ui-panel-titlebar-icon ui-corner-all #{! empty serviceDesignPageController.context.selectedOAMO ? 'ui-state-default' : 'ui-state-disabled'} find-sensor-button"
-						style="display: inline-block; float: right; cursor: pointer;"
-						onclick="#{! empty serviceDesignPageController.context.selectedOAMO ? 'findSensorDialog.show();' : ''}return false;">
-						<h:outputText styleClass="ui-icon ui-icon-search" />
-					</h:outputLink>
 				</f:facet>
 
 				<h:form id="toolboxForm">
 					<p:accordionPanel multiple="true" styleClass="toolbox">
 						<c:forEach var="type"
 							items="#{serviceDesignPageController.context.availableNodesByTypeMap.keySet()}">
-							<p:tab
-								title="#{messages['UI_NODE_GROUP_'.concat(type)]} (#{serviceDesignPageController.context.availableNodesByTypeMap[type].size()})"
-								titleStyleClass="ellipsis"
+							<p:tab titleStyleClass="ellipsis"
 								disabled="#{empty serviceDesignPageController.context.selectedOAMO}">
+								<f:facet name="title">
+									#{messages['UI_NODE_GROUP_'.concat(type)]} (#{serviceDesignPageController.context.availableNodesByTypeMap[type].size()})
+									
+									<p:button rendered="#{type eq 'SOURCE'}"
+										disabled="#{empty serviceDesignPageController.context.selectedOAMO}"
+										icon="ui-icon-search"
+										styleClass="ui-panel-titlebar-icon ui-corner-all find-sensor-button"
+										style="display: inline-block; float: right; cursor: pointer;width:16px;height:16px;"
+										onclick="findSensorDialog.show();return false;" />
+
+								</f:facet>
 								<h:dataTable var="entry"
 									value="#{serviceDesignPageController.context.availableNodesByTypeMap[type]}"
 									width="100%" style="box-sizing:border-box;"
@@ -269,11 +272,12 @@
 									oncomplete="windowBlockUI.unblock();editVariableDialog.show();" />
 
 							</pe:dynaFormControl>
-							<pe:dynaFormControl type="Number" for="number">
-								<p:inputText id="number" style="display:none;" />
+
+							<pe:dynaFormControl type="Double" for="double">
+								<p:inputText id="double" style="display:none;" />
 
 								<pe:inputNumber rendered="#{!control.property.variable}"
-									readonly="#{!control.editable}"
+									readonly="#{!control.editable}" decimalPlaces="5"
 									value="#{serviceDesignPageController.context.graphModel.selectedNode.propertyValueMap[control.valueKey]}"
 									required="#{control.required}">
 									<p:ajax event="change" process="@this"
@@ -294,6 +298,33 @@
 									oncomplete="windowBlockUI.unblock();editVariableDialog.show();" />
 
 							</pe:dynaFormControl>
+
+							<pe:dynaFormControl type="Float" for="float">
+								<p:inputText id="float" style="display:none;" />
+
+								<pe:inputNumber rendered="#{!control.property.variable}"
+									readonly="#{!control.editable}"
+									value="#{serviceDesignPageController.context.graphModel.selectedNode.propertyValueMap[control.valueKey]}"
+									decimalPlaces="2" required="#{control.required}">
+									<p:ajax event="change" process="@this"
+										update=":nodeGraphForm:nodeGraph" />
+								</pe:inputNumber>
+
+								<p:inputText rendered="#{control.property.variable}"
+									readonly="true" value="#{control.property.variableName}"
+									required="#{control.required}">
+									<p:ajax event="change" process="@this"
+										update=":nodeGraphForm:nodeGraph" />
+								</p:inputText>
+								<p:commandButton disabled="#{!control.variablizable}"
+									icon="ui-icon-tag" process="@this"
+									update=":editVariableDialog:editVariableDialogForm"
+									actionListener="#{editVariableDialogController.prepareDialog(serviceDesignPageController.context.graphModel.selectedNode, control)}"
+									onclick="windowBlockUI.block();"
+									oncomplete="windowBlockUI.unblock();editVariableDialog.show();" />
+
+							</pe:dynaFormControl>
+
 							<pe:dynaFormControl type="Long" for="long">
 								<p:inputText id="long" style="display:none;" />
 
@@ -317,6 +348,68 @@
 									actionListener="#{editVariableDialogController.prepareDialog(serviceDesignPageController.context.graphModel.selectedNode, control)}"
 									onclick="windowBlockUI.block();"
 									oncomplete="windowBlockUI.unblock();editVariableDialog.show();" />
+							</pe:dynaFormControl>
+
+							<pe:dynaFormControl type="Integer" for="integer">
+								<p:inputText id="integer" style="display:none;" />
+
+								<pe:inputNumber rendered="#{!control.property.variable}"
+									readonly="#{!control.editable}"
+									value="#{serviceDesignPageController.context.graphModel.selectedNode.propertyValueMap[control.valueKey]}"
+									required="#{control.required}" decimalPlaces="0">
+									<p:ajax event="change" process="@this"
+										update=":nodeGraphForm:nodeGraph" />
+								</pe:inputNumber>
+
+								<p:inputText rendered="#{control.property.variable}"
+									readonly="true" value="#{control.property.variableName}"
+									required="#{control.required}">
+									<p:ajax event="change" process="@this"
+										update=":nodeGraphForm:nodeGraph" />
+								</p:inputText>
+								<p:commandButton disabled="#{!control.variablizable}"
+									icon="ui-icon-tag" process="@this"
+									update=":editVariableDialog:editVariableDialogForm"
+									actionListener="#{editVariableDialogController.prepareDialog(serviceDesignPageController.context.graphModel.selectedNode, control)}"
+									onclick="windowBlockUI.block();"
+									oncomplete="windowBlockUI.unblock();editVariableDialog.show();" />
+							</pe:dynaFormControl>
+
+							<pe:dynaFormControl type="Number" for="number">
+								<p:inputText id="number" style="display:none;" />
+
+								<pe:inputNumber rendered="#{!control.property.variable}"
+									readonly="#{!control.editable}"
+									value="#{serviceDesignPageController.context.graphModel.selectedNode.propertyValueMap[control.valueKey]}"
+									decimalPlaces="5" required="#{control.required}">
+									<p:ajax event="change" process="@this"
+										update=":nodeGraphForm:nodeGraph" />
+								</pe:inputNumber>
+
+								<p:inputText rendered="#{control.property.variable}"
+									readonly="true" value="#{control.property.variableName}"
+									required="#{control.required}">
+									<p:ajax event="change" process="@this"
+										update=":nodeGraphForm:nodeGraph" />
+								</p:inputText>
+								<p:commandButton disabled="#{!control.variablizable}"
+									icon="ui-icon-tag" process="@this"
+									update=":editVariableDialog:editVariableDialogForm"
+									actionListener="#{editVariableDialogController.prepareDialog(serviceDesignPageController.context.graphModel.selectedNode, control)}"
+									onclick="windowBlockUI.block();"
+									oncomplete="windowBlockUI.unblock();editVariableDialog.show();" />
+
+							</pe:dynaFormControl>
+
+							<pe:dynaFormControl type="ArrayList" for="arrayList">
+								<p:inputText id="arrayList" style="display:none;" />
+
+								<p:commandButton icon="ui-icon-grip-dotted-horizontal"
+									process="@this" update=":editGroupsDialog:editGroupsDialogForm"
+									actionListener="#{editGroupsDialogController.prepareDialog(serviceDesignPageController.context.graphModel.selectedNode, control)}"
+									onclick="windowBlockUI.block();"
+									oncomplete="windowBlockUI.unblock();editGroupsDialog.show();" />
+
 							</pe:dynaFormControl>
 						</pe:dynaForm>
 					</h:form>
@@ -414,7 +507,7 @@
 
 				<p:commandButton value="#{messages.DIALOG_YES}" process="@this"
 					actionListener="#{serviceDesignPageController.clearOAMO()}"
-					update=":consoleForm, :nodeGraphForm :toolboxForm, @(.find-sensor-button), :propertyGridForm, :menubar"
+					update=":consoleForm, :nodeGraphForm :toolboxForm, :propertyGridForm, :menubar"
 					oncomplete="setTimeout(function(){if(codeMirror &amp;&amp; codeMirror.jq.is(':visible')){codeMirror.initialize();}},10);confirmClearGraph.hide();" />
 				<p:commandButton value="#{messages.DIALOG_NO}"
 					onclick="confirmClearGraph.hide();" type="button" />
@@ -438,6 +531,7 @@
 		<dialogs:findSensorDialog id="findSensorDialog" />
 		<dialogs:editVariableDialog id="editVariableDialog" />
 		<dialogs:newServiceDialog id="newServiceDialog" />
+		<dialogs:editGroupsDialog id="editGroupsDialog" />
 
 	</h:body>
 

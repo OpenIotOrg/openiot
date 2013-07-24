@@ -100,6 +100,7 @@ public class DefaultGraphModel implements GraphModel, Serializable {
     }
 
     public void insert(GraphNode node, double x, double y) {
+    	node.setGraphModel(this);
         nodes.add(node);
 
         GraphNodePosition position = new GraphNodePosition(x, y);
@@ -269,7 +270,9 @@ public class DefaultGraphModel implements GraphModel, Serializable {
 		JSONArray nodes = spec.getJSONArray("nodes");
 		this.nodes.clear();
 		for( int index = 0; index< nodes.length(); index++){
-			this.nodes.add( GraphFactory.createGraphNode(nodes.getJSONObject(index)));
+			GraphNode node = GraphFactory.createGraphNode(nodes.getJSONObject(index));
+			node.setGraphModel(this);
+			this.nodes.add(node);
 		}
 		
 		// Parse node positions

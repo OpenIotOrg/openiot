@@ -24,66 +24,74 @@ import java.util.Map;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.openiot.ui.request.commons.interfaces.GraphModel;
 
 /**
- *
+ * 
  * @author Achilleas Anagnostopoulos (aanag) email: aanag@sensap.eu
  */
 public interface GraphNode {
 
-    /**
-     * A unique identifier for the node
-     */
-    public String getUID();
+	/**
+	 * Set a reference to the graph model
+	 */
+	public void setGraphModel(GraphModel model);
 
-    public void setUID(String UID);
+	public GraphModel getGraphModel();
 
-    /**
-     * Node type
-     */
-    public String getType();
+	/**
+	 * A unique identifier for the node
+	 */
+	public String getUID();
 
-    /**
-     * Node label
-     */
-    public String getLabel();
+	public void setUID(String UID);
 
-    /**
-     * Node property definition list
-     */
-    public List<GraphNodeProperty> getPropertyDefinitions();
+	/**
+	 * Node type
+	 */
+	public String getType();
 
-    public void setPropertyDefinitions(List<GraphNodeProperty> propertyDefinitions);
-    
-    public GraphNodeProperty getPropertyByName(String name);
+	/**
+	 * Node label
+	 */
+	public String getLabel();
 
-    /**
-     * Node property value map
-     */
-    public Map<String, Object> getPropertyValueMap();
+	/**
+	 * Node property definition list
+	 */
+	public List<GraphNodeProperty> getPropertyDefinitions();
 
-    /**
-     * Node endpoint definition list
-     */
-    public List<GraphNodeEndpoint> getEndpointDefinitions();
+	public void setPropertyDefinitions(List<GraphNodeProperty> propertyDefinitions);
 
-    public void setEndpointDefinitions(List<GraphNodeEndpoint> endpointDefinitions);
-    
-    public GraphNodeEndpoint getEndpointByLabel(String label);
+	public GraphNodeProperty getPropertyByName(String name);
 
-    /** 
-     * Return a copy of this node
-     */
-    public GraphNode getCopy();
-    
-    /**
-     * Generate a JSON object describing the node
-     */
-    public JSONObject toJSON();
+	/**
+	 * Node property value map
+	 */
+	public Map<String, Object> getPropertyValueMap();
 
-    /**
-     * Import data from JSON object
-     */
-    public void importJSON(JSONObject spec) throws JSONException;
+	/**
+	 * Node endpoint definition list
+	 */
+	public List<GraphNodeEndpoint> getEndpointDefinitions();
+
+	public void setEndpointDefinitions(List<GraphNodeEndpoint> endpointDefinitions);
+
+	public GraphNodeEndpoint getEndpointByLabel(String label);
+
+	/**
+	 * Return a copy of this node
+	 */
+	public GraphNode getCopy();
+
+	/**
+	 * Generate a JSON object describing the node
+	 */
+	public JSONObject toJSON();
+
+	/**
+	 * Import data from JSON object
+	 */
+	public void importJSON(JSONObject spec) throws JSONException;
 
 }
