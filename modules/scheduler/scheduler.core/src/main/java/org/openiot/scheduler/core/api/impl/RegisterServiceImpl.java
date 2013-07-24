@@ -25,6 +25,7 @@ package org.openiot.scheduler.core.api.impl;
 
 
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 import lsm.beans.User;
@@ -40,6 +41,8 @@ import org.openiot.scheduler.core.utils.lsmpa.entities.Service;
 import org.openiot.scheduler.core.utils.lsmpa.entities.WidgetAttributes;
 import org.openiot.scheduler.core.utils.lsmpa.entities.WidgetAvailable;
 import org.openiot.scheduler.core.utils.lsmpa.entities.WidgetPresentation;
+import org.openiot.scheduler.core.utils.sparql.SesameSPARQLClient;
+import org.openrdf.query.TupleQueryResult;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -141,6 +144,7 @@ public class RegisterServiceImpl {
 				srvc.setDescription(osmo.getDescription());
 				srvc.setQueryString(osmo.getQueryRequest().getQuery());
 				srvc.setUser(schedulerUser);
+				srvc.setId(osmo.getId());
 				//
 				srvc.createClassIdv();
 				srvc.createPserviceName();
@@ -201,8 +205,37 @@ public class RegisterServiceImpl {
 
 				
 		logger.debug(myOntInstance.exportToTriples("TURTLE"));
-		lsmStore.pushRDF("http://lsm.deri.ie/OpenIoT/testSchema#",myOntInstance.exportToTriples("N-TRIPLE"));
-		replyMessage= "successfuly";
+		boolean ok = lsmStore.pushRDF("http://lsm.deri.ie/OpenIoT/testSchema#",myOntInstance.exportToTriples("N-TRIPLE"));
+		
+		if(ok)
+		{
+//			StringBuilder listsID = new StringBuilder();
+//			
+//			SesameSPARQLClient sparqlCl = new SesameSPARQLClient();
+//			for(int i=0; i<schedulerUser.getServiceList().size(); i++)
+//			{
+//				TupleQueryResult qres = sparqlCl.sparqlToQResult(Service.Queries.
+//							selectSrvcByUserByNameByDescByQuery(
+//									schedulerUser,
+//									schedulerUser.getServiceList().get(i).getName(), 
+//									schedulerUser.getServiceList().get(i).getDescription(),
+//									schedulerUser.getServiceList().get(i).getDescription()));
+//				ArrayList<Service> sl= Service.Queries.parseService(qres);
+//				listsID.append(sl.get(0));
+//				listsID.append(",");
+//			}
+//			
+//			for(int i=0; i<schedulerUser.getServiceList().size(); i++)
+//			{
+//				replyMessage= "added:"+listsID.toString();
+//			}
+			replyMessage= "regestering successfull";
+			
+		}
+		else
+		{
+			replyMessage= "error regestering service";
+		}
 	}
 	
 	

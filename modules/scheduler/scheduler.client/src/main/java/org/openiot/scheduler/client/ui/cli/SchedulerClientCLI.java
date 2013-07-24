@@ -1,7 +1,4 @@
-package org.openiot.scheduler.client.rest;
-
-
-
+package org.openiot.scheduler.client.ui.cli;
 
 
 /**
@@ -45,21 +42,26 @@ import org.openiot.commons.sensortypes.model.Unit;
  * @author Nikos Kefalakis (nkef) e-mail: nkef@ait.edu.gr
  *
  */
-public class SchedulerClientFromConsole {
+public class SchedulerClientCLI 
+{
+	static ClientRequestFactory clientRequestFactory;	
 
-	static ClientRequestFactory clientRequestFactory;
+	public static void welcomeMessage() 
+	{
+		ClientRequest welcomeMessageClientRequest = clientRequestFactory
+				.createRelativeRequest("/rest/services");
 
-	public static void main(String[] args) throws Exception {
-
-		clientRequestFactory = new ClientRequestFactory(UriBuilder.fromUri(
-				"http://localhost:8080/scheduler.core").build());
-
-		// welcomeMessage();
-		discoverSensors();
-
+		welcomeMessageClientRequest.accept(MediaType.TEXT_PLAIN);
+		try {
+			String str = welcomeMessageClientRequest.get(String.class).getEntity();
+			System.out.println(str);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
-
-	public static void discoverSensors() {
+	
+	public static void discoverSensors() 
+	{
 		try {
 			ClientRequest discoverSensorsClientRequest = clientRequestFactory
 					.createRelativeRequest("/rest/services/discoverSensors");
@@ -107,28 +109,19 @@ public class SchedulerClientFromConsole {
 					}
 				}
 			}
-
 		}
-
 		catch (Exception e) {
-
-			e.printStackTrace();
-
-		}
-
-	}
-
-	public static void welcomeMessage() {
-		ClientRequest welcomeMessageClientRequest = clientRequestFactory
-				.createRelativeRequest("/rest/services");
-
-		welcomeMessageClientRequest.accept(MediaType.TEXT_PLAIN);
-		try {
-			String str = welcomeMessageClientRequest.get(String.class).getEntity();
-			System.out.println(str);
-		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
+		
+	public static void main(String[] args) throws Exception 
+	{
+		clientRequestFactory = new ClientRequestFactory(UriBuilder.fromUri(
+				"http://localhost:8080/scheduler.core").build());
+
+		// welcomeMessage();
+		discoverSensors();
+	}
 }
