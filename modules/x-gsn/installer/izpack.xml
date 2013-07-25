@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="iso-8859-1"  ?>
+<installation version="1.0">
+    <info>
+        <appname>org.openiot.gsn</appname>
+        <appversion>Version 1.0.0</appversion>
+        <authors>
+            <author name="GSN Development Team." email="ali.salehi@epfl.ch / salehiam@gmail.com"/>
+        </authors>
+        <javaversion>1.6</javaversion>
+        <url>http://sourceforge.net/apps/trac/org.openiot.gsn/</url>
+    </info>
+
+    <guiprefs width="800" height="610" resizable="no">
+        <modifier key="useButtonIcons" value="yes"/>
+        <modifier key="useLabelIcons" value="yes"/>
+        <modifier key="labelGap" value="2"/>
+        <modifier key="layoutAnchor" value="NORTHEAST"/>
+        <modifier key="useHeadingPanel" value="yes"/>
+        <modifier key="headingLineCount" value="1"/>
+        <modifier key="headingFontSize" value="1.5"/>
+        <modifier key="headingBackgroundColor" value="0x00ffffff"/>
+        <modifier key="headingPanelCounter" value="text"/>
+        <modifier key="headingPanelCounterPos" value="inHeading"/>
+    </guiprefs>
+    <locale>
+        <langpack iso3="eng"/>
+    </locale>
+
+    <resources>
+        <res id="LicencePanel.licence" src="installer/license.txt"/>
+        <!--  <res id="Installer.image" src="dist/lib/logo.png" /> -->
+        <!--    <res id="shortcutSpec.xml" src="install/win_shortcut_specification.xml" /> -->
+        <res id="Heading.image" src="installer/logo-small.png"/>
+
+    </resources>
+
+    <panels>
+        <panel classname="LicencePanel"/>
+        <panel classname="TargetPanel"/>
+        <!-- 		<panel classname="ShortcutPanel"/>  -->
+        <panel classname="InstallPanel"/>
+        <panel classname="SimpleFinishPanel"/>
+    </panels>
+    <native type="izpack" name="ShellLink.dll"/>
+    <packs>
+        <pack name="GSN" required="yes" preselected="yes">
+            <description>
+                GSN is a software middleware designed to facilitate the deployment and programming of sensor networks.
+            </description>
+            <fileset dir="dist" targetdir="$INSTALL_PATH">
+                <include name="**/**"/>
+            </fileset>
+            <parsable targetfile="$INSTALL_PATH/org.openiot.gsn-start.sh"/>
+            <parsable targetfile="$INSTALL_PATH/org.openiot.gsn-stop.sh"/>
+            <parsable targetfile="$INSTALL_PATH/org.openiot.gsn-start.bat"/>
+            <parsable targetfile="$INSTALL_PATH/org.openiot.gsn-stop.bat"/>
+        </pack>
+    </packs>
+
+</installation>

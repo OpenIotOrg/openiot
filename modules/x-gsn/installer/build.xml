@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project>
+    <!-- UPDATE-ME: The name of your installer comes below in the gsn.name property -->
+    <property name="org.openiot.gsn.name" value="gsn-1.1.0"/>
+
+    <target name="build-gsn" depends="clean-installer">
+
+        <property environment="env"/>
+        <property name="dist" location="${basedir}/dist"/>
+        <property name="conf.dir" value="${basedir}/conf"/>
+        <property name="build.dir" value="temp/build"/>
+        <property name="src.dir" value="src"/>
+        <property name="jars" value="jars"/>
+        <property name="libdir" value="lib"/>
+        <property name="temp" value="temp"/>
+        <property name="maxMemoryUsage" value="128m"/>
+
+        <path id="classpath">
+            <pathelement location="${build.dir}/"/>
+            <fileset dir="${libdir}">
+                <include name="**/*.jar"/>
+                <!--  <exclude name="**/axis-2/**"/>  -->
+            </fileset>
+        </path>
+
+        <mkdir dir="${dist}/lib"/>
+        <mkdir dir="${dist}/conf"/>
+        <mkdir dir="${dist}/logs"/>
+        <mkdir dir="${dist}/virtual-sensors"/>
+        <mkdir dir="${build.dir}"/>
+
+        <javac debug="true" srcdir="${src.dir}" optimize="off" destdir="${build.dir}" failonerror="true" classpathref="classpath">
+            <exclude name="**/msr/**"/>
+            <exclude name="**/microsoft/**"/>
+            <exclude name="**/tempuri/**"/>
+            <exclude name="**/epfl/**"/>
+            <exclude name="**/ethz/**"/>
+            <exclude name="**/slf/**"/>
+            <exclude name="**/acquisition2/**"/>
+            <exclude name="**/ieee1451/**"/>
+            <exclude name="**/svn/**"/>
+            <exclude name="**/hibernate/**"/>
+            <exclude name="**/WebCamWrapper.java"/>
+            <exclude name="**/DemoVSensor.java"/>
+        </javac>
+
+        <java classname="org.jibx.binding.Compile" fork="yes" dir="${basedir}" failonerror="true">
+            <classpath refid="classpath"/>
+            <arg value="${conf.dir}/containerJIBX.xml"/>
+            <arg value="${conf.dir}/VirtualSensorDescription.xml"/>
+        </java>
+
+        <jar destfile="${dist}/lib/${gsn.name}.jar" basedir="${build.dir}">
+            <manifest>
+                <!-- UPDATE-ME: write the name of the person wrote the installer -->
+                <attribute name="Built-By" value="GSN Development Team."/>
+                <attribute name="Main-Class" value="org.openiot.gsn.Main"/>
+                <attribute name="SplashScreen-Image" value="logo.png"/>
+                <!-- We rather that you don't change the logo, of course minor modifications are fine. -->
+            </manifest>
+        </jar>
+
+        <copy file="${basedir}/virtual-sensors/samples/memoryDataVS.xml" todir="${dist}/virtual-sensors/"/>
+        <copy file="${basedir}/virtual-sensors/samples/memoryPlotVS.xml" todir="${dist}/virtual-sensors/"/>
+        <copy todir="${dist}/virtual-sensors/samples/">
+            <fileset dir="${basedir}/virtual-sensors/samples/">
+                <include name="**/**"/>
+                <exclude name="**/memoryDataVS.xml"/>
+                <exclude name="**/memoryPlotVS.xml"/>
+            </fileset>
+        </copy>
+
+        <copy file="${basedir}/conf/wrappers.properties" todir="${dist}/conf/"/>
+        <copy file="${basedir}/conf/realm.properties" todir="${dist}/conf/"/>
+        <copy file="${basedir}/conf/clienttestkeystore" todir="${dist}/conf/"/>
+        <copy file="${basedir}/conf/emails.properties" todir="${dist}/conf/"/>
+        <copy file="${basedir}/conf/keystore" todir="${dist}/conf/"/>
+        <copy file="${basedir}/conf/servertestcer.cer" todir="${dist}/conf/"/>
+        <copy file="${basedir}/conf/servertestkeystore" todir="${dist}/conf/"/>
+        <copy file="${basedir}/installer/log4j.properties" todir="${dist}/conf/"/>
+        <copy file="${basedir}/installer/gsn.xml" todir="${dist}/conf/"/>
+        <copy file="${basedir}/installer/logo.png" todir="${dist}/lib/"/>
+
+        <copy file="${basedir}/installer/gsn-start.bat" todir="${dist}/"/>
+        <copy file="${basedir}/installer/gsn-start.sh" todir="${dist}/"/>
+        <copy file="${basedir}/installer/gsn-stop.sh" todir="${dist}/"/>
+        <copy file="${basedir}/installer/gsn-stop.bat" todir="${dist}/"/>
+        <copy file="${basedir}/installer/license.txt" todir="${dist}/"/>
+
+        <copy todir="dist/lib" flatten="yes" includeEmptyDirs="false">
+            <fileset dir="${basedir}/lib/">
+                <include name="**/**"/>
+                <exclude name="**/axis-2/**"/>
+                <exclude name="**/safe-storage/**"/>
+                <exclude name="**/junit-jars/**"/>
+                <exclude name="**/compiling/**"/>
+                <exclude name="**/hibernate/**"/>
+                <exclude name="**/.svn/**"/>
+            </fileset>
+        </copy>
+        <copy todir="dist/webapp">
+            <fileset dir="${basedir}/webapp/">
+                <exclude name="**/.svn/**"/>
+                <exclude name="**/axis2.xml"/>
+                <exclude name="**/*.aar"/>
+            </fileset>
+        </copy>
+        <taskdef name="izpack" classname="com.izforge.izpack.ant.IzPackTask">
+            <classpath refid="classpath"/>
+        </taskdef>
+        <izpack input="${basedir}/installer/izpack.xml" output="${basedir}/${org.openiot.gsn.name}-installer.jar" basedir="${basedir}"/>
+    </target>
+
+    <target name="clean-installer">
+        <delete includeEmptyDirs="yes" failonerror="no">
+            <fileset dir="temp"/>
+            <fileset dir="dist"/>
+        </delete>
+        <delete file="${basedir}/${gsn.name}-installer.jar"/>
+    </target>
+
+    <!-- For this you need launch4j application which is only available for windows. -->
+    <!-- This task works only on windows -->
+    <!--<taskdef name="launch4j" classpath="c:/Program Files/Launch4j/launch4j.jar" classname="net.sf.launch4j.ant.Launch4jTask"/>
+    <target name="exe">
+        <launch4j>
+            <config
+                    outfile="${exe.name}"
+                    icon="images/nextick.ico"
+                    headertype="gui"
+                    jarpath="nextick-v2rc.jar"
+                    customProcName="true"
+                    stayAlive="false">
+                <jre minVersion="1.6.0"/>
+                <splash file="images/nextick.bmp"/>
+            </config>
+        </launch4j>
+    </target> -->
+</project>

@@ -1,0 +1,40 @@
+Parameter,Sensor Name,Sensor Type,Metadata,Comments,Units
+DW,Wind Direction,Wind Direction,"Medium:Air:,Height:6:m",,&deg;
+DW2,Wind Direction,Wind Direction,"Medium:Air:,Height:6:m",,&deg;
+DW_MAX,Wind Direction Maximum,Wind Direction Maximum,"Medium:Air:,Height:6:m",,&deg;
+FCSLT,Drift,Drift,"Medium:Snow:,Height:0.5:m",Flowcapt sensor,m/s
+FCSLT_MAX,Drift,Drift,"Medium:Snow:,Height:0.5:m",Flowcapt sensor,m/s
+FCTR,Drift,Drift,"Medium:Snow:,Height:1.5:m",Flowcapt sensor,m/s
+FCTR_MAX,Drift,Drift,"Medium:Snow:,Height:1.5:m",Flowcapt sensor,m/s
+RH,Relative Humidity,Relative Humidity,"Medium:Air:,Height:6:m",,%
+RSWR,Outgoing Shortwave Radiation,Outgoing Shortwave Radiation,"Medium:Air:,Height:6:m",,W/m<sup>2</sup>
+FCWIND,Wind Speed,Wind Speed,"Medium:Air:,Height:6:m",,m/s
+FCWIND_MAX,Wind Speed Maximum,Wind Speed Maximum,"Medium:Air:,Height:6:m",,m/s
+HS,Snow Height,Snow Height,,,cm
+HS1,Snow Height,Snow Height,,,cm
+HS2,Snow Height,Snow Height,,,cm
+TA,Air Temperature,Temperature,"Medium:Air:,Height:6:m",,&deg;C
+TDRdry,Snow Density,Density,Medium:Snow:,TDR sensor,kg/m<sup>3</sup>
+TDRWET,Snow Water Content,Water Content,Medium:Snow:,TDR sensor,Vol%
+THS,Temperature of Snow Height Sensor,Temperature,"Medium:Sensor:,Height:6:m",,&deg;C
+TS0,Snow Temperature,Temperature,"Medium:Snow:,Height:0:m",,&deg;C
+TS1,Snow Temperature,Temperature,"Medium:Snow:,Height:0.25:m",,&deg;C
+TS10,Snow Temperature,Temperature,"Medium:Snow:,Height:0:m",,&deg;C
+TS11,Snow Temperature,Temperature,"Medium:Snow:,Height:0.25:m",,&deg;C
+TS2,Snow Temperature,Temperature,"Medium:Snow:,Height:0.5:m",,&deg;C
+TS20,Snow Temperature,Temperature,Medium:Snow:,,&deg;C
+TS21,Snow Temperature,Temperature,Medium:Snow:,,&deg;C
+TS3,Snow Temperature,Temperature,Medium:Snow:,,&deg;C
+TS4,Snow Temperature,Temperature,Medium:Snow:,,&deg;C
+TS5,Snow Temperature,Temperature,Medium:Snow:,,&deg;C
+TSS,Snow Surface Temperature,Temperature,"Medium:Snow:,Height:Surface:",,&deg;C
+TSS1,Snow Surface Temperature,Temperature,"Medium:Snow:,Height:Surface:",,&deg;C
+TSS2,Snow Surface Temperature,Temperature,"Medium:Snow:,Height:Surface:",,&deg;C
+VW,Wind Speed,Wind Speed,"Medium:Air:,Height:6:m",,m/s
+VW2,Wind Speed,Wind Speed,"Medium:Air:,Height:6:m",,m/s
+VW_MAX,Wind Speed Maximum,Wind Speed Maximum,"Medium:Air:,Height:6:m",,m/s
+VW_MAX2,Wind Speed Maximum,Wind Speed Maximum,"Medium:Air:,Height:6:m",,m/s
+VW_SCAL,Wind Speed (Scalar average),Wind Speed,"Medium:Air:,Height:6:m",Scalar average,m/s
+VW_VEC,Wind Speed (Vector average),Wind Speed,"Medium:Air:,Height:6:m",Vector average,m/s
+STAO_NR,Location Number,Metadata,,,
+STAT_ABK,Station Abbreviation,Metadata,,,

@@ -1,0 +1,53 @@
+Getting started with GSN
+
+1. Installing GSN
+
+You first need to install GSN.
+You can either install the binary distribution or build from the source code.
+Both methods are explained here: https://sourceforge.net/apps/trac/gsn/wiki/Download
+
+2. How to start GSN
+
+Once GSN is installed, you can start it like this:
+
+    If you have installed the binary distribution, use the batch file (Windows) or shell script (Linux).
+    If you have downloaded the source code, use the ANT target: ant gsn
+
+3. Loading your first virtual sensor
+
+To load a virtual sensor into GSN, you need to mode its description file (.xml) into the virtual-sensors directory.
+This directory contains a set of samples that can be used.
+
+You can start by loading the MultiFormatTemperatureHandler virtual sensor (virtual-sensors/samples/multiFormatSample.xml).
+This virtual sensor generates random values without the need of an actual physical sensor.
+
+=====================
+
+The following Notifications have been added:
+
+1. Sign Up
+a. Notification of the Admin when a new account is created
+b. Notification of the User that made the new account that he awaits activation.
+
+2. Access Request to a Virtual Sensor
+a. Notification of owner with details about the VS and the user that wants to access it.
+b. Notification of the administrator with details about the VS, its owner and the user that wants to access it.
+c. The administrator is notified of the decision taken by the owner, receiving appropriate details.
+d. The user is informed about the result of their request for a Virtual Sensor access.
+
+3. Addition of a New Virtual Sensor
+a. Notification of the Administrator about the new Virtual Sensor
+b. Notification of the User if their VS has been activated or not with details.
+
+4. The time limitation for using a virtual sensor has expired.
+a. Notify the user about this event.
+
+5. When a user uploads a virtual sensor, the platform renames the file to the name specified by the user (for uniqueness). Also the name of the Virtual Sensor inside the .xml is substituted with the given name by the user during the upload.
+
+6. When the administrator grants the desired access to a virtual sensor, the VS .xml file is automatically copied in the 'virtual-sensors' directory so that it is immediately deployed.
+
+7. When the owner grants access to their VSs, they also specify the date until which the user can use this VS. A checkbox can specify unlimited access to a particular resource. It is also validated if they haven't given a date and a pop-up is presented with an error message. The time limitations are also visible to the user of the VS. (If the administrator grants access to a VS, without waiting for the owner's decision, there is no time limitation set for this sensor)
+
+8. Every time that a user logs in, before their VS are loaded from the database, it is firstly checked if some of their VSs has expired. If this is the case, the respective entries from the database tables are removed and the user is notified about this event.
+
+The Notifications are sent by using "org.apache.commons.mail.Email" and were inserted mainly in the function handleForm().

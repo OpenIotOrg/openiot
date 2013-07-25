@@ -1,0 +1,59 @@
+GSN Change logs
+---------------
+
+r1.1.2
+New sensorscope listener server fixing problem of missing data
+Added count-based checkpoints to the CSV wrapper, logging line counts instead of latest timestamp
+Added new sensor types to sensorscope listener (NO2, CO, CO2, snow height, dendrometer, new temperature and air pressure sensors, data logger voltage, and GPS coordinates)
+Added /dynamicgeodata servlet, which allows making basic spatial queries for moving sensors
+Added new REST API for accessing data (beta)
+Fixed leak in unused connections (StorageManager pool configuration)
+
+r1.1.1
+Added URL-based queries for GML handler
+Added dataclean virtual sensor
+Added improved version of the jdbc wrapper
+Added grid renderer for rendering grid objects
+Added quality metric to data cleaning model
+Added web method for fetching grid objects
+Updated packet format for Sensorscope wrapper. Now supporting battery board 2.3, Decagon 10HS and Apogee SP-212
+Added support for PostGIS for geospatial queries
+Added simple web service client
+Added URL-based authentication to /GSN and /DATA requests
+Added group filtering to GML handler
+Fixed controller servlet. Allowing public data to be plotted and queried.
+Added non-parametric methods (ARMA GARCH) to data cleaning
+Reintroduced RSS wrapper
+Fixed bug in standard web server for null data
+
+r1.1.0
+Added Support for Flexible Storage Manager (processing/storage dbs, per virtual sensor db, in memory processing, transcient virtual sensor).
+Added Support for Access Control (alpha version, must not be used in production environment yet).
+Added Support for PostgreSQL as processing/storage db.
+Added Support for geospacial queries (see /geodata servlet).
+Added Support for GML output
+Added Support for periodical execution of code in the ScriptletProcessor.
+Added Support for SSL.
+Added A3DWebService Alpine3D Web Service.
+Added Wrapper that handles data grids (short name: grid).
+Added Timezone visualization per virtual sensor.
+Added Throughput performance evaluator and performance settings in build.xml
+Updated Microsoft SensorMap Web Service implementation to their latest API at sensormap.org.
+Fixed Missing duplicated stream elements with pagination.
+Fixed Multiple CSV wrappers reading from the same data file do not use the same checkpoint file anymore.
+Fixed Sorting the virtual sensor names and fields names in the web UI.
+Fixed the Virtual Earth js link.
+
+r1.0.1
+Added the 'ScriptletProcessor' processing class which can be used to implement arbitrary complex processing class by specifying its logic in the Groovy language, directly in the virtual sensor description file.
+Added pagination support for MySQL (/data and /multidata servlet and DataDistributer) which enable GSN to stream an arbitrary large amount of data.
+Fixed OutOfMemory errors due to large amount of data requests.
+Fixed OutOfMemory errors due to a dbcp library memory leak when calling multiple time the getMetadata (This is going to be fixed in the dbcp 1.4.1).
+Fixed GSN hang forever due to a database connection leak in the (/data and /multidata servlets).
+Fixed synchronization bug related to jetty Continuation, in the remote-rest wrapper.
+Fixed reconnection bug in the remote-rest and remote-push wrappers.
+Fixed the org.apache.commons.dbcp.DelegatingPreparedStatement is closed Exception.
+Fixed exceptions thrown (such as: java.lang.NumberFormatException: multiple points) due to concurrent access to the /multidata servlet.
+Integrated the GSN installer in the trunk through the 'installer' ant task.
+Added the 'download_mode=inline' parameter to the /multidata servlet, in order to get the data not as an attachment.
+Removed the unused virtual-sensor pool, marked the 'lifeCyclePool' configuration element as deprecated.

@@ -1,0 +1,26 @@
+<sensor-server>
+    <name>GSN Server</name>
+    <author>GSN Development Team.</author>
+    <email>my email address</email>
+    <description>Not Provided</description>
+    <port>22001</port>
+
+    <!-- SSL Support, Optional -->
+<!--
+    <ssl-port>8443</ssl-port>
+    <ssl-key-store-password>changeit</ssl-key-store-password>
+    <ssl-key-password>changeit</ssl-key-password>
+-->
+    <!-- Main Storage Database, Mandatory -->
+    <storage user="sa" password="" driver="org.h2.Driver" url="jdbc:h2:mem:gsn_mem_db;DB_CLOSE_DELAY=-1"/>
+    <!-- <storage user="sa" password="" driver="org.h2.Driver" url="jdbc:h2:file:MyFile" /> -->
+    <!-- <storage user="root" password="" driver="com.mysql.jdbc.Driver" url="jdbc:mysql://localhost/gsn" /> -->
+    <!-- <storage user="gsn" password="gsn" driver="oracle.jdbc.driver.OracleDriver" url="jdbc:oracle:thin:@dom.slf.local:1521:sdbt" /> -->
+
+    <!-- Processing Database, Optional. If not specified, the processing is implemented using the Main Storage Database specified above  -->
+<!--
+    <sliding>
+        <storage user="sa" password="" driver="org.h2.Driver" url="jdbc:h2:mem:sliding;DB_CLOSE_DELAY=-1" />
+    </sliding>
+-->
+</sensor-server>

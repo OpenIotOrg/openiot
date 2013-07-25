@@ -1,0 +1,466 @@
+<project name="gsn" default="build" basedir=".">
+
+    <property name="safe-storage-port" value="25700"/>
+    <property name="safe-storage-controller-port" value="25712"/>
+    <property name="gsn-controller-port" value="22932"/>
+    <property name="max-servlets" value="20"/>
+    <property name="max-db-connections" value="8"/>
+    <property name="max-sliding-db-connections" value="8"/>
+    <property name="remote-keep-alive-period" value="15000"/>
+    <property name="aes-enc-salt" value="this is a simple clear salt"/>
+
+    <import file="${basedir}/installer/build.xml"/>
+
+    <!-- Internal -->
+
+    <target name="init" description="Initializes properties and initialization tasks.">
+        <tstamp>
+            <format property="TODAY" pattern="yyyy-MMMM-d-'at'-hh-mm-aa" locale="en"/>
+        </tstamp>
+        <property environment="env"/>
+        <property name="conf.dir" value="${basedir}/conf"/>
+        <property name="build.dir" value="build/classes"/>
+        <property name="src.dir" value="src"/>
+        <property name="jars" value="jars"/>
+        <property name="libdir" value="lib"/>
+        <property name="reports" value="reports"/>
+        <property name="maxMemoryUsage" value="128m"/>
+        <property name="jar.file" value="gsn-core.jar"/>
+        <!--  Enable the following line when you want to use Java Media Framework.
+              You should unarchive the complete archive provide by sun and fix the
+              following line to point to you path. -->
+        <!--  <property name="jmf.dir"     value="JMF-2.1.1e" /> -->
+        <path id="classpath">
+            <pathelement location="${build.dir}/jcoverage-classes/"/>
+            <pathelement location="${build.dir}/"/>
+            <pathelement location="${env.JAVA_HOME}/lib/tools.jar"/>
+            <fileset dir="${libdir}">
+                <include name="**/*.jar"/>
+            </fileset>
+            <!--  Enable the following line if you want to use Java Media Frame Work.
+                  Note that you should first set the jmf.dir path above -->
+            <!--  <fileset dir="${jmf.dir}">
+            <include name="**/*.jar" />
+            </fileset>  -->
+        </path>
+        <available type="dir" file="${jmf.dir}" property="jmf.exists"/>
+        <!--   	<fail unless="jmf.exists" message="The ${jmf.dir} directory is missing, please download  JMF from http://java.sun.com/products/java-media/jmf/2.1.1/download.html and place it in ${jmf.dir} directory." /> -->
+    </target>
+
+    <target name="setup" depends="init" description="Setup the build target.">
+        <mkdir dir="${build.dir}"/>
+        <mkdir dir="logs"/>
+        <mkdir dir="${reports}/todos"/>
+        <mkdir dir="${reports}/javadoc"/>
+        <mkdir dir="${reports}/junit"/>
+        <mkdir dir="${jars}"/>
+        <condition property="java6">
+            <equals arg1="${ant.java.version}" arg2="1.6"/>
+        </condition>
+    </target>
+
+    <target name="build" depends="setup" description="Compile the cource code.">
+        <javac debug="true" srcdir="${src.dir}" source="1.6" target="1.6" optimize="off"
+               destdir="${build.dir}" failonerror="true" classpathref="classpath">
+
+        <exclude name="**/TCPConnPool.java"/>
+            <exclude name="**/NetworkUtility.java"/>
+        </javac>
+    </target>
+
+    <target name="bind" depends="build" description="Compile the JIBX mappings.">
+        <java classname="org.jibx.binding.Compile" fork="yes" dir="${basedir}"
+              failonerror="true">
+            <classpath refid="classpath"/>
+            <arg value="conf/containerJIBX.xml"/>
+            <arg value="conf/VirtualSensorDescription.xml"/>
+        </java>
+    </target>
+
+    <target name="cleandb" depends="bind">
+        <java classname="org.openiot.gsn.storage.CleanDB" fork="true" dir="${basedir}" classpathref="classpath"/>
+    </target>
+
+
+    <!-- Run -->
+
+    <target name="runcam" depends="bind">
+        <java classpathref="classpath" classname="org.openiot.gsn.Main" maxmemory="${maxMemoryUsage}" fork="true"
+              dir="${basedir}">
+            <env key="LD_LIBRARY_PATH"
+                 value="${jmf.dir}/lib:${env.JAVA_HOME}/jre/lib/i386:${env.JAVA_HOME}/jre/lib/i386/client:${env.JAVA_HOME}/jre/lib/i386/xawt"/>
+            <env key="LD_PRELOAD" value="${env.JAVA_HOME}/jre/lib/i386/libjawt.so"/>
+            <arg id="gsnc-port" value="${gsn-controller-port}"/>
+        </java>
+    </target>
+
+    <target name="gsn" depends="bind,cleandb" description="Run GSN server in non graphical mode.">
+        <java classname="org.openiot.gsn.Main" maxmemory="${maxMemoryUsage}" fork="true" dir="${basedir}">
+            <classpath refid="classpath"/>
+            <jvmarg value="-Dorg.apache.commons.logging.Log=org.apache.commons.logging.impl.Log4JLogger"/>
+            <jvmarg value="-DmaxServlets=${max-servlets}"/>
+            <jvmarg value="-DmaxDBConnections=${max-db-connections}"/>
+            <jvmarg value="-DmaxSlidingDBConnections=${max-sliding-db-connections}"/>
+            <jvmarg value="-Dsalt=${aes-enc-salt}"/>
+            <jvmarg value="-DremoteKeepAlivePeriod=${remote-keep-alive-period}"/>
+            <!-- <jvmarg value="-Djava.library.path=/usr/local/lib/R/site-library/rJava/jri"/>  uncomment this under Linux to load rJava lib -->
+            <!-- <jvmarg value="-Djava.library.path=C:\\users\\admin\\Documents/R/win-library/2.12/rJava/jri"/>  uncomment this under Windows to load rJava lib -->
+            <arg id="gsnc-port" value="${gsn-controller-port}"/>
+            <!-- <jvmarg value="-server"/> Sometimes on windows compaines about a missing dll.-->
+            <!-- For profiling using JConsole <jvmarg value="-Dcom.sun.management.jmxremote"/> -->
+            <!-- For JDK5 profiling <jvmarg value="-Xrunhprof:heap=sites,depth=15,force=n"/> -->
+        </java>
+    </target>
+
+    <target name="restart" depends="stop,gsn" description="Restart GSN Server in non graphical mode."/>
+
+    <target name="stop" depends="build" description="Stop the running GSN server (if any).">
+        <java classname="org.openiot.gsn.GSNStop" maxmemory="${maxMemoryUsage}" fork="false" dir="${basedir}"
+              classpathref="classpath">
+            <arg id="gsnc-port" value="${gsn-controller-port}"/>
+        </java>
+    </target>
+
+
+    <!-- Dev -->
+
+    <target name="generate-msr" depends="bind" description="Generate the Microsoft Sensor Map Webservice.">
+        <!-- generate the stub for the user management -->
+        <java classname="org.apache.axis2.wsdl.WSDL2Java" fork="false" dir="${basedir}" classpathref="classpath">
+            <arg value="-o"/>
+            <arg value="generated"/>
+            <arg value="-p"/>
+            <arg value="org.openiot.gsn.msr.sensormap.userman"/>
+            <arg value="-s"/>
+            <arg value="-uri"/>
+            <arg value="http://www.sensormap.org/SenseWebV3/usermanager/service.asmx?WSDL"/>
+        </java>
+        <!-- generate the stub for sensor management -->
+        <java classname="org.apache.axis2.wsdl.WSDL2Java" fork="false" dir="${basedir}" classpathref="classpath">
+            <arg value="-o"/>
+            <arg value="generated"/>
+            <arg value="-p"/>
+            <arg value="org.openiot.gsn.msr.sensormap.sensorman"/>
+            <arg value="-s"/>
+            <arg value="-uri"/>
+            <arg value="http://www.sensormap.org/SenseWebV3/sensormanager/service.asmx?WSDL"/>
+        </java>
+        <!-- generate the skeleton for the datahub -->
+        <java classname="org.apache.axis2.wsdl.WSDL2Java" fork="false" dir="${basedir}" classpathref="classpath">
+            <arg value="-o"/>
+            <arg value="generated"/>
+            <arg value="-p"/>
+            <arg value="org.openiot.gsn.msr.sensormap.datahub"/>
+            <arg value="-s"/>
+            <arg value="-ss"/>
+            <arg value="-sd"/>
+            <arg value="-uri"/>
+            <arg value="http://www.sensormap.org/SenseWebV3/DataHub/Service.asmx?WSDL"/>
+        </java>
+    </target>
+
+
+    <!--
+     Default Setting for compiling/generating/packaging the default GSN web services.
+     Use the ant -D options to override these values in order to operate with your own webservice.
+     eg: ant -Dwsroot=foo/bar -Dwsname=MyWebService dev-ws-generate-aar
+
+     http://localhost:22001/services/standard/GSNWebService?wsdl
+     
+      -->
+
+     <!-- Default Web Service root path -->
+     <property name="wsroot" value="${basedir}/webservices/standard"/>
+     <!-- Default Web Service SOAP Address -->
+     <property name="soapaddress" value="http://localhost:22001/services/standard/GSNWebService"/>
+     <!-- Default source class used to generate the service (contract Last approach) -->
+     <property name="sourceclass" value="org.openiot.gsn.webservice.standard.GSNWebService"/>
+     <!-- Default WSDL used to generate the service (Contract First approach) -->
+     <property name="sourcewsdl" value="${wsroot}/META-INF/GSNWebService.wsdl"/>
+     <!-- Default name for the Axis deployable ARchive (.aar) -->
+     <property name="wsname" value="GSNWebService"/>
+
+     <!--
+     Generate the web service deployable axis archive (.aar).
+     The archive contains the service description (wsdl), schema (xsd) and service file (xml) as well as the compiled
+     classes for the service.
+     Move the .aar archive to the webapp/WEB-INF/services in order to enable the webservice.
+     -->
+     <target name="dev-ws-package" depends="dev-ws-compile" description="Generate the web service deployable axis archive (.aar).">
+         <!--
+         <copy toDir="${wsroot}/build/META-INF" failonerror="false">
+             <fileset dir="${wsroot}/resources/">
+                 <include name="*.xml"/>
+                 <include name="*.wsdl"/>
+                 <include name="*.xsd"/>
+             </fileset>
+         </copy>
+         -->
+         <jar destfile="${wsroot}/${wsname}.aar">
+             <fileset excludes="**/Test.class" dir="${wsroot}/build"/>
+         </jar>
+     </target>
+
+     <!--
+     The java source files are generated in the ${wsroot}/src directory.
+     The ${sourcewsdl} sets the path to the WSDL file used to generate the classes.
+     -->
+     <target name="dev-ws-wsdl2java" depends="bind" description="Generates java code according to the given WSDL file to handle Web service invocation.">
+         <java classname="org.apache.axis2.wsdl.WSDL2Java" fork="false" dir="${basedir}" classpathref="classpath">
+             <arg value="-o"/>
+             <arg value="${wsroot}"/>
+             <arg value="-s"/>
+             <arg value="-ss"/>
+             <arg value="-sd"/>
+             <arg value="-R"/>
+             <arg value="build/META-INF"/>
+             <arg value="-uri"/>
+             <arg value="${sourcewsdl}"/>
+         </java>
+     </target>
+
+     <!--
+     The WSDL is created in the ${wsroot}/META-INF directory, according to the ${sourceclass} class.
+     The ${soapaddress} url defines the access point to the webservice.
+     -->
+     <target name="dev-ws-java2wsdl" depends="dev-ws-compile" description="Generates the appropriate WSDL file for the given java class.">
+         <java classname="org.apache.ws.java2wsdl.Java2WSDL" fork="false" dir="${basedir}" classpathref="classpath">
+             <arg value="-o"/>
+             <arg value="${wsroot}/META-INF"/>
+             <arg value="-cp"/>
+             <arg value="${wsroot}/build/"/>
+             <arg value="-l"/>
+             <arg value="${soapaddress}"/>
+             <arg value="-cn"/>
+             <arg value="${sourceclass}"/>
+         </java>
+     </target>
+
+     <target name="dev-ws-compile" depends="bind" description="Compile the Web Service java classes.">
+         <javac debug="true" srcdir="${wsroot}/src" optimize="off" destdir="${wsroot}/build" failonerror="true" classpathref="classpath"/>
+     </target>
+    
+
+    <target name="compile-reports" depends="init" description="Compile the Jasper Reports Layout files (.jrxml).">
+        <taskdef name="jrc" classname="net.sf.jasperreports.ant.JRAntCompileTask">
+            <classpath refid="classpath"/>
+        </taskdef>
+        <jrc destdir="./gsn-reports/" srcdir="./gsn-reports/">
+            <src>
+                <fileset dir="./">
+                    <include name="gsn-reports/*.jrxml"/>
+                </fileset>
+            </src>
+            <classpath refid="classpath"/>
+        </jrc>
+    </target>
+
+    <target name="clean" depends="init" description="Erase built files and target.">
+        <delete includeEmptyDirs="yes" failonerror="no">
+            <fileset dir="${build.dir}" includes="**/*.class,**/*.xml"/>
+            <fileset dir="${build.dir}" includes="**/*.xml"/>
+            <fileset dir="${reports}" includes="**/*html,**/*htm,**/*xml"/>
+            <fileset dir="${jars}" includes="**/*"/>
+        </delete>
+    </target>
+
+    <!-- Tools -->
+    <!-- Starts a sensorscope server, which listens on a port for data and publishes to CSV files -->
+    <!-- configuration is set in conf/sensorscope_server.properties -->
+    <target name="sensorscope-server" depends="build" description="Tests sensorscope server">
+            <java classname="org.openiot.gsn.utils.SensorScopeListener" maxmemory="${maxMemoryUsage}" fork="true" dir="${basedir}">
+        <!--<java classname="org.openiot.gsn.wrappers.tinyos.SensorScopeServerListener" maxmemory="${maxMemoryUsage}" fork="true" dir="${basedir}">-->
+            <classpath refid="classpath"/>
+            <jvmarg value="-Dorg.apache.commons.logging.Log=org.apache.commons.logging.impl.Log4JLogger"/>
+        </java>
+    </target>
+
+    <target name="sensorscope-server-test" depends="build" description="Tests sensorscope server">
+        <java classname="org.openiot.gsn.utils.SensorScopeListenerTest" maxmemory="${maxMemoryUsage}" fork="true" dir="${basedir}">
+            <classpath refid="classpath"/>
+            <jvmarg value="-Dorg.apache.commons.logging.Log=org.apache.commons.logging.impl.Log4JLogger"/>
+        </java>
+    </target>
+    
+    <!-- Tests -->
+
+    <target name="securityTest" depends="bind">
+        <java classpathref="classpath" classname="org.openiot.gsn.testss.SecurtiyTest" maxmemory="${maxMemoryUsage}" fork="true"
+              dir="${build.dir}"/>
+    </target>
+
+    <target name="rfidtest" depends="bind">
+        <java classname="org.openiot.gsn.wrappers.RFIDTest" maxmemory="${maxMemoryUsage}" fork="true" dir="${basedir}">
+            <classpath refid="classpath"/>
+        </java>
+    </target>
+
+    <target name="camtest" depends="bind">
+        <property name="dev" value=""/>
+        <java classname="org.openiot.gsn.wrappers.cameras.usb.WebCamWrapper" maxmemory="${maxMemoryUsage}" fork="true"
+              dir="${basedir}">
+            <classpath refid="classpath"/>
+            <env key="LD_LIBRARY_PATH"
+                 value="${jmf.dir}/lib:${env.JAVA_HOME}/jre/lib/i386:${env.JAVA_HOME}/jre/lib/i386/client:${env.JAVA_HOME}/jre/lib/i386/xawt"/>
+            <env key="LD_PRELOAD" value="${env.JAVA_HOME}/jre/lib/i386/libjawt.so"/>
+            <arg value="${dev}"/>
+        </java>
+    </target>
+
+    <target name="test-report" depends="tests" description="Runs JUnit tests, generates jcoverage,junit,todo reports">
+        <junitreport todir="${reports}/junit">
+            <fileset dir="${reports}/junit">
+                <include name="TEST-*.xml"/>
+            </fileset>
+            <report format="frames" todir="${reports}/junit"/>
+        </junitreport>
+    </target>
+
+    <target name="test-lsm" depends="build" description="Tests connection to LSM">
+    <java classname="org.openiot.gsn.utils.TestLSM" maxmemory="${maxMemoryUsage}" fork="true" dir="${basedir}">
+        <classpath refid="classpath"/>
+    </java>
+</target>
+
+    <target name="load-LSM-sensor" depends="build" description="Tests connection to LSM">
+        <java classname="org.openiot.gsn.metadata.LSM.utils" maxmemory="${maxMemoryUsage}" fork="true" dir="${basedir}">
+            <classpath refid="classpath"/>
+        </java>
+    </target>
+
+    <target name="test-sensorscope" depends="build" description="Tests sensorscope server">
+        <java classname="org.openiot.gsn.wrappers.tinyos.SenscorscopeTest" maxmemory="${maxMemoryUsage}" fork="true" dir="${basedir}">
+            <classpath refid="classpath"/>
+            <jvmarg value="-Dorg.apache.commons.logging.Log=org.apache.commons.logging.impl.Log4JLogger"/>
+            <arg id="sensorscope-server" value="sf@climaps.com:5010"/>
+            <arg id="log-conf-file" value="conf/debug.log"/>
+        </java>
+    </target>
+
+    <target name="test-wsclient" depends="build" description="Tests web service client.">
+        <java classname="org.openiot.gsn.webservice.standard.GSNWebServiceClient" maxmemory="${maxMemoryUsage}" fork="true" dir="${basedir}">
+            <classpath refid="classpath"/>
+            <jvmarg value="-Dorg.apache.commons.logging.Log=org.apache.commons.logging.impl.Log4JLogger"/>
+            <arg id="EPR" value="http://localhost:22001/services/GSNWebService"/>
+        </java>
+    </target>
+
+    <target name="tests" depends="bind" description="Runs JUnit tests">
+        <junit printsummary="on" haltonerror="off" haltonfailure="off" showoutput="on">
+            <formatter type="xml" usefile="true"/>
+            <classpath refid="classpath"/>
+            <batchtest todir="${reports}/junit">
+                <fileset dir="${build.dir}">
+                    <include name="**/*Test*.class"/>
+                    <exclude name="**/TestStreamExporterVirtualSensor.class"/>
+                    <exclude name="**/TestContainerImpl.class"/>
+                    <exclude name="**/RFIDTest.class"/>
+                    <exclude name="**/TestDataPropogation.class"/>
+                    <exclude name="**/TestVSensorLoader.class"/>
+                    <exclude name="**/TestStreamSource.class"/>
+                    <exclude name="**/TestWindowing1.class"/>
+                    <exclude name="**/TestWindowing2.class"/>
+                    <exclude name="**/TestPublicToMSR.class"/>
+                    <exclude name="**/TestService.class"/>
+                    <exclude name="**/TestDataPacket.class"/>
+                    <exclude name="**/TestSQLUtils.class"/>
+                    <exclude name="**/TestStreamElement.class"/>
+                    <exclude name="**/TestValidityTools.class"/>
+                    <exclude name="**/TestGraph.class"/>
+                    <exclude name="**/TestContainerImpl.class"/>
+                    <exclude name="**/TestStreamExporterVirtualSensor.class"/>
+                    <exclude name="**/TestStorageManager.class"/>
+                    <exclude name="**/TestAbstractWrapper.class"/>
+                </fileset>
+            </batchtest>
+        </junit>
+    </target>
+
+
+    <!-- Performance Evaluation -->
+
+    <target name="eval-queries" depends="bind" description="Run GSN evaluation queries.">
+        <java classname="org.openiot.gsn.tests.performance.Queries" maxmemory="${maxMemoryUsage}" fork="true" dir="${basedir}">
+            <classpath refid="classpath"/>
+            <jvmarg value="-DnbQueries=10"/>
+            <jvmarg value="-DnbThreads=10"/>
+            <jvmarg value="-DmaxQuerySize=50000"/>
+            <jvmarg value="-DgsnUrl=http://localhost:22001"/>
+        </java>
+    </target>
+
+    <!-- Safe Storage -->
+
+    <target name="start-acquisition" depends="bind">
+        <java classname="org.openiot.gsn.acquisition2.server.SafeStorageServer" fork="true" dir="${basedir}"
+              classpathref="classpath">
+            <arg id="ss-port" value="${safe-storage-port}"/>
+            <arg id="ssc-port" value="${safe-storage-controller-port}"/>
+            <arg id="ss-mode" value="1"/>
+        </java>
+    </target>
+
+    <target name="clean-acquisition" depends="bind">
+        <java classname="org.openiot.gsn.acquisition2.server.SafeStorageServer" fork="true" dir="${basedir}"
+              classpathref="classpath">
+            <arg id="ss-port" value="${safe-storage-port}"/>
+            <arg id="ssc-port" value="${safe-storage-controller-port}"/>
+            <arg id="ss-mode" value="100"/>
+        </java>
+    </target>
+
+    <target name="start-acquisition-nofork" depends="bind">
+        <java classname="org.openiot.gsn.acquisition2.server.SafeStorageServer" fork="false" dir="${basedir}"
+              classpathref="classpath">
+            <arg id="ss-port" value="${safe-storage-port}"/>
+            <arg id="ssc-port" value="${safe-storage-controller-port}"/>
+            <arg id="ss-mode" value="1"/>
+        </java>
+    </target>
+
+    <target name="stop-acquisition" depends="bind">
+        <java classname="org.openiot.gsn.SafeStorageStop" fork="true" dir="${basedir}" classpathref="classpath">
+            <arg id="ssc-port" value="${safe-storage-controller-port}"/>
+        </java>
+    </target>
+
+    <target name="start-all" depends="start-acquisition-nofork,gsn"/>
+
+    <target name="stop-all" depends="stop-acquisition,stop"/>
+
+
+    <!-- Distribution -->
+
+    <target name="docs" depends="setup">
+        <javadoc classpathref="classpath" destdir="${reports}/javadoc" author="false" version="true" use="true"
+                 windowtitle="Global Sensor Network Infrastructure">
+            <fileset dir="${src.dir}" defaultexcludes="yes">
+                <include name="**/*.java"/>
+                <exclude name="**/*Test.java"/>
+            </fileset>
+            <doctitle>Global Sensor Network</doctitle>
+            <bottom>GSN Development Team.</bottom>
+            <tag name="todo" scope="all" description="To do:"/>
+        </javadoc>
+        <!--
+        <documentdoclet destdir="${reports}/todos">
+            <fileset dir="${src.dir}">
+                <include name="**/*.java"/>
+            </fileset>
+            <info/>
+        </documentdoclet>
+        -->
+    </target>
+        
+    <target name="jar" depends="clean,bind" description="Create a jar file containing the GSN classes.">
+        <jar destfile="${jars}/${jar.file}" basedir="${build.dir}">
+            <manifest>
+                <attribute name="Built-By" value="GSN Development Team."/>
+                <attribute name="Main-Class" value="org.openiot.gsn.Main"/>
+            </manifest>
+        </jar>
+    </target>
+
+    <target name="installer" depends="build-gsn" description="Build a GSN Server installer based on izpack."/>
+
+</project>
