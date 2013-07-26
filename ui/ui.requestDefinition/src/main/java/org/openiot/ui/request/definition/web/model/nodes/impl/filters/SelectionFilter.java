@@ -49,40 +49,13 @@ import org.openiot.ui.request.definition.web.model.nodes.impl.sources.GenericSou
  * 
  * @author Achilleas Anagnostopoulos (aanag) email: aanag@sensap.eu
  */
-@GraphNodeClass(label = "SelectionAndGroupingFilter", type = "FILTER", scanProperties = true)
-@Endpoints({ @Endpoint(type = EndpointType.Output, anchorType = AnchorType.Left, scope = "Sensor", label = "NODE", required = true), })
-@NodeProperties({ @NodeProperty(type = PropertyType.Writable, javaType = java.util.ArrayList.class, name = "GROUPS", required = true) })
-public class SelectionAndGroupingFilter extends DefaultGraphNode implements GraphNodeEventListener, Serializable, Observer {
+@GraphNodeClass(label = "SelectionFilter", type = "FILTER", scanProperties = true)
+@Endpoints({ @Endpoint(type = EndpointType.Output, connectorType = ConnectorType.Dot, anchorType = AnchorType.Right, scope = "Sensor", label = "NODE", required = true), })
+public class SelectionFilter extends DefaultGraphNode implements GraphNodeEventListener, Serializable {
 	private static final long serialVersionUID = 1L;
 
-	public SelectionAndGroupingFilter() {
+	public SelectionFilter() {
 		super();
-
-		addPropertyChangeObserver(this);
-	}
-
-	public GenericSource getConnectedSourceNode() {
-		List<GraphNodeConnection> connectionList = getGraphModel().findGraphEndpointConnections(getEndpointByLabel("NODE"));
-		if (connectionList == null || connectionList.isEmpty()) {
-			return null;
-		}
-
-		return (GenericSource) connectionList.get(0).getDestinationNode();
-	}
-
-	@SuppressWarnings("unchecked")
-	public void update(Observable o, Object modifiedKey) {
-
-		LoggerService.log(Level.INFO, "Mod: " + modifiedKey + ", new Value: " + getPropertyValueMap().get("GROUPS"));
-		
-		if ((modifiedKey != null) && ("GROUPS".equals((String) modifiedKey))) {
-			GenericSource sourceNode = getConnectedSourceNode();
-			if (sourceNode == null) {
-				return;
-			}
-
-			sourceNode.addGroups((List<String>) getPropertyValueMap().get("GROUPS"));
-		}
 	}
 
 	public void onNodeConnected(GraphModel model, GraphNode otherNode, GraphNodeEndpoint otherNodeEndpoint, GraphNodeEndpoint thisNodeEndpoint) {
@@ -103,10 +76,11 @@ public class SelectionAndGroupingFilter extends DefaultGraphNode implements Grap
 			endpoint.setType(EndpointType.Output);
 			endpoint.setLabel("recordTime");
 			endpoint.setUserData(null);
-			endpoint.setScope("Date");
+			endpoint.setScope("cmp_sensor_Date");
 			ourEndpoints.add(endpoint);
 			
 			// Copy all output endpoints
+			/*
 			for (GraphNodeEndpoint ep : otherNode.getEndpointDefinitions()) {
 				if (ep.getType().equals(EndpointType.Output)) {
 					// Copy endpoint and mutate its scope so that it can only
@@ -117,10 +91,7 @@ public class SelectionAndGroupingFilter extends DefaultGraphNode implements Grap
 					copy.setMaxConnections(1);
 					ourEndpoints.add(copy);
 				}
-			}
-
-			// Clear grouping
-			getPropertyValueMap().put("GROUPS", new ArrayList<String>());
+			}*/
 		}
 	}
 
@@ -148,9 +119,6 @@ public class SelectionAndGroupingFilter extends DefaultGraphNode implements Grap
 			GraphNodeEndpoint ourInput = ourEndpoints.get(0);
 			ourEndpoints.clear();
 			ourEndpoints.add(ourInput);
-
-			// Clear grouping
-			getPropertyValueMap().put("GROUPS", new ArrayList<String>());
 		}
 	}
 

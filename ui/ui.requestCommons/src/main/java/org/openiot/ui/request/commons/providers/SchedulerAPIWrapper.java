@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.io.Writer;
 import java.util.logging.Level;
 
 import javax.ws.rs.core.UriBuilder;
@@ -20,6 +21,9 @@ import org.openiot.commons.sensortypes.model.SensorTypes;
 import org.openiot.ui.request.commons.logging.LoggerService;
 import org.openiot.ui.request.commons.providers.exceptions.APICommunicationException;
 import org.openiot.ui.request.commons.providers.exceptions.APIException;
+
+import com.sun.xml.bind.marshaller.CharacterEscapeHandler;
+
 
 public class SchedulerAPIWrapper {
 
@@ -64,9 +68,10 @@ public class SchedulerAPIWrapper {
 			JAXBContext jc = JAXBContext.newInstance(OSDSpec.class);
 			Marshaller marshaller = jc.createMarshaller();
 			marshaller.setProperty(Marshaller.JAXB_ENCODING, "UTF-8");
+			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 			java.io.StringWriter sw = new StringWriter();
 			marshaller.marshal(osdSpec, sw);
-			osdSpecString = sw.toString();
+			osdSpecString = sw.toString().replace("&lt;", "<").replace("&gt;", ">");
 
 			LoggerService.log(Level.INFO, osdSpecString);
 
@@ -101,7 +106,8 @@ public class SchedulerAPIWrapper {
 
 		try {
 			OSDSpec spec = null;
-			if (0 == 1) { // Commented out till the service endpoint is implemented
+			if (0 == 1) { // Commented out till the service endpoint is
+							// implemented
 				response = discoverSensorsClientRequest.get(String.class);
 
 				if (response.getStatus() != 200) {
@@ -127,9 +133,10 @@ public class SchedulerAPIWrapper {
 		try {
 			is = SchedulerAPIWrapper.class.getClassLoader().getResourceAsStream("/org/openiot/ui/request/commons/demo/demo-osdspec.xml");
 			if (is == null) {
-				LoggerService.log(Level.WARNING, "Could not load demo-osdspec from classpath. Falling back ton an empty OSDSpec");
+				LoggerService.log(Level.WARNING, "Could not load demo-osdspec from classpath. Falling back to an empty OSDSpec");
 				OSDSpec spec = new OSDSpec();
 				spec.setUserID("nodeID://b47098");
+				return spec;
 			}
 			String osdSpecString = org.apache.commons.io.IOUtils.toString(is);
 
@@ -137,7 +144,7 @@ public class SchedulerAPIWrapper {
 			JAXBContext jaxbContext = JAXBContext.newInstance(OSDSpec.class);
 			Unmarshaller um = jaxbContext.createUnmarshaller();
 			OSDSpec spec = (OSDSpec) um.unmarshal(new StreamSource(new StringReader(osdSpecString)));
-			
+
 			return spec;
 
 		} catch (Exception ex) {

@@ -41,7 +41,7 @@ import org.openiot.ui.request.commons.nodes.interfaces.GraphNodeProperty;
  */
 @GraphNodeClass(label = "Between", type = "COMPARATOR", scanProperties = true)
 @Endpoints({
-    @Endpoint(type = EndpointType.Input, anchorType = AnchorType.Left, scope = "cmp_Number cmp_Integer cmp_Long cmp_Float cmp_Double", label = "IN", required = true),
+    @Endpoint(type = EndpointType.Input, anchorType = AnchorType.Left, scope = "cmp_sensor_Number cmp_sensor_Integer cmp_sensor_Long cmp_sensor_Float cmp_sensor_Double", label = "IN", required = true),
 })
 @NodeProperties({
     @NodeProperty(type = PropertyType.Writable, javaType = java.lang.Number.class, name = "CMP_VALUE1", required = true),

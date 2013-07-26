@@ -17,7 +17,7 @@
  *  
  *  Contact: OpenIoT mailto: info@openiot.eu
  ******************************************************************************/
-package org.openiot.ui.request.definition.web.generator;
+package sparql;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -44,7 +44,7 @@ import org.openiot.ui.request.definition.web.model.nodes.impl.sources.GenericSou
  * 
  * @author Achilleas Anagnostopoulos (aanag) email: aanag@sensap.eu
  */
-public class SparqlGenerator extends AbstractGraphNodeVisitor {
+public class CopyOfSparqlGenerator extends AbstractGraphNodeVisitor {
 
 	private GraphModel model;
 	// Generated code
@@ -62,7 +62,7 @@ public class SparqlGenerator extends AbstractGraphNodeVisitor {
 	private Map<GraphNodeProperty, Object> variableMap;
 	private Stack<GraphNodeConnection> visitedConnectionGraphStack;
 
-	public SparqlGenerator() {
+	public CopyOfSparqlGenerator() {
 		this.visitedConnectionGraphStack = new Stack<GraphNodeConnection>();
 		this.visitedSensorTypes = new LinkedHashSet<String>();
 		this.variableMap = new LinkedHashMap<GraphNodeProperty, Object>();
@@ -349,7 +349,7 @@ public class SparqlGenerator extends AbstractGraphNodeVisitor {
 	// -------------------------------------------------------------------------
 	// Filter node visitors
 	// -------------------------------------------------------------------------
-	public void visit(org.openiot.ui.request.definition.web.model.nodes.impl.filters.SelectionAndGroupingFilter node) {
+	public void visit(org.openiot.ui.request.definition.web.model.nodes.impl.filters.SelectionFilter node) {
 
 		// Visit all outgoing connections except the one connecting to the
 		// sensor

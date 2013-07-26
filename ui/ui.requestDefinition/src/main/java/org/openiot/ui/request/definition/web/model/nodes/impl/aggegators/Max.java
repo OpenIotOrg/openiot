@@ -34,7 +34,7 @@ import org.openiot.ui.request.commons.nodes.enums.EndpointType;
  */
 @GraphNodeClass(label = "Max", type = "AGGREGATOR", scanProperties = true)
 @Endpoints({
-    @Endpoint(type = EndpointType.Input, anchorType = AnchorType.Left, scope = "Number Integer Long Double Float force_agr_Number force_agr_Integer force_agr_Long force_agr_Double force_agr_Float", label = "IN", required = true),
+    @Endpoint(type = EndpointType.Input, anchorType = AnchorType.Left, scope = "Number Integer Long Double Float sensor_Number sensor_Integer sensor_Long sensor_Double sensor_Float grp_Number grp_Integer grp_Long grp_Double grp_Float", label = "IN", required = true),
     @Endpoint(type = EndpointType.Output, anchorType = AnchorType.Right, scope = "agr_Number", label = "OUT", required = true)
 })
 public class Max extends DefaultGraphNode implements Serializable {

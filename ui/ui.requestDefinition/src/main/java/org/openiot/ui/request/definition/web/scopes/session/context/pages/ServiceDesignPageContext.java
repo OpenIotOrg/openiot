@@ -23,12 +23,9 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.ResourceBundle;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.logging.Level;
-
-import javax.faces.application.FacesMessage;
-import javax.faces.context.FacesContext;
 
 import org.apache.commons.lang3.StringUtils;
 import org.openiot.commons.osdspec.model.OAMO;
@@ -45,14 +42,10 @@ import org.openiot.ui.request.commons.nodes.enums.ConnectorType;
 import org.openiot.ui.request.commons.nodes.enums.EndpointType;
 import org.openiot.ui.request.commons.nodes.interfaces.GraphNode;
 import org.openiot.ui.request.commons.nodes.interfaces.GraphNodeEndpoint;
-import org.openiot.ui.request.commons.nodes.validation.GraphValidationError;
-import org.openiot.ui.request.commons.nodes.validation.GraphValidationWarning;
-import org.openiot.ui.request.commons.providers.SchedulerAPIWrapper;
-import org.openiot.ui.request.commons.providers.exceptions.APIException;
 import org.openiot.ui.request.definition.web.model.nodes.impl.sources.GenericSource;
-import org.openiot.ui.request.definition.web.scopes.application.ApplicationBean;
+import org.openiot.ui.request.definition.web.model.validation.GraphValidationError;
+import org.openiot.ui.request.definition.web.model.validation.GraphValidationWarning;
 import org.openiot.ui.request.definition.web.scopes.session.base.DisposableContext;
-import org.openiot.ui.request.definition.web.util.FaceletLocalization;
 import org.primefaces.extensions.model.dynaform.DynaFormModel;
 
 /**
@@ -90,7 +83,7 @@ public class ServiceDesignPageContext extends DisposableContext {
 
 		graphValidationErrors = new ArrayList<GraphValidationError>();
 		graphValidationWarnings = new ArrayList<GraphValidationWarning>();
-		availableNodesByTypeMap = new LinkedHashMap<String, List<GraphNode>>();
+		availableNodesByTypeMap = new TreeMap<String, List<GraphNode>>();
 
 		// Scan for available nodes
 		detectAvailableNodes();
@@ -224,7 +217,7 @@ public class ServiceDesignPageContext extends DisposableContext {
 			// Add an additional endpoint for filtering options
 			GraphNodeEndpoint endpoint = new DefaultGraphNodeEndpoint();
 			endpoint.setAnchor(AnchorType.Left);
-			endpoint.setConnectorType(ConnectorType.Rectangle);
+			endpoint.setConnectorType(ConnectorType.Dot);
 			endpoint.setMaxConnections(1);
 			endpoint.setRequired(false);
 			endpoint.setType(EndpointType.Input);
@@ -256,23 +249,21 @@ public class ServiceDesignPageContext extends DisposableContext {
 				String scope = "Number";
 				String capScope = cap.getUnit().get(0).getType();
 				if( StringUtils.containsIgnoreCase(capScope, "Int")){
-					endpoint.setScope("Integer");
+					scope = "Integer";
 				} else if( StringUtils.containsIgnoreCase(capScope, "Long")){
-					endpoint.setScope("Long");
+					scope = "Long";
 				} else if( StringUtils.containsIgnoreCase(capScope, "Float")){
-					endpoint.setScope("Float");
+					scope = "Float";
 				} else if( StringUtils.containsIgnoreCase(capScope, "Double")){
-					endpoint.setScope("Double");
+					scope = "Double";
 				} else if( StringUtils.containsIgnoreCase(capScope, "Decimal")){
-					endpoint.setScope("Number");
+					scope = "Number";
 				} else if( StringUtils.containsIgnoreCase(capScope, "Date")){
-					endpoint.setScope("Date");
-				}else{
-					endpoint.setScope(scope);
+					scope = "Date";
 				}
 				
-				LoggerService.log(Level.INFO, "Set scope: " + endpoint.getScope() + ", label: " + endpoint.getLabel());
-
+				endpoint.setScope("sensor_" + scope);
+			
 				// Add to endpoint list
 				endpointList.add(endpoint);
 			}

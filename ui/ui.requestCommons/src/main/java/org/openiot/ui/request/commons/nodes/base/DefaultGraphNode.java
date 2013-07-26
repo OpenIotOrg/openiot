@@ -80,16 +80,16 @@ public class DefaultGraphNode implements GraphNode, Serializable {
 			endpointDefinitions = new ArrayList<GraphNodeEndpoint>();
 		}
 	}
-	
-	public void setGraphModel( GraphModel model ){
+
+	public void setGraphModel(GraphModel model) {
 		this.graphModel = model;
 	}
-	
-	public GraphModel getGraphModel(){
+
+	public GraphModel getGraphModel() {
 		return this.graphModel;
 	}
-	
-	protected void disconnectEndpoint(GraphNodeEndpoint ep){
+
+	protected void disconnectEndpoint(GraphNodeEndpoint ep) {
 		// If we have a connection to this node, kill it
 		if (graphModel != null) {
 			List<GraphNodeConnection> connections = graphModel.findGraphEndpointConnections(ep);
@@ -131,14 +131,14 @@ public class DefaultGraphNode implements GraphNode, Serializable {
 	public void setPropertyDefinitions(List<GraphNodeProperty> propertyDefinitions) {
 		this.propertyDefinitions = propertyDefinitions;
 	}
-	
-	public GraphNodeProperty getPropertyByName(String name){
-		for( GraphNodeProperty property : propertyDefinitions ){
-			if( property.getName().equals(name) ){
+
+	public GraphNodeProperty getPropertyByName(String name) {
+		for (GraphNodeProperty property : propertyDefinitions) {
+			if (property.getName().equals(name)) {
 				return property;
 			}
 		}
-		
+
 		return null;
 	}
 
@@ -157,14 +157,14 @@ public class DefaultGraphNode implements GraphNode, Serializable {
 	public void setEndpointDefinitions(List<GraphNodeEndpoint> endpointDefinitions) {
 		this.endpointDefinitions = endpointDefinitions;
 	}
-	
-	public GraphNodeEndpoint getEndpointByLabel(String label){
-		for( GraphNodeEndpoint ep : endpointDefinitions ){
-			if( ep.getLabel().equals(label) ){
+
+	public GraphNodeEndpoint getEndpointByLabel(String label) {
+		for (GraphNodeEndpoint ep : endpointDefinitions) {
+			if (ep.getLabel().equals(label)) {
 				return ep;
 			}
 		}
-		
+
 		return null;
 	}
 
@@ -202,71 +202,80 @@ public class DefaultGraphNode implements GraphNode, Serializable {
 		}
 		return copy;
 	}
-	
-	public JSONObject toJSON(){
+
+	public JSONObject toJSON() {
 		JSONObject spec = new JSONObject();
-		try{
+		try {
 			spec.put("class", this.getClass().getCanonicalName());
 			spec.put("uid", getUID());
 			spec.put("type", getType());
 			spec.put("label", getLabel());
-			
+
 			// Encode property definitions
 			JSONArray propertyDefinitions = new JSONArray();
-			for(GraphNodeProperty prop : getPropertyDefinitions() ){
+			for (GraphNodeProperty prop : getPropertyDefinitions()) {
 				propertyDefinitions.put(prop.toJSON());
 			}
 			spec.put("propertyDefinitions", propertyDefinitions);
-			
+
 			// Encode endpoint definitions
 			JSONArray endpointDefinitions = new JSONArray();
-			for(GraphNodeEndpoint endpoint : getEndpointDefinitions() ){
+			for (GraphNodeEndpoint endpoint : getEndpointDefinitions()) {
 				endpointDefinitions.put(endpoint.toJSON());
 			}
 			spec.put("endpointDefinitions", endpointDefinitions);
-			
-			// Encode property values 
+
+			// Encode property values
 			JSONObject propertyValues = new JSONObject();
-			for(Map.Entry<String, Object> entry : propertyMap.entrySet() ){
+			for (Map.Entry<String, Object> entry : propertyMap.entrySet()) {
 				propertyValues.put(entry.getKey(), entry.getValue());
 			}
 			spec.put("propertyValues", propertyValues);
-			
-		}catch(JSONException ex){
+
+		} catch (JSONException ex) {
 			LoggerService.log(ex);
 		}
 		return spec;
 	}
 
-    public void importJSON(JSONObject spec) throws JSONException {
+	public void importJSON(JSONObject spec) throws JSONException {
 		setUID(spec.getString("uid"));
-		setType( spec.getString("type"));
+		setType(spec.getString("type"));
 		setLabel(spec.getString("label"));
-		
+
 		// Parse property definitions
 		JSONArray propertyDefinitions = spec.getJSONArray("propertyDefinitions");
 		this.propertyDefinitions.clear();
-		for( int index = 0; index< propertyDefinitions.length(); index++){
-			this.propertyDefinitions.add( GraphFactory.createGraphNodeProperty(propertyDefinitions.getJSONObject(index)));
+		for (int index = 0; index < propertyDefinitions.length(); index++) {
+			this.propertyDefinitions.add(GraphFactory.createGraphNodeProperty(propertyDefinitions.getJSONObject(index)));
 		}
-		
+
 		// Parse endpoint definitions
 		JSONArray endpointDefinitions = spec.getJSONArray("endpointDefinitions");
 		this.endpointDefinitions.clear();
-		for( int index = 0; index< endpointDefinitions.length(); index++){
-			this.endpointDefinitions.add( GraphFactory.createGraphNodeEndpoint(endpointDefinitions.getJSONObject(index)));
+		for (int index = 0; index < endpointDefinitions.length(); index++) {
+			this.endpointDefinitions.add(GraphFactory.createGraphNodeEndpoint(endpointDefinitions.getJSONObject(index)));
 		}
-				
+
 		// Parse property values
 		JSONObject propertyValues = spec.getJSONObject("propertyValues");
 		Iterator<?> keyIt = propertyValues.keys();
 		this.propertyMap.getWrappedMap().clear();
-		while( keyIt.hasNext() ){
-			String key = (String)keyIt.next();
-			this.propertyMap.getWrappedMap().put(key, propertyValues.optString(key));
+		while (keyIt.hasNext()) {
+			String key = (String) keyIt.next();
+			if (List.class.isAssignableFrom(getPropertyByName(key).getJavaType())) {
+				List<String> list = new ArrayList<String>();
+				JSONArray data = propertyValues.getJSONArray(key);
+				for (int index = 0; index < data.length(); index++) {
+					list.add(data.getString(index));
+				}
+				this.propertyMap.getWrappedMap().put(key, list);
+			} else {
+				this.propertyMap.getWrappedMap().put(key, propertyValues.optString(key));
+			}
 		}
 	}
-    
+
 	@Override
 	public String toString() {
 		return "[type: " + getType() + ", label: " + getLabel() + ", properties: " + getPropertyDefinitions() + ", endPoints: " + endpointDefinitions + "]";

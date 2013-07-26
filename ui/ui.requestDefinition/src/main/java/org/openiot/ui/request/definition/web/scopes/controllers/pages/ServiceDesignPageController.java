@@ -49,18 +49,19 @@ import org.openiot.ui.request.commons.logging.LoggerService;
 import org.openiot.ui.request.commons.models.DefaultGraphModel;
 import org.openiot.ui.request.commons.nodes.interfaces.GraphNode;
 import org.openiot.ui.request.commons.nodes.interfaces.GraphNodeProperty;
-import org.openiot.ui.request.commons.nodes.validation.validators.DefaultGraphNodeValidator;
 import org.openiot.ui.request.commons.providers.SchedulerAPIWrapper;
 import org.openiot.ui.request.commons.providers.exceptions.APIException;
 import org.openiot.ui.request.definition.web.factory.PropertyGridFormFactory;
-import org.openiot.ui.request.definition.web.generator.SparqlGenerator;
 import org.openiot.ui.request.definition.web.jsf.components.events.NodeInsertedEvent;
 import org.openiot.ui.request.definition.web.model.nodes.impl.sources.GenericSource;
+import org.openiot.ui.request.definition.web.model.validation.validators.OpenIoTGraphNodeValidator;
 import org.openiot.ui.request.definition.web.scopes.application.ApplicationBean;
 import org.openiot.ui.request.definition.web.scopes.session.SessionBean;
 import org.openiot.ui.request.definition.web.scopes.session.context.dialogs.FindSensorDialogContext;
 import org.openiot.ui.request.definition.web.scopes.session.context.pages.ServiceDesignPageContext;
 import org.openiot.ui.request.definition.web.util.FaceletLocalization;
+
+import sparql.Generator;
 
 /**
  * 
@@ -147,9 +148,15 @@ public class ServiceDesignPageController implements Serializable {
 		}
 	}
 
+	public void onGraphNodeDeleted() {
+		ServiceDesignPageContext context = getContext();
+		context.getGraphModel().setSelectedNode(null);
+		context.setPropertyEditorModel(null);
+	}
+	
 	public void validateDesign() {
 		ServiceDesignPageContext context = getContext();
-		DefaultGraphNodeValidator validator = new DefaultGraphNodeValidator(context.getGraphModel());
+		OpenIoTGraphNodeValidator validator = new OpenIoTGraphNodeValidator(context.getGraphModel());
 		boolean success = validator.validate();
 		context.setGraphValidationErrors(validator.getValidationErrors());
 		context.setGraphValidationWarnings(validator.getValidationWarnings());
@@ -157,7 +164,7 @@ public class ServiceDesignPageController implements Serializable {
 		if (success) {
 			if (validator.getValidationWarnings().isEmpty()) {
 				String codeOutput = "";
-				SparqlGenerator generator = new SparqlGenerator();
+				Generator generator = new Generator();
 
 				// Generate code for each visualization node
 				GraphModel model = context.getGraphModel();
@@ -191,7 +198,7 @@ public class ServiceDesignPageController implements Serializable {
 			context.updateAvailableSensors(sensorTypes);
 		} catch (APIException ex) {
 			LoggerService.log(ex);
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, messages.getString("GROWL_ERROR_HEADER"), FaceletLocalization.getLocalisedMessage(messages, "ERROR_CONNECTING_TO_SCHEDULER_SERVICE")));
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, messages.getString("GROWL_ERROR_HEADER"), FaceletLocalization.getLocalisedMessage(messages, "ERROR_CONNECTING_TO_DISCOVERY_SERVICE")));
 		}
 	}
 
@@ -257,7 +264,7 @@ public class ServiceDesignPageController implements Serializable {
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, messages.getString("GROWL_INFO_HEADER"), FaceletLocalization.getLocalisedMessage(messages, "UI_GRAPH_SAVE_SUCCESS")));
 			} catch (APIException ex) {
 				LoggerService.log(ex);
-				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, messages.getString("GROWL_ERROR_HEADER"), FaceletLocalization.getLocalisedMessage(messages, "ERROR_CONNECTING_TO_SCHEDULER_SERVICE")));
+				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, messages.getString("GROWL_ERROR_HEADER"), FaceletLocalization.getLocalisedMessage(messages, "ERROR_CONNECTING_TO_REGISTRATION_SERVICE")));
 			}
 		}
 	}
@@ -266,6 +273,7 @@ public class ServiceDesignPageController implements Serializable {
 		ServiceDesignPageContext context = getContext();
 		context.getOsdSpec().getOAMO().clear();
 		context.setSelectedOAMO(null);
+		context.cleanupWorkspace();
 	}
 	
 	public void reloadServices() {
@@ -280,7 +288,7 @@ public class ServiceDesignPageController implements Serializable {
 			
 		} catch (APIException ex) {
 			LoggerService.log(ex);
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, messages.getString("GROWL_ERROR_HEADER"), FaceletLocalization.getLocalisedMessage(messages, "ERROR_CONNECTING_TO_SCHEDULER_SERVICE")));
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, messages.getString("GROWL_ERROR_HEADER"), FaceletLocalization.getLocalisedMessage(messages, "ERROR_CONNECTING_TO_REGISTRATION_SERVICE")));
 		}
 
 		context.setSelectedOAMO(null);
@@ -299,7 +307,7 @@ public class ServiceDesignPageController implements Serializable {
 
 	private boolean encodeSelectedOAMO() {
 		ServiceDesignPageContext context = getContext();
-		DefaultGraphNodeValidator validator = new DefaultGraphNodeValidator(context.getGraphModel());
+		OpenIoTGraphNodeValidator validator = new OpenIoTGraphNodeValidator(context.getGraphModel());
 		boolean success = validator.validate();
 		context.setGraphValidationErrors(validator.getValidationErrors());
 		context.setGraphValidationWarnings(validator.getValidationWarnings());
@@ -307,10 +315,11 @@ public class ServiceDesignPageController implements Serializable {
 		if (success) {
 			if (validator.getValidationWarnings().isEmpty()) {
 				String codeOutput = "";
-				SparqlGenerator generator = new SparqlGenerator();
+				Generator generator = new Generator();
 				GraphModel model = context.getGraphModel();
 
 				OAMO oamo = context.getSelectedOAMO();
+				oamo.getOSMO().clear();
 				oamo.setId("node://" + model.getUID());
 				oamo.setGraphMeta(model.toJSON().toString());
 
@@ -318,6 +327,7 @@ public class ServiceDesignPageController implements Serializable {
 				for (GraphNode node : model.getNodes()) {
 					if (node.getType().equals("SINK")) {
 						OSMO osmo = new OSMO();
+						osmo.setId("node://" + node.getUID());
 
 						// Setup query controlls
 						QueryControls queryControls = new QueryControls();
@@ -345,7 +355,7 @@ public class ServiceDesignPageController implements Serializable {
 						RequestPresentation requestPresentation = new RequestPresentation();
 						{
 							Widget widget = new Widget();
-							widget.setWidgetID(node.getUID());
+							widget.setWidgetID("node://widget_" + node.getUID());
 							for (Map.Entry<String, Object> entry : node.getPropertyValueMap().entrySet()) {
 								PresentationAttr attr = new PresentationAttr();
 								attr.setName(entry.getKey());

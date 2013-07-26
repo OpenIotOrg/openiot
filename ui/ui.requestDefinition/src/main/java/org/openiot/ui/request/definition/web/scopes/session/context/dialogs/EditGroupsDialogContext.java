@@ -72,24 +72,14 @@ public class EditGroupsDialogContext extends DisposableContext implements Serial
 
 	private void initialize() {
 		List<String> availableFields = new ArrayList<String>();
-		for (GraphNodeEndpoint ep : node.getEndpointDefinitions()) {
-			if (ep.getScope().contains("Sensor")) {
-				continue;
-			}
+		availableFields.add("recordTime_year");
+		availableFields.add("recordTime_month");
+		availableFields.add("recordTime_day");
+		availableFields.add("recordTime_hour");
+		availableFields.add("recordTime_min");
+		availableFields.add("recordTime_sec");
 
-			if ("recordTime".equals(ep.getLabel())) {
-				availableFields.add(ep.getLabel() + "_year");
-				availableFields.add(ep.getLabel() + "_month");
-				availableFields.add(ep.getLabel() + "_day");
-				availableFields.add(ep.getLabel() + "_hour");
-				availableFields.add(ep.getLabel() + "_min");
-				availableFields.add(ep.getLabel() + "_sec");
-			} else {
-				availableFields.add(ep.getLabel());
-			}
-		}
-
-		// Get list of groups
+		// Get list of current groups
 		@SuppressWarnings("unchecked")
 		List<String> groupFields = (List<String>) node.getPropertyValueMap().get(field.getValueKey());
 

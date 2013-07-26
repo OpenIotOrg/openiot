@@ -46,20 +46,13 @@ import org.openiot.ui.request.commons.nodes.interfaces.GraphNodeProperty;
  * @author Achilleas Anagnostopoulos (aanag) email: aanag@sensap.eu
  */
 @GraphNodeClass(label = "LineChart", type = "SINK", scanProperties = true)
-@Endpoints({ @Endpoint(type = EndpointType.Input, anchorType = AnchorType.Left, scope = "avg_Number avg_Integer avg_Long, avg_Float avg_Double", label = "x", required = true), })
-@NodeProperties({ 
-	@NodeProperty(type = PropertyType.Writable, javaType = java.lang.String.class, name = "TITLE", required = true), 
-	@NodeProperty(type = PropertyType.Writable, javaType = java.lang.String.class, name = "SERIES", required = true, allowedValues = { "1", "2", "3", "4", "5" }), 
-	@NodeProperty(type = PropertyType.Writable, javaType = java.lang.String.class, name = "X_AXIS_TYPE", required = true, allowedValues = { "Number", "Date (result set)", "Date (observation)" }), 
-	@NodeProperty(type = PropertyType.Writable, javaType = java.lang.String.class, name = "X_AXIS_LABEL", required = true), 
-	@NodeProperty(type = PropertyType.Writable, javaType = java.lang.String.class, name = "Y_AXIS_LABEL", required = true) 
-	})
+@NodeProperties({ @NodeProperty(type = PropertyType.Writable, javaType = java.lang.String.class, name = "TITLE", required = true), @NodeProperty(type = PropertyType.Writable, javaType = java.lang.String.class, name = "SERIES", required = true, allowedValues = { "1", "2", "3", "4", "5" }), @NodeProperty(type = PropertyType.Writable, javaType = java.lang.String.class, name = "X_AXIS_TYPE", required = true, allowedValues = { "Number", "Date (result set)", "Date (observation)" }), @NodeProperty(type = PropertyType.Writable, javaType = java.lang.String.class, name = "X_AXIS_LABEL", required = true), @NodeProperty(type = PropertyType.Writable, javaType = java.lang.String.class, name = "Y_AXIS_LABEL", required = true) })
 public class LineChart extends DefaultGraphNode implements Serializable, Observer {
 	private static final long serialVersionUID = 1L;
 
 	public LineChart() {
 		super();
-
+		
 		// Setup some defaults
 		setProperty("TITLE", LineChart.class.getSimpleName());
 		setProperty("SERIES", "1");
@@ -71,6 +64,63 @@ public class LineChart extends DefaultGraphNode implements Serializable, Observe
 		validateSeries();
 	}
 
+	private void removeAllXAxisEndpoints() {
+		Iterator<GraphNodeEndpoint> endpointIt = this.getEndpointDefinitions().iterator();
+		while (endpointIt.hasNext()) {
+			GraphNodeEndpoint endpoint = endpointIt.next();
+			if (endpoint.getLabel().startsWith("x")) {
+				endpointIt.remove();
+				disconnectEndpoint(endpoint);
+			}
+		}
+	}
+
+	private void addMissingXAxii() {
+		String xAxisType = (String) getPropertyValueMap().get("X_AXIS_TYPE");
+		if ("Date (result set)".equals(xAxisType)) {
+			return;
+		}
+
+		int maxSeries = Integer.valueOf((String) getPropertyByName("SERIES").getAllowedValues()[getPropertyByName("SERIES").getAllowedValues().length - 1]);
+		for (int i = 0; i < maxSeries; i++) {
+			GraphNodeEndpoint yep = getEndpointByLabel("y" + (i + 1));
+			if( yep == null ){
+				return;
+			}
+			int insIndex = Math.max(0, getEndpointDefinitions().indexOf(yep) - 1);
+			GraphNodeEndpoint ep = getEndpointByLabel("x" + (i + 1));
+			if (ep == null) {
+				ep = new DefaultGraphNodeEndpoint();
+				ep.setType(EndpointType.Input);
+				ep.setAnchor(AnchorType.Left);
+				ep.setConnectorType(ConnectorType.Rectangle);
+				ep.setLabel("x" + (i + 1));
+				ep.setRequired(true);
+
+				// Setup scope and connection count depending on axis type
+				if ("Number".equals(xAxisType)) {
+					ep.setScope("agr_Number agr_Integer agr_Long, agr_Float agr_Double");
+					ep.setMaxConnections(1);
+				} else {
+					ep.setScope("grp_Date");
+					ep.setMaxConnections(-1); // allow connection of multiple
+												// attributes
+				}
+
+				getEndpointDefinitions().add(insIndex, ep);
+			} else {
+				// Check that scope is consistent with axis type
+				if ("Number".equals(xAxisType) && ep.getScope().contains("grp_")) {
+					disconnectEndpoint(ep);
+					ep.setScope("agr_Number agr_Integer agr_Long, agr_Float agr_Double");
+				} else if ("Date (observation)".equals(xAxisType) && ep.getScope().contains("agr_")) {
+					disconnectEndpoint(ep);
+					ep.setScope("grp_Date");
+				}
+			}
+		}
+	}
+
 	public void validateSeries() {
 		int seriesCount = Integer.valueOf((String) getPropertyValueMap().get("SERIES"));
 		int i = 0;
@@ -80,6 +130,8 @@ public class LineChart extends DefaultGraphNode implements Serializable, Observe
 			String epLabel = "y" + (i + 1);
 			GraphNodeEndpoint ep = getEndpointByLabel(epLabel);
 			if (ep == null) {
+
+				// Generate Y axis entry
 				ep = new DefaultGraphNodeEndpoint();
 				ep.setType(EndpointType.Input);
 				ep.setAnchor(AnchorType.Left);
@@ -89,6 +141,7 @@ public class LineChart extends DefaultGraphNode implements Serializable, Observe
 				ep.setRequired(true);
 				getEndpointDefinitions().add(ep);
 
+				// Generate series properties
 				GraphNodeProperty prop = new DefaultGraphNodeProperty();
 				String propKey = "SERIES_" + i + "_LABEL";
 				prop.setType(PropertyType.Writable);
@@ -107,6 +160,14 @@ public class LineChart extends DefaultGraphNode implements Serializable, Observe
 			String epLabel = "y" + (i + 1);
 			GraphNodeEndpoint ep = getEndpointByLabel(epLabel);
 			if (ep != null) {
+
+				// Check for an xAxis point
+				GraphNodeEndpoint xep = getEndpointByLabel("x" + (i + 1));
+				if (xep != null) {
+					disconnectEndpoint(xep);
+					getEndpointDefinitions().remove(xep);
+				}
+
 				// If we have a connection to this node, kill it
 				disconnectEndpoint(ep);
 				getEndpointDefinitions().remove(ep);
@@ -119,57 +180,19 @@ public class LineChart extends DefaultGraphNode implements Serializable, Observe
 				}
 			}
 		}
-	}
-	
-	
-	private void removeAllXAxisEndpoints(){
-		Iterator<GraphNodeEndpoint> endpointIt = this.getEndpointDefinitions().iterator();
-		while(endpointIt.hasNext()){
-			GraphNodeEndpoint endpoint = endpointIt.next();
-			if(endpoint.getLabel().startsWith("X_AXIS_OBS_") || endpoint.getLabel().equals("x")){
-				endpointIt.remove();
-				disconnectEndpoint(endpoint);				
-			}
-		}
+
+		addMissingXAxii();
 	}
 
-	private void addNumberModeXAxisEndpoint(){
-		GraphNodeEndpoint ep = new DefaultGraphNodeEndpoint();
-		ep.setType(EndpointType.Input);
-		ep.setAnchor(AnchorType.Left);
-		ep.setConnectorType(ConnectorType.Rectangle);
-		ep.setScope("agr_Number agr_Integer agr_Long, agr_Float agr_Double");
-		ep.setLabel("x");
-		ep.setRequired(true);
-		getEndpointDefinitions().add(0, ep);
-	}
-	
-	private void addDateModeEndpoints(){
-		for( String propName : new String[]{"SEC", "MIN", "HOUR", "DAY", "MONTH", "YEAR"}){
-			GraphNodeEndpoint ep = new DefaultGraphNodeEndpoint();
-			ep.setType(EndpointType.Input);
-			ep.setAnchor(AnchorType.Left);
-			ep.setConnectorType(ConnectorType.Rectangle);
-			ep.setScope("grp_Number grp_Integer grp_Long, grp_Float grp_Double");
-			ep.setLabel("X_AXIS_OBS_" + propName);
-			ep.setRequired(false);
-			getEndpointDefinitions().add(0, ep);
-		}
-	}
-	
 	public void update(Observable o, Object modifiedKey) {
 		Map<String, Object> propertyMap = getPropertyValueMap();
-		
-		// Check for X_AXIS_TYPE modifications		
-		if ((modifiedKey != null) && ("X_AXIS_TYPE".equals((String)modifiedKey)) && (propertyMap.get("X_AXIS_TYPE") != null)) {
+
+		// Check for X_AXIS_TYPE modifications
+		if ((modifiedKey != null) && ("X_AXIS_TYPE".equals((String) modifiedKey)) && (propertyMap.get("X_AXIS_TYPE") != null)) {
 			String newXAxisType = (String) propertyMap.get("X_AXIS_TYPE");
-			removeAllXAxisEndpoints();
-			
-			if ("Number".equals(newXAxisType)){
-				addNumberModeXAxisEndpoint();
-			} else if ("Date (observation)".equals(newXAxisType)) {
-				addDateModeEndpoints();
-			}						
+			if ("Date (result set)".equals(newXAxisType)) {
+				removeAllXAxisEndpoints();
+			}
 		}
 
 		validateSeries();

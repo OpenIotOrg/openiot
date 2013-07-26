@@ -17,12 +17,13 @@
  *  
  *  Contact: OpenIoT mailto: info@openiot.eu
  ******************************************************************************/
-package org.openiot.ui.request.commons.nodes.validation.validators;
+package org.openiot.ui.request.definition.web.model.validation.validators;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Stack;
+
 import org.openiot.ui.request.commons.interfaces.GraphModel;
 import org.openiot.ui.request.commons.nodes.base.AbstractGraphNodeVisitor;
 import org.openiot.ui.request.commons.nodes.enums.EndpointType;
@@ -30,8 +31,8 @@ import org.openiot.ui.request.commons.nodes.interfaces.GraphNode;
 import org.openiot.ui.request.commons.nodes.interfaces.GraphNodeConnection;
 import org.openiot.ui.request.commons.nodes.interfaces.GraphNodeEndpoint;
 import org.openiot.ui.request.commons.nodes.interfaces.GraphNodeProperty;
-import org.openiot.ui.request.commons.nodes.validation.GraphValidationError;
-import org.openiot.ui.request.commons.nodes.validation.GraphValidationWarning;
+import org.openiot.ui.request.definition.web.model.validation.GraphValidationError;
+import org.openiot.ui.request.definition.web.model.validation.GraphValidationWarning;
 
 /**
  *
@@ -39,11 +40,11 @@ import org.openiot.ui.request.commons.nodes.validation.GraphValidationWarning;
  */
 public class DefaultGraphNodeValidator extends AbstractGraphNodeVisitor {
 
-    private GraphModel model;
-    private List<GraphNode> visitedNodes;
-    private Stack<GraphNodeConnection> visitedConnectionGraphStack;
-    private List<GraphValidationWarning> validationWarnings;
-    private List<GraphValidationError> validationErrors;
+	protected GraphModel model;
+    protected List<GraphNode> visitedNodes;
+    protected Stack<GraphNodeConnection> visitedConnectionGraphStack;
+    protected List<GraphValidationWarning> validationWarnings;
+    protected List<GraphValidationError> validationErrors;
 
     public DefaultGraphNodeValidator(GraphModel model) {
         this.model = model;

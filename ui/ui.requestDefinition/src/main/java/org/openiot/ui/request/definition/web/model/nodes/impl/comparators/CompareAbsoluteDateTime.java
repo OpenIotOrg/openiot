@@ -42,7 +42,7 @@ import org.openiot.ui.request.commons.nodes.interfaces.GraphNodeProperty;
  */
 @GraphNodeClass(label = "CompareAbsoluteDateTime", type = "COMPARATOR", scanProperties = true)
 @Endpoints({
-    @Endpoint(type = EndpointType.Input, anchorType = AnchorType.Left, scope = "cmp_Date", label = "IN", required = true),
+    @Endpoint(type = EndpointType.Input, anchorType = AnchorType.Left, scope = "cmp_sensor_Date", label = "IN", required = true),
 })
 @NodeProperties({
     @NodeProperty(type = PropertyType.Writable, javaType = java.lang.String.class, name = "OPERATOR", allowedValues = {"<", "<=", ">", ">="}, required = true),

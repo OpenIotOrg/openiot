@@ -17,27 +17,42 @@
  *  
  *  Contact: OpenIoT mailto: info@openiot.eu
  ******************************************************************************/
-package org.openiot.ui.request.commons.nodes.validation;
+package org.openiot.ui.request.definition.web.model.validation;
 
 /**
  *
  * @author Achilleas Anagnostopoulos (aanag) email: aanag@sensap.eu
  */
-public class GraphValidationWarning {
-
-    public enum WarningType {
+public class GraphValidationError {
+    public enum ErrorType{
+        /**
+         * Connections form a closed loop
+         */
+        ConnectionsFormClosedLoop,
+        
+        /**
+         * A required property is missing
+         */
+        RequiredPropertyMissing,
+        
+        /**
+         * An endpoint with required connection is not connected
+         */
+        RequiredEndpointNotConnected,
 
         /**
-         * Node has no connections
+         * No groups specified
          */
-        NodeHasNoConnections
+        NoGroupsSpecified
+
     }
-    private WarningType type;
+    
+    private ErrorType type;
     private String nodeClassName;
     private String details;
     private String elementId;
 
-    public GraphValidationWarning(WarningType type, String nodeClassName, String details, String elementId) {
+    public GraphValidationError(ErrorType type, String nodeClassName, String details, String elementId) {
         this.type = type;
         this.nodeClassName = nodeClassName;
         this.details = details;
@@ -51,8 +66,8 @@ public class GraphValidationWarning {
     public String getDetails() {
         return details;
     }
-
-    public WarningType getType() {
+    
+    public ErrorType getType() {
         return type;
     }
 

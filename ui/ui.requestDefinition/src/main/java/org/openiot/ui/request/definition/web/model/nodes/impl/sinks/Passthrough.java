@@ -35,61 +35,57 @@ import org.openiot.ui.request.commons.nodes.enums.PropertyType;
 import org.openiot.ui.request.commons.nodes.interfaces.GraphNodeEndpoint;
 
 /**
- *
+ * 
  * @author Achilleas Anagnostopoulos (aanag) email: aanag@sensap.eu
  */
 @GraphNodeClass(label = "Pasthrough", type = "SINK", scanProperties = true)
-@NodeProperties({
-    @NodeProperty(type = PropertyType.Writable, javaType = java.lang.String.class, name = "TITLE", required = false),
-    @NodeProperty(type = PropertyType.Writable, javaType = java.lang.Integer.class, name = "ATTRIBUTES", required = true),
-})
+@NodeProperties({ @NodeProperty(type = PropertyType.Writable, javaType = java.lang.String.class, name = "TITLE", required = false), @NodeProperty(type = PropertyType.Writable, javaType = java.lang.Integer.class, name = "ATTRIBUTES", required = true), })
 public class Passthrough extends DefaultGraphNode implements Serializable, Observer {
 	private static final long serialVersionUID = 1L;
 
-    public Passthrough() {
-        super();
+	public Passthrough() {
+		super();
 
-        // Setup some defaults
-        setProperty("ATTRIBUTES", "1");
-        
-        addPropertyChangeObserver(this);
-        validateSeries();
-    }
-    
-    public void validateSeries(){
-    	int attributCount = Integer.valueOf((String)getPropertyValueMap().get("ATTRIBUTES"));
-    	int i = 0;
-    	for( ; i<attributCount;i++){
-    		// If we are missing the required endpoints and properties create them now
-    		String epLabel = "attr" + (i+1);
-    		GraphNodeEndpoint ep = getEndpointByLabel(epLabel);
-    		if( ep == null ){
-    			ep = new DefaultGraphNodeEndpoint();
-    			ep.setType(EndpointType.Input);
-    			ep.setAnchor(AnchorType.Left);
-    			ep.setConnectorType(ConnectorType.Rectangle);
-    			ep.setScope("*");
-    			ep.setLabel(epLabel);
-    			ep.setRequired(true);
-    			getEndpointDefinitions().add(ep);
-    		}
-    	}
-    	
-    	// If we reduced the number of series, get rid of the old series
-    	for( ;; i++){
-    		String epLabel = "attr" + (i+1);
-    		GraphNodeEndpoint ep = getEndpointByLabel(epLabel);
-    		if( ep == null ){
-    			break;
-    		}
-    		if( ep != null ){
-                disconnectEndpoint(ep);
-                getEndpointDefinitions().remove(ep);
-    		}
-    	}
-    }
+		// Setup some defaults
+		setProperty("ATTRIBUTES", 1);
 
-    public void update(Observable o, Object arg) {
-        validateSeries();
-    }
+		addPropertyChangeObserver(this);
+		update(null, "ATTRIBUTES");
+	}
+
+	public void update(Observable o, Object key) {
+		if (key != null && "ATTRIBUTES".equals(key)) {
+			int attributeCount = (Integer) getPropertyValueMap().get("ATTRIBUTES");
+			int i = 0;
+			for (; i < attributeCount; i++) {
+				// If we are missing the required endpoints and properties
+				// create them now
+				String epLabel = "attr" + (i + 1);
+				GraphNodeEndpoint ep = getEndpointByLabel(epLabel);
+				if (ep == null) {
+					ep = new DefaultGraphNodeEndpoint();
+					ep.setType(EndpointType.Input);
+					ep.setAnchor(AnchorType.Left);
+					ep.setConnectorType(ConnectorType.Rectangle);
+					ep.setScope("*");
+					ep.setLabel(epLabel);
+					ep.setRequired(true);
+					getEndpointDefinitions().add(ep);
+				}
+			}
+
+			// If we reduced the number of series, get rid of the old series
+			for (;; i++) {
+				String epLabel = "attr" + (i + 1);
+				GraphNodeEndpoint ep = getEndpointByLabel(epLabel);
+				if (ep == null) {
+					break;
+				}
+				if (ep != null) {
+					disconnectEndpoint(ep);
+					getEndpointDefinitions().remove(ep);
+				}
+			}
+		}
+	}
 }

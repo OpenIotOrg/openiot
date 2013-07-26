@@ -81,6 +81,7 @@
 								icon="ui-icon-close"
 								actionListener="#{serviceDesignPageController.resetServices()}"
 								process="@this" onclick="windowBlockUI.block();"
+								update=":consoleForm, :nodeGraphForm :toolboxForm, :propertyGridForm, :menubar"
 								oncomplete="windowBlockUI.unblock();" />
 						</p:submenu>
 
@@ -197,7 +198,8 @@
 							<p:ajax event="create" process="@this" update="@this"
 								listener="#{serviceDesignPageController.onGraphNodeInserted}" />
 							<p:ajax event="delete" process="@this"
-								update="@this,:propertyGridForm" />
+								update="@this,:propertyGridForm"
+								listener="#{serviceDesignPageController.onGraphNodeDeleted}" />
 						</s:nodeGraph>
 						<p:hotkey bind="del" handler="confirmDeleteNode.show();" />
 					</h:form>
@@ -264,7 +266,7 @@
 									required="#{control.required}">
 								</p:inputText>
 
-								<p:commandButton disabled="#{!control.variablizable}"
+								<p:commandButton rendered="#{control.variablizable}"
 									icon="ui-icon-tag" process="@this"
 									update=":editVariableDialog:editVariableDialogForm"
 									actionListener="#{editVariableDialogController.prepareDialog(serviceDesignPageController.context.graphModel.selectedNode, control)}"
@@ -279,7 +281,8 @@
 								<pe:inputNumber rendered="#{!control.property.variable}"
 									readonly="#{!control.editable}" decimalPlaces="5"
 									value="#{serviceDesignPageController.context.graphModel.selectedNode.propertyValueMap[control.valueKey]}"
-									required="#{control.required}">
+									required="#{control.required}"
+									converter="javax.faces.Double">
 									<p:ajax event="change" process="@this"
 										update=":nodeGraphForm:nodeGraph" />
 								</pe:inputNumber>
@@ -290,7 +293,7 @@
 									<p:ajax event="change" process="@this"
 										update=":nodeGraphForm:nodeGraph" />
 								</p:inputText>
-								<p:commandButton disabled="#{!control.variablizable}"
+								<p:commandButton rendered="#{control.variablizable}"
 									icon="ui-icon-tag" process="@this"
 									update=":editVariableDialog:editVariableDialogForm"
 									actionListener="#{editVariableDialogController.prepareDialog(serviceDesignPageController.context.graphModel.selectedNode, control)}"
@@ -305,7 +308,8 @@
 								<pe:inputNumber rendered="#{!control.property.variable}"
 									readonly="#{!control.editable}"
 									value="#{serviceDesignPageController.context.graphModel.selectedNode.propertyValueMap[control.valueKey]}"
-									decimalPlaces="2" required="#{control.required}">
+									decimalPlaces="2" required="#{control.required}"
+									converter="javax.faces.Float">
 									<p:ajax event="change" process="@this"
 										update=":nodeGraphForm:nodeGraph" />
 								</pe:inputNumber>
@@ -316,7 +320,7 @@
 									<p:ajax event="change" process="@this"
 										update=":nodeGraphForm:nodeGraph" />
 								</p:inputText>
-								<p:commandButton disabled="#{!control.variablizable}"
+								<p:commandButton rendered="#{control.variablizable}"
 									icon="ui-icon-tag" process="@this"
 									update=":editVariableDialog:editVariableDialogForm"
 									actionListener="#{editVariableDialogController.prepareDialog(serviceDesignPageController.context.graphModel.selectedNode, control)}"
@@ -331,7 +335,8 @@
 								<pe:inputNumber rendered="#{!control.property.variable}"
 									readonly="#{!control.editable}"
 									value="#{serviceDesignPageController.context.graphModel.selectedNode.propertyValueMap[control.valueKey]}"
-									required="#{control.required}" decimalPlaces="0">
+									required="#{control.required}" decimalPlaces="0"
+									converter="javax.faces.Long">
 									<p:ajax event="change" process="@this"
 										update=":nodeGraphForm:nodeGraph" />
 								</pe:inputNumber>
@@ -342,7 +347,7 @@
 									<p:ajax event="change" process="@this"
 										update=":nodeGraphForm:nodeGraph" />
 								</p:inputText>
-								<p:commandButton disabled="#{!control.variablizable}"
+								<p:commandButton rendered="#{control.variablizable}"
 									icon="ui-icon-tag" process="@this"
 									update=":editVariableDialog:editVariableDialogForm"
 									actionListener="#{editVariableDialogController.prepareDialog(serviceDesignPageController.context.graphModel.selectedNode, control)}"
@@ -356,7 +361,8 @@
 								<pe:inputNumber rendered="#{!control.property.variable}"
 									readonly="#{!control.editable}"
 									value="#{serviceDesignPageController.context.graphModel.selectedNode.propertyValueMap[control.valueKey]}"
-									required="#{control.required}" decimalPlaces="0">
+									required="#{control.required}" decimalPlaces="0"
+									converter="javax.faces.Integer">
 									<p:ajax event="change" process="@this"
 										update=":nodeGraphForm:nodeGraph" />
 								</pe:inputNumber>
@@ -367,7 +373,7 @@
 									<p:ajax event="change" process="@this"
 										update=":nodeGraphForm:nodeGraph" />
 								</p:inputText>
-								<p:commandButton disabled="#{!control.variablizable}"
+								<p:commandButton rendered="#{control.variablizable}"
 									icon="ui-icon-tag" process="@this"
 									update=":editVariableDialog:editVariableDialogForm"
 									actionListener="#{editVariableDialogController.prepareDialog(serviceDesignPageController.context.graphModel.selectedNode, control)}"
@@ -381,7 +387,8 @@
 								<pe:inputNumber rendered="#{!control.property.variable}"
 									readonly="#{!control.editable}"
 									value="#{serviceDesignPageController.context.graphModel.selectedNode.propertyValueMap[control.valueKey]}"
-									decimalPlaces="5" required="#{control.required}">
+									decimalPlaces="5" required="#{control.required}"
+									converter="javax.faces.Number">
 									<p:ajax event="change" process="@this"
 										update=":nodeGraphForm:nodeGraph" />
 								</pe:inputNumber>
@@ -392,7 +399,7 @@
 									<p:ajax event="change" process="@this"
 										update=":nodeGraphForm:nodeGraph" />
 								</p:inputText>
-								<p:commandButton disabled="#{!control.variablizable}"
+								<p:commandButton rendered="#{control.variablizable}"
 									icon="ui-icon-tag" process="@this"
 									update=":editVariableDialog:editVariableDialogForm"
 									actionListener="#{editVariableDialogController.prepareDialog(serviceDesignPageController.context.graphModel.selectedNode, control)}"

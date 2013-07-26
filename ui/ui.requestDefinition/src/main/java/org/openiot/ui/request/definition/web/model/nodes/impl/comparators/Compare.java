@@ -40,7 +40,7 @@ import org.openiot.ui.request.commons.nodes.interfaces.GraphNodeProperty;
  * @author Achilleas Anagnostopoulos (aanag) email: aanag@sensap.eu
  */
 @GraphNodeClass(label = "Compare", type = "COMPARATOR", scanProperties = true)
-@Endpoints({ @Endpoint(type = EndpointType.Input, anchorType = AnchorType.Left, scope = "cmp_Number cmp_Integer cmp_Long cmp_Float cmp_Double", label = "IN", required = true), })
+@Endpoints({ @Endpoint(type = EndpointType.Input, anchorType = AnchorType.Left, scope = "cmp_sensor_Number cmp_sensor_Integer cmp_sensor_Long cmp_sensor_Float cmp_sensor_Double", label = "IN", required = true), })
 @NodeProperties({ @NodeProperty(type = PropertyType.Writable, javaType = java.lang.String.class, name = "OPERATOR", allowedValues = { "=", "<", "<=", ">", ">=" }, required = true), @NodeProperty(type = PropertyType.Writable, javaType = java.lang.Number.class, name = "CMP_VALUE", required = true) })
 public class Compare extends DefaultGraphNode implements Serializable, Observer {
 	private static final long serialVersionUID = 1L;
