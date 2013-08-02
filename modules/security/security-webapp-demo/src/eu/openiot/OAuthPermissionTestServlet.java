@@ -1,7 +1,6 @@
 package eu.openiot;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -12,10 +11,10 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
+import org.openiot.security.client.AccessControlUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.openiot.util.AccessControlUtil;
 
 public class OAuthPermissionTestServlet extends HttpServlet {
 
@@ -27,7 +26,7 @@ public class OAuthPermissionTestServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		Subject subject = SecurityUtils.getSubject();
 		if (!subject.isAuthenticated()) {
-			AccessControlUtil.redirectToLogin(req, resp);
+			AccessControlUtil.getInstance().redirectToLogin(req, resp);
 		} else {
 			Map<String, String> allPermissions = new HashMap<String, String>();
 

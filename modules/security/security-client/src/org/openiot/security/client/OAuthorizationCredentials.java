@@ -32,13 +32,14 @@ public class OAuthorizationCredentials implements Serializable {
 
 	private String accessToken;
 	private String clientId;
+	private OAuthorizationCredentials callerCredentials;
 
-	public OAuthorizationCredentials(String token, String clientId) {
-		super();
+	public OAuthorizationCredentials(String token, String clientId, OAuthorizationCredentials callerCredentials) {
 		this.accessToken = token;
 		this.clientId = clientId;
+		this.callerCredentials = callerCredentials;
 	}
-	
+
 	public String getAccessToken() {
 		return accessToken;
 	}
@@ -47,12 +48,16 @@ public class OAuthorizationCredentials implements Serializable {
 		return clientId;
 	}
 
+	public OAuthorizationCredentials getCallerCredentials() {
+		return callerCredentials;
+	}
 
 	@Override
 	public int hashCode() {
 		HashCodeBuilder builder = new HashCodeBuilder();
 		builder.append(accessToken);
 		builder.append(clientId);
+		builder.append(callerCredentials);
 		return builder.build();
 	}
 

@@ -112,6 +112,10 @@ public class CasOAuthClientRealm extends ClientRealm {
 		request.addQuerystringParameter(OAuthConstants.CLIENT_ID, client.getKey());
 		request.addQuerystringParameter(OAuthConstants.ACCESS_TOKEN, accessToken);
 
+		// TODO: fix this
+		request.addQuerystringParameter(SecurityConstants.CALLER_CLIENT_ID, client.getKey());
+		request.addQuerystringParameter(SecurityConstants.CALLER_ACCESS_TOKEN, accessToken);
+
 		final Response response = request.send();
 		final int code = response.getCode();
 		final String body = response.getBody();

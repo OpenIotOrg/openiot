@@ -36,21 +36,22 @@ import org.apache.shiro.cache.MemoryConstrainedCacheManager;
 import org.pac4j.core.exception.HttpCommunicationException;
 import org.pac4j.oauth.client.CasOAuthWrapperClient;
 import org.pac4j.oauth.profile.JsonHelper;
-import org.scribe.model.OAuthConstants;
 import org.scribe.model.ProxyOAuthRequest;
 import org.scribe.model.Response;
 import org.scribe.model.Verb;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import static org.openiot.security.client.SecurityConstants.*;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
 /**
- * This class provides authorization information to the clients. 
- * TODO: We assume that the utilizing entity is trusted! To be more secure we must also send the calling entitiy's credentials to the OAuth server.
+ * This class provides authorization information to the clients. TODO: We assume
+ * that the utilizing entity is trusted! To be more secure we must also send the
+ * calling entitiy's credentials to the OAuth server.
  * 
  * @author Mehdi Riahi
- *
+ * 
  */
 public class AuthorizationManager {
 
@@ -63,7 +64,7 @@ public class AuthorizationManager {
 	private boolean cachingEnabled = false;
 
 	private String permissionsURL;
-	
+
 	private PermissionResolver permissionResolver = new WildcardPermissionResolver();
 
 	public AuthorizationManager() {
@@ -92,11 +93,11 @@ public class AuthorizationManager {
 		Permission perm = permissionResolver.resolvePermission(permStr);
 		Map<String, Set<Permission>> authorizationInfo = getAuthorizationInfo(credentials);
 		boolean hasPerm = false;
-		for(Set<Permission> permSet : authorizationInfo.values()){
-			if(hasPerm)
+		for (Set<Permission> permSet : authorizationInfo.values()) {
+			if (hasPerm)
 				break;
-			for(Permission permission : permSet)
-				if(permission.implies(perm)){
+			for (Permission permission : permSet)
+				if (permission.implies(perm)) {
 					hasPerm = true;
 					break;
 				}
@@ -130,7 +131,7 @@ public class AuthorizationManager {
 		final String body = sendRequestForPermissions(credentials);
 		JsonNode json = JsonHelper.getFirstNode(body);
 		if (json != null) {
-			json = json.get("role_permissions");
+			json = json.get(ROLE_PERMISSIONS);
 			if (json != null) {
 				final Iterator<JsonNode> nodes = json.iterator();
 				while (nodes.hasNext()) {
@@ -162,8 +163,16 @@ public class AuthorizationManager {
 		final ProxyOAuthRequest request = new ProxyOAuthRequest(Verb.GET, permissionsURL, client.getConnectTimeout(), client.getReadTimeout(),
 				client.getProxyHost(), client.getProxyPort());
 
-		request.addQuerystringParameter(OAuthConstants.CLIENT_ID, credentials.getClientId());
-		request.addQuerystringParameter(OAuthConstants.ACCESS_TOKEN, credentials.getAccessToken());
+		request.addQuerystringParameter(CLIENT_ID, credentials.getClientId());
+		request.addQuerystringParameter(ACCESS_TOKEN, credentials.getAccessToken());
+
+		final OAuthorizationCredentials callerCredentials = credentials.getCallerCredentials();
+		if (callerCredentials != null) {
+			request.addQuerystringParameter(CALLER_CLIENT_ID, callerCredentials.getClientId());
+			request.addQuerystringParameter(CALLER_ACCESS_TOKEN, callerCredentials.getAccessToken());
+		} else {
+			// TODO: ?
+		}
 
 		final Response response = request.send();
 		final int code = response.getCode();

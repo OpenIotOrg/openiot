@@ -1,5 +1,5 @@
 <%@page import="java.util.Map"%>
-<%@page import="eu.openiot.util.AccessControlUtil"%>
+<%@page import="org.openiot.security.client.AccessControlUtil"%>
 <%@ include file="../include.jsp"%>
 <!DOCTYPE html>
 <html>
@@ -67,7 +67,7 @@
 			<tbody style="color: #006B00">
 				<%
 					for (Map.Entry<String, String> perm : ((Map<String, String>) request.getAttribute("permissions")).entrySet())
-						if (AccessControlUtil.hasPermission(perm.getKey()))
+						if (AccessControlUtil.getInstance().hasPermission(perm.getKey()))
 							out.println("<tr><td>" + perm.getKey() + "</td><td>" + perm.getValue() + "</td></tr>");
 				%>
 			</tbody>
@@ -85,7 +85,7 @@
 			<tbody style="color:#8F0047">
 				<%
 					for (Map.Entry<String, String> perm : ((Map<String, String>) request.getAttribute("permissions")).entrySet())
-						if (!AccessControlUtil.hasPermission(perm.getKey()))
+						if (!AccessControlUtil.getInstance().hasPermission(perm.getKey()))
 							out.println("<tr><td>" + perm.getKey() + "</td><td>" + perm.getValue() + "</td></tr>");
 				%>
 			</tbody>

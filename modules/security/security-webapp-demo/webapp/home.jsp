@@ -35,14 +35,17 @@
 			<shiro:user>
 				<shiro:principal />
 			</shiro:user>
-			! (
+			! 
 			<shiro:user>
+				(
 				<a href="<c:url value="/logout"/>">Log out</a>
+				)
 			</shiro:user>
+			<!--
 			<shiro:guest>
 				<a href="<c:url value="/login.jsp"/>">Log in</a>
 			</shiro:guest>
-			)
+			-->
 		</p>
 
 		<p>Welcome to the OpenIoT Authentication and Authorization Demo.</p>
@@ -57,6 +60,11 @@
 			<p>
 				If you want to access the user-only <a
 					href="<c:url value="/account"/>">account page</a>, you will need to
+				log-in first.
+			</p>
+			<p>
+				If you want to access the user-only <a
+					href="<c:url value="/perm"/>">permissions page</a>, you will need to
 				log-in first.
 			</p>
 		</shiro:guest>

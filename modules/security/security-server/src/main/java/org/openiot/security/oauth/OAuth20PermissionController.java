@@ -90,6 +90,11 @@ public final class OAuth20PermissionController extends AbstractController {
 		final String accessToken = request.getParameter(OAuthConstants.ACCESS_TOKEN);
 		log.debug("accessToken : {}", accessToken);
 
+		final String callerClientId = request.getParameter("caller_client_id");
+		log.debug("callerClientId : {}", callerClientId);
+		final String callerAccessToken = request.getParameter("caller_access_token");
+		log.debug("callerAccessToken : {}", callerAccessToken);
+
 		final JsonFactory jsonFactory = new JsonFactory();
 		final JsonGenerator jsonGenerator = jsonFactory.createJsonGenerator(response.getWriter());
 
@@ -106,11 +111,33 @@ public final class OAuth20PermissionController extends AbstractController {
 			return null;
 		}
 
+		// caller accessToken is required
+		if (StringUtils.isBlank(callerAccessToken)) {
+			log.error("missing caller accessToken");
+			jsonGenerator.writeStartObject();
+			jsonGenerator.writeStringField("error", "missing_callerAccessToken");
+			jsonGenerator.writeEndObject();
+			jsonGenerator.close();
+			response.flushBuffer();
+			return null;
+		}
+
 		// clientId is required
-		if (StringUtils.isBlank(accessToken)) {
+		if (StringUtils.isBlank(clientId)) {
 			log.error("missing clientId");
 			jsonGenerator.writeStartObject();
 			jsonGenerator.writeStringField("error", MISSING_CLIENT_ID);
+			jsonGenerator.writeEndObject();
+			jsonGenerator.close();
+			response.flushBuffer();
+			return null;
+		}
+
+		// caller clientId is required
+		if (StringUtils.isBlank(callerClientId)) {
+			log.error("missing clientId");
+			jsonGenerator.writeStartObject();
+			jsonGenerator.writeStringField("error", "missing_callerClientId");
 			jsonGenerator.writeEndObject();
 			jsonGenerator.close();
 			response.flushBuffer();
@@ -123,6 +150,18 @@ public final class OAuth20PermissionController extends AbstractController {
 			log.error("expired accessToken : {}", accessToken);
 			jsonGenerator.writeStartObject();
 			jsonGenerator.writeStringField("error", OAuthConstants.EXPIRED_ACCESS_TOKEN);
+			jsonGenerator.writeEndObject();
+			jsonGenerator.close();
+			response.flushBuffer();
+			return null;
+		}
+
+		// get ticket granting ticket for the caller
+		final TicketGrantingTicket callerTicketGrantingTicket = (TicketGrantingTicket) this.ticketRegistry.getTicket(callerAccessToken);
+		if (callerTicketGrantingTicket == null || callerTicketGrantingTicket.isExpired()) {
+			log.error("expired accessToken : {}", callerAccessToken);
+			jsonGenerator.writeStartObject();
+			jsonGenerator.writeStringField("error", OAuthConstants.EXPIRED_ACCESS_TOKEN + "_for_caller");
 			jsonGenerator.writeEndObject();
 			jsonGenerator.close();
 			response.flushBuffer();
@@ -145,6 +184,25 @@ public final class OAuth20PermissionController extends AbstractController {
 			log.error("nonexistent clientId : {}", clientId);
 			jsonGenerator.writeStartObject();
 			jsonGenerator.writeStringField("error", NONEXISTENT_CLIENT_ID);
+			jsonGenerator.writeEndObject();
+			jsonGenerator.close();
+			response.flushBuffer();
+			return null;
+		}
+
+		// name of the CAS service for caller
+		RegisteredService callerService = null;
+		for (final RegisteredService aService : services) {
+			if (StringUtils.equals(aService.getName(), callerClientId)) {
+				callerService = aService;
+				break;
+			}
+		}
+
+		if (callerService == null) {
+			log.error("nonexistent caller clientId : {}", callerClientId);
+			jsonGenerator.writeStartObject();
+			jsonGenerator.writeStringField("error", NONEXISTENT_CLIENT_ID + "for_caller");
 			jsonGenerator.writeEndObject();
 			jsonGenerator.close();
 			response.flushBuffer();
@@ -182,7 +240,7 @@ public final class OAuth20PermissionController extends AbstractController {
 		Map<String, Object> paramMap = new HashMap<String, Object>();
 		paramMap.put("username", username);
 		paramMap.put("serviceId", serviceId);
-		
+
 		RowCallbackHandlerImpl rowCallbackHandler = new RowCallbackHandlerImpl();
 		namedParameterJdbcTemplate.query(sql, paramMap, rowCallbackHandler);
 		return rowCallbackHandler.getResults();
