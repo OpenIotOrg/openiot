@@ -1,0 +1,17 @@
+source=http\://planetdata.epfl.ch\:22002/gsn?REQUEST\=113&name\=opensense_2
+sensorName=opensense_2
+dataGraph=http\://lsm.deri.ie/OpenIoT/demo/sensordata\#
+field.temperature.unit=C
+registered=true
+field.humidity.unit=Percent
+field.temperature.propertyName=Temperature
+sensorID=http://lsm.deri.ie/resource/1150918702484190
+author=opensense
+metaGraph=http\://lsm.deri.ie/OpenIoT/demo/sensormeta\#
+fields=humidity,temperature
+field.co.unit=PPM
+sensorType=lausanne
+field.co.propertyName=CO
+sourceType=lausanne
+information=Air Quality Sensors from Lausanne station 2
+field.humidity.propertyName=Humidity
