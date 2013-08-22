@@ -46,7 +46,13 @@ import org.openiot.ui.request.commons.nodes.interfaces.GraphNodeProperty;
  * @author Achilleas Anagnostopoulos (aanag) email: aanag@sensap.eu
  */
 @GraphNodeClass(label = "LineChart", type = "SINK", scanProperties = true)
-@NodeProperties({ @NodeProperty(type = PropertyType.Writable, javaType = java.lang.String.class, name = "TITLE", required = true), @NodeProperty(type = PropertyType.Writable, javaType = java.lang.String.class, name = "SERIES", required = true, allowedValues = { "1", "2", "3", "4", "5" }), @NodeProperty(type = PropertyType.Writable, javaType = java.lang.String.class, name = "X_AXIS_TYPE", required = true, allowedValues = { "Number", "Date (result set)", "Date (observation)" }), @NodeProperty(type = PropertyType.Writable, javaType = java.lang.String.class, name = "X_AXIS_LABEL", required = true), @NodeProperty(type = PropertyType.Writable, javaType = java.lang.String.class, name = "Y_AXIS_LABEL", required = true) })
+@NodeProperties({ 
+	@NodeProperty(type = PropertyType.Writable, javaType = java.lang.String.class, name = "TITLE", required = true), 
+	@NodeProperty(type = PropertyType.Writable, javaType = java.lang.String.class, name = "SERIES", required = true, allowedValues = { "1", "2", "3", "4", "5" }), 
+	@NodeProperty(type = PropertyType.Writable, javaType = java.lang.String.class, name = "X_AXIS_TYPE", required = true, allowedValues = { "Number", "Date (result set)", "Date (observation)" }), 
+	@NodeProperty(type = PropertyType.Writable, javaType = java.lang.String.class, name = "X_AXIS_LABEL", required = true), 
+	@NodeProperty(type = PropertyType.Writable, javaType = java.lang.String.class, name = "Y_AXIS_LABEL", required = true) 
+})
 public class LineChart extends DefaultGraphNode implements Serializable, Observer {
 	private static final long serialVersionUID = 1L;
 

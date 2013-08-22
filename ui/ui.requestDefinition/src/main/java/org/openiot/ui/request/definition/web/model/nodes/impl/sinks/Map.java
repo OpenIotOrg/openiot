@@ -39,7 +39,7 @@ import org.openiot.ui.request.commons.nodes.enums.PropertyType;
 @Endpoints({
     @Endpoint(type = EndpointType.Input, anchorType = AnchorType.Left, scope = "geo_lat", label = "LAT", required = true),
     @Endpoint(type = EndpointType.Input, anchorType = AnchorType.Left, scope = "geo_lon", label = "LON", required = true),
-    @Endpoint(type = EndpointType.Input, anchorType = AnchorType.Left, scope = "Number Integer Long Float Double", label = "RADIUS", required = true),
+    @Endpoint(type = EndpointType.Input, anchorType = AnchorType.Left, scope = "Number Integer Long Float Double", label = "VALUE", required = true),
 })
 @NodeProperties({
 	@NodeProperty(type = PropertyType.Writable, javaType = java.lang.String.class, name = "TITLE", required = true),
@@ -47,7 +47,7 @@ import org.openiot.ui.request.commons.nodes.enums.PropertyType;
 	@NodeProperty(type = PropertyType.Writable, javaType = java.lang.Double.class, name = "LON", required = true),
 	@NodeProperty(type = PropertyType.Writable, javaType = java.lang.Integer.class, name = "ZOOM", required = true),
 	@NodeProperty(type = PropertyType.Writable, javaType = java.lang.String.class, name = "TYPE", required = true, allowedValues = {"Markers only", "Circles only", "Markers and Circles"}),
-    @NodeProperty(type = PropertyType.Writable, javaType = java.lang.Number.class, name = "MAX", required = true)
+    @NodeProperty(type = PropertyType.Writable, javaType = java.lang.Number.class, name = "SCALER", required = true)
 })
 public class Map extends DefaultGraphNode implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -58,6 +58,6 @@ public class Map extends DefaultGraphNode implements Serializable {
         // Setup some defaults
         setProperty("TITLE", this.getClass().getSimpleName());
         setProperty("TYPE", "Markers only");
-        setProperty("MAX", 1.0);
+        setProperty("SCALER", 1.0);
     }
 }
