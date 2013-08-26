@@ -42,8 +42,8 @@ Internetconnected Objects*
 
 <DIV ALIGN=CENTER>
 
-<a href="http://www2.clustrmaps.com/user/06410c614"><img src="http://www2.clustrmaps.com/stats/maps-no_clusters/https---github.com-OpenIotOrg-openiot-wiki-thumb.jpg" alt="Locations of visitors to this page" />
-</a>
+<div id="clustrmaps-widget"></div><script type="text/javascript">var _clustrmaps = {'url' : 'https://github.com/OpenIotOrg/openiot', 'user' : 1109437, 'server' : '2', 'id' : 'clustrmaps-widget', 'version' : 1, 'date' : '2013-08-26', 'lang' : 'en', 'corners' : 'square' };(function (){ var s = document.createElement('script'); s.type = 'text/javascript'; s.async = true; s.src = 'http://www2.clustrmaps.com/counter/map.js'; var x = document.getElementsByTagName('script')[0]; x.parentNode.insertBefore(s, x);})();</script><noscript><a href="http://www2.clustrmaps.com/user/b4110edbd"><img src="http://www2.clustrmaps.com/stats/maps-no_clusters/https---github.com-OpenIotOrg-openiot-thumb.jpg" alt="Locations of visitors to this page" /></a></noscript>
+
 
 </DIV>
 
