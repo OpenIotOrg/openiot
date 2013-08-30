@@ -19,7 +19,6 @@ import org.openiot.ui.request.presentation.web.util.FaceletLocalization;
 import org.primefaces.component.commandlink.CommandLink;
 import org.primefaces.component.panel.Panel;
 import org.primefaces.context.RequestContext;
-import org.primefaces.model.chart.PieChartModel;
 
 public class Passthrough implements VisualizationWidget {
 
