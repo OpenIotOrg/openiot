@@ -1,4 +1,4 @@
-package org.openiot.scheduler.core.api.impl;
+package org.openiot.scheduler.core.api.impl.DiscoverSensors;
 
 /**
  * Copyright (c) 2011-2014, OpenIoT
@@ -44,35 +44,36 @@ import com.hp.hpl.jena.vocabulary.RDFS;
 import com.hp.hpl.jena.vocabulary.XSD;
 
 /**
+ * 
+ * @author Stavros Petris (spet) e-mail: spet@ait.edu.gr
  * @author Nikos Kefalakis (nkef) e-mail: nkef@ait.edu.gr
- *  
  */
+
 public class DiscoverSensorsImpl 
 {	
 	private static class Queries
 	{
-		private static String openiotMetaGraph = "http://lsm.deri.ie/OpenIoT/sensormeta#";
-		private static String openiotDataGraph = "http://lsm.deri.ie/OpenIoT/sensordata#";
-
+		private static String openiotMetaGraph = "http://lsm.deri.ie/OpenIoT/demo/sensormeta#";
+		private static String openiotDataGraph = "http://lsm.deri.ie/OpenIoT/demo/sensordata#";
 				
-		public static ArrayList<SensorMetaData> parseSensorFullMeta(TupleQueryResult qres)
+		public static ArrayList<SensorTypeMetaData> parseSensorFullMeta(TupleQueryResult qres)
 		{
-			ArrayList<SensorMetaData> fullMetas = new ArrayList<SensorMetaData>();
+			ArrayList<SensorTypeMetaData> fullMetas = new ArrayList<SensorTypeMetaData>();
 			try 
 			{
 				while (qres.hasNext())
 				{
 					BindingSet b = qres.next();
 					Set names = b.getBindingNames();
-					SensorMetaData fm = new SensorMetaData();
+					SensorTypeMetaData fm = new SensorTypeMetaData();
 					
 					for (Object n : names)
 					{						
-						if(((String) n).equalsIgnoreCase("label"))
+						if(((String) n).equalsIgnoreCase("measurement"))
 						{
 							String str = (b.getValue((String) n)==null) ? null : b.getValue((String) n).stringValue();
 							fm.setMeasuredVal(str);
-							System.out.print("label : "+str+" ");	
+							System.out.print("measurement : "+str+" ");	
 						}
 						else if(((String) n).equalsIgnoreCase("unit"))
 						{
@@ -89,12 +90,7 @@ public class DiscoverSensorsImpl
 							fm.setValue(split[1].substring(0, split[1].length()-1));
 							System.out.print("value : "+fm.getValue()+" ");	
 						}
-						else if(((String) n).equalsIgnoreCase("sensLabelType"))
-						{
-							String str = (b.getValue((String) n)==null) ? null : b.getValue((String) n).stringValue();
-							fm.setSensorType(str);
-							System.out.print("sensor type : "+str+" ");	
-						}
+						
 					}
 					fullMetas.add(fm);					
 				}//while
@@ -111,27 +107,33 @@ public class DiscoverSensorsImpl
 				return null;
 			}
 		}
-		public static ArrayList<String> parseLabelTypeInArea(TupleQueryResult qres)
+		public static ArrayList<SensorTypeData> parseSensorTypeInArea(TupleQueryResult qres)
 		{
-			ArrayList<String> sensorTypes = new ArrayList<String>();
+			ArrayList<SensorTypeData> sensorTypes = new ArrayList<SensorTypeData>();
 			try
 			{
 				while (qres.hasNext())
 				{
 					BindingSet b = qres.next();
 					Set names = b.getBindingNames();
-					String sensorType = null;
+					SensorTypeData sType = new SensorTypeData();
 					
 					for (Object n : names)
 					{						
 						if(((String) n).equalsIgnoreCase("sensLabelType"))
 						{
 							String str = (b.getValue((String) n)==null) ? null : b.getValue((String) n).stringValue();
-							sensorType =str;
-							System.out.print("sensor id: "+sensorType+" ");	
-						}						
+							sType.setLabel(str);
+							System.out.print("sensor label: "+sType.getLabel()+" ");	
+						}
+						else if(((String) n).equalsIgnoreCase("type"))
+						{
+							String str = (b.getValue((String) n)==null) ? null : b.getValue((String) n).stringValue();
+							sType.setID(str);
+							System.out.print("unit : "+sType.getID()+" ");
+						}
 					}
-					sensorTypes.add(sensorType);					
+					sensorTypes.add(sType);					
 				}//while
 				return sensorTypes;
 			} 
@@ -145,51 +147,13 @@ public class DiscoverSensorsImpl
 				e.printStackTrace();
 				return null;
 			}
-		}
+		}	
 		
-		
-		public static String getDataFromSensorsInArea(double longitude, double latitude, float radius)
-		{
-			StringBuilder update = new StringBuilder();	        
-			
-			String str=("SELECT ?label ?unit (AVG(?value) AS ?avalue) ?sensLabelType "
-							+"from <"+openiotDataGraph+"> "
-							+"WHERE "
-							+"{"								
-							
-							+"?prob <http://www.w3.org/2000/01/rdf-schema#label> ?label. "
-							+"?prob <http://lsm.deri.ie/ont/lsm.owl#unit> ?unit."
-							+"?prob <http://lsm.deri.ie/ont/lsm.owl#value> ?value." 
-							+"?prob <http://lsm.deri.ie/ont/lsm.owl#isObservedPropertyOf> ?obs."								
-							+"?obs <http://purl.oclc.org/NET/ssnx/ssn#observedBy> ?sensorId."
-							
-							+"{"
-								+"select ?sensorId ?sensLabelType "
-								+"from <"+openiotMetaGraph+"> "
-								+"WHERE "
-								+"{"
-								
-								+"?type <http://www.w3.org/2000/01/rdf-schema#label> ?sensLabelType."
-								+"?sensorId <http://lsm.deri.ie/ont/lsm.owl#hasSensorType> ?type."
-								
-								+"?sensorId <http://www.loa-cnr.it/ontologies/DUL.owl#hasLocation> ?p." 
-								+"?p geo:geometry ?geo. "								
-								+"?p geo:lat ?lat. "
-								+"?p geo:long ?long. "
-								+"filter (<bif:st_intersects>(?geo,<bif:st_point>("+longitude+","+latitude+"),"+radius+")). "
-								+"}"
-							+"}"
-							
-							+"}group by (?label)(?unit)(?sensLabelType)");
-			
-			update.append(str);
-			return update.toString();
-		}
-		public static String getSensLabelTypeInArea(double longitude, double latitude, float radius)
+		public static String getSensTypeInArea(double longitude, double latitude, float radius)
 		{
 			StringBuilder update = new StringBuilder();			
 			
-			String str=("select distinct(?sensLabelType) "
+			String str=("select distinct(?sensLabelType) ?type "
 								+"from <"+openiotMetaGraph+"> "
 								+"WHERE "
 								+"{"								
@@ -198,9 +162,7 @@ public class DiscoverSensorsImpl
 								+"?sensorId <http://lsm.deri.ie/ont/lsm.owl#hasSensorType> ?type."
 								+"?sensorId <http://www.loa-cnr.it/ontologies/DUL.owl#hasLocation> ?p."
 								
-								+"?p geo:geometry ?geo."
-								+"?p geo:lat ?lat."
-								+"?p geo:long ?long."
+								+"?p geo:geometry ?geo."								
 								+"filter (<bif:st_intersects>(?geo,<bif:st_point>("+longitude+","+latitude+"),"+radius+"))."
 								
 								+"}");
@@ -208,12 +170,44 @@ public class DiscoverSensorsImpl
 			update.append(str);
 			return update.toString();
 		}
+		public static String getMDataOfSensorTypeInArea(double longitude, double latitude, float radius,String sensorType)
+		{
+			StringBuilder update = new StringBuilder();	        
+			
+			String str=("SELECT ?measurement ?unit (AVG(?value) AS ?avalue) "							
+							+"WHERE "
+							+"{"								
+							
+							+"?prob <http://www.w3.org/2000/01/rdf-schema#label> ?measurement. "
+							+"?prob <http://lsm.deri.ie/ont/lsm.owl#unit> ?unit."
+							+"?prob <http://lsm.deri.ie/ont/lsm.owl#value> ?value." 
+							+"?prob <http://lsm.deri.ie/ont/lsm.owl#isObservedPropertyOf> ?obs."								
+							+"?obs <http://purl.oclc.org/NET/ssnx/ssn#observedBy> ?sensorId."
+							
+							+"{"
+								+"select ?sensorId "
+								+"from <"+openiotMetaGraph+"> "
+								+"WHERE "
+								+"{"
+								
+								+"?type <http://www.w3.org/2000/01/rdf-schema#label> ?"+sensorType+" ."
+								+"?sensorId <http://lsm.deri.ie/ont/lsm.owl#hasSensorType> ?type. "
+								
+								+"FILTER EXISTS {?sensorId <http://www.loa-cnr.it/ontologies/DUL.owl#hasLocation> ?p. }" 
+								+"?p geo:geometry ?geo. "
+								+"filter (<bif:st_intersects>(?geo,<bif:st_point>("+longitude+","+latitude+"),"+radius+")). "
+								+"}"
+							+"}"
+							
+							+"}group by (?measurement)(?unit) ");
+			
+			update.append(str);
+			return update.toString();
+		}		
 	}
 	
 	final static Logger logger = LoggerFactory.getLogger(DiscoverSensorsImpl.class);
-	
-	
-	
+		
 	private String userID;
 	private double longitude;
 	private double latitude;
@@ -260,35 +254,32 @@ public class DiscoverSensorsImpl
 			return;
 		}
 		
-		TupleQueryResult qres = sparqlCl.sparqlToQResult(Queries.getDataFromSensorsInArea(longitude, latitude, radius));
-		List<SensorMetaData> fullMetaData = Queries.parseSensorFullMeta(qres);
-		
-		qres = sparqlCl.sparqlToQResult(Queries.getSensLabelTypeInArea(longitude, latitude, radius));
-		List<String> sensorTypes2 = Queries.parseLabelTypeInArea(qres);
+		TupleQueryResult qres = sparqlCl.sparqlToQResult(Queries.getSensTypeInArea(longitude, latitude, radius));
+		List<SensorTypeData> sensorTypesList = Queries.parseSensorTypeInArea(qres);
+	
 
-		for (int i=0; i<sensorTypes2.size(); i++) 
+		for (int i=0; i<sensorTypesList.size(); i++) 
 		{
-			SensorType sensorType = new SensorType();
-			//sensorType.setId("http://www.w3.org/2000/01/rdf-schema#label");
-			sensorType.setName(sensorTypes2.get(i));	
+			SensorType sensorType = new SensorType();			
+			sensorType.setId(sensorTypesList.get(i).getID());
+			sensorType.setName(sensorTypesList.get(i).getLabel());	
+			
+			qres = sparqlCl.sparqlToQResult(Queries.getMDataOfSensorTypeInArea(longitude, latitude, radius,sensorTypesList.get(i).getLabel()));
+			List<SensorTypeMetaData> fullMetaData = Queries.parseSensorFullMeta(qres);
 			
 			for (int j=0; j<fullMetaData.size(); j++) 
 			{
-				if(sensorTypes2.get(i).equals(fullMetaData.get(j).getSensorType()))
-				{
-					MeasurementCapability mc = new MeasurementCapability();
-					//mc.setId("http://www.w3.org/2000/01/rdf-schema#label");
-					mc.setType(fullMetaData.get(j).getMeasuredVal());
-					
-					Unit unit = new Unit();
-					unit.setName(fullMetaData.get(j).getUnit());
-					unit.setType(fullMetaData.get(j).getValue());
-					
-					mc.getUnit().add(unit);
-					
-					sensorType.getMeasurementCapability().add(mc);
-				}//if
-			}//for
+				MeasurementCapability mc = new MeasurementCapability();				
+				mc.setType(fullMetaData.get(j).getMeasuredVal());
+				
+				Unit unit = new Unit();
+				unit.setName(fullMetaData.get(j).getUnit());
+				unit.setType(fullMetaData.get(j).getValue());
+				
+				mc.getUnit().add(unit);
+				
+				sensorType.getMeasurementCapability().add(mc);
+			}
 			
 			sensorTypes.getSensorType().add(sensorType);
 		}//for

@@ -1,6 +1,6 @@
-package org.openiot.scheduler.core.api.impl;
+package org.openiot.scheduler.core.api.impl.DiscoverSensors;
 
-public class SensorMetaData 
+public class SensorTypeMetaData 
 {
 	private String sensorType;
 	private String measuredVal;
