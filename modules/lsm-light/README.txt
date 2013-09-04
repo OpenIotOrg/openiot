@@ -1,0 +1,1 @@
+OpenIoT's version of LSM. This is the version (lam-light) to be modified in OpenIoT
