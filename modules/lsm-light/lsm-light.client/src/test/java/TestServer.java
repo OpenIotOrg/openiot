@@ -77,7 +77,6 @@ public class TestServer {
 	
 	public static Sensor addNewSensor(){
 	     Sensor sensor  = new Sensor();
-	     sensor.setId("http://lsm.deri.ie/resource/8a82919d3264f4ac013264f4e14501c0");
 	     sensor.setName("lab_temp_hp");
 	     sensor.setAuthor("admin");
 		 sensor.setSourceType("peania");
@@ -99,8 +98,7 @@ public class TestServer {
 		 User user = new User();
 		 user.setUsername("admin");
 		 user.setPass("admin");
-		 sensor.setUser(user);
-		       
+		 sensor.setUser(user);		       
          
          lsmStore.setUser(user);
          lsmStore.sensorAdd(sensor);		
@@ -116,15 +114,9 @@ public class TestServer {
    		 	user.setPass("admin");       
             
             lsmStore.setUser(user);
-	         Observation obs = TestServer.updateData();
-	         obs.setSensor(sensor.getId());
-	         System.out.println(lsmStore.sensorDataUpdate(obs));
-	         
-//	         lsmStore.sensorAdd(stringBuffer.toString());
-//	         lsmStore.sensorDelete("http://lsm.deri.ie/resource/8a82919d3264f4ac013264f4e14501c0");
-//	         lsmStore.getSensorBySource("http://www.tfl.gov.uk/tfl/livetravelnews/trafficcams/cctv/546502.jpg");
-//	         sensor = lsmStore.getSensorById("http://lsm.deri.ie/resource/8a82919d3264f4ac013264f4e14501c0");
-//	         System.out.println(sensor.getSource());
+            Observation obs = TestServer.updateData();
+	        obs.setSensor(sensor.getId());
+	        System.out.println(lsmStore.sensorDataUpdate(obs));
         }catch (Exception ex) {  
         	ex.printStackTrace();
             System.out.println("cannot send the string to servlet");                                            }  

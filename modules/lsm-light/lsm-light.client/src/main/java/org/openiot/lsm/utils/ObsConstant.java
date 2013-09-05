@@ -18,8 +18,6 @@ package org.openiot.lsm.utils;
  *
  * Contact: OpenIoT mailto: info@openiot.eu
  */
-import java.util.ArrayList;
-import java.util.HashMap;
 
 public class ObsConstant {
 	public final static String sensormasherMetadataGraphURI = "http://lsm.deri.ie/OpenIoT/sensormeta#";
@@ -27,7 +25,7 @@ public class ObsConstant {
 	
 	public final static String sensormasherOntologyURI = "http://lsm.deri.ie/ont/lsm.owl#";
 	public final static String SSNOntolotyURI ="http://purl.oclc.org/NET/ssnx/ssn#";
-	
+	public final static String ServerHost = "http://localhost:8080/lsm-light.server/";
 
 	
 //	public static String TEMPERATURE = "http://lsm.deri.ie/resource/5395423154665";

@@ -39,6 +39,7 @@ import org.openiot.lsm.beans.RDFTuple;
 import org.openiot.lsm.beans.Sensor;
 import org.openiot.lsm.beans.User;
 import org.openiot.lsm.schema.LSMSchema;
+import org.openiot.lsm.utils.ObsConstant;
 
 
 
@@ -48,9 +49,9 @@ public class LSMTripleStore implements LSMServer {
 //	String ObjectServletURL = "http://lsm.deri.ie/lsmservlet/ObjectServlet";
 //	static final String UPLOAD_URL = "http://lsm.deri.ie/lsmservlet/UploadFileServlet";
     static final int BUFFER_SIZE = 4096;
-	String RDFServletURL = "http://localhost:8080/lsm-light.server/ServletAPI";
-	String ObjectServletURL = "http://localhost:8080/lsm-light.server/ObjectServlet";
-    static final String UPLOAD_URL = "http://localhost:8080/lsm-light.server/upload";
+	final String RDFServletURL = ObsConstant.ServerHost + "rdfservlet";
+	final String ObjectServletURL = ObsConstant.ServerHost + "objservlet";
+    final String UPLOAD_URL = ObsConstant.ServerHost + "upload";
 	private User user;
 	
 	
