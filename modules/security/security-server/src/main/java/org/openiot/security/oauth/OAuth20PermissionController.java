@@ -62,6 +62,7 @@ public final class OAuth20PermissionController extends AbstractController {
 
 	private static final String MISSING_CLIENT_ID = "missing_clientId";
 	private static final String NONEXISTENT_CLIENT_ID = "nonexisting_clientId";
+	private static final String TICKET_NOT_GRANTED = "ticket_not_granted";
 
 	private final ServicesManager servicesManager;
 
@@ -168,8 +169,6 @@ public final class OAuth20PermissionController extends AbstractController {
 			return null;
 		}
 
-		// TODO: check if the TGT is granted to the client?!
-
 		// name of the CAS service
 		final Collection<RegisteredService> services = servicesManager.getAllServices();
 		RegisteredService service = null;
@@ -189,6 +188,27 @@ public final class OAuth20PermissionController extends AbstractController {
 			response.flushBuffer();
 			return null;
 		}
+
+		// TODO: check if the TGT is granted to the client?!
+//		final TicketGrantingTicket rawTicket = ((AbstractDistributedTicketRegistry.TicketGrantingTicketDelegator)ticketGrantingTicket).getTicket();
+//		final Field servicesField = rawTicket.getClass().getDeclaredField("services");
+//		servicesField.setAccessible(true);
+//		HashMap<String, Service> servicesMap = new HashMap<String, Service>();
+//		servicesMap = (HashMap<String, Service>) servicesField.get(rawTicket);
+//		log.error("ServiceMaps is empty ? {}", servicesMap.isEmpty());
+//		for(Map.Entry<String, Service> entry : servicesMap.entrySet()){
+//			AbstractWebApplicationService webAppService = (AbstractWebApplicationService) entry.getValue();
+//			log.error("Service for ticket {} is {}", rawTicket.getId(), webAppService.getId());
+//		}
+//		if (!servicesMap.containsKey(service.getId()) || !servicesMap.get(service.getId()).equals(service)) {
+//			log.error("Ticket is not granted to client : {}", clientId);
+//			jsonGenerator.writeStartObject();
+//			jsonGenerator.writeStringField("error", TICKET_NOT_GRANTED);
+//			jsonGenerator.writeEndObject();
+//			jsonGenerator.close();
+//			response.flushBuffer();
+//			return null;
+//		}
 
 		// name of the CAS service for caller
 		RegisteredService callerService = null;
@@ -210,7 +230,7 @@ public final class OAuth20PermissionController extends AbstractController {
 		}
 
 		final Principal principal = ticketGrantingTicket.getAuthentication().getPrincipal();
-		final Map<String, Set<String>> permissions = extractPermissions(service.getId(), principal.getId());
+		final Map<String, Set<String>> permissions = extractPermissions(callerService.getId(), principal.getId());
 
 		jsonGenerator.writeStartObject();
 		jsonGenerator.writeStringField(CasWrapperProfile.ID, principal.getId());
