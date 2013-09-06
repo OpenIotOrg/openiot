@@ -16,13 +16,13 @@
      
      <!-- LSM START -->
   <servlet>
-    <servlet-name>ServletAPI</servlet-name>
-    <servlet-class>org.openiot.lsm.http.ServletAPI</servlet-class>
+    <servlet-name>TriplesServlet</servlet-name>
+    <servlet-class>org.openiot.lsm.http.TriplesServlet</servlet-class>
   </servlet>
   
   <servlet>
     <servlet-name>ObjectServlet</servlet-name>
-    <servlet-class>org.openiot.lsm.http.ObjectServet</servlet-class>
+    <servlet-class>org.openiot.lsm.http.ObjectServlet</servlet-class>
   </servlet>
   
   <servlet>
@@ -37,8 +37,8 @@
   
     				<!-- mapping for LSM -->
   <servlet-mapping>
-    <servlet-name>ServletAPI</servlet-name>
-    <url-pattern>/textservlet</url-pattern>
+    <servlet-name>TriplesServlet</servlet-name>
+    <url-pattern>/rdfservlet</url-pattern>
   </servlet-mapping>
   
   <servlet-mapping>

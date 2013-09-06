@@ -58,8 +58,7 @@ public class ObservedProperty implements java.io.Serializable{
 	public void setTimes(Date times) {
 		this.times = times;
 	}
-	
-	
+		
 	public String getUnit() {
 		return unit;
 	}

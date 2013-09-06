@@ -18,13 +18,7 @@ package org.openiot.lsm.utils;
  *
  * Contact: OpenIoT mailto: info@openiot.eu
  */
-import java.util.HashMap;
-import java.util.Map;
-
 
 public class XSLTMapFile {
-		
-	public static Map<SourceType,String> sensordata2xslt = new HashMap<SourceType,String>();
-	public static String sensormeta2xslt = "/xslt/Sensormeta.xsl";
-		
+	public static String sensormeta2xslt = "/xslt/Sensormeta.xsl";	
 }
