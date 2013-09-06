@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+
+
+
+<!-- Copyright (c) 2011-2014, OpenIoT This library is free software; you 
+	can redistribute it and/or modify it either under the terms of the GNU Lesser 
+	General Public License version 2.1 as published by the Free Software Foundation 
+	(the "LGPL"). If you do not alter this notice, a recipient may use your version 
+	of this file under the LGPL. You should have received a copy of the LGPL 
+	along with this library in the file COPYING-LGPL-2.1; if not, write to the 
+	Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 
+	USA This software is distributed on an "AS IS" basis, WITHOUT WARRANTY OF 
+	ANY KIND, either express or implied. See the LGPL for the specific language 
+	governing rights and limitations. Contact: OpenIoT mailto: info@openiot.eu -->
+
+<!-- Author: Nikos Kefalakis (nkef@ait.edu.gr) -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+    <xs:element name="DescreptiveIDs">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="DescriptiveID" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="DescriptiveID">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element minOccurs="0" maxOccurs="1" name="description" type="xs:string"/>
+                <xs:element minOccurs="0" maxOccurs="1" name="name" type="xs:NCName"/>
+            </xs:sequence>
+            <xs:attribute name="id" type="xs:anyURI"/>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>

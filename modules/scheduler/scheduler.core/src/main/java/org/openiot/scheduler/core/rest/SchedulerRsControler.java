@@ -35,6 +35,9 @@ import org.openiot.commons.sensortypes.model.SensorTypes;
 import org.openiot.scheduler.core.api.impl.DiscoverSensorsImpl;
 import org.openiot.scheduler.core.api.impl.RegisterServiceImpl;
 
+
+import org.openiot.commons.descriptiveids.model.DescreptiveIDs;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -115,4 +118,25 @@ public class SchedulerRsControler {
 		
 		return discoverSensorsImpl.getSensorTypes();
 	}
+	
+	
+	
+	
+	
+	@GET
+	@Path("/getAvailableAppIDs")
+//	@Consumes("application/xml")
+//	@Produces("application/xml")
+	public DescreptiveIDs getAvailableAppIDs(@QueryParam("userID") String userID) {
+
+		DescreptiveIDs descreptiveIDs = new DescreptiveIDs();
+
+		
+		return descreptiveIDs;
+	}
+	
+	
+	
+	
+	
 }
