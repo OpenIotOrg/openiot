@@ -28,7 +28,9 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 
 
+import org.openiot.commons.osdspec.model.OAMO;
 import org.openiot.commons.osdspec.model.OSDSpec;
+import org.openiot.commons.osdspec.model.OSMO;
 import org.openiot.commons.sensortypes.model.SensorTypes;
 
 
@@ -84,6 +86,34 @@ public class SchedulerRsControler {
 		
 		return welcomeText;
 	}
+	
+	
+	/**
+	 * 
+	 * Used to help applications build a request by using existing sensor
+	 * classes. Requires as input the UserID, in String format, the location
+	 * longitude/ latitude and the radius of interest. Returns a SensorTypes
+	 * object which includes all the available sensors with their metadata.
+	 * 
+	 * @param userID
+	 * @param longitude
+	 * @param latitude
+	 * @param radius
+	 * @return
+	 */
+	@GET
+	@Path("/discoverSensors")
+//	@Consumes("application/xml")
+//	@Produces("application/xml")
+	public SensorTypes discoverSensors(@QueryParam("userID") String userID, @QueryParam("longitude") double longitude, @QueryParam("latitude") double latitude, @QueryParam("radius") float radius) {
+
+		
+		DiscoverSensorsImpl discoverSensorsImpl = new DiscoverSensorsImpl(userID, longitude, latitude, radius);
+		
+		return discoverSensorsImpl.getSensorTypes();
+	}
+	
+	
 
 	/**
 	 * @param osdSpec
@@ -99,7 +129,7 @@ public class SchedulerRsControler {
 	public String registerService(OSDSpec osdSpec) {
 
 		
-		
+
 		RegisterServiceImpl registerServiceImpl = new RegisterServiceImpl(osdSpec);
 		
 
@@ -107,36 +137,130 @@ public class SchedulerRsControler {
 
 	}
 
-	@GET
-	@Path("/discoverSensors")
-//	@Consumes("application/xml")
-//	@Produces("application/xml")
-	public SensorTypes discoverSensors(@QueryParam("userID") String userID, @QueryParam("longitude") double longitude, @QueryParam("latitude") double latitude, @QueryParam("radius") float radius) {
+	
+	
+	
+	
+	/**
+	 * Used to unregister/delete a registered/running service. Requires as input
+	 * the Application ID.
+	 * 
+	 * @param applicationID
+	 */
+	@POST
+	@Path("/unregisterApp")
+	public void unregisterApp(String applicationID) {
 
 		
-		DiscoverSensorsImpl discoverSensorsImpl = new DiscoverSensorsImpl(userID, longitude, latitude, radius);
-		
-		return discoverSensorsImpl.getSensorTypes();
+
+
+	}	
+	
+	
+	/**
+	 * Used to update a registered service. Requires as input the OSD Specification.
+	 * 
+	 * @param osdSpec
+	 */
+	@POST
+	@Path("/updateApp")
+	public void updateApp(OSDSpec osdSpec) {
+
+
+
+	}	
+	
+	
+	/**
+	 * Used to retrieve the description (OAMO) of an available Application.
+	 * Requires as input the Application ID
+	 * 
+	 * @param applicationID
+	 * @return
+	 */
+	@GET
+	@Path("/getApplication")
+	public OAMO getApplication(@QueryParam("applicationID") String applicationID) {
+
+		OAMO oamo = new OAMO();
+
+		return oamo;
 	}
 	
 	
 	
 	
+
+	/**
+	 * Used to retrieve the description (OSMO) of an available service. Requires
+	 * as input the Service ID
+	 * 
+	 * @param serviceID
+	 * @return
+	 */
+	@GET
+	@Path("/getService")
+	public OSMO getService(@QueryParam("serviceID") String serviceID) {
+
+		OSMO osmo = new OSMO();
+
+		return osmo;
+	}
 	
+	
+	
+	
+	/**
+	 * Used to retrieve the available applications (a list of
+	 * applicationID/ServiceName/ServiceDescription triplet) already registered
+	 * by a specific user. Requires as input the User ID.
+	 * 
+	 * @param userID
+	 * @return
+	 */
 	@GET
 	@Path("/getAvailableAppIDs")
-//	@Consumes("application/xml")
-//	@Produces("application/xml")
 	public DescreptiveIDs getAvailableAppIDs(@QueryParam("userID") String userID) {
 
 		DescreptiveIDs descreptiveIDs = new DescreptiveIDs();
 
-		
 		return descreptiveIDs;
 	}
 	
 	
 	
+
+	/**
+	 * Used to retrieve the available services (a list of
+	 * serviceID/ServiceName/ServiceDescription triplet) already registered by a
+	 * specific user. Requires as input the Service ID.
+	 * 
+	 * @param applicationID
+	 * @return
+	 */
+	@GET
+	@Path("/getAvailableServiceIDs")
+	public DescreptiveIDs getAvailableServiceIDs(@QueryParam("applicationID") String applicationID) {
+
+		DescreptiveIDs descreptiveIDs = new DescreptiveIDs();
+
+		return descreptiveIDs;
+	}
 	
+	/**
+	 * Used to retrieve the services defined by a user. It returns an OpenIoT
+	 * Service Description Specification. Requires as input the User ID.
+	 * 
+	 * @param userID
+	 * @return
+	 */
+	@GET
+	@Path("/getAvailableApps")
+	public OSDSpec getAvailableApps(@QueryParam("userID") String userID) {
+
+		OSDSpec osdSpec = new OSDSpec();
+
+		return osdSpec;
+	}
 	
 }
