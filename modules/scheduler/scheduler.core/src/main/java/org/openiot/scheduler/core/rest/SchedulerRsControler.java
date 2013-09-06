@@ -1,23 +1,23 @@
 package org.openiot.scheduler.core.rest;
 
 /**
- * Copyright (c) 2011-2014, OpenIoT
+ *    Copyright (c) 2011-2014, OpenIoT
+ *    
+ *    This file is part of OpenIoT.
  *
- * This library is free software; you can redistribute it and/or
- * modify it either under the terms of the GNU Lesser General Public
- * License version 2.1 as published by the Free Software Foundation
- * (the "LGPL"). If you do not alter this
- * notice, a recipient may use your version of this file under the LGPL.
+ *    OpenIoT is free software: you can redistribute it and/or modify
+ *    it under the terms of the GNU Lesser General Public License as published by
+ *    the Free Software Foundation, version 3 of the License.
  *
- * You should have received a copy of the LGPL along with this library
- * in the file COPYING-LGPL-2.1; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ *    OpenIoT is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *    GNU Lesser General Public License for more details.
  *
- * This software is distributed on an "AS IS" basis, WITHOUT WARRANTY
- * OF ANY KIND, either express or implied. See the LGPL  for
- * the specific language governing rights and limitations.
+ *    You should have received a copy of the GNU Lesser General Public License
+ *    along with OpenIoT.  If not, see <http://www.gnu.org/licenses/>.
  *
- * Contact: OpenIoT mailto: info@openiot.eu
+ *     Contact: OpenIoT mailto: info@openiot.eu
  */
 
 import javax.ws.rs.Consumes;
@@ -152,7 +152,7 @@ public class SchedulerRsControler {
 	public void unregisterApp(String applicationID) {
 
 		
-
+		//TODO: Implement this functionality
 
 	}	
 	
@@ -166,7 +166,7 @@ public class SchedulerRsControler {
 	@Path("/updateApp")
 	public void updateApp(OSDSpec osdSpec) {
 
-
+		//TODO: Implement this functionality
 
 	}	
 	
@@ -182,6 +182,8 @@ public class SchedulerRsControler {
 	@Path("/getApplication")
 	public OAMO getApplication(@QueryParam("applicationID") String applicationID) {
 
+		//TODO: Implement this functionality
+		
 		OAMO oamo = new OAMO();
 
 		return oamo;
@@ -202,6 +204,8 @@ public class SchedulerRsControler {
 	@Path("/getService")
 	public OSMO getService(@QueryParam("serviceID") String serviceID) {
 
+		//TODO: Implement this functionality
+		
 		OSMO osmo = new OSMO();
 
 		return osmo;
@@ -222,6 +226,8 @@ public class SchedulerRsControler {
 	@Path("/getAvailableAppIDs")
 	public DescreptiveIDs getAvailableAppIDs(@QueryParam("userID") String userID) {
 
+		//TODO: Implement this functionality
+		
 		DescreptiveIDs descreptiveIDs = new DescreptiveIDs();
 
 		return descreptiveIDs;
@@ -242,6 +248,8 @@ public class SchedulerRsControler {
 	@Path("/getAvailableServiceIDs")
 	public DescreptiveIDs getAvailableServiceIDs(@QueryParam("applicationID") String applicationID) {
 
+		//TODO: Implement this functionality
+		
 		DescreptiveIDs descreptiveIDs = new DescreptiveIDs();
 
 		return descreptiveIDs;
@@ -258,6 +266,8 @@ public class SchedulerRsControler {
 	@Path("/getAvailableApps")
 	public OSDSpec getAvailableApps(@QueryParam("userID") String userID) {
 
+		//TODO: Implement this functionality
+		
 		OSDSpec osdSpec = new OSDSpec();
 
 		return osdSpec;
