@@ -27,46 +27,22 @@ public class ServiceDeliveryUtilityManagerUI {
 
 	private JFrame frmSdumClient;
 	
-	private static ServiceDeliveryUtilityManagerClient serviceDeliveryUtilityManagerClient;
+	private static ServiceDeliveryUtilityManagerClient sdumClient;
 	private JTextField textFieldServiceID;
 	
-
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
+	
+	public ServiceDeliveryUtilityManagerUI() 
+	{
+		sdumClient = new ServiceDeliveryUtilityManagerClient("http://localhost:8080/sdum.core");
 		
-		serviceDeliveryUtilityManagerClient = new ServiceDeliveryUtilityManagerClient("http://localhost:8080/sdum.core");
-		
-		
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					
-					// Set System L&F
-					UIManager.setLookAndFeel(
-				            UIManager.getSystemLookAndFeelClassName());
-					
-					ServiceDeliveryUtilityManagerUI window = new ServiceDeliveryUtilityManagerUI();
-					window.frmSdumClient.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
-
-	/**
-	 * Create the application.
-	 */
-	public ServiceDeliveryUtilityManagerUI() {
 		initialize();
 	}
 
 	/**
 	 * Initialize the contents of the frame.
 	 */
-	private void initialize() {
+	private void initialize() 
+	{
 		frmSdumClient = new JFrame();
 		frmSdumClient.setTitle("SD&UM Client");
 		frmSdumClient.setBounds(100, 100, 450, 152);
@@ -133,20 +109,37 @@ public class ServiceDeliveryUtilityManagerUI {
 		panel_1.setLayout(gl_panel_1);
 		btnWelcome.addActionListener(new BtnWelcomeActionListener());
 	}
-	private class BtnWelcomeActionListener implements ActionListener {
-		public void actionPerformed(ActionEvent e) {
-			
-			serviceDeliveryUtilityManagerClient.welcomeMessage();
-			
-			
+	private class BtnWelcomeActionListener implements ActionListener 
+	{
+		public void actionPerformed(ActionEvent e) 
+		{			
+			sdumClient.welcomeMessage();
 		}
 	}
-	private class BtnPollForReportActionListener implements ActionListener {
-		public void actionPerformed(ActionEvent e) {
-			
-			
-			serviceDeliveryUtilityManagerClient.pollForReport(textFieldServiceID.getText());
-			
+	private class BtnPollForReportActionListener implements ActionListener 
+	{
+		public void actionPerformed(ActionEvent e) 
+		{			
+			sdumClient.pollForReport(textFieldServiceID.getText());
 		}
+	}
+	
+	
+	public static void main(String[] args) 
+	{		
+		EventQueue.invokeLater(new Runnable() 
+		{
+			public void run() {
+				try {					
+					// Set System L&F
+					UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+					
+					ServiceDeliveryUtilityManagerUI window = new ServiceDeliveryUtilityManagerUI();
+					window.frmSdumClient.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
 	}
 }

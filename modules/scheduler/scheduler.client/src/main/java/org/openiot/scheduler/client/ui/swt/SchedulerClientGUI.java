@@ -11,7 +11,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 
-public class SchedulerUserInterface {
+public class SchedulerClientGUI {
 
 	protected Shell shell;
 	private static SchedulerClient schedulerClient;
@@ -24,7 +24,7 @@ public class SchedulerUserInterface {
 		
 		schedulerClient = new SchedulerClient("http://localhost:8080/scheduler.core");
 		try {
-			SchedulerUserInterface window = new SchedulerUserInterface();
+			SchedulerClientGUI window = new SchedulerClientGUI();
 			window.open();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -100,7 +100,7 @@ public class SchedulerUserInterface {
 		public void widgetSelected(SelectionEvent e) {
 			
 			
-			schedulerClient.registerService();
+			schedulerClient.registerDemoService();
 			
 			
 		}

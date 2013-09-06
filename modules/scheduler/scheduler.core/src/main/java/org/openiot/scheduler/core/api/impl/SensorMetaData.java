@@ -1,6 +1,6 @@
 package org.openiot.scheduler.core.api.impl;
 
-public class FullMeta 
+public class SensorMetaData 
 {
 	private String sensorType;
 	private String measuredVal;

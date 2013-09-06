@@ -35,6 +35,7 @@ import org.openiot.scheduler.core.utils.sparql.SesameSPARQLClient;
 import org.openrdf.query.BindingSet;
 import org.openrdf.query.QueryEvaluationException;
 import org.openrdf.query.TupleQueryResult;
+import org.openrdf.repository.RepositoryException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,25 +45,26 @@ import com.hp.hpl.jena.vocabulary.XSD;
 
 /**
  * @author Nikos Kefalakis (nkef) e-mail: nkef@ait.edu.gr
- * 
+ *  
  */
 public class DiscoverSensorsImpl 
 {	
-	private static class QueriesV2
+	private static class Queries
 	{
 		private static String openiotMetaGraph = "http://lsm.deri.ie/OpenIoT/sensormeta#";
 		private static String openiotDataGraph = "http://lsm.deri.ie/OpenIoT/sensordata#";
-		
-		public static ArrayList<FullMeta> parseSensorFullMeta(TupleQueryResult qres)
+
+				
+		public static ArrayList<SensorMetaData> parseSensorFullMeta(TupleQueryResult qres)
 		{
-			ArrayList<FullMeta> fullMetas = new ArrayList<FullMeta>();
+			ArrayList<SensorMetaData> fullMetas = new ArrayList<SensorMetaData>();
 			try 
 			{
 				while (qres.hasNext())
 				{
 					BindingSet b = qres.next();
 					Set names = b.getBindingNames();
-					FullMeta fm = new FullMeta();
+					SensorMetaData fm = new SensorMetaData();
 					
 					for (Object n : names)
 					{						
@@ -145,6 +147,7 @@ public class DiscoverSensorsImpl
 			}
 		}
 		
+		
 		public static String getDataFromSensorsInArea(double longitude, double latitude, float radius)
 		{
 			StringBuilder update = new StringBuilder();	        
@@ -207,7 +210,9 @@ public class DiscoverSensorsImpl
 		}
 	}
 	
-
+	final static Logger logger = LoggerFactory.getLogger(DiscoverSensorsImpl.class);
+	
+	
 	
 	private String userID;
 	private double longitude;
@@ -215,9 +220,7 @@ public class DiscoverSensorsImpl
 	private float radius;
 	
 	private SensorTypes sensorTypes = null;
-
-	final static Logger logger = LoggerFactory.getLogger(DiscoverSensorsImpl.class);
-
+	
 	public DiscoverSensorsImpl(String userID, double longitude, double latitude, float radius) 
 	{
 		this.userID = userID;
@@ -231,12 +234,13 @@ public class DiscoverSensorsImpl
 				", latitude=" + latitude + 
 				", radius=" + radius);				
 
-		discoversensorsV2();
+		discoversensors();
 	}
 	
 		
 	/**
-	 * @return Returns the SensorTypes, within the given area defined by the lon,lat and rad parameters 
+	 * @return Returns the SensorTypes, within the given area defined by the 
+	 * lon,lat and rad parameters 
 	 */
 	public SensorTypes getSensorTypes() 
 	{
@@ -244,21 +248,28 @@ public class DiscoverSensorsImpl
 	}
 	
 	//helper methods
-	private void discoversensorsV2() 
+	private void discoversensors() 
 	{
 		sensorTypes = new SensorTypes();
 
-		SesameSPARQLClient sparqlCl = new SesameSPARQLClient();
-		TupleQueryResult qres = sparqlCl.sparqlToQResult(QueriesV2.getDataFromSensorsInArea(longitude, latitude, radius));
-		List<FullMeta> fullMetaData = QueriesV2.parseSensorFullMeta(qres);
+		SesameSPARQLClient sparqlCl = null;
+		try {
+			sparqlCl = new SesameSPARQLClient();
+		} catch (RepositoryException e) {			
+			logger.error("Init sparql repository error. Returning an empty SensorTypes object. ",e);
+			return;
+		}
 		
-		qres = sparqlCl.sparqlToQResult(QueriesV2.getSensLabelTypeInArea(longitude, latitude, radius));
-		List<String> sensorTypes2 = QueriesV2.parseLabelTypeInArea(qres);
+		TupleQueryResult qres = sparqlCl.sparqlToQResult(Queries.getDataFromSensorsInArea(longitude, latitude, radius));
+		List<SensorMetaData> fullMetaData = Queries.parseSensorFullMeta(qres);
+		
+		qres = sparqlCl.sparqlToQResult(Queries.getSensLabelTypeInArea(longitude, latitude, radius));
+		List<String> sensorTypes2 = Queries.parseLabelTypeInArea(qres);
 
 		for (int i=0; i<sensorTypes2.size(); i++) 
 		{
 			SensorType sensorType = new SensorType();
-			sensorType.setId("http://www.w3.org/2000/01/rdf-schema#label");
+			//sensorType.setId("http://www.w3.org/2000/01/rdf-schema#label");
 			sensorType.setName(sensorTypes2.get(i));	
 			
 			for (int j=0; j<fullMetaData.size(); j++) 
@@ -266,7 +277,7 @@ public class DiscoverSensorsImpl
 				if(sensorTypes2.get(i).equals(fullMetaData.get(j).getSensorType()))
 				{
 					MeasurementCapability mc = new MeasurementCapability();
-					mc.setId("http://www.w3.org/2000/01/rdf-schema#label");
+					//mc.setId("http://www.w3.org/2000/01/rdf-schema#label");
 					mc.setType(fullMetaData.get(j).getMeasuredVal());
 					
 					Unit unit = new Unit();
