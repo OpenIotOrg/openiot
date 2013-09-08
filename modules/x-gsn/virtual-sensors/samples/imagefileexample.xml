@@ -1,0 +1,28 @@
+<virtual-sensor name="ImageFileExample" priority="10">
+	<processing-class>
+		<class-name>gsn.vsensor.BridgeVirtualSensor</class-name>
+		<init-params />
+		<output-structure>
+			<field name="image" type="binary:image/png"/>
+      	</output-structure>
+	</processing-class>
+	<description>This virtual sensor reads images from a local folder</description>
+	<life-cycle pool-size="10" />
+	<addressing/>
+
+	<streams>
+		<stream name="input1">
+			<source alias="source1" sampling-rate="1" storage-size="1">
+				<address wrapper="imagefile">
+                    <predicate key="directory">./images</predicate>
+                    <predicate key="time-format">yyyyMMddHHmm</predicate>
+                    <predicate key="file-mask">^image(\d{12}).png$</predicate>
+                    <predicate key="extension">png</predicate>
+                    <predicate key="rate">3600000</predicate> <!-- in milliseconds -->
+				</address>
+				<query>SELECT * FROM wrapper</query>
+			</source>
+			<query>SELECT * FROM source1</query>
+		</stream>
+	</streams>
+</virtual-sensor>

@@ -1,0 +1,29 @@
+<virtual-sensor name="GPS2" priority="10">
+	<processing-class>
+		<class-name>gsn.vsensor.BridgeVirtualSensor</class-name>
+		<init-params />
+		<output-structure />
+	</processing-class>
+	<description>Not Specified, please edit the file
+		$INSTALL_PATH/virtual-sensors/localTimeVS.xml.</description>
+	<life-cycle pool-size="10" />
+	<addressing>
+		<predicate key="geographical">Not Specified, please edit the file
+			$INSTALL_PATH/virtual-sensors/localTimeVS.xml.</predicate>
+		<predicate key="LATITUDE">37.4</predicate>
+		<predicate key="LONGITUDE">-122.1</predicate>
+	</addressing>
+	<storage history-size="1m" />
+	<streams>
+		<stream name="input1">
+			<source alias="source1" sampling-rate="1" storage-size="1">
+				<address wrapper="system-time">
+					<predicate key="HOST">localhost</predicate>
+					<predicate key="PORT">22001</predicate>
+				</address>
+				<query>select * from wrapper</query>
+			</source>
+			<query>select * from source1</query>
+		</stream>
+	</streams>
+</virtual-sensor> 

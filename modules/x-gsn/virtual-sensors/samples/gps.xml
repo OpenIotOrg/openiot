@@ -1,0 +1,45 @@
+<virtual-sensor name="GPSVS">
+	<processing-class>
+		<class-name>gsn.vsensor.BridgeVirtualSensor</class-name>
+		<init-params />
+		<web-input password="test">
+			<command name="ploppy">
+				<field name="plop1" type="radio:apple|orange|banana">one</field>
+				<field name="plop2" type="*checkbox:apple|orange|banana">two</field>
+				<field name="plop3" type="select:apple|orange|banana">three</field>
+			</command>
+			<command name="test">
+				<field name="reset1" type="byte" />
+				<field name="reset2" type="*binary:2mb">Files Size of 2MB
+					max, The * means optional.</field>
+			</command>
+		</web-input>
+		<output-structure>
+			<field name="latitude" type="double">tested desc</field>
+			<field name="longitude" type="double" />
+			<field name="temperature" type="double" />
+			<field name="light" type="double" />
+			<field name="camera" type="binary:image/jpeg" />
+		</output-structure>
+	</processing-class>
+	<description>Virtual sensor producing random locations and
+		sensor readings for testing in GPS applications.</description>
+
+	<life-cycle pool-size="10" />
+	<addressing>
+		<predicate key="type">test-sensor</predicate>
+	</addressing>
+	<storage history-size="1m" />
+	<streams>
+		<stream name="sensor1">
+			<source alias="source1" storage-size="1" sampling-rate="1">
+				<address wrapper="gps-test">
+					<predicate key="rate">1000</predicate>
+					<predicate key="picture">images/coin.jpeg</predicate>
+				</address>
+				<query>select * from wrapper</query>
+			</source>
+			<query>select * from source1</query>
+		</stream>
+	</streams>
+</virtual-sensor> 

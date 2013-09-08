@@ -1,0 +1,801 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions targetNamespace="http://standard.webservice.gsn" xmlns:ns1="http://org.apache.axis2/xsd" xmlns:ns="http://standard.webservice.gsn" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:ax23="http://datarequest.http.gsn/xsd" xmlns:ax21="http://standard.webservice.gsn/xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/">
+  <wsdl:types>
+    <xs:schema attributeFormDefault="qualified" elementFormDefault="qualified" targetNamespace="http://standard.webservice.gsn/xsd">
+            <xs:complexType name="GSNWebService_ACDetails">
+                <xs:sequence>
+                    <xs:element maxOccurs="1" minOccurs="1" name="username" nillable="false" type="xs:string"/>
+                    <xs:element maxOccurs="1" minOccurs="1" name="password" nillable="false" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="GSNWebService_ContainerDetails">
+                <xs:sequence>
+                    <xs:element maxOccurs="1" minOccurs="1" name="port" type="xs:int"/>
+                    <xs:element maxOccurs="1" minOccurs="0" name="sslPort" type="xs:int"/>
+                    <xs:element maxOccurs="1" minOccurs="0" name="author" nillable="false" type="xs:string"/>
+                    <xs:element maxOccurs="1" minOccurs="0" name="description" nillable="false" type="xs:string"/>
+                    <xs:element maxOccurs="1" minOccurs="0" name="email" nillable="false" type="xs:string"/>
+                    <xs:element maxOccurs="1" minOccurs="0" name="name" nillable="false" type="xs:string"/>
+                    <xs:element maxOccurs="1" minOccurs="0" name="sslKeyPassword" nillable="false" type="xs:string"/>
+                    <xs:element maxOccurs="1" minOccurs="0" name="sslKeystorePassword" nillable="false" type="xs:string"/>
+                    <xs:element maxOccurs="1" minOccurs="0" name="timeFormat" nillable="false" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="GSNWebService_FieldSelector">
+                <xs:attribute name="vsname" type="xs:string" use="required"/>
+                <xs:sequence>
+                    <xs:element maxOccurs="unbounded" minOccurs="0" name="fieldNames" nillable="true" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:simpleType name="GSNWebService_DetailsType">
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="INFO"/>
+                    <xs:enumeration value="PROCESSOR"/>
+                    <xs:enumeration value="ADDRESSING"/>
+                    <xs:enumeration value="OUTPUTSTRUCTURE"/>
+                    <xs:enumeration value="WRAPPER"/>
+                </xs:restriction>
+            </xs:simpleType>
+            <xs:complexType name="GSNWebService_QueryResult">
+                <xs:attribute name="hasNext" type="xs:boolean" use="required"/>
+                <xs:attribute name="vsname" type="xs:string" use="required"/>
+                <xs:attribute name="sid" type="xs:string" use="required"/>
+                <xs:sequence>
+                    <xs:element maxOccurs="1" minOccurs="0" name="format" nillable="false" type="ax21:GSNWebService_StreamElement"/>
+                    <xs:element maxOccurs="unbounded" minOccurs="0" name="streamElements" nillable="false" type="ax21:GSNWebService_StreamElement"/>
+                    <xs:element maxOccurs="1" minOccurs="0" name="executedQuery" nillable="false" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="GSNWebService_StreamElement">
+                <xs:attribute name="timed" type="xs:string" use="optional"/>
+                <xs:sequence>
+                    <xs:element maxOccurs="unbounded" minOccurs="0" name="field" nillable="false" type="ax21:GSNWebService_DataField"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="GSNWebService_DataField">
+                <xs:simpleContent>
+                    <xs:extension base="xs:string">
+                        <xs:attribute name="name" type="xs:string" use="optional"/>
+                        <xs:attribute name="type" type="xs:string" use="optional"/>
+                        <xs:attribute name="description" type="xs:string" use="optional"/>
+                    </xs:extension>
+                </xs:simpleContent>
+            </xs:complexType>
+            <xs:complexType name="GSNWebService_VirtualSensorDetails">
+                <xs:attribute name="vsname" type="xs:string" use="required"/>
+                <xs:sequence>
+                    <xs:element maxOccurs="1" minOccurs="0" name="addressing" nillable="false" type="ax21:GSNWebService_ConfAddressing"/>
+                    <xs:element maxOccurs="1" minOccurs="0" name="info" nillable="false" type="ax21:GSNWebService_ConfInfo"/>
+                    <xs:element maxOccurs="1" minOccurs="0" name="outputStructure" nillable="false" type="ax21:GSNWebService_ConfOutputStructure"/>
+                    <xs:element maxOccurs="1" minOccurs="0" name="processor" nillable="false" type="ax21:GSNWebService_ConfProcessor"/>
+                    <xs:element maxOccurs="1" minOccurs="0" name="wrapper" nillable="false" type="ax21:GSNWebService_ConfWrapper"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="GSNWebService_ConfAddressing">
+                <xs:sequence>
+                    <xs:element maxOccurs="unbounded" minOccurs="0" name="predicates" nillable="false" type="ax21:GSNWebService_ConfPredicate"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="GSNWebService_ConfPredicate">
+                <xs:simpleContent>
+                    <xs:extension base="xs:string">
+                        <xs:attribute name="name" type="xs:string" use="required"/>
+                    </xs:extension>
+                </xs:simpleContent>
+            </xs:complexType>
+            <xs:complexType name="GSNWebService_ConfInfo">
+                <xs:sequence>
+                    <xs:element maxOccurs="1" minOccurs="0" name="author" nillable="false" type="xs:string"/>
+                    <xs:element maxOccurs="1" minOccurs="0" name="description" nillable="false" type="xs:string"/>
+                    <xs:element maxOccurs="1" minOccurs="0" name="email" nillable="false" type="xs:string"/>
+                    <xs:element maxOccurs="1" minOccurs="0" name="rate" nillable="false" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="GSNWebService_ConfOutputStructure">
+                <xs:sequence>
+                    <xs:element maxOccurs="unbounded" minOccurs="0" name="fields" nillable="false" type="ax21:GSNWebService_DataField"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="GSNWebService_ConfProcessor">
+                <xs:attribute name="className" type="xs:string" use="required"/>
+                <xs:sequence>
+                    <xs:element maxOccurs="unbounded" minOccurs="0" name="initParams" nillable="false" type="ax21:GSNWebService_ConfPredicate"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="GSNWebService_ConfWrapper">
+                <xs:sequence>
+                    <xs:element maxOccurs="unbounded" minOccurs="0" name="wrapperDetails" nillable="false" type="ax21:GSNWebService_WrapperDetails"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="GSNWebService_WrapperDetails">
+                <xs:sequence>
+                    <xs:element maxOccurs="1" minOccurs="1" name="wrapperURLs" nillable="false" type="ax21:GSNWebService_WrapperURL"/>
+                    <xs:element maxOccurs="unbounded" minOccurs="0" name="outputFormat" nillable="false" type="ax21:GSNWebService_DataField"/>
+                    <xs:element maxOccurs="unbounded" minOccurs="0" name="predicates" nillable="false" type="ax21:GSNWebService_ConfPredicate"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="GSNWebService_WrapperURL">
+                <xs:attribute name="virtualSensor" type="xs:string" use="required"/>
+                <xs:attribute name="source" type="xs:string" use="required"/>
+                <xs:attribute name="stream" type="xs:string" use="required"/>
+                <xs:attribute name="wrapper" type="xs:string" use="required"/>
+            </xs:complexType>
+        </xs:schema>
+    <xs:schema attributeFormDefault="qualified" elementFormDefault="qualified" targetNamespace="http://datarequest.http.gsn/xsd">
+            <xs:complexType name="AbstractCriterion">
+                <xs:sequence/>
+            </xs:complexType>
+            <xs:complexType name="StandardCriterion">
+                <xs:complexContent>
+                    <xs:extension base="ax23:AbstractCriterion">
+                        <xs:attribute name="critJoin" type="xs:string" use="required"/>
+                        <xs:attribute name="field" type="xs:string" use="required"/>
+                        <xs:attribute name="negation" type="xs:string" use="required"/>
+                        <xs:attribute name="operator" type="xs:string" use="required"/>
+                        <xs:attribute name="value" type="xs:string" use="required"/>
+                        <xs:attribute name="vsname" type="xs:string" use="required"/>
+                    </xs:extension>
+                </xs:complexContent>
+            </xs:complexType>
+            <xs:complexType name="AggregationCriterion">
+                <xs:complexContent>
+                    <xs:extension base="ax23:AbstractCriterion">
+                        <xs:attribute name="groupOperator" type="xs:string" use="required"/>
+                        <xs:attribute name="timeRange" type="xs:string" use="required"/>
+                    </xs:extension>
+                </xs:complexContent>
+            </xs:complexType>
+        </xs:schema>
+    <xs:schema attributeFormDefault="qualified" elementFormDefault="qualified" targetNamespace="http://standard.webservice.gsn" xmlns:ax22="http://standard.webservice.gsn/xsd" xmlns:ax24="http://datarequest.http.gsn/xsd">
+            <xs:import namespace="http://standard.webservice.gsn/xsd"/>
+            <xs:import namespace="http://datarequest.http.gsn/xsd"/>
+            <xs:element name="getContainerInfo">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element maxOccurs="1" minOccurs="0" name="acDetails" nillable="false" type="ax22:GSNWebService_ACDetails"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="getContainerInfoResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element maxOccurs="1" minOccurs="1" name="containerDetails" nillable="false" type="ax22:GSNWebService_ContainerDetails"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="getLatestMultiData">
+                <xs:complexType>
+                    <xs:attribute name="timeFormat" type="xs:string" use="optional"/>
+                    <xs:sequence>
+                        <xs:element maxOccurs="1" minOccurs="0" name="acDetails" nillable="false" type="ax22:GSNWebService_ACDetails"/>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="fieldSelector" nillable="false" type="ax22:GSNWebService_FieldSelector"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="getLatestMultiDataResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="queryResult" nillable="false" type="ax22:GSNWebService_QueryResult"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="getMultiData">
+                <xs:complexType>
+                    <xs:attribute name="from" type="xs:long" use="optional"/>
+                    <xs:attribute name="to" type="xs:long" use="optional"/>
+                    <xs:attribute name="nb" type="xs:int" use="optional"/>
+                    <xs:attribute name="timeFormat" type="xs:string" use="optional"/>
+                    <xs:sequence>
+                        <xs:element maxOccurs="1" minOccurs="0" name="acDetails" nillable="false" type="ax22:GSNWebService_ACDetails"/>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="fieldSelector" nillable="false" type="ax22:GSNWebService_FieldSelector"/>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="conditions" nillable="false" type="ax24:StandardCriterion"/>
+                        <xs:element maxOccurs="1" minOccurs="0" name="aggregation" nillable="false" type="ax24:AggregationCriterion"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="getMultiDataResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="queryResult" nillable="false" type="ax22:GSNWebService_QueryResult"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="getNextData">
+                <xs:complexType>
+                    <xs:attribute name="sid" type="xs:string" use="required"/>
+                    <xs:sequence>
+                        <xs:element maxOccurs="1" minOccurs="0" name="acDetails" nillable="false" type="ax22:GSNWebService_ACDetails"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="getNextDataResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="queryResult" nillable="false" type="ax22:GSNWebService_QueryResult"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="getVirtualSensorsDetails">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element maxOccurs="1" minOccurs="0" name="acDetails" nillable="false" type="ax22:GSNWebService_ACDetails"/>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="fieldSelector" nillable="false" type="ax22:GSNWebService_FieldSelector"/>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="detailsType" nillable="false" type="ax22:GSNWebService_DetailsType"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="getVirtualSensorsDetailsResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="virtualSensorDetails" nillable="false" type="ax22:GSNWebService_VirtualSensorDetails"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="listVirtualSensorNames">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element maxOccurs="1" minOccurs="0" name="acDetails" nillable="false" type="ax22:GSNWebService_ACDetails"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="listVirtualSensorNamesResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="virtualSensorName" nillable="false" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="listWrapperURLs">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element maxOccurs="1" minOccurs="0" name="acDetails" nillable="false" type="ax22:GSNWebService_ACDetails"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="listWrapperURLsResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="wrapperURLs" nillable="false" type="ax22:GSNWebService_WrapperURL"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="createVirtualSensor">
+                <xs:complexType>
+                    <xs:attribute name="vsname" type="xs:string" use="required"/>
+                    <xs:sequence>
+                        <xs:element maxOccurs="1" minOccurs="0" name="acDetails" nillable="false" type="ax22:GSNWebService_ACDetails"/>
+                        <xs:element maxOccurs="1" minOccurs="1" name="descriptionFileContent" nillable="false" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="createVirtualSensorResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element maxOccurs="1" minOccurs="1" name="status" type="xs:boolean"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="deleteVirtualSensor">
+                <xs:complexType>
+                    <xs:attribute name="vsname" type="xs:string" use="required"/>
+                    <xs:sequence>
+                        <xs:element maxOccurs="1" minOccurs="0" name="acDetails" nillable="false" type="ax22:GSNWebService_ACDetails"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="deleteVirtualSensorResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element maxOccurs="1" minOccurs="1" name="status" type="xs:boolean"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="registerQuery">
+                <xs:complexType>
+                    <xs:attribute name="queryName" type="xs:string" use="required"/>
+                    <xs:attribute name="query" type="xs:string" use="required"/>
+                    <xs:sequence>
+                        <xs:element maxOccurs="1" minOccurs="0" name="acDetails" nillable="false" type="ax22:GSNWebService_ACDetails"/>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="outputStructure" nillable="false" type="ax22:GSNWebService_DataField"/>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="vsnames" nillable="false" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="registerQueryResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element maxOccurs="1" minOccurs="1" name="status" type="xs:boolean"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="unregisterQuery">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element maxOccurs="1" minOccurs="0" name="acDetails" nillable="false" type="ax22:GSNWebService_ACDetails"/>
+                        <xs:element maxOccurs="1" minOccurs="1" name="queryName" nillable="false" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="unregisterQueryResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element maxOccurs="1" minOccurs="1" name="status" type="xs:boolean"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:schema>
+  </wsdl:types>
+  <wsdl:message name="listVirtualSensorNamesResponse">
+    <wsdl:part name="parameters" element="ns:listVirtualSensorNamesResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getContainerInfoRequest">
+    <wsdl:part name="parameters" element="ns:getContainerInfo">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="listWrapperURLsRequest">
+    <wsdl:part name="parameters" element="ns:listWrapperURLs">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="createVirtualSensorResponse">
+    <wsdl:part name="parameters" element="ns:createVirtualSensorResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="deleteVirtualSensorRequest">
+    <wsdl:part name="parameters" element="ns:deleteVirtualSensor">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getNextDataResponse">
+    <wsdl:part name="parameters" element="ns:getNextDataResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="unregisterQueryResponse">
+    <wsdl:part name="parameters" element="ns:unregisterQueryResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="registerQueryRequest">
+    <wsdl:part name="parameters" element="ns:registerQuery">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getVirtualSensorsDetailsRequest">
+    <wsdl:part name="parameters" element="ns:getVirtualSensorsDetails">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getMultiDataRequest">
+    <wsdl:part name="parameters" element="ns:getMultiData">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getNextDataRequest">
+    <wsdl:part name="parameters" element="ns:getNextData">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="unregisterQueryRequest">
+    <wsdl:part name="parameters" element="ns:unregisterQuery">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="listWrapperURLsResponse">
+    <wsdl:part name="parameters" element="ns:listWrapperURLsResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getVirtualSensorsDetailsResponse">
+    <wsdl:part name="parameters" element="ns:getVirtualSensorsDetailsResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getContainerInfoResponse">
+    <wsdl:part name="parameters" element="ns:getContainerInfoResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getMultiDataResponse">
+    <wsdl:part name="parameters" element="ns:getMultiDataResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="registerQueryResponse">
+    <wsdl:part name="parameters" element="ns:registerQueryResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="deleteVirtualSensorResponse">
+    <wsdl:part name="parameters" element="ns:deleteVirtualSensorResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getLatestMultiDataRequest">
+    <wsdl:part name="parameters" element="ns:getLatestMultiData">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getLatestMultiDataResponse">
+    <wsdl:part name="parameters" element="ns:getLatestMultiDataResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="createVirtualSensorRequest">
+    <wsdl:part name="parameters" element="ns:createVirtualSensor">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="listVirtualSensorNamesRequest">
+    <wsdl:part name="parameters" element="ns:listVirtualSensorNames">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="GSNWebServicePortType">
+    <wsdl:operation name="listVirtualSensorNames">
+      <wsdl:input message="ns:listVirtualSensorNamesRequest" wsaw:Action="urn:listVirtualSensorNames">
+    </wsdl:input>
+      <wsdl:output message="ns:listVirtualSensorNamesResponse" wsaw:Action="urn:listVirtualSensorNamesResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getMultiData">
+      <wsdl:input message="ns:getMultiDataRequest" wsaw:Action="urn:getMultiData">
+    </wsdl:input>
+      <wsdl:output message="ns:getMultiDataResponse" wsaw:Action="urn:getMultiDataResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getContainerInfo">
+      <wsdl:input message="ns:getContainerInfoRequest" wsaw:Action="urn:getContainerInfo">
+    </wsdl:input>
+      <wsdl:output message="ns:getContainerInfoResponse" wsaw:Action="urn:getContainerInfoResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="registerQuery">
+      <wsdl:input message="ns:registerQueryRequest" wsaw:Action="urn:registerQuery">
+    </wsdl:input>
+      <wsdl:output message="ns:registerQueryResponse" wsaw:Action="urn:registerQueryResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getNextData">
+      <wsdl:input message="ns:getNextDataRequest" wsaw:Action="urn:getNextData">
+    </wsdl:input>
+      <wsdl:output message="ns:getNextDataResponse" wsaw:Action="urn:getNextDataResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getLatestMultiData">
+      <wsdl:input message="ns:getLatestMultiDataRequest" wsaw:Action="urn:getLatestMultiData">
+    </wsdl:input>
+      <wsdl:output message="ns:getLatestMultiDataResponse" wsaw:Action="urn:getLatestMultiDataResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="unregisterQuery">
+      <wsdl:input message="ns:unregisterQueryRequest" wsaw:Action="urn:unregisterQuery">
+    </wsdl:input>
+      <wsdl:output message="ns:unregisterQueryResponse" wsaw:Action="urn:unregisterQueryResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="deleteVirtualSensor">
+      <wsdl:input message="ns:deleteVirtualSensorRequest" wsaw:Action="urn:deleteVirtualSensor">
+    </wsdl:input>
+      <wsdl:output message="ns:deleteVirtualSensorResponse" wsaw:Action="urn:deleteVirtualSensorResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getVirtualSensorsDetails">
+      <wsdl:input message="ns:getVirtualSensorsDetailsRequest" wsaw:Action="urn:getVirtualSensorsDetails">
+    </wsdl:input>
+      <wsdl:output message="ns:getVirtualSensorsDetailsResponse" wsaw:Action="urn:getVirtualSensorsDetailsResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="createVirtualSensor">
+      <wsdl:input message="ns:createVirtualSensorRequest" wsaw:Action="urn:createVirtualSensor">
+    </wsdl:input>
+      <wsdl:output message="ns:createVirtualSensorResponse" wsaw:Action="urn:createVirtualSensorResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="listWrapperURLs">
+      <wsdl:input message="ns:listWrapperURLsRequest" wsaw:Action="urn:listWrapperURLs">
+    </wsdl:input>
+      <wsdl:output message="ns:listWrapperURLsResponse" wsaw:Action="urn:listWrapperURLsResponse">
+    </wsdl:output>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="GSNWebServiceSoap12Binding" type="ns:GSNWebServicePortType">
+    <soap12:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="getContainerInfo">
+      <soap12:operation soapAction="urn:getContainerInfo" style="document"/>
+      <wsdl:input>
+        <soap12:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getMultiData">
+      <soap12:operation soapAction="urn:getMultiData" style="document"/>
+      <wsdl:input>
+        <soap12:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="listVirtualSensorNames">
+      <soap12:operation soapAction="urn:listVirtualSensorNames" style="document"/>
+      <wsdl:input>
+        <soap12:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getNextData">
+      <soap12:operation soapAction="urn:getNextData" style="document"/>
+      <wsdl:input>
+        <soap12:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="registerQuery">
+      <soap12:operation soapAction="urn:registerQuery" style="document"/>
+      <wsdl:input>
+        <soap12:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="unregisterQuery">
+      <soap12:operation soapAction="urn:unregisterQuery" style="document"/>
+      <wsdl:input>
+        <soap12:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getLatestMultiData">
+      <soap12:operation soapAction="urn:getLatestMultiData" style="document"/>
+      <wsdl:input>
+        <soap12:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="deleteVirtualSensor">
+      <soap12:operation soapAction="urn:deleteVirtualSensor" style="document"/>
+      <wsdl:input>
+        <soap12:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getVirtualSensorsDetails">
+      <soap12:operation soapAction="urn:getVirtualSensorsDetails" style="document"/>
+      <wsdl:input>
+        <soap12:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="createVirtualSensor">
+      <soap12:operation soapAction="urn:createVirtualSensor" style="document"/>
+      <wsdl:input>
+        <soap12:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="listWrapperURLs">
+      <soap12:operation soapAction="urn:listWrapperURLs" style="document"/>
+      <wsdl:input>
+        <soap12:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="GSNWebServiceHttpBinding" type="ns:GSNWebServicePortType">
+    <http:binding verb="POST"/>
+    <wsdl:operation name="getContainerInfo">
+      <http:operation location="GSNWebService/getContainerInfo"/>
+      <wsdl:input>
+        <mime:content part="getContainerInfo" type="text/xml"/>
+      </wsdl:input>
+      <wsdl:output>
+        <mime:content part="getContainerInfo" type="text/xml"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getMultiData">
+      <http:operation location="GSNWebService/getMultiData"/>
+      <wsdl:input>
+        <mime:content part="getMultiData" type="text/xml"/>
+      </wsdl:input>
+      <wsdl:output>
+        <mime:content part="getMultiData" type="text/xml"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="listVirtualSensorNames">
+      <http:operation location="GSNWebService/listVirtualSensorNames"/>
+      <wsdl:input>
+        <mime:content part="listVirtualSensorNames" type="text/xml"/>
+      </wsdl:input>
+      <wsdl:output>
+        <mime:content part="listVirtualSensorNames" type="text/xml"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getNextData">
+      <http:operation location="GSNWebService/getNextData"/>
+      <wsdl:input>
+        <mime:content part="getNextData" type="text/xml"/>
+      </wsdl:input>
+      <wsdl:output>
+        <mime:content part="getNextData" type="text/xml"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="registerQuery">
+      <http:operation location="GSNWebService/registerQuery"/>
+      <wsdl:input>
+        <mime:content part="registerQuery" type="text/xml"/>
+      </wsdl:input>
+      <wsdl:output>
+        <mime:content part="registerQuery" type="text/xml"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="unregisterQuery">
+      <http:operation location="GSNWebService/unregisterQuery"/>
+      <wsdl:input>
+        <mime:content part="unregisterQuery" type="text/xml"/>
+      </wsdl:input>
+      <wsdl:output>
+        <mime:content part="unregisterQuery" type="text/xml"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getLatestMultiData">
+      <http:operation location="GSNWebService/getLatestMultiData"/>
+      <wsdl:input>
+        <mime:content part="getLatestMultiData" type="text/xml"/>
+      </wsdl:input>
+      <wsdl:output>
+        <mime:content part="getLatestMultiData" type="text/xml"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="deleteVirtualSensor">
+      <http:operation location="GSNWebService/deleteVirtualSensor"/>
+      <wsdl:input>
+        <mime:content part="deleteVirtualSensor" type="text/xml"/>
+      </wsdl:input>
+      <wsdl:output>
+        <mime:content part="deleteVirtualSensor" type="text/xml"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getVirtualSensorsDetails">
+      <http:operation location="GSNWebService/getVirtualSensorsDetails"/>
+      <wsdl:input>
+        <mime:content part="getVirtualSensorsDetails" type="text/xml"/>
+      </wsdl:input>
+      <wsdl:output>
+        <mime:content part="getVirtualSensorsDetails" type="text/xml"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="createVirtualSensor">
+      <http:operation location="GSNWebService/createVirtualSensor"/>
+      <wsdl:input>
+        <mime:content part="createVirtualSensor" type="text/xml"/>
+      </wsdl:input>
+      <wsdl:output>
+        <mime:content part="createVirtualSensor" type="text/xml"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="listWrapperURLs">
+      <http:operation location="GSNWebService/listWrapperURLs"/>
+      <wsdl:input>
+        <mime:content part="listWrapperURLs" type="text/xml"/>
+      </wsdl:input>
+      <wsdl:output>
+        <mime:content part="listWrapperURLs" type="text/xml"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="GSNWebServiceSoap11Binding" type="ns:GSNWebServicePortType">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="getContainerInfo">
+      <soap:operation soapAction="urn:getContainerInfo" style="document"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getMultiData">
+      <soap:operation soapAction="urn:getMultiData" style="document"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="listVirtualSensorNames">
+      <soap:operation soapAction="urn:listVirtualSensorNames" style="document"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getNextData">
+      <soap:operation soapAction="urn:getNextData" style="document"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="registerQuery">
+      <soap:operation soapAction="urn:registerQuery" style="document"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="unregisterQuery">
+      <soap:operation soapAction="urn:unregisterQuery" style="document"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getLatestMultiData">
+      <soap:operation soapAction="urn:getLatestMultiData" style="document"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="deleteVirtualSensor">
+      <soap:operation soapAction="urn:deleteVirtualSensor" style="document"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getVirtualSensorsDetails">
+      <soap:operation soapAction="urn:getVirtualSensorsDetails" style="document"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="createVirtualSensor">
+      <soap:operation soapAction="urn:createVirtualSensor" style="document"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="listWrapperURLs">
+      <soap:operation soapAction="urn:listWrapperURLs" style="document"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="GSNWebService">
+    <wsdl:port name="GSNWebServiceHttpSoap11Endpoint" binding="ns:GSNWebServiceSoap11Binding">
+      <soap:address location="http://localhost:22001/services/standard/GSNWebService"/>
+    </wsdl:port>
+    <wsdl:port name="GSNWebServiceHttpSoap12Endpoint" binding="ns:GSNWebServiceSoap12Binding">
+      <soap12:address location="http://localhost:22001/services/standard/GSNWebService"/>
+    </wsdl:port>
+    <wsdl:port name="GSNWebServiceHttpEndpoint" binding="ns:GSNWebServiceHttpBinding">
+      <http:address location="http://localhost:22001/services/standard/GSNWebService"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

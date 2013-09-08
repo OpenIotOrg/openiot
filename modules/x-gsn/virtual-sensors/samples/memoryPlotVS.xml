@@ -1,0 +1,37 @@
+<virtual-sensor name="MemoryPlotVS" priority="11">
+	<processing-class>
+		<class-name>gsn.vsensor.ChartVirtualSensor</class-name>
+		<init-params>
+			<param name="input-Stream">DATA</param>
+			<param name="title">GSN Memory Usage</param>
+			<param name="type">ANY</param>
+			<param name="height">200</param>
+			<param name="width">300</param>
+			<param name="vertical-axis">Sensor Readings</param>
+			<param name="history-size">100</param>
+		</init-params>
+		<output-structure>
+			<field name="DATA" type="binary:image/jpeg" />
+		</output-structure>
+
+	</processing-class>
+	<description>Not Specified, please edit the file
+		$INSTALL_PATH/virtual-sensors/memoryPlotVS.xml</description>
+	<life-cycle pool-size="2" />
+	<addressing>
+		<predicate key="geographical">Not Specified, please edit the file
+			$INSTALL_PATH/virtual-sensors/memoryPlotVS.xml</predicate>
+	</addressing>
+	<storage history-size="1" />
+	<streams>
+		<stream name="DATA">
+			<source alias="source1" storage-size="1" sampling-rate="1">
+				<address wrapper="local">
+					<predicate key="NAME">MemoryMonitorVS</predicate>
+				</address>
+				<query>select HEAP,NON_HEAP,PENDING_FINALIZATION_COUNT,TIMED from wrapper</query>
+			</source>
+			<query>select * from source1</query>
+		</stream>
+	</streams>
+</virtual-sensor>

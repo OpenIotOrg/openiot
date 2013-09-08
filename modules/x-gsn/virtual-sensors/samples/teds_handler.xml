@@ -1,0 +1,51 @@
+<virtual-sensor name="TEDSDetectorVirtualSensor"
+	priority="11">
+	<processing-class>
+		<class-name>gsn.vsensor.BridgeVirtualSensor</class-name>
+		<init-params />
+		<output-structure>
+			<field name="ID" type="varchar(20)" />
+			<field name="TEDS" type="varchar(8000)" />
+			<field name="STATUS" type="varchar(20)" />
+			<field name="VSFILE" type="varchar(40)" />
+		</output-structure>
+	</processing-class>
+	<description>A vsensor to detect the sensor networks (cameras and
+		motes) using TEDS.</description>
+	<life-cycle pool-size="10" />
+	<addressing>
+		<predicate key="geographical">INM035</predicate>
+	</addressing>
+	<storage permanent-storage="false" history-size="1m" />
+	<streams>
+		<stream name="identified_cameras">
+			<source alias="detected_cameras" storage-size="1"
+				sampling-rate="1">
+				<address wrapper="teds-cam">
+					<predicate key="HOST">127.0.0.1</predicate>
+					<predicate key="PORT">9001</predicate>
+					<predicate key="RATE">7000</predicate>
+					<predicate key="templates-directory">templates-ieee1451</predicate>
+					<predicate key="template-file">camTemplate</predicate>
+					<predicate key="TIMEOUT">12000</predicate>
+				</address>
+				<query>select * from wrapper</query>
+			</source>
+			<query>select * from detected_cameras	</query>
+		</stream>
+		<stream name="identified_motes">
+			<source alias="detected_motes" storage-size="1" sampling-rate="1">
+				<address wrapper="teds-mote">
+					<predicate key="HOST">localhost</predicate>
+					<predicate key="PORT">9001</predicate>
+					<predicate key="templates-directory">templates-ieee1451</predicate>
+					<predicate key="template-file">moteTemplate</predicate>
+					<predicate key="TIMEOUT">12000</predicate>
+				</address>
+				<query>select * from wrapper</query>
+			</source>
+			<query>select * from detected_motes</query>
+		</stream>
+	</streams>
+</virtual-sensor>
+

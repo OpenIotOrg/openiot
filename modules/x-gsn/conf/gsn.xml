@@ -1,0 +1,39 @@
+<sensor-server>
+   <name>GSN Server</name>
+   <author>GSN Development Team.</author>
+   <email>my email address</email>
+   <description>Not Provided</description>
+   <port>22001</port>
+
+
+<!-- SSL Support, Optional -->
+<!--
+   <ssl-port>8443</ssl-port>
+   <ssl-key-store-password>changeit</ssl-key-store-password>
+   <ssl-key-password>changeit</ssl-key-password>
+-->
+<!--
+   <ssl-port>8443</ssl-port>
+   <ssl-key-store-password>/home/ivo/.keystore</ssl-key-store-password>
+   <ssl-key-password>password</ssl-key-password>
+-->
+<!-- <access-control>true</access-control> -->
+<!-- Main Storage Database, Mandatory -->
+<!-- <storage user="sa" password="" driver="org.h2.Driver" url="jdbc:h2:mem:gsn_mem_db" />   -->
+<storage user="sa" password="" driver="org.h2.Driver" url="jdbc:h2:file:MyFile" />  
+<!--<storage user="root" password="..." driver="com.mysql.jdbc.Driver" url="jdbc:mysql://localhost/gsn" /> --> 
+<!--<storage user="gsn" password="gsnpassword" driver="com.mysql.jdbc.Driver" url="jdbc:mysql://localhost/gsn" /> -->
+<!-- <storage user="gsn" password="gsn" driver="net.sourceforge.jtds.jdbc.Driver" url="jdbc:jtds:sqlserver://192.168.51.14:12345/gsn;cachemetadata=true;prepareSQL=3" />-->
+<!--<storage user="root" password="" driver="com.mysql.jdbc.Driver" url="jdbc:mysql://localhost/gsn" /> --> 
+<!--  <storage user="admin" password="" driver="org.postgresql.Driver" url="jdbc:postgresql://localhost/gsn" /> -->
+<!-- <storage user="root" password="" driver="com.mysql.jdbc.Driver" url="jdbc:mysql://localhost:3306/gsn" /> -->
+<!-- <storage user="gsn" password="gsn" driver="oracle.jdbc.driver.OracleDriver" url="jdbc:oracle:thin:@localhost:1521" /> -->
+<!-- <storage user="gsn" password="ge-S3-ne" driver="oracle.jdbc.driver.OracleDriver" url="jdbc:oracle:thin:@dom.slf.local:1521:sdbt" /> -->
+
+<!-- Processing Database, Optional. If not specified, the processing is implemented using the Main Storage Database specified above  -->
+<!--
+   <sliding>
+      <storage user="sa" password="" driver="org.h2.Driver" url="jdbc:h2:mem:sliding;DB_CLOSE_DELAY=-1" />
+   </sliding>
+-->
+</sensor-server>

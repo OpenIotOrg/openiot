@@ -1,0 +1,42 @@
+
+	<!--
+		This is template virtual sensor which can be used to quickly write a
+		new virtual sensor descriptor (VSD) file. Note that, this file is not
+		functional by itself, the parts which must be completed are market
+		with --- [3 dash] strings.
+	-->
+
+<virtual-sensor name="---" priority="10">
+	<processing-class>
+		<class-name>gsn.vsensor.BridgeVirtualSensor</class-name>
+		<init-params>
+			<param name="---">---</param>
+		</init-params>
+		<output-structure>
+			<field name="---" type="binary:image/jpeg" />
+		</output-structure>
+	</processing-class>
+	<description> --- </description>
+	<life-cycle pool-size="10" />
+	<addressing>
+		<predicate key="geographical"> --- </predicate>
+	</addressing>
+	<storage history-size="---" />
+	<streams>
+		<stream name="data">
+			<source alias="---" storage-size="---" sampling-rate="1">
+				<address wrapper="---">
+					<predicate key="name">---</predicate>
+				</address>
+				<query> --- </query>
+			</source>
+			<source alias="---" storage-size="---" sampling-rate="1">
+				<address wrapper="---">
+					<predicate key="name">---</predicate>
+				</address>
+				<query> --- </query>
+			</source>
+			<query> --- </query>
+		</stream>
+	</streams>
+</virtual-sensor> 

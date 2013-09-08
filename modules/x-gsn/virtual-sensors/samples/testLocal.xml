@@ -1,0 +1,28 @@
+<virtual-sensor name="TestLocal" priority="11">
+	<processing-class>
+		<class-name>gsn.vsensor.BridgeVirtualSensor</class-name>
+		<output-structure>
+			<field name="DATA" type="binary:image/jpeg" />
+		</output-structure>
+	</processing-class>
+	<description>Not Specified, please edit the file
+		$INSTALL_PATH/virtual-sensors/remoteTest.xml</description>
+	<life-cycle pool-size="10" />
+	<addressing>
+		<predicate key="geographical">Not Specified, please edit the file
+			$INSTALL_PATH/virtual-sensors/remoteTest.xml</predicate>
+	</addressing>
+	<storage history-size="1" />
+	<streams>
+		<stream name="DATA">
+			<source alias="source1" storage-size="1" sampling-rate="1">
+				<address wrapper="local">
+					<predicate key="NAME">MemoryPlotVS</predicate>
+				</address>
+				<query>select DATA,Timed from wrapper</query>
+			</source>
+			<query>select source1.DATA from source1</query>
+		</stream>
+	</streams>
+</virtual-sensor>
+

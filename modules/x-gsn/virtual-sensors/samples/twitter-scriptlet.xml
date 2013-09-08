@@ -1,0 +1,55 @@
+<virtual-sensor name="TwitterScriptlet" priority="10">
+    <processing-class>
+        <class-name>gsn.processor.ScriptletProcessor</class-name>
+        <init-params>
+            <param name="persistant">false</param>
+            <param name="scriptlet">
+                <![CDATA[
+                    // This script use Twitter to alert that the heap value (from the local wrapper)
+                    // has reached a new maxima.
+
+                    // Initialize the stateful variable maxima
+                    if ( ! isdef('maxima'))
+                        maxima = 0;
+
+                    // Comparing the new heap size with the maxima
+                    if (maxima < HEAP) {
+
+                        maxima = HEAP;
+
+                        def publicContent = "The HEAP maxima has been reached: " + HEAP + " at " + new Date();
+                        def privateContent = "Dear John Doe, I sugger you take a look to the last HEAP value: " + HEAP;
+                        def twitterUser = "timaret";
+                        def twitterPassword = "theTwitterPassword";
+                        def privateRecipient = "mr0111";
+
+                        // update the user public status
+                        updateTwitterStatus(twitterUser, twitterPassword, publicContent);
+
+                        // send a private message to the 'mr0111' twitter user.
+                        sendTwitterMessage(twitterUser, twitterPassword, privateContent, privateRecipient);
+                    }
+                ]]>
+            </param>
+        </init-params>
+        <output-structure/>
+    </processing-class>
+    <description>
+        This Virtual Sensor demonstrates the use of the scriplet processor (gsn.processor.ScriptletProcessor) for twitter
+        notifications. It gets its data from the MemoryMonitorVS, update the user status and sends a private message to another twitter
+        user, each time the MemoryMonitorVS.HEAP field reached a new maxima.
+    </description>
+    <addressing/>
+    <storage history-size="1"/>
+    <streams>
+        <stream name="stream1">
+            <source alias="source1" storage-size="1" sampling-rate="1">
+                <address wrapper="local">
+                    <predicate key="name">MemoryMonitorVS</predicate>
+                </address>
+                <query>select * from wrapper</query>
+            </source>
+            <query>select * from source1</query>
+        </stream>
+    </streams>
+</virtual-sensor>

@@ -1,0 +1,31 @@
+<virtual-sensor name="rendered_grid" priority="10">
+    <processing-class>
+        <class-name>gsn.vsensor.GridRenderer</class-name>
+        <init-params>
+        <param name="cellpixels">10</param>     <!-- size of cell in pixels -->
+        </init-params>
+        <output-structure>
+            <field name="grid" type="binary:image/png"/>
+        </output-structure>
+    </processing-class>
+    <description>This virtual sensor reads grid data from a local folder, rendered as image</description>
+    <life-cycle pool-size="10"/>
+    <addressing/>
+
+    <streams>
+        <stream name="input1">
+            <source alias="source1" sampling-rate="1" storage-size="1">
+                <address wrapper="grid">
+                    <predicate key="directory">data</predicate>
+                    <predicate key="time-format">yyyyMMddHHmmss</predicate>
+                    <predicate key="file-mask">^(\d{14}).dem</predicate>
+                    <predicate key="extension">dem</predicate>
+                    <predicate key="rate">3600000</predicate>
+                    <!-- in milliseconds -->
+                </address>
+                <query>SELECT * FROM wrapper</query>
+            </source>
+            <query>SELECT * FROM source1</query>
+        </stream>
+    </streams>
+</virtual-sensor>

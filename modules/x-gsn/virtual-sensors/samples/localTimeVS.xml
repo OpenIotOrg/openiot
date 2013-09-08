@@ -1,0 +1,28 @@
+<virtual-sensor name="LocalSystemTime" priority="10">
+	<processing-class>
+		<class-name>gsn.vsensor.BridgeVirtualSensor</class-name>
+		<init-params />
+		<output-structure>
+			<field name="clock" type="double" />
+		</output-structure>	
+	</processing-class>
+	<description>Not Specified, please edit the file
+		$INSTALL_PATH/virtual-sensors/localTimeVS.xml.</description>
+	<life-cycle pool-size="10" />
+	<addressing>
+		<predicate key="geographical">Not Specified, please edit the file
+			$INSTALL_PATH/virtual-sensors/localTimeVS.xml.</predicate>
+	</addressing>
+	<storage history-size="1m" />
+	<streams>
+		<stream name="input1">
+			<source alias="source1" sampling-rate="1" storage-size="1">
+				<address wrapper="system-time">
+					<predicate key="clock-period">1500</predicate> <!-- The rate at which the wrapper produces the new element for the current time -->
+				</address>
+				<query>select timed as clock, timed from wrapper</query>
+			</source>
+			<query>select * from source1</query>
+		</stream>
+	</streams>
+</virtual-sensor> 

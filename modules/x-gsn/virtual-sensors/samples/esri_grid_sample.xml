@@ -1,0 +1,35 @@
+<virtual-sensor name="esri_grid_sample" priority="10">
+    <processing-class>
+        <class-name>gsn.vsensor.BridgeVirtualSensor</class-name>
+        <init-params/>
+        <output-structure>
+            <field name="ncols" type="int"/>
+            <field name="nrows" type="int"/>
+            <field name="xllcorner" type="double"/>
+            <field name="yllcorner" type="double"/>
+            <field name="cellsize" type="double"/>
+            <field name="nodata_value" type="double"/>
+            <field name="grid" type="blob"/>
+        </output-structure>
+    </processing-class>
+    <description>This virtual sensor reads grid data from a local folder</description>
+    <life-cycle pool-size="10"/>
+    <addressing/>
+
+    <streams>
+        <stream name="input1">
+            <source alias="source1" sampling-rate="1" storage-size="1">
+                <address wrapper="grid">
+                    <predicate key="directory">.</predicate>
+                    <predicate key="time-format">yyyyMMddHHmmss</predicate>
+                    <predicate key="file-mask">^(\d{14}).dem</predicate>
+                    <predicate key="extension">dem</predicate>
+                    <predicate key="rate">3600000</predicate>
+                    <!-- in milliseconds -->
+                </address>
+                <query>SELECT * FROM wrapper</query>
+            </source>
+            <query>SELECT * FROM source1</query>
+        </stream>
+    </streams>
+</virtual-sensor>

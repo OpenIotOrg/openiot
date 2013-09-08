@@ -1,0 +1,36 @@
+<virtual-sensor name="TestExportStream" priority="11">
+	<processing-class>
+		<class-name>gsn.vsensor.StreamExporterVirtualSensor</class-name>
+		<init-params>
+			<param name="url">jdbc:mysql://localhost:3306/gsntest</param>
+			<param name="user">root</param>
+			<param name="password"></param>
+			<param name="driver">com.mysql.jdbc.Driver</param>
+			<param name="table">mytable</param>
+		</init-params>
+		<output-structure>
+			<field name="HEAP" type="double" />
+			<field name="NON_HEAP" type="double" />
+			<field name="PENDING_FINALIZATION_COUNT" type="double" />
+		</output-structure>
+	</processing-class>
+	<description>
+		This configures the StreamExporter virtual sensor so that
+		it exports data received from the memory usage monitoring
+		wrapper into a mysql database called 'gsntest' running on localhost.   
+   </description>
+	<life-cycle pool-size="10" />
+	<addressing />
+	<storage history-size="1s" />
+	<streams>
+		<stream name="DATA">
+			<source alias="streamsource" storage-size="1" sampling-rate="1">
+				<address wrapper="memory-usage">
+					<predicate key="sampling-rate">1000</predicate>
+				</address>
+				<query>select HEAP , NON_HEAP , PENDING_FINALIZATION_COUNT , TIMED from wrapper</query>
+			</source>
+			<query>select HEAP , NON_HEAP , PENDING_FINALIZATION_COUNT , TIMED from streamsource </query>
+		</stream>
+	</streams>
+</virtual-sensor>

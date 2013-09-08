@@ -1,0 +1,32 @@
+<virtual-sensor name="MemoryMonitorVS" priority="11">
+	<processing-class>
+		<class-name>gsn.vsensor.BridgeVirtualSensor</class-name>
+		<output-structure>
+			<field name="HEAP" type="double" />
+			<field name="NON_HEAP" type="double" />
+			<field name="PENDING_FINALIZATION_COUNT" type="double" />
+		</output-structure>
+
+	</processing-class>
+	<description>Not Specified, please edit the file
+		$INSTALL_PATH/virtual-sensors/memoryDataVS.xml</description>
+	<life-cycle pool-size="10" />
+	<addressing>
+		<predicate key="geographical">Not Specified, please edit the file
+			$INSTALL_PATH/virtual-sensors/memoryDataVS.xml</predicate>
+		<predicate key="LATITUDE">37.5419</predicate>
+		<predicate key="LONGITUDE">-122.1419</predicate>
+	</addressing>
+	<storage history-size="1" />
+	<streams>
+		<stream name="input1">
+			<source alias="source1" sampling-rate="1" storage-size="1">
+				<address wrapper="memory-usage">
+					<predicate key="sampling-rate">1000</predicate>
+				</address>
+				<query>select HEAP,NON_HEAP,PENDING_FINALIZATION_COUNT,TIMED from wrapper</query>
+			</source>
+			<query>select HEAP,NON_HEAP,PENDING_FINALIZATION_COUNT,TIMED from source1</query>
+		</stream>
+	</streams>
+</virtual-sensor>

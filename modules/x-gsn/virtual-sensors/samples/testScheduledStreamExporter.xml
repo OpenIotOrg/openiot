@@ -1,0 +1,43 @@
+<virtual-sensor name="testScheduledStreamExporter" priority="10">
+	<processing-class>
+    <class-name>gsn.vsensor.ScheduledStreamExporterVirtualSensor</class-name>
+		<init-params>
+			<param name="url">jdbc:mysql://localhost:3306/csaw</param>
+			<param name="user">root</param>
+			<param name="password">URthe1</param>
+			<param name="driver">com.mysql.jdbc.Driver</param>
+			<param name="table">multiformat_summary</param>
+			<param name="rate">600000</param>
+			<param name="start-time">2009-10-5T14:59:30.000+11:00</param>
+        </init-params>
+		<output-structure>
+			<field name="maxTemp" type="double"/>
+			<field name="minTemp" type="double"/>
+			<field name="avgTemp" type="double"/>
+		</output-structure>
+	</processing-class>
+	<description>This sensor produces output at predetermined intervals</description>
+	<life-cycle pool-size="10" />
+	<addressing>
+		<predicate key="geographical">Sensor 114 @ EPFL</predicate>
+    <predicate key="LATITUDE">46.520000</predicate>
+    <predicate key="LONGITUDE">6.565000</predicate>			
+	</addressing>
+	<storage history-size="24h"/>
+	<streams>
+		<stream name="input1" rate="6000">
+			<source alias="s1" storage-size="15m" slide="1" sampling-rate="1.0">
+				<address wrapper="multiformat">
+					<predicate key="HOST">localhost</predicate>
+					<predicate key="PORT">22001</predicate>
+				</address>
+				<query>SELECT  
+					max(temperature) as maxTemp,
+					min(temperature) as minTemp,
+					avg(temperature) as avgTemp
+					 FROM wrapper</query>
+			</source>
+			<query>SELECT s1.maxTemp, s1.minTemp, s1.avgTemp FROM s1</query>
+		</stream>
+	</streams>
+</virtual-sensor>

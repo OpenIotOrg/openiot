@@ -1,0 +1,33 @@
+<virtual-sensor name="RSampleVS" priority="11">
+	<processing-class>
+		<class-name>gsn.vsensor.RVirtualSensor</class-name>
+		<init-params>
+			<param name="input-Stream">DATA</param>
+			<param name="title">Temperature Data</param>
+			<param name="type">ANY</param>
+			<param name="height">200</param>
+			<param name="width">300</param>
+			<param name="vertical-axis">Sensor 114</param>
+			<param name="history-size">20</param>
+		</init-params>
+		<output-structure>
+			<field name="DATA" type="binary:image/jpeg" />
+		</output-structure>
+
+	</processing-class>
+	<description>Not Specified</description>
+	<life-cycle pool-size="2" />
+	<addressing>
+		<predicate key="geographical">Not Specified</predicate>
+	</addressing>
+	<storage history-size="1" />
+	<streams>
+		<stream name="DATA">
+			<source alias="source1" storage-size="1" sampling-rate="1">
+				<address wrapper="multiformat"></address>
+				<query>select packet_type, timed from wrapper where	packet_type >= 1 </query>
+			</source>
+			<query>select packet_type from source1</query>
+		</stream>
+	</streams>
+</virtual-sensor>

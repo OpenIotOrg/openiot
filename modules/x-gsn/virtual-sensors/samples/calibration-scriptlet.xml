@@ -1,0 +1,66 @@
+<virtual-sensor name="CalibrationScriptlet" priority="10">
+    <processing-class>
+        <class-name>gsn.processor.ScriptletProcessor</class-name>
+        <init-params>
+            <param name="persistant">true</param>
+            <param name="scriptlet">
+                <![CDATA[
+                
+                    //------------------------------
+                    // Demo scriptlet
+                    //------------------------------
+
+                    // Example of accessing the list of bindings
+                    println 'binding: ' + binding.getVariables();
+
+                    // Example of usage of a stateful variable
+                    // Initialisation
+                    statefulCounter = isdef('statefulCounter') ? statefulCounter + 1 : 0;
+                    println 'Stateful Counter: ' + statefulCounter;
+
+                    // Example of getting a logger
+                    def logger = org.apache.log4j.Logger.getLogger(gsn.processor.ScriptletProcessor.class);
+
+                    // Define a variable x
+                    def x = 1000;
+
+                    // The HEAP field is automatically binded from the stream1
+                    logger.warn('The HEAP value before calibration: ' + HEAP);
+
+                    // The HEAP field is calibrated based on the variable x and using an external library (apache commons-math: http://commons.apache.org/math/)
+                    HEAP = HEAP / x + (10000 + org.apache.commons.math.util.MathUtils.factorial(8));
+
+                    println 'The HEAP value after calibration: ' + HEAP;
+
+                    // We set a random value for the PENDING_FINALIZATION_COUNT
+                    PENDING_FINALIZATION_COUNT += Math.random();
+
+                    // The NON_HEAP value is not modified.
+
+                ]]>
+            </param>
+        </init-params>
+        <output-structure>
+            <field name="HEAP" type="double"/>
+            <field name="NON_HEAP" type="double"/>
+            <field name="PENDING_FINALIZATION_COUNT" type="double"/>
+        </output-structure>
+    </processing-class>
+    <description>
+        This Virtual Sensor demonstrates the use of the scriplet processor (gsn.processor.ScriptletProcessor) for data
+        calibration. It gets its data from the MemoryMonitorVS and process it with a Groovy scriplet.
+    </description>
+    <addressing/>
+    <storage history-size="1"/>
+    <streams>
+        <stream name="stream1">
+            <source alias="source1" storage-size="1" sampling-rate="1">
+                <address wrapper="local">
+                    <predicate key="name">MemoryMonitorVS</predicate>
+                </address>
+                <query>select * from wrapper</query>
+            </source>
+            <query>select * from source1</query>
+        </stream>
+    </streams>
+</virtual-sensor>

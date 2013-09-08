@@ -1,0 +1,325 @@
+<virtual-sensor name="sensorscope_1080_csv" priority="10">
+    <processing-class>
+        <class-name>gsn.vsensor.BridgeVirtualSensor</class-name>
+        <init-params/>
+        <output-structure>
+            <field name="int_batt_volt" type="double"/>
+            <field name="ext_batt_volt" type="double"/>
+            <field name="cpu_volt" type="double"/>
+            <field name="cpu_temp" type="double"/>
+            <field name="air_temp" type="double"/>
+            <field name="air_temp_2" type="double"/>
+            <field name="air_temp_3" type="double"/>
+            <field name="air_temp_4" type="double"/>
+            <field name="air_temp_5" type="double"/>
+            <field name="air_temp_6" type="double"/>
+            <field name="air_temp_7" type="double"/>
+            <field name="air_temp_8" type="double"/>
+            <field name="air_temp_9" type="double"/>
+            <field name="air_temp_10" type="double"/>
+            <field name="air_temp_11" type="double"/>
+            <field name="air_temp_12" type="double"/>
+            <field name="air_temp_13" type="double"/>
+            <field name="air_temp_14" type="double"/>
+            <field name="air_temp_15" type="double"/>
+            <field name="air_temp_16" type="double"/>
+            <field name="air_humid" type="double"/>
+            <field name="air_humid_2" type="double"/>
+            <field name="air_humid_3" type="double"/>
+            <field name="air_humid_4" type="double"/>
+            <field name="air_humid_5" type="double"/>
+            <field name="air_humid_6" type="double"/>
+            <field name="air_humid_7" type="double"/>
+            <field name="air_humid_8" type="double"/>
+            <field name="air_humid_9" type="double"/>
+            <field name="air_humid_10" type="double"/>
+            <field name="air_humid_11" type="double"/>
+            <field name="air_humid_12" type="double"/>
+            <field name="air_humid_13" type="double"/>
+            <field name="air_humid_14" type="double"/>
+            <field name="air_humid_15" type="double"/>
+            <field name="air_humid_16" type="double"/>
+            <field name="solar_rad" type="double"/>
+            <field name="solar_rad_2" type="double"/>
+            <field name="solar_rad_3" type="double"/>
+            <field name="solar_rad_4" type="double"/>
+            <field name="solar_rad_5" type="double"/>
+            <field name="solar_rad_6" type="double"/>
+            <field name="solar_rad_7" type="double"/>
+            <field name="solar_rad_8" type="double"/>
+            <field name="solar_rad_9" type="double"/>
+            <field name="solar_rad_10" type="double"/>
+            <field name="solar_rad_11" type="double"/>
+            <field name="solar_rad_12" type="double"/>
+            <field name="solar_rad_13" type="double"/>
+            <field name="solar_rad_14" type="double"/>
+            <field name="solar_rad_15" type="double"/>
+            <field name="solar_rad_16" type="double"/>
+            <field name="rain_meter" type="double"/>
+            <field name="rain_meter_2" type="double"/>
+            <field name="rain_meter_3" type="double"/>
+            <field name="rain_meter_4" type="double"/>
+            <field name="rain_meter_5" type="double"/>
+            <field name="rain_meter_6" type="double"/>
+            <field name="rain_meter_7" type="double"/>
+            <field name="rain_meter_8" type="double"/>
+            <field name="rain_meter_9" type="double"/>
+            <field name="rain_meter_10" type="double"/>
+            <field name="rain_meter_11" type="double"/>
+            <field name="rain_meter_12" type="double"/>
+            <field name="rain_meter_13" type="double"/>
+            <field name="rain_meter_14" type="double"/>
+            <field name="rain_meter_15" type="double"/>
+            <field name="rain_meter_16" type="double"/>
+            <field name="ground_temp_tnx" type="double"/>
+            <field name="ground_temp_tnx_2" type="double"/>
+            <field name="ground_temp_tnx_3" type="double"/>
+            <field name="ground_temp_tnx_4" type="double"/>
+            <field name="ground_temp_tnx_5" type="double"/>
+            <field name="ground_temp_tnx_6" type="double"/>
+            <field name="ground_temp_tnx_7" type="double"/>
+            <field name="ground_temp_tnx_8" type="double"/>
+            <field name="ground_temp_tnx_9" type="double"/>
+            <field name="ground_temp_tnx_10" type="double"/>
+            <field name="ground_temp_tnx_11" type="double"/>
+            <field name="ground_temp_tnx_12" type="double"/>
+            <field name="ground_temp_tnx_13" type="double"/>
+            <field name="ground_temp_tnx_14" type="double"/>
+            <field name="ground_temp_tnx_15" type="double"/>
+            <field name="ground_temp_tnx_16" type="double"/>
+            <field name="air_temp_tnx" type="double"/>
+            <field name="air_temp_tnx_2" type="double"/>
+            <field name="air_temp_tnx_3" type="double"/>
+            <field name="air_temp_tnx_4" type="double"/>
+            <field name="air_temp_tnx_5" type="double"/>
+            <field name="air_temp_tnx_6" type="double"/>
+            <field name="air_temp_tnx_7" type="double"/>
+            <field name="air_temp_tnx_8" type="double"/>
+            <field name="air_temp_tnx_9" type="double"/>
+            <field name="air_temp_tnx_10" type="double"/>
+            <field name="air_temp_tnx_11" type="double"/>
+            <field name="air_temp_tnx_12" type="double"/>
+            <field name="air_temp_tnx_13" type="double"/>
+            <field name="air_temp_tnx_14" type="double"/>
+            <field name="air_temp_tnx_15" type="double"/>
+            <field name="air_temp_tnx_16" type="double"/>
+            <field name="soil_temp_ectm" type="double"/>
+            <field name="soil_temp_ectm_2" type="double"/>
+            <field name="soil_temp_ectm_3" type="double"/>
+            <field name="soil_temp_ectm_4" type="double"/>
+            <field name="soil_temp_ectm_5" type="double"/>
+            <field name="soil_temp_ectm_6" type="double"/>
+            <field name="soil_temp_ectm_7" type="double"/>
+            <field name="soil_temp_ectm_8" type="double"/>
+            <field name="soil_temp_ectm_9" type="double"/>
+            <field name="soil_temp_ectm_10" type="double"/>
+            <field name="soil_temp_ectm_11" type="double"/>
+            <field name="soil_temp_ectm_12" type="double"/>
+            <field name="soil_temp_ectm_13" type="double"/>
+            <field name="soil_temp_ectm_14" type="double"/>
+            <field name="soil_temp_ectm_15" type="double"/>
+            <field name="soil_temp_ectm_16" type="double"/>
+            <field name="soil_moisture_ectm" type="double"/>
+            <field name="soil_moisture_ectm_2" type="double"/>
+            <field name="soil_moisture_ectm_3" type="double"/>
+            <field name="soil_moisture_ectm_4" type="double"/>
+            <field name="soil_moisture_ectm_5" type="double"/>
+            <field name="soil_moisture_ectm_6" type="double"/>
+            <field name="soil_moisture_ectm_7" type="double"/>
+            <field name="soil_moisture_ectm_8" type="double"/>
+            <field name="soil_moisture_ectm_9" type="double"/>
+            <field name="soil_moisture_ectm_10" type="double"/>
+            <field name="soil_moisture_ectm_11" type="double"/>
+            <field name="soil_moisture_ectm_12" type="double"/>
+            <field name="soil_moisture_ectm_13" type="double"/>
+            <field name="soil_moisture_ectm_14" type="double"/>
+            <field name="soil_moisture_ectm_15" type="double"/>
+            <field name="soil_moisture_ectm_16" type="double"/>
+            <field name="soil_water_potential" type="double"/>
+            <field name="soil_water_potential_2" type="double"/>
+            <field name="soil_water_potential_3" type="double"/>
+            <field name="soil_water_potential_4" type="double"/>
+            <field name="soil_water_potential_5" type="double"/>
+            <field name="soil_water_potential_6" type="double"/>
+            <field name="soil_water_potential_7" type="double"/>
+            <field name="soil_water_potential_8" type="double"/>
+            <field name="soil_water_potential_9" type="double"/>
+            <field name="soil_water_potential_10" type="double"/>
+            <field name="soil_water_potential_11" type="double"/>
+            <field name="soil_water_potential_12" type="double"/>
+            <field name="soil_water_potential_13" type="double"/>
+            <field name="soil_water_potential_14" type="double"/>
+            <field name="soil_water_potential_15" type="double"/>
+            <field name="soil_water_potential_16" type="double"/>
+            <field name="soil_temp_decagon" type="double"/>
+            <field name="soil_temp_decagon_2" type="double"/>
+            <field name="soil_temp_decagon_3" type="double"/>
+            <field name="soil_temp_decagon_4" type="double"/>
+            <field name="soil_temp_decagon_5" type="double"/>
+            <field name="soil_temp_decagon_6" type="double"/>
+            <field name="soil_temp_decagon_7" type="double"/>
+            <field name="soil_temp_decagon_8" type="double"/>
+            <field name="soil_temp_decagon_9" type="double"/>
+            <field name="soil_temp_decagon_10" type="double"/>
+            <field name="soil_temp_decagon_11" type="double"/>
+            <field name="soil_temp_decagon_12" type="double"/>
+            <field name="soil_temp_decagon_13" type="double"/>
+            <field name="soil_temp_decagon_14" type="double"/>
+            <field name="soil_temp_decagon_15" type="double"/>
+            <field name="soil_temp_decagon_16" type="double"/>
+            <field name="soil_moisture_decagon" type="double"/>
+            <field name="soil_moisture_decagon_2" type="double"/>
+            <field name="soil_moisture_decagon_3" type="double"/>
+            <field name="soil_moisture_decagon_4" type="double"/>
+            <field name="soil_moisture_decagon_5" type="double"/>
+            <field name="soil_moisture_decagon_6" type="double"/>
+            <field name="soil_moisture_decagon_7" type="double"/>
+            <field name="soil_moisture_decagon_8" type="double"/>
+            <field name="soil_moisture_decagon_9" type="double"/>
+            <field name="soil_moisture_decagon_10" type="double"/>
+            <field name="soil_moisture_decagon_11" type="double"/>
+            <field name="soil_moisture_decagon_12" type="double"/>
+            <field name="soil_moisture_decagon_13" type="double"/>
+            <field name="soil_moisture_decagon_14" type="double"/>
+            <field name="soil_moisture_decagon_15" type="double"/>
+            <field name="soil_moisture_decagon_16" type="double"/>
+            <field name="soil_conduct_decagon" type="double"/>
+            <field name="soil_conduct_decagon_2" type="double"/>
+            <field name="soil_conduct_decagon_3" type="double"/>
+            <field name="soil_conduct_decagon_4" type="double"/>
+            <field name="soil_conduct_decagon_5" type="double"/>
+            <field name="soil_conduct_decagon_6" type="double"/>
+            <field name="soil_conduct_decagon_7" type="double"/>
+            <field name="soil_conduct_decagon_8" type="double"/>
+            <field name="soil_conduct_decagon_9" type="double"/>
+            <field name="soil_conduct_decagon_10" type="double"/>
+            <field name="soil_conduct_decagon_11" type="double"/>
+            <field name="soil_conduct_decagon_12" type="double"/>
+            <field name="soil_conduct_decagon_13" type="double"/>
+            <field name="soil_conduct_decagon_14" type="double"/>
+            <field name="soil_conduct_decagon_15" type="double"/>
+            <field name="soil_conduct_decagon_16" type="double"/>
+            <field name="wind_direction" type="double"/>
+            <field name="wind_direction_2" type="double"/>
+            <field name="wind_direction_3" type="double"/>
+            <field name="wind_direction_4" type="double"/>
+            <field name="wind_direction_5" type="double"/>
+            <field name="wind_direction_6" type="double"/>
+            <field name="wind_direction_7" type="double"/>
+            <field name="wind_direction_8" type="double"/>
+            <field name="wind_direction_9" type="double"/>
+            <field name="wind_direction_10" type="double"/>
+            <field name="wind_direction_11" type="double"/>
+            <field name="wind_direction_12" type="double"/>
+            <field name="wind_direction_13" type="double"/>
+            <field name="wind_direction_14" type="double"/>
+            <field name="wind_direction_15" type="double"/>
+            <field name="wind_direction_16" type="double"/>
+            <field name="wind_speed" type="double"/>
+            <field name="wind_speed_2" type="double"/>
+            <field name="wind_speed_3" type="double"/>
+            <field name="wind_speed_4" type="double"/>
+            <field name="wind_speed_5" type="double"/>
+            <field name="wind_speed_6" type="double"/>
+            <field name="wind_speed_7" type="double"/>
+            <field name="wind_speed_8" type="double"/>
+            <field name="wind_speed_9" type="double"/>
+            <field name="wind_speed_10" type="double"/>
+            <field name="wind_speed_11" type="double"/>
+            <field name="wind_speed_12" type="double"/>
+            <field name="wind_speed_13" type="double"/>
+            <field name="wind_speed_14" type="double"/>
+            <field name="wind_speed_15" type="double"/>
+            <field name="wind_speed_16" type="double"/>
+            <field name="battery_board_voltage" type="double"/>
+            <field name="battery_board_voltage_2" type="double"/>
+            <field name="battery_board_voltage_3" type="double"/>
+            <field name="battery_board_voltage_4" type="double"/>
+            <field name="battery_board_voltage_5" type="double"/>
+            <field name="battery_board_voltage_6" type="double"/>
+            <field name="battery_board_voltage_7" type="double"/>
+            <field name="battery_board_voltage_8" type="double"/>
+            <field name="battery_board_voltage_9" type="double"/>
+            <field name="battery_board_voltage_10" type="double"/>
+            <field name="battery_board_voltage_11" type="double"/>
+            <field name="battery_board_voltage_12" type="double"/>
+            <field name="battery_board_voltage_13" type="double"/>
+            <field name="battery_board_voltage_14" type="double"/>
+            <field name="battery_board_voltage_15" type="double"/>
+            <field name="battery_board_voltage_16" type="double"/>
+            <field name="solar_rad_sp212" type="double"/>
+            <field name="solar_rad_sp212_2" type="double"/>
+            <field name="solar_rad_sp212_3" type="double"/>
+            <field name="solar_rad_sp212_4" type="double"/>
+            <field name="solar_rad_sp212_5" type="double"/>
+            <field name="solar_rad_sp212_6" type="double"/>
+            <field name="solar_rad_sp212_7" type="double"/>
+            <field name="solar_rad_sp212_8" type="double"/>
+            <field name="solar_rad_sp212_9" type="double"/>
+            <field name="solar_rad_sp212_10" type="double"/>
+            <field name="solar_rad_sp212_11" type="double"/>
+            <field name="solar_rad_sp212_12" type="double"/>
+            <field name="solar_rad_sp212_13" type="double"/>
+            <field name="solar_rad_sp212_14" type="double"/>
+            <field name="solar_rad_sp212_15" type="double"/>
+            <field name="solar_rad_sp212_16" type="double"/>
+            <field name="decagon_10hs_mv" type="double"/>
+            <field name="decagon_10hs_mv_2" type="double"/>
+            <field name="decagon_10hs_mv_3" type="double"/>
+            <field name="decagon_10hs_mv_4" type="double"/>
+            <field name="decagon_10hs_mv_5" type="double"/>
+            <field name="decagon_10hs_mv_6" type="double"/>
+            <field name="decagon_10hs_mv_7" type="double"/>
+            <field name="decagon_10hs_mv_8" type="double"/>
+            <field name="decagon_10hs_mv_9" type="double"/>
+            <field name="decagon_10hs_mv_10" type="double"/>
+            <field name="decagon_10hs_mv_11" type="double"/>
+            <field name="decagon_10hs_mv_12" type="double"/>
+            <field name="decagon_10hs_mv_13" type="double"/>
+            <field name="decagon_10hs_mv_14" type="double"/>
+            <field name="decagon_10hs_mv_15" type="double"/>
+            <field name="decagon_10hs_mv_16" type="double"/>
+            <field name="decagon_10hs_vwc" type="double"/>
+            <field name="decagon_10hs_vwc_2" type="double"/>
+            <field name="decagon_10hs_vwc_3" type="double"/>
+            <field name="decagon_10hs_vwc_4" type="double"/>
+            <field name="decagon_10hs_vwc_5" type="double"/>
+            <field name="decagon_10hs_vwc_6" type="double"/>
+            <field name="decagon_10hs_vwc_7" type="double"/>
+            <field name="decagon_10hs_vwc_8" type="double"/>
+            <field name="decagon_10hs_vwc_9" type="double"/>
+            <field name="decagon_10hs_vwc_10" type="double"/>
+            <field name="decagon_10hs_vwc_11" type="double"/>
+            <field name="decagon_10hs_vwc_12" type="double"/>
+            <field name="decagon_10hs_vwc_13" type="double"/>
+            <field name="decagon_10hs_vwc_14" type="double"/>
+            <field name="decagon_10hs_vwc_15" type="double"/>
+            <field name="decagon_10hs_vwc_16" type="double"/>
+        </output-structure>
+    </processing-class>
+    <description>sensorscope station</description>
+    <life-cycle pool-size="10"/>
+    <addressing/>
+    <streams>
+        <stream name="input1">
+            <source alias="source1" sampling-rate="1" storage-size="1">
+                <address wrapper="csv">
+                    <predicate key="file">data/1080.csv</predicate>
+                    <predicate key="fields">station_id,int_batt_volt,ext_batt_volt,cpu_volt,cpu_temp,air_temp,air_temp_2,air_temp_3,air_temp_4,air_temp_5,air_temp_6,air_temp_7,air_temp_8,air_temp_9,air_temp_10,air_temp_11,air_temp_12,air_temp_13,air_temp_14,air_temp_15,air_temp_16,air_humid,air_humid_2,air_humid_3,air_humid_4,air_humid_5,air_humid_6,air_humid_7,air_humid_8,air_humid_9,air_humid_10,air_humid_11,air_humid_12,air_humid_13,air_humid_14,air_humid_15,air_humid_16,solar_rad,solar_rad_2,solar_rad_3,solar_rad_4,solar_rad_5,solar_rad_6,solar_rad_7,solar_rad_8,solar_rad_9,solar_rad_10,solar_rad_11,solar_rad_12,solar_rad_13,solar_rad_14,solar_rad_15,solar_rad_16,rain_meter,rain_meter_2,rain_meter_3,rain_meter_4,rain_meter_5,rain_meter_6,rain_meter_7,rain_meter_8,rain_meter_9,rain_meter_10,rain_meter_11,rain_meter_12,rain_meter_13,rain_meter_14,rain_meter_15,rain_meter_16,ground_temp_tnx,ground_temp_tnx_2,ground_temp_tnx_3,ground_temp_tnx_4,ground_temp_tnx_5,ground_temp_tnx_6,ground_temp_tnx_7,ground_temp_tnx_8,ground_temp_tnx_9,ground_temp_tnx_10,ground_temp_tnx_11,ground_temp_tnx_12,ground_temp_tnx_13,ground_temp_tnx_14,ground_temp_tnx_15,ground_temp_tnx_16,air_temp_tnx,air_temp_tnx_2,air_temp_tnx_3,air_temp_tnx_4,air_temp_tnx_5,air_temp_tnx_6,air_temp_tnx_7,air_temp_tnx_8,air_temp_tnx_9,air_temp_tnx_10,air_temp_tnx_11,air_temp_tnx_12,air_temp_tnx_13,air_temp_tnx_14,air_temp_tnx_15,air_temp_tnx_16,soil_temp_ectm,soil_temp_ectm_2,soil_temp_ectm_3,soil_temp_ectm_4,soil_temp_ectm_5,soil_temp_ectm_6,soil_temp_ectm_7,soil_temp_ectm_8,soil_temp_ectm_9,soil_temp_ectm_10,soil_temp_ectm_11,soil_temp_ectm_12,soil_temp_ectm_13,soil_temp_ectm_14,soil_temp_ectm_15,soil_temp_ectm_16,soil_moisture_ectm,soil_moisture_ectm_2,soil_moisture_ectm_3,soil_moisture_ectm_4,soil_moisture_ectm_5,soil_moisture_ectm_6,soil_moisture_ectm_7,soil_moisture_ectm_8,soil_moisture_ectm_9,soil_moisture_ectm_10,soil_moisture_ectm_11,soil_moisture_ectm_12,soil_moisture_ectm_13,soil_moisture_ectm_14,soil_moisture_ectm_15,soil_moisture_ectm_16,soil_water_potential,soil_water_potential_2,soil_water_potential_3,soil_water_potential_4,soil_water_potential_5,soil_water_potential_6,soil_water_potential_7,soil_water_potential_8,soil_water_potential_9,soil_water_potential_10,soil_water_potential_11,soil_water_potential_12,soil_water_potential_13,soil_water_potential_14,soil_water_potential_15,soil_water_potential_16,soil_temp_decagon,soil_temp_decagon_2,soil_temp_decagon_3,soil_temp_decagon_4,soil_temp_decagon_5,soil_temp_decagon_6,soil_temp_decagon_7,soil_temp_decagon_8,soil_temp_decagon_9,soil_temp_decagon_10,soil_temp_decagon_11,soil_temp_decagon_12,soil_temp_decagon_13,soil_temp_decagon_14,soil_temp_decagon_15,soil_temp_decagon_16,soil_moisture_decagon,soil_moisture_decagon_2,soil_moisture_decagon_3,soil_moisture_decagon_4,soil_moisture_decagon_5,soil_moisture_decagon_6,soil_moisture_decagon_7,soil_moisture_decagon_8,soil_moisture_decagon_9,soil_moisture_decagon_10,soil_moisture_decagon_11,soil_moisture_decagon_12,soil_moisture_decagon_13,soil_moisture_decagon_14,soil_moisture_decagon_15,soil_moisture_decagon_16,soil_conduct_decagon,soil_conduct_decagon_2,soil_conduct_decagon_3,soil_conduct_decagon_4,soil_conduct_decagon_5,soil_conduct_decagon_6,soil_conduct_decagon_7,soil_conduct_decagon_8,soil_conduct_decagon_9,soil_conduct_decagon_10,soil_conduct_decagon_11,soil_conduct_decagon_12,soil_conduct_decagon_13,soil_conduct_decagon_14,soil_conduct_decagon_15,soil_conduct_decagon_16,wind_direction,wind_direction_2,wind_direction_3,wind_direction_4,wind_direction_5,wind_direction_6,wind_direction_7,wind_direction_8,wind_direction_9,wind_direction_10,wind_direction_11,wind_direction_12,wind_direction_13,wind_direction_14,wind_direction_15,wind_direction_16,wind_speed,wind_speed_2,wind_speed_3,wind_speed_4,wind_speed_5,wind_speed_6,wind_speed_7,wind_speed_8,wind_speed_9,wind_speed_10,wind_speed_11,wind_speed_12,wind_speed_13,wind_speed_14,wind_speed_15,wind_speed_16,battery_board_voltage,battery_board_voltage_2,battery_board_voltage_3,battery_board_voltage_4,battery_board_voltage_5,battery_board_voltage_6,battery_board_voltage_7,battery_board_voltage_8,battery_board_voltage_9,battery_board_voltage_10,battery_board_voltage_11,battery_board_voltage_12,battery_board_voltage_13,battery_board_voltage_14,battery_board_voltage_15,battery_board_voltage_16,solar_rad_sp212,solar_rad_sp212_2,solar_rad_sp212_3,solar_rad_sp212_4,solar_rad_sp212_5,solar_rad_sp212_6,solar_rad_sp212_7,solar_rad_sp212_8,solar_rad_sp212_9,solar_rad_sp212_10,solar_rad_sp212_11,solar_rad_sp212_12,solar_rad_sp212_13,solar_rad_sp212_14,solar_rad_sp212_15,solar_rad_sp212_16,decagon_10hs_mv,decagon_10hs_mv_2,decagon_10hs_mv_3,decagon_10hs_mv_4,decagon_10hs_mv_5,decagon_10hs_mv_6,decagon_10hs_mv_7,decagon_10hs_mv_8,decagon_10hs_mv_9,decagon_10hs_mv_10,decagon_10hs_mv_11,decagon_10hs_mv_12,decagon_10hs_mv_13,decagon_10hs_mv_14,decagon_10hs_mv_15,decagon_10hs_mv_16,decagon_10hs_vwc,decagon_10hs_vwc_2,decagon_10hs_vwc_3,decagon_10hs_vwc_4,decagon_10hs_vwc_5,decagon_10hs_vwc_6,decagon_10hs_vwc_7,decagon_10hs_vwc_8,decagon_10hs_vwc_9,decagon_10hs_vwc_10,decagon_10hs_vwc_11,decagon_10hs_vwc_12,decagon_10hs_vwc_13,decagon_10hs_vwc_14,decagon_10hs_vwc_15,decagon_10hs_vwc_16,timed2,timed
+                    </predicate>
+                    <predicate key="formats">numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,numeric,timestamp(y-M-d H:m:s)
+                    </predicate>
+                    <predicate key="bad-values">NaN,6999,-6999,null</predicate>
+                    <predicate key="timezone">Etc/GMT-1</predicate>
+                    <predicate key="sampling">1000</predicate>
+                    <!-- sever 1000 milliseconds; 1sec -->
+                    <predicate key="check-point-directory">csv-check-points</predicate>
+                </address>
+                <query>select timed,int_batt_volt,ext_batt_volt,cpu_volt,cpu_temp,air_temp,air_temp_2,air_temp_3,air_temp_4,air_temp_5,air_temp_6,air_temp_7,air_temp_8,air_temp_9,air_temp_10,air_temp_11,air_temp_12,air_temp_13,air_temp_14,air_temp_15,air_temp_16,air_humid,air_humid_2,air_humid_3,air_humid_4,air_humid_5,air_humid_6,air_humid_7,air_humid_8,air_humid_9,air_humid_10,air_humid_11,air_humid_12,air_humid_13,air_humid_14,air_humid_15,air_humid_16,solar_rad,solar_rad_2,solar_rad_3,solar_rad_4,solar_rad_5,solar_rad_6,solar_rad_7,solar_rad_8,solar_rad_9,solar_rad_10,solar_rad_11,solar_rad_12,solar_rad_13,solar_rad_14,solar_rad_15,solar_rad_16,rain_meter,rain_meter_2,rain_meter_3,rain_meter_4,rain_meter_5,rain_meter_6,rain_meter_7,rain_meter_8,rain_meter_9,rain_meter_10,rain_meter_11,rain_meter_12,rain_meter_13,rain_meter_14,rain_meter_15,rain_meter_16,ground_temp_tnx,ground_temp_tnx_2,ground_temp_tnx_3,ground_temp_tnx_4,ground_temp_tnx_5,ground_temp_tnx_6,ground_temp_tnx_7,ground_temp_tnx_8,ground_temp_tnx_9,ground_temp_tnx_10,ground_temp_tnx_11,ground_temp_tnx_12,ground_temp_tnx_13,ground_temp_tnx_14,ground_temp_tnx_15,ground_temp_tnx_16,air_temp_tnx,air_temp_tnx_2,air_temp_tnx_3,air_temp_tnx_4,air_temp_tnx_5,air_temp_tnx_6,air_temp_tnx_7,air_temp_tnx_8,air_temp_tnx_9,air_temp_tnx_10,air_temp_tnx_11,air_temp_tnx_12,air_temp_tnx_13,air_temp_tnx_14,air_temp_tnx_15,air_temp_tnx_16,soil_temp_ectm,soil_temp_ectm_2,soil_temp_ectm_3,soil_temp_ectm_4,soil_temp_ectm_5,soil_temp_ectm_6,soil_temp_ectm_7,soil_temp_ectm_8,soil_temp_ectm_9,soil_temp_ectm_10,soil_temp_ectm_11,soil_temp_ectm_12,soil_temp_ectm_13,soil_temp_ectm_14,soil_temp_ectm_15,soil_temp_ectm_16,soil_moisture_ectm,soil_moisture_ectm_2,soil_moisture_ectm_3,soil_moisture_ectm_4,soil_moisture_ectm_5,soil_moisture_ectm_6,soil_moisture_ectm_7,soil_moisture_ectm_8,soil_moisture_ectm_9,soil_moisture_ectm_10,soil_moisture_ectm_11,soil_moisture_ectm_12,soil_moisture_ectm_13,soil_moisture_ectm_14,soil_moisture_ectm_15,soil_moisture_ectm_16,soil_water_potential,soil_water_potential_2,soil_water_potential_3,soil_water_potential_4,soil_water_potential_5,soil_water_potential_6,soil_water_potential_7,soil_water_potential_8,soil_water_potential_9,soil_water_potential_10,soil_water_potential_11,soil_water_potential_12,soil_water_potential_13,soil_water_potential_14,soil_water_potential_15,soil_water_potential_16,soil_temp_decagon,soil_temp_decagon_2,soil_temp_decagon_3,soil_temp_decagon_4,soil_temp_decagon_5,soil_temp_decagon_6,soil_temp_decagon_7,soil_temp_decagon_8,soil_temp_decagon_9,soil_temp_decagon_10,soil_temp_decagon_11,soil_temp_decagon_12,soil_temp_decagon_13,soil_temp_decagon_14,soil_temp_decagon_15,soil_temp_decagon_16,soil_moisture_decagon,soil_moisture_decagon_2,soil_moisture_decagon_3,soil_moisture_decagon_4,soil_moisture_decagon_5,soil_moisture_decagon_6,soil_moisture_decagon_7,soil_moisture_decagon_8,soil_moisture_decagon_9,soil_moisture_decagon_10,soil_moisture_decagon_11,soil_moisture_decagon_12,soil_moisture_decagon_13,soil_moisture_decagon_14,soil_moisture_decagon_15,soil_moisture_decagon_16,soil_conduct_decagon,soil_conduct_decagon_2,soil_conduct_decagon_3,soil_conduct_decagon_4,soil_conduct_decagon_5,soil_conduct_decagon_6,soil_conduct_decagon_7,soil_conduct_decagon_8,soil_conduct_decagon_9,soil_conduct_decagon_10,soil_conduct_decagon_11,soil_conduct_decagon_12,soil_conduct_decagon_13,soil_conduct_decagon_14,soil_conduct_decagon_15,soil_conduct_decagon_16,wind_direction,wind_direction_2,wind_direction_3,wind_direction_4,wind_direction_5,wind_direction_6,wind_direction_7,wind_direction_8,wind_direction_9,wind_direction_10,wind_direction_11,wind_direction_12,wind_direction_13,wind_direction_14,wind_direction_15,wind_direction_16,wind_speed,wind_speed_2,wind_speed_3,wind_speed_4,wind_speed_5,wind_speed_6,wind_speed_7,wind_speed_8,wind_speed_9,wind_speed_10,wind_speed_11,wind_speed_12,wind_speed_13,wind_speed_14,wind_speed_15,wind_speed_16,battery_board_voltage,battery_board_voltage_2,battery_board_voltage_3,battery_board_voltage_4,battery_board_voltage_5,battery_board_voltage_6,battery_board_voltage_7,battery_board_voltage_8,battery_board_voltage_9,battery_board_voltage_10,battery_board_voltage_11,battery_board_voltage_12,battery_board_voltage_13,battery_board_voltage_14,battery_board_voltage_15,battery_board_voltage_16,solar_rad_sp212,solar_rad_sp212_2,solar_rad_sp212_3,solar_rad_sp212_4,solar_rad_sp212_5,solar_rad_sp212_6,solar_rad_sp212_7,solar_rad_sp212_8,solar_rad_sp212_9,solar_rad_sp212_10,solar_rad_sp212_11,solar_rad_sp212_12,solar_rad_sp212_13,solar_rad_sp212_14,solar_rad_sp212_15,solar_rad_sp212_16,decagon_10hs_mv,decagon_10hs_mv_2,decagon_10hs_mv_3,decagon_10hs_mv_4,decagon_10hs_mv_5,decagon_10hs_mv_6,decagon_10hs_mv_7,decagon_10hs_mv_8,decagon_10hs_mv_9,decagon_10hs_mv_10,decagon_10hs_mv_11,decagon_10hs_mv_12,decagon_10hs_mv_13,decagon_10hs_mv_14,decagon_10hs_mv_15,decagon_10hs_mv_16,decagon_10hs_vwc,decagon_10hs_vwc_2,decagon_10hs_vwc_3,decagon_10hs_vwc_4,decagon_10hs_vwc_5,decagon_10hs_vwc_6,decagon_10hs_vwc_7,decagon_10hs_vwc_8,decagon_10hs_vwc_9,decagon_10hs_vwc_10,decagon_10hs_vwc_11,decagon_10hs_vwc_12,decagon_10hs_vwc_13,decagon_10hs_vwc_14,decagon_10hs_vwc_15,decagon_10hs_vwc_16
+                    from wrapper
+                </query>
+            </source>
+            <query>select * from source1</query>
+        </stream>
+    </streams>
+</virtual-sensor>

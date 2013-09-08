@@ -1,0 +1,42 @@
+<virtual-sensor name="nucfilm_monitor_control" priority="10">
+	<processing-class>
+		<class-name>gsn.vsensor.BridgeVirtualSensor</class-name>
+		<init-params />
+		<output-structure>
+			<field name="RN" type="varchar(50)" />
+			<field name="CO2" type="varchar(50)" />
+			<field name="CH4" type="varchar(50)" />
+			<field name="T1" type="varchar(50)" />
+			<field name="T2" type="varchar(50)" />
+			<field name="T3" type="varchar(50)" />
+			<field name="Q" type="varchar(50)" />
+			<field name="RH" type="varchar(50)" />
+			<field name="VC" type="varchar(50)" />
+		</output-structure>
+	</processing-class>
+	<description>Nucfilm Monitor Control every 60 minutes.
+	</description>
+	<life-cycle pool-size="10" />
+	<addressing>
+		<predicate key="geographical">TRMC @ SED</predicate>
+		<predicate key="LATITUDE">46.520000</predicate>
+		<predicate key="LONGITUDE">6.565000</predicate>
+	</addressing>
+	<storage history-size="0" />
+	<streams>
+		<stream name="input1">
+			<source alias="source1" sampling-rate="1" storage-size="1">
+				<address wrapper="tetraedrenmc">
+                    <predicate key="table-name">acq_nmea_formatted</predicate>
+                    <predicate key="start-time">1300964700000</predicate>
+                    <predicate key="driver">com.mysql.jdbc.Driver</predicate>
+                    <predicate key="jdbc-url">jdbc:mysql://multisensor/tetraedrecom1</predicate>
+                    <predicate key="username">datalogging</predicate>
+                    <predicate key="password">datalogging</predicate>
+				</address>
+				<query>SELECT rn,co2,ch4,t1,t2,t3,q,rh,vc,timed FROM wrapper</query>
+			</source>
+			<query>SELECT rn,co2,ch4,t1,t2,t3,q,rh,vc,timed FROM source1</query>
+		</stream>
+	</streams>
+</virtual-sensor>

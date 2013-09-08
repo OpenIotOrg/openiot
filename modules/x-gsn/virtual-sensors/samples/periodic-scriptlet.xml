@@ -1,0 +1,63 @@
+<virtual-sensor name="PeriodicScriptlet" priority="10">
+    <processing-class>
+        <class-name>gsn.processor.ScriptletProcessor</class-name>
+        <init-params>
+            <param name="persistant">true</param>
+            <param name="scriptlet">
+                <![CDATA[
+                    // This script is executed every time we process a new StreamElement.
+                    // We update the 'lastProcessedTime' variable.
+                    lastProcessedTime = System.currentTimeMillis();
+                ]]>
+            </param>
+            <param name="period">5000</param>
+            <param name="scriplet-periodic">
+                <![CDATA[
+                    // This script is periodically executed, every 5 seconds (5000 ms set in the parameter above).
+                    // We check the time difference between the current time and the last time a StreamElementhas been
+                    // processed. If the time difference is greater than an offset (10000 ms set in the parameter below),
+                    // we log a warning message.
+                    
+                    def timeDifferenceOffset = 10000;   // 10 sec
+
+                    def currentTime = System.currentTimeMillis();
+
+                    if ( ! isdef('lastProcessedTime')) {
+                        lastProcessedTime = currentTime;
+                    }
+                    else {
+                        def timeDifference = currentTime - lastProcessedTime;
+                        if (timeDifference > timeDifferenceOffset) {
+                            println 'Warning! No StreamElement have been processed for the last ' + timeDifference + ' ms.';
+                        }
+                        else {
+                            println 'Ok! The last StreamElement has been processed ' + timeDifference + ' ms ago.';
+                        }
+                    }
+                ]]>
+            </param>
+        </init-params>
+        <output-structure>
+            <field name="HEAP" type="double"/>
+            <field name="NON_HEAP" type="double"/>
+            <field name="PENDING_FINALIZATION_COUNT" type="double"/>
+        </output-structure>
+    </processing-class>
+    <description>
+        This Virtual Sensor demonstrates the use of the scriplet processor (gsn.processor.ScriptletProcessor) for detecting
+        a data source which fails at producing data. It gets its data from the MemoryMonitorVS.
+    </description>
+    <addressing/>
+    <storage history-size="1"/>
+    <streams>
+        <stream name="stream1">
+            <source alias="source1" storage-size="1" sampling-rate="1">
+                <address wrapper="local">
+                    <predicate key="name">MemoryMonitorVS</predicate>
+                </address>
+                <query>select * from wrapper</query>
+            </source>
+            <query>select * from source1</query>
+        </stream>
+    </streams>
+</virtual-sensor>

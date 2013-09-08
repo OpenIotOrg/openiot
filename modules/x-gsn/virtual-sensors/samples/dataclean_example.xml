@@ -1,0 +1,46 @@
+<virtual-sensor name="dataclean_example" priority="10">
+    <processing-class>
+        <class-name>gsn.vsensor.DataCleanVirtualSensor</class-name>
+        <init-params>
+            <param name="model">chebyschev_deg3</param> <!-- possible values: constant, linear, quadratic, chebyschev_deg1, chebyschev_deg2, chebyschev_deg3, arma_garch -->
+            <param name="error_bound">5</param>
+            <param name="window_size">100</param>
+            <param name="logging-interval">10</param>  <!-- logging interval, in number of tuples -->
+            <!-- Metadata server parameters (optional) -->
+            <!--<param name="metadata_server_url">http://www.example.com/dataclean.php</param>-->
+            <!--<param name="user">user</param> -->
+            <!--<param name="password">pass</param> -->
+            <!--<param name="operator">gsn@gsn.com</param>-->
+            <!--<param name="deployment">EPFL_Deployement</param>-->
+            <!--<param name="station">multidata</param>-->
+            <!--<param name="sensor">temperature</param>-->
+        </init-params>
+        <output-structure>
+            <field name="stream" type="double"/>
+            <field name="processed" type="double"/>
+            <field name="dirtiness" type="double"/>
+            <field name="distance" type="double"/>
+            <field name="quality" type="double"/>
+        </output-structure>
+    </processing-class>
+    <description>This virtual sensor uses data cleaning engine for marking dirty data</description>
+    <life-cycle pool-size="10"/>
+    <addressing>
+        <predicate key="geographical">Sensor</predicate>
+        <predicate key="LATITUDE">46.520000</predicate>
+        <predicate key="LONGITUDE">6.565000</predicate>
+    </addressing>
+    <storage history-size="5m"/>
+    <streams>
+        <stream name="input1">
+            <source alias="source1" sampling-rate="1" storage-size="1">
+                <address wrapper="multiformat">
+                    <predicate key="HOST">localhost</predicate>
+                    <predicate key="PORT">22001</predicate>
+                </address>
+                <query>SELECT light, temperature, packet_type, timed FROM wrapper</query>
+            </source>
+            <query>SELECT temperature, timed FROM source1</query>
+        </stream>
+    </streams>
+</virtual-sensor>

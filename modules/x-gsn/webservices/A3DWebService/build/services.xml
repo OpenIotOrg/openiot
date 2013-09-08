@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- This file was auto-generated from WSDL -->
+<!-- by the Apache Axis2 version: 1.4.1  Built on : Aug 13, 2008 (05:03:35 LKT) -->
+<serviceGroup>
+    <service name="A3DWebService">
+        <messageReceivers>
+            <messageReceiver mep="http://www.w3.org/ns/wsdl/in-out" class="org.apache.axis2.rpc.receivers.RPCMessageReceiver"/>
+        </messageReceivers>
+        <parameter name="ServiceClass">gsn.http.A3DWebServiceImpl</parameter>
+        <parameter name="useOriginalwsdl">true</parameter>
+        <parameter name="modifyUserWSDLPortAddress">true</parameter>
+        <operation name="getLatestMeteoDataMeasurement" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://http.gsn">
+            <actionMapping>urn:getLatestMeteoDataMeasurement</actionMapping>
+            <outputActionMapping>urn:getLatestMeteoDataMeasurementResponse</outputActionMapping>
+        </operation>
+        <operation name="getSensorLocation" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://http.gsn">
+            <actionMapping>urn:getSensorLocation</actionMapping>
+            <outputActionMapping>urn:getSensorLocationResponse</outputActionMapping>
+        </operation>
+        <operation name="getSensorInfo" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://http.gsn">
+            <actionMapping>urn:getSensorInfo</actionMapping>
+            <outputActionMapping>urn:getSensorInfoResponse</outputActionMapping>
+        </operation>
+        <operation name="getLatestMeteoData" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://http.gsn">
+            <actionMapping>urn:getLatestMeteoData</actionMapping>
+            <outputActionMapping>urn:getLatestMeteoDataResponse</outputActionMapping>
+        </operation>
+        <operation name="getMeteoData" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://http.gsn">
+            <actionMapping>urn:getMeteoData</actionMapping>
+            <outputActionMapping>urn:getMeteoDataResponse</outputActionMapping>
+        </operation>
+        <operation name="getMeteoDataMeasurement" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://http.gsn">
+            <actionMapping>urn:getMeteoDataMeasurement</actionMapping>
+            <outputActionMapping>urn:getMeteoDataMeasurementResponse</outputActionMapping>
+        </operation>
+        <operation name="getSensors" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://http.gsn">
+            <actionMapping>urn:getSensors</actionMapping>
+            <outputActionMapping>urn:getSensorsResponse</outputActionMapping>
+        </operation>
+    </service>
+</serviceGroup>

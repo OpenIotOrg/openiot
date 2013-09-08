@@ -1,0 +1,34 @@
+<virtual-sensor name="NetworkCamera" priority="10">
+	<processing-class>
+		<class-name>gsn.vsensor.BridgeVirtualSensor</class-name>
+		<init-params>
+		</init-params>
+		<output-structure>
+			<field name="data" type="binary:image/jpeg" />
+		</output-structure>
+	</processing-class>
+	<description>virtual sensor getting data from the camera
+		network.</description>
+	<life-cycle pool-size="10" />
+	<addressing>
+		<predicate key="geographical">
+		</predicate>
+	</addressing>
+	<storage history-size="1" />
+	<streams>
+		<stream name="input1">
+			<source alias="source1" sampling-rate="1" storage-size="1">
+				<address wrapper="http-get">
+					<!--
+						<predicate
+						key="url">http://192.168.51.33/axis-cgi/jpg/image.cgi?resolution=320x240&amp;clock=0&amp;date=0</predicate>
+					-->
+					<predicate key="url">http://192.168.1.1:8044/axis-cgi/jpg/image.cgi?resolution=320x240</predicate>
+					<predicate key="rate">1000</predicate>
+				</address>
+				<query>select * from wrapper</query>
+			</source>
+			<query>select * from source1</query>
+		</stream>
+	</streams>
+</virtual-sensor> 

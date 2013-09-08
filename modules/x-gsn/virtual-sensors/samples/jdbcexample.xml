@@ -1,0 +1,38 @@
+<!-- sample jdbc vs, to be used with multiFormatSample.xml -->
+<virtual-sensor name="jdbcexample" priority="10">
+	<processing-class>
+		<class-name>gsn.vsensor.BridgeVirtualSensor</class-name>
+		<init-params />
+		<output-structure>
+			<field name="light" type="double" />
+			<field name="temperature" type="double" />
+			<field name="packet_type" type="double" />
+		</output-structure>
+	</processing-class>
+	<description>This sensor simulates light and temperature readings
+		every one second.
+	</description>
+	<life-cycle pool-size="10" />
+	<addressing>
+		<predicate key="geographical">Sensor 114 @ EPFL</predicate>
+		<predicate key="LATITUDE">46.520000</predicate>
+		<predicate key="LONGITUDE">6.565000</predicate>
+	</addressing>
+	<storage history-size="5m" />
+	<streams>
+		<stream name="input1">
+			<source alias="source1" sampling-rate="1" storage-size="1">
+				<address wrapper="jdbc">
+                    <predicate key="table-name">MultiFormatTemperatureHandler</predicate>
+                    <predicate key="start-time">continue</predicate>
+                    <predicate key="driver">com.mysql.jdbc.Driver</predicate>
+                    <predicate key="jdbc-url">jdbc:mysql://localhost/gsn</predicate>
+                    <predicate key="username">sa</predicate>
+                    <predicate key="password"></predicate>
+				</address>
+				<query>SELECT light, temperature, packet_type, timed FROM wrapper</query>
+			</source>
+			<query>SELECT light, temperature, packet_type, timed FROM source1</query>
+		</stream>
+	</streams>
+</virtual-sensor>

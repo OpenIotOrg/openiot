@@ -1,0 +1,30 @@
+<virtual-sensor name="EPuck" priority="10">
+	<processing-class>
+		<class-name>gsn.vsensor.EPuckVS</class-name>
+		<init-params />
+	</processing-class>
+	<description>Not Specified, please edit the file
+		$INSTALL_PATH/virtual-sensors/serialRaw.xml.</description>
+	<life-cycle pool-size="10" />
+	<addressing>
+		<predicate key="geographical">Not Specified, please edit the file
+			$INSTALL_PATH/virtual-sensors/localTimeVS.xml.</predicate>
+	</addressing>
+	<output-structure>
+		<field name="RAW_PACKET" type="binary" />
+	</output-structure>
+	<storage history-size="1m" />
+	<streams>
+		<stream name="input1">
+			<source alias="source1" sampling-rate="1" storage-size="1">
+				<address wrapper="serial">
+					<predicate key="HOST">localhost</predicate>
+					<predicate key="PORT">22001</predicate>
+					<predicate key="serialport">/dev/tty.PL2303-0000105D</predicate>
+				</address>
+				<query>select * from "WRAPPER"</query>
+			</source>
+			<query>select * from "source1"</query>
+		</stream>
+	</streams>
+</virtual-sensor> 

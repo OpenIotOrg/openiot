@@ -1,0 +1,50 @@
+<virtual-sensor name="EmailScriptlet" priority="10">
+    <processing-class>
+        <class-name>gsn.processor.ScriptletProcessor</class-name>
+        <init-params>
+            <param name="persistant">false</param>
+            <param name="scriptlet">
+                <![CDATA[
+                    // This script sends an email to alert that the heap value (from the local wrapper)
+                    // has reached a new maxima.
+                    // Please set your SMTP configuration (in the conf/emails.properties) prior to use this script. 
+
+                    // Initialize the stateful variable maxima
+                    if ( ! isdef('maxima'))
+                        maxima = 0;
+
+                    // Comparing the new heap size with the maxima
+                    if (maxima < HEAP) {
+
+                        maxima = HEAP;
+
+                        // Notify by email
+                        def emailTitle = "GSN Notification - New HEAP maxima reached: " + HEAP;
+                        def emailContent = "Warning, the HEAP maxima has been reached: " + HEAP;
+                        def recipients = ["recipient1@server.com", "recipient2@server.com", "recipientn@server.com"]; // Define one or more recipients
+
+                        sendEmail(recipients, emailTitle, emailContent); // note that the sendMail method is, by default, imported statically to the script.
+                    }
+                ]]>
+            </param>
+        </init-params>
+        <output-structure/>
+    </processing-class>
+    <description>
+        This Virtual Sensor demonstrates the use of the scriplet processor (gsn.processor.ScriptletProcessor) for email
+        notifications. It gets its data from the MemoryMonitorVS and sends a new email each time the MemoryMonitorVS.HEAP field reached a new maxima.
+    </description>
+    <addressing/>
+    <storage history-size="1"/>
+    <streams>
+        <stream name="stream1">
+            <source alias="source1" storage-size="1" sampling-rate="1">
+                <address wrapper="local">
+                    <predicate key="name">MemoryMonitorVS</predicate>
+                </address>
+                <query>select * from wrapper</query>
+            </source>
+            <query>select * from source1</query>
+        </stream>
+    </streams>
+</virtual-sensor>

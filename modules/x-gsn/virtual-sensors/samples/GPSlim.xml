@@ -1,0 +1,29 @@
+<virtual-sensor name="GPSlim" priority="10">
+	<processing-class>
+		<class-name>gsn.vsensor.GPSNMEAVS</class-name>
+		<init-params></init-params>
+		<output-structure>
+			<field name="latitude" type="double" />
+			<field name="longitude" type="double" />
+		</output-structure>
+	</processing-class>
+	<description>GPSlim236</description>
+	<life-cycle pool-size="10"></life-cycle>
+	<addressing>
+		<predicate key="none">not yet</predicate>
+	</addressing>
+	<storage history-size="5m"></storage>
+	<input-streams>
+		<input-stream name="input1">
+			<stream-source alias="source1" sampling-rate="1"
+				storage-size="1">
+				<address wrapper="serial">
+					<predicate key="serialport">COM12</predicate>
+					<predicate key="representation">binary</predicate>
+				</address>
+				<query>select * from wrapper</query>
+			</stream-source>
+			<query>select * from source1</query>
+		</input-stream>
+	</input-streams>
+</virtual-sensor> 

@@ -1,0 +1,35 @@
+<virtual-sensor name="fluorometer_temperature" priority="10">
+	<processing-class>
+		<class-name>gsn.vsensor.BridgeVirtualSensor</class-name>
+		<init-params />
+		<output-structure>
+			<field name="temperature" type="double" />
+		</output-structure>
+	</processing-class>
+	<description>This sensor simulates temperature (C) every 5 minutes.
+	</description>
+	<life-cycle pool-size="10" />
+	<addressing>
+		<predicate key="geographical">TRMC @ SED</predicate>
+		<predicate key="LATITUDE">46.520000</predicate>
+		<predicate key="LONGITUDE">6.565000</predicate>
+	</addressing>
+	<storage history-size="0" />
+	<streams>
+		<stream name="input1">
+			<source alias="source1" sampling-rate="1" storage-size="1">
+				<address wrapper="tetraedrefluo">
+                    <predicate key="table-name">acq_temperature</predicate>
+                    <predicate key="physical-input">0</predicate>
+                    <predicate key="start-time">1300964700000</predicate>
+                    <predicate key="driver">com.mysql.jdbc.Driver</predicate>
+                    <predicate key="jdbc-url">jdbc:mysql://multisensor/tetraedrecom1</predicate>
+                    <predicate key="username">datalogging</predicate>
+                    <predicate key="password">datalogging</predicate>
+				</address>
+				<query>SELECT value AS temperature, timed FROM wrapper</query>
+			</source>
+			<query>SELECT temperature,timed FROM source1</query>
+		</stream>
+	</streams>
+</virtual-sensor>

@@ -1,0 +1,35 @@
+<virtual-sensor name="FreeDiskSpaceVS" priority="11">
+	<processing-class>
+		<class-name>gsn.vsensor.ChartVirtualSensor</class-name>
+		<init-params>
+			<param name="input-stream">DATA</param>
+			<param name="title">System Free Disk Space in KB</param>
+			<param name="type">ANY</param>
+			<param name="height">200</param>
+			<param name="width">300</param>
+			<param name="vertical-axis">Free Space</param>
+			<param name="history-size">100</param>
+		</init-params>
+		<output-structure>
+			<field name="DATA" type="binary:image/jpeg" />
+		</output-structure>
+	</processing-class>
+	<description>Not Specified</description>
+	<life-cycle pool-size="2" />
+	<addressing>
+		<predicate key="geographical">Not Specified</predicate>
+	</addressing>
+	<streams>
+		<stream name="DATA" rate="100">
+			<source alias="source3" storage-size="1" sampling-rate="1">
+				<address wrapper="remote-rest">
+					<predicate key="HOST">localhost</predicate>
+					<predicate key="PORT">22001</predicate>
+					<predicate key="QUERY">select * from FreeDiskSpace</predicate>
+				</address>
+				<query>select FREE_SPACE,TIMED from wrapper</query>
+			</source>
+			<query>select * from source3</query>
+		</stream>
+	</streams>
+</virtual-sensor>

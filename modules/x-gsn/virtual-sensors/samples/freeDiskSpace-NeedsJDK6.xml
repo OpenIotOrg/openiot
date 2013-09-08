@@ -1,0 +1,29 @@
+<virtual-sensor name="FreeDiskSpace" priority="11">
+	<processing-class>
+		<class-name>gsn.vsensor.BridgeVirtualSensor</class-name>
+		<output-structure>
+			<field name="FREE_SPACE" type="double" />
+		</output-structure>
+	</processing-class>
+
+	<description>Not Specified</description>
+	<life-cycle pool-size="10" />
+	<addressing>
+		<predicate key="geographical">Not Specified</predicate>
+	</addressing>
+	<storage history-size="1" />
+	<streams>
+		<stream name="diskspace">
+			<source alias="source3" sampling-rate="1" storage-size="1">
+				<address wrapper="free-disk-space">
+					<predicate key="HOST">localhost</predicate>
+					<predicate key="PORT">22001</predicate>
+					<predicate key="sampling-rate">100</predicate>
+				</address>
+				<query>select FREE_SPACE,TIMED from wrapper</query>
+			</source>
+			<query>select FREE_SPACE,TIMED from source3</query>
+		</stream>
+	</streams>
+
+</virtual-sensor>

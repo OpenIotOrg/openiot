@@ -1,0 +1,53 @@
+<virtual-sensor name="direct_push" priority="11">
+    <!-- 
+     This wrapper passively listen for data pushed from the remote sensor.
+     Typically it can be used to retrieve data from devices that are not always connected
+     or that may change their IP address often. It uses the same push infrastructure as
+     the push remote wrapper, but doesn't initiate the connection for retrieving the data
+     structure. The structure has to be defined in the xml file as in the example below.
+     The notification id is used as the key for identifying the remote sensor.
+     (it can be seen as a kind of password, but without ssl it is transmitted in clear-text !!)
+     In addition to the mandatory output-structure, this wrapper has the following mandatory parameter :
+     - notification-id the key used by the remote device to send data. For better "security" please consider the full range of java double values. 
+
+    The following shell script can be used on any linux device to send the data contained in the $SENSOR_VALUE variable to this wrapper, using curl.
+
+echo "<stream-element timestamp='$(date "+%Y-%m-%d %H:%M:%S") CET'>"> xml.xml
+echo "<field name='value' type='numeric'>$SENSOR_VALUE</field>" >> xml.xml
+echo "<field name='latitude' type='numeric'>45.3</field>" >> xml.xml
+echo "<field name='longitude' type='numeric'>8.4</field>" >> xml.xml
+echo "</stream-element>" >> xml.xml
+curl -s -X PUT -d notification-id=2.3456789 --data-urlencode data@xml.xml http://server/gsn/streaming/
+
+     -->
+	<processing-class>
+		<class-name>gsn.vsensor.BridgeVirtualSensor</class-name>
+		<output-structure>
+			<field name="value" type="int" />
+			<field name="latitude" type="double" />
+			<field name="longitude" type="double" />
+		</output-structure>
+	</processing-class>
+	<description>Get data from an external device</description>
+	<life-cycle pool-size="100" />
+	<addressing>
+		<predicate key="geographical">Not yet specified</predicate>
+	</addressing>
+	<storage history-size="2h" />
+	<streams>
+		<stream name="input1">
+			<source alias="source1" sampling-rate="1" storage-size="1">
+				<address wrapper="remote-direct">
+					<predicate key="notification-id">2.3456789</predicate>
+					<output-structure>
+						<field name="value" type="int" />
+                        <field name="latitude" type="double" />
+                        <field name="longitude" type="double" />
+		</output-structure>
+				</address>
+				<query>select * from wrapper</query>
+			</source>
+			<query>select * from source1</query>
+		</stream>
+	</streams>
+</virtual-sensor>

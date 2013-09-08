@@ -1,0 +1,177 @@
+<virtual-sensor name="SensorScope2VS" priority="10">
+    <processing-class>
+        <class-name>gsn.vsensor.SensorScope2VS</class-name>
+        <unique-timestamps>false</unique-timestamps>
+        <init-params/>
+
+        <output-structure>
+            <!--
+            <field name="station_id" type="int"/>
+
+            <field name="int_batt_volt" type="double"/>
+            <field name="ext_batt_volt" type="double"/>
+            <field name="cpu_volt" type="double"/>
+            <field name="cpu_temp" type="double"/>
+
+            <field name="air_temp" type="double"/>
+            <field name="air_temp_2" type="double"/>
+            <field name="air_temp_3" type="double"/>
+            <field name="air_temp_4" type="double"/>
+            <field name="air_temp_5" type="double"/>
+
+            <field name="air_humid" type="double"/>
+            <field name="air_humid_2" type="double"/>
+            <field name="air_humid_3" type="double"/>
+            <field name="air_humid_4" type="double"/>
+            <field name="air_humid_5" type="double"/>
+
+            <field name="solar_rad" type="double"/>
+            <field name="solar_rad_2" type="double"/>
+            <field name="solar_rad_3" type="double"/>
+            <field name="solar_rad_4" type="double"/>
+            <field name="solar_rad_5" type="double"/>
+
+            <field name="rain_meter" type="double"/>
+            <field name="rain_meter_2" type="double"/>
+            <field name="rain_meter_3" type="double"/>
+            <field name="rain_meter_4" type="double"/>
+            <field name="rain_meter_5" type="double"/>
+
+            <field name="ground_temp_tnx" type="double"/>
+            <field name="ground_temp_tnx_2" type="double"/>
+            <field name="ground_temp_tnx_3" type="double"/>
+            <field name="ground_temp_tnx_4" type="double"/>
+            <field name="ground_temp_tnx_5" type="double"/>
+
+            <field name="air_temp_tnx" type="double"/>
+            <field name="air_temp_tnx_2" type="double"/>
+            <field name="air_temp_tnx_3" type="double"/>
+            <field name="air_temp_tnx_4" type="double"/>
+            <field name="air_temp_tnx_5" type="double"/>
+
+            <field name="soil_temp_ectm" type="double"/>
+            <field name="soil_temp_ectm_2" type="double"/>
+            <field name="soil_temp_ectm_3" type="double"/>
+            <field name="soil_temp_ectm_4" type="double"/>
+            <field name="soil_temp_ectm_5" type="double"/>
+
+            <field name="soil_moisture_ectm" type="double"/>
+            <field name="soil_moisture_ectm_2" type="double"/>
+            <field name="soil_moisture_ectm_3" type="double"/>
+            <field name="soil_moisture_ectm_4" type="double"/>
+            <field name="soil_moisture_ectm_5" type="double"/>
+
+            <field name="soil_water_potential" type="double"/>
+            <field name="soil_water_potential_2" type="double"/>
+            <field name="soil_water_potential_3" type="double"/>
+            <field name="soil_water_potential_4" type="double"/>
+            <field name="soil_water_potential_5" type="double"/>
+
+            <field name="soil_temp_decagon" type="double"/>
+            <field name="soil_temp_decagon_2" type="double"/>
+            <field name="soil_temp_decagon_3" type="double"/>
+            <field name="soil_temp_decagon_4" type="double"/>
+            <field name="soil_temp_decagon_5" type="double"/>
+
+            <field name="soil_moisture_decagon" type="double"/>
+            <field name="soil_moisture_decagon_2" type="double"/>
+            <field name="soil_moisture_decagon_3" type="double"/>
+            <field name="soil_moisture_decagon_4" type="double"/>
+            <field name="soil_moisture_decagon_5" type="double"/>
+
+            <field name="soil_conduct_decagon" type="double"/>
+            <field name="soil_conduct_decagon_2" type="double"/>
+            <field name="soil_conduct_decagon_3" type="double"/>
+            <field name="soil_conduct_decagon_4" type="double"/>
+            <field name="soil_conduct_decagon_5" type="double"/>
+
+            <field name="wind_direction" type="double"/>
+            <field name="wind_direction_2" type="double"/>
+            <field name="wind_direction_3" type="double"/>
+            <field name="wind_direction_4" type="double"/>
+            <field name="wind_direction_5" type="double"/>
+
+            <field name="wind_speed" type="double"/>
+            <field name="wind_speed_2" type="double"/>
+            <field name="wind_speed_3" type="double"/>
+            <field name="wind_speed_4" type="double"/>
+            <field name="wind_speed_5" type="double"/>
+
+            <field name="battery_board_voltage" type="double"/>
+            <field name="battery_board_voltage_2" type="double"/>
+            <field name="battery_board_voltage_3" type="double"/>
+            <field name="battery_board_voltage_4" type="double"/>
+            <field name="battery_board_voltage_5" type="double"/>
+
+            <field name="solar_rad_sp212" type="double"/>
+            <field name="solar_rad_sp212_2" type="double"/>
+            <field name="solar_rad_sp212_3" type="double"/>
+            <field name="solar_rad_sp212_4" type="double"/>
+            <field name="solar_rad_sp212_5" type="double"/>
+
+            <field name="decagon_10hs_mv" type="double"/>
+            <field name="decagon_10hs_mv_2" type="double"/>
+            <field name="decagon_10hs_mv_3" type="double"/>
+            <field name="decagon_10hs_mv_4" type="double"/>
+            <field name="decagon_10hs_mv_5" type="double"/>
+
+            <field name="decagon_10hs_vwc" type="double"/>
+            <field name="decagon_10hs_vwc_2" type="double"/>
+            <field name="decagon_10hs_vwc_3" type="double"/>
+            <field name="decagon_10hs_vwc_4" type="double"/>
+            <field name="decagon_10hs_vwc_5" type="double"/>
+
+            <field name="timestamp" type="bigint"/>
+
+            -->
+
+            <field name="wind_direction" type="double"/>
+            <field name="wind_speed" type="double"/>
+            <field name="rain_meter" type="double"/>
+            <field name="solar_rad" type="double"/>
+            <field name="soil_moisture_ectm" type="double"/>
+            <field name="soil_moisture_ectm_2" type="double"/>
+            <field name="soil_temp_ectm" type="double"/>
+            <field name="soil_temp_ectm_2" type="double"/>
+            <field name="air_humid" type="double"/>
+            <field name="air_temp" type="double"/>
+            <field name="air_temp_tnx" type="double"/>
+            <field name="ground_temp_tnx" type="double"/>
+
+        </output-structure>
+
+    </processing-class>
+    <description>SwissEx Stillberg GPRS Master 1047</description>
+    <life-cycle pool-size="10"/>
+    <addressing>
+        <predicate key="latitude">46.77182757</predicate>
+        <predicate key="longitude">9.867546558</predicate>
+        <predicate key="ALTITUDE">2192</predicate>
+    </addressing>
+
+    <streams>
+        <stream name="input1">
+            <source alias="source1" sampling-rate="1" storage-size="1">
+                <address wrapper="sensorscope2">
+                    <predicate key="source">sf@sensorscop1.epfl.ch:5010</predicate>
+                    <predicate key="station_id">1047</predicate>
+                </address>
+                <query>select timed,
+                    wind_direction,
+                    wind_speed,
+                    rain_meter,
+                    solar_rad,
+                    soil_moisture_ectm,
+                    soil_moisture_ectm_2,
+                    soil_temp_ectm,
+                    soil_temp_ectm_2,
+                    air_humid,
+                    air_temp,
+                    air_temp_tnx,
+                    ground_temp_tnx from wrapper
+                </query>
+            </source>
+            <query>select * from source1</query>
+        </stream>
+    </streams>
+</virtual-sensor>

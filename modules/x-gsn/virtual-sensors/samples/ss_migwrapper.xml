@@ -1,0 +1,41 @@
+<virtual-sensor name="ss_migwrapper" priority="10">
+	<processing-class>
+		<class-name>gsn.vsensor.BridgeVirtualSensor</class-name>
+		<unique-timestamps>true</unique-timestamps>
+		<output-structure>
+			<field name="SYSVOLTAGE" type="DOUBLE" />
+			<field name="REALSYSVOLTAGE_V" type="DOUBLE" />
+			<field name="SDIVOLTAGE" type="DOUBLE" />
+			<field name="REALSDIVOLTAGE_V" type="DOUBLE" />
+			<field name="TEMPERATURE" type="DOUBLE" />
+			<field name="REALTEMPERATURE_C" type="DOUBLE" />
+			<field name="MOISTURE" type="DOUBLE" />
+			<field name="APPROXMOISTURE_REL" type="DOUBLE" />
+			<field name="REALMOISTURE_REL" type="DOUBLE" />
+			<field name="TIMESTAMP" type="DOUBLE" />
+		</output-structure>
+	</processing-class>
+	<description> TODO Add a description</description>
+	<life-cycle pool-size="10" />
+	<addressing />
+	<storage />
+	<streams>
+		<stream name="data">
+			<source alias="source" storage-size="1" sampling-rate="1">
+				<address wrapper="ss_tinyos-mig">
+					<predicate key="ss-host">localhost</predicate>
+					<predicate key="ss-port">25000</predicate>
+					<predicate key="continue-on-error">true</predicate>
+					<predicate key="wrapper-name">mig2</predicate>
+					<predicate key="wrapper-keep-processed-ss-entries">false</predicate>
+					<predicate key="source">sf@permafrozer.ethz.ch:9001</predicate>
+					<predicate key="message-classname">ch.ethz.permafrozer.DozerDataMsg</predicate>
+					<predicate key="message-length">23</predicate>
+					<predicate key="getter-prefix">get</predicate>
+				</address>
+				<query> select * from wrapper </query>
+			</source>
+			<query> select * from source</query>
+		</stream>
+	</streams>
+</virtual-sensor>

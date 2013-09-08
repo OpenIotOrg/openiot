@@ -1,0 +1,47 @@
+<virtual-sensor name="csvReaderSQL" priority="11">
+	<processing-class>
+		<class-name>gsn.vsensor.StreamExporterVirtualSensor</class-name>
+		  <init-params>
+		    <param name="url">jdbc:mysql://192.33.210.50/ikdimitrov</param>
+		    <param name="user">ikdimitrov</param>
+		    <param name="password">tvZMDpaBGtMcMJu9</param> 
+		    <param name="driver">com.mysql.jdbc.Driver</param> 
+		    <param name="table">mycsvreadersql</param>  
+		    <param name="entries">100000</param>
+		   </init-params>
+		<output-structure>
+			<field name="X" type="double" />
+			<field name="Y" type="double" />
+            		<field name="Z" type="double" />
+		</output-structure>
+	</processing-class>
+	<description>Reads data from the VS</description>
+	<life-cycle pool-size="10" />
+	<addressing>
+		<predicate key="geographical">Morges Moulin</predicate>
+		<predicate key="LATITUDE">237.5419</predicate>
+		<predicate key="LONGITUDE">-142.1419</predicate>
+	</addressing>
+	<storage history-size="1" />
+	<streams>
+		<stream name="input1">
+			<source alias="source1" sampling-rate="1" storage-size="1">
+                <address wrapper="csv">
+                    <predicate key="file">/home/ikdimitrov/inputdata/first100000.txt</predicate>
+                    <predicate key="fields">time,time_u,X,Y,Z</predicate>
+                    <predicate key="formats">timestamp(H:m:s),numeric,numeric,numeric,numeric</predicate>
+                    <predicate key="bad-values">999999999, NaN, NA</predicate>
+                    <predicate key="timezone">Etc/GMT-1</predicate>
+                    <predicate key="sampling">1</predicate>
+                    <predicate key="check-point-directory">csv-check-points-SQL</predicate>
+                    <predicate key="skip-first-lines">1</predicate>
+		    <predicate key="use-counter-for-check-point">true</predicate>
+		    <predicate key="separator">	</predicate>
+                </address>
+
+                <query>select X,Y,Z,TIMED from wrapper</query>
+			</source>
+			<query>select X,Y,Z,TIMED from source1</query>
+		</stream>
+	</streams>
+</virtual-sensor>

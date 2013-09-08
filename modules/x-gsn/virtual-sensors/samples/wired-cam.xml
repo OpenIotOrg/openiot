@@ -1,0 +1,29 @@
+<virtual-sensor name="camera" priority="10">
+	<processing-class>
+		<class-name>gsn.vsensor.BridgeVirtualSensor</class-name>
+		<init-params />
+		<output-structure>
+			<field name="picture" type="binary:image/jpeg" />
+		</output-structure>
+	</processing-class>
+	<description>Not Specified, please edit the file
+		$INSTALL_PATH/virtual-sensors/template.xml.</description>
+	<life-cycle pool-size="10" />
+	<addressing>
+		<predicate key="geographical">BC 143, EPFL, Lausanne</predicate>
+	</addressing>
+	<storage history-size="1" />
+	<streams>
+		<stream name="data">
+			<source alias="input" storage-size="1" sampling-rate="1">
+				<address wrapper="usb-cam">
+					<predicate key="device">vfw:Microsoft WDM Image
+						Capture (Win32):0</predicate>
+					<predicate key="live-view">false</predicate>
+				</address>
+				<query>select * from WRAPPER</query>
+			</source>
+			<query>select * from input</query>
+		</stream>
+	</streams>
+</virtual-sensor> 

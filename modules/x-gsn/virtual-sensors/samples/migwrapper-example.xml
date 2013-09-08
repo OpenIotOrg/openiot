@@ -1,0 +1,70 @@
+
+	<!--
+		This is an example configuration file for MigMessageWrapper. Output
+		structure should be the same as the message structure defined in your
+		TinyOS-program's header file. Here I've used the following: typedef
+		nx_struct AbcMsg1 { nx_uint8_t node_id; /* ID of this node */
+		nx_uint8_t parent_id; /* ID of parent node */ nx_uint8_t dest_id; /*
+		ID of destination node */ nx_uint32_t sequence; /* sequence number */
+		nx_uint16_t Battery; /* Most recent of 1 from sensor Voltage */
+		nx_uint16_t AbcTemperature1; /* Most recent of 1 from sensor
+		Temperature */ } AbcMsg1_t; This wrapper requires that you have
+		MIG-generated .java and .class -files available. See more information
+		at: http://www.tinyos.net/tinyos-1.x/doc/nesc/mig.html or
+		http://www.tinyos.net/tinyos-2.x/doc/html/tutorial/lesson4.html or
+		http://www.tinyos.net/tinyos-1.x/doc/tutorial/lesson6.html Predicate
+		'packet-name' is the name of your program. 'path' is the path to
+		.java-file, from where the packet structure is read. It is highly
+		recommended that this points to src/gsn/wrappers/tinyos2x/ That way
+		ant compiles the class-file to correct place. 'source' is the source
+		of packets, where wrapper connects to. More info on source format
+		(serial connection, SerialForwarder etc.) can be found at:
+		http://www.tinyos.net/tinyos-2.x/doc/html/tutorial/lesson4.html Output
+		data types are a little bit different in GSN than in nesC. Here is the
+		conversion table (I couldn't find the definition for MIG datatype
+		conversion, so these are tested manually): nesC Java GSN Explanation
+		nx_int8_t byte tinyint 8-bit signed nx_uint8_t short smallint 8-bit
+		unsigned nx_int16_t short smallint 16-bit signed nx_uint16_t int
+		integer 16-bit unsigned nx_int32_t int integer 32-bit signed
+		nx_uint32_t long bigint 32-bit unsigned nesC might have some floating
+		point numbers as well, but they are not supported at least for the
+		moment.
+	-->
+
+<virtual-sensor name="AbcMsg1" priority="11">
+	<processing-class>
+		<class-name>gsn.vsensor.BridgeVirtualSensor</class-name>
+		<output-structure>
+			<field name="NODE_ID" type="double" />
+			<field name="PARENT_ID" type="double" />
+			<field name="DEST_ID" type="double" />
+			<field name="SEQUENCE" type="double" />
+			<field name="BATTERY" type="double" />
+			<field name="ABCTEMPERATURE1" type="double" />
+		</output-structure>
+	</processing-class>
+
+	<description></description>
+	<life-cycle pool-size="10" />
+	<addressing>
+		<predicate key="geographical">Not Specified</predicate>
+		<predicate key="LATITUDE">37.5419</predicate>
+		<predicate key="LONGITUDE">-122.1419</predicate>
+	</addressing>
+	<storage history-size="10" />
+	<streams>
+		<stream name="input1">
+			<source alias="AbcMsg1" sampling-rate="1000" storage-size="1">
+				<address wrapper="tinyos-mig">
+					<predicate key="source">serial@/dev/tty.PL2303-0000101D:mica2</predicate>
+					<predicate key="packet-name">AbcMsg1</predicate>
+					<predicate key="path">/Users/ristohietala/NetBeansProjects/gsn/trunk/src/gsn/wrappers/tinyos2x/</predicate>
+				</address>
+				<query>select
+					NODE_ID,PARENT_ID,DEST_ID,SEQUENCE,BATTERY,ABCTEMPERATURE1 from wrapper</query>
+			</source>
+			<query>select
+				NODE_ID,PARENT_ID,DEST_ID,SEQUENCE,BATTERY,ABCTEMPERATURE1 from AbcMsg1</query>
+		</stream>
+	</streams>
+</virtual-sensor>

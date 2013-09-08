@@ -1,0 +1,26 @@
+<virtual-sensor name="replaygpsvs" priority="10">	<processing-class>		<class-name>gsn.vsensor.BridgeVirtualSensor</class-name>		<init-params />		<output-structure>			<field name="latiTude" type="double">tested desc</field>
+			<field name="longiTude" type="double" />
+			<field name="temperature" type="double" />
+			<field name="light" type="double" />
+			<field name="camera" type="binary:image/jpeg" />		</output-structure>	</processing-class>	<description>Not Specified, please edit the file		$INSTALL_PATH/virtual-sensors/template.xml.</description>	<life-cycle pool-size="10" />	<addressing>		<predicate key="geographical">Bla</predicate>	</addressing>	<storage />	<streams>
+		<stream name="data">
+			<source alias="source" storage-size="1" sampling-rate="1">
+				<address wrapper="replay">
+					<predicate key="dbname">gpsvs</predicate>
+					<!--
+						The name of the Database to replay from
+					-->
+					<predicate key="speed">1000000</predicate>
+					<!--
+						Speed of 1 implies replaying with the original speed, speed of 2
+						means replaying 2 times faster, ...
+					-->
+				</address>
+				<query>select * from wrapper</query>
+				<!--
+					Play all the data items from the database.
+				-->
+			</source>
+			<query>select * from source</query> <!-- Play all the data items without any joins. -->
+		</stream>
+	</streams></virtual-sensor> 

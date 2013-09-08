@@ -1,0 +1,33 @@
+<virtual-sensor name="stats_sensor" priority="10">
+    <processing-class>
+        <class-name>gsn.vsensor.StatsBridgeVirtualSensor</class-name>
+        <init-params>
+
+            <param name="logging-interval">10</param> <!-- logging interval in number of tuples -->
+
+        </init-params>
+        <output-structure>
+            <field name="temperature" type="double"/>
+        </output-structure>
+    </processing-class>
+    <description>This virtual sensor is a modified bridge virtual sensor with regular logging of timestamps for data insertion</description>
+    <life-cycle pool-size="10"/>
+    <addressing>
+        <predicate key="geographical">Sensor</predicate>
+        <predicate key="LATITUDE">46</predicate>
+        <predicate key="LONGITUDE">6.5</predicate>
+    </addressing>
+    <storage history-size="5m"/>
+    <streams>
+        <stream name="input1">
+            <source alias="source1" sampling-rate="1" storage-size="1">
+                <address wrapper="multiformat">
+                    <predicate key="HOST">localhost</predicate>
+                    <predicate key="PORT">22001</predicate>
+                </address>
+                <query>SELECT light, temperature, packet_type, timed FROM wrapper</query>
+            </source>
+            <query>SELECT temperature, timed FROM source1</query>
+        </stream>
+    </streams>
+</virtual-sensor>

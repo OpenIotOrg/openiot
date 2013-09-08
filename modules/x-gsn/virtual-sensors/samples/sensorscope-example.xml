@@ -1,0 +1,57 @@
+
+	<!--
+		This is an example virtual sensor configuration for sensorscope using
+		MigMessageWrapper. It uses SensorscopeVS virtual sensor for
+		calculating real values from raw data. This configuration assumes that
+		you have SensorscopeMsg.java in directory
+		src/gsn/wrappers/tinyos2x/sensorscope/ and that it's in a java package
+		by the same name.
+	-->
+
+<virtual-sensor name="Sensorscope" priority="11">
+	<processing-class>
+		<class-name>gsn.vsensor.SensorscopeVS</class-name>
+		<output-structure>
+			<field name="NTWSENDERID" type="double" />
+			<field name="NTWDISTTOBS" type="double" />
+			<field name="TSPHOPCOUNT" type="double" />
+			<field name="TSPPACKETSN" type="double" />
+			<field name="REPORTERID" type="double" />
+			<field name="TIMESTAMP" type="double" />
+			<field name="RAINMETER" type="double" />
+			<field name="WINDSPEED" type="double" />
+			<field name="WATERMARK" type="double" />
+			<field name="SOLARRADIATION" type="double" />
+			<field name="AIRTEMPERATURE" type="double" />
+			<field name="AIRHUMIDITY" type="double" />
+			<field name="SKINTEMPERATURE" type="double" />
+			<field name="SOILMOISTURE" type="double" />
+			<field name="WINDDIRECTION" type="double" />
+		</output-structure>
+	</processing-class>
+
+	<description></description>
+	<life-cycle pool-size="10" />
+	<addressing>
+		<predicate key="geographical">Not Specified</predicate>
+		<predicate key="LATITUDE">37.5419</predicate>
+		<predicate key="LONGITUDE">-122.1419</predicate>
+	</addressing>
+	<storage history-size="1000" />
+	<streams>
+		<stream name="input1">
+			<source alias="Sensorscope" sampling-rate="1000" storage-size="1">
+				<address wrapper="tinyos-mig">
+					<predicate key="source">sf@lcavsrv6.epfl.ch:20100</predicate>
+					<predicate key="packet-name">SensorscopeMsg</predicate>
+					<predicate key="class-package">gsn.wrappers.tinyos2x.sensorscope</predicate>
+					<predicate key="path">./src/gsn/wrappers/tinyos2x/sensorscope/</predicate>
+				</address>
+				<query>select
+					NTWSENDERID,NTWDISTTOBS,TSPHOPCOUNT,TSPPACKETSN,REPORTERID,TIMESTAMP,RAINMETER,WINDSPEED,WATERMARK,SOLARRADIATION,AIRTEMPERATURE,AIRHUMIDITY,SKINTEMPERATURE,SOILMOISTURE,WINDDIRECTION,FOO from wrapper</query>
+			</source>
+			<query>select
+				NTWSENDERID,NTWDISTTOBS,TSPHOPCOUNT,TSPPACKETSN,REPORTERID,TIMESTAMP,RAINMETER,WINDSPEED,WATERMARK,SOLARRADIATION,AIRTEMPERATURE,AIRHUMIDITY,SKINTEMPERATURE,SOILMOISTURE,WINDDIRECTION,FOO from Sensorscope</query>
+		</stream>
+	</streams>
+</virtual-sensor>
