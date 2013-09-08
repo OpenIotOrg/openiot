@@ -252,8 +252,8 @@ public class utils {
         String s = "opensense_3";
         String id = addSensorToLSM("swissex",
                 "swissex1234",
-                "http://lsm.deri.ie/OpenIoT/demo/sensormeta#",
-                "http://lsm.deri.ie/OpenIoT/demo/sensordata#",
+                "http://lsm.deri.ie/OpenIoT/test/sensormeta#",
+                "http://lsm.deri.ie/OpenIoT/test/sensordata#",
                 s,
                 "opensense",
                 "lausanne",
