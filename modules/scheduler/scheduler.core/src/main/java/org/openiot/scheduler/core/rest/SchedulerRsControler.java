@@ -32,7 +32,7 @@ import org.openiot.commons.osdspec.model.OSDSpec;
 import org.openiot.commons.sensortypes.model.SensorTypes;
 
 
-import org.openiot.scheduler.core.api.impl.DiscoverSensors.DiscoverSensorsImpl;
+import org.openiot.scheduler.core.api.impl.DiscoverSensors.method2.DiscoverSensorsImpl;
 import org.openiot.scheduler.core.api.impl.RegisterService.RegisterServiceImpl;
 
 import org.slf4j.Logger;
