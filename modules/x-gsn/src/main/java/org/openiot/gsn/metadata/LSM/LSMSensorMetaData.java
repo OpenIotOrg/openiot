@@ -58,6 +58,25 @@ public class LSMSensorMetaData {
     private String source;
     private boolean registeredToLSM;
 
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
+    }
+
+    private double latitude;
+    private double longitude;
+
     public String[] getFieldNames() {
         return fieldNames;
     }
@@ -149,6 +168,9 @@ public class LSMSensorMetaData {
             this.setSourceType(PropertiesReader.readProperty(fileName, "sourceType"));
             this.setSource(PropertiesReader.readProperty(fileName, "source"));
             this.setSensorID(PropertiesReader.readProperty(fileName, "sensorID"));
+            this.setLatitude(Double.parseDouble(PropertiesReader.readProperty(fileName, "latitude")));
+            this.setLongitude(Double.parseDouble(PropertiesReader.readProperty(fileName, "longitude")));
+
             String registeredToLSMString = PropertiesReader.readProperty(fileName, "registered");
             if (registeredToLSMString.equalsIgnoreCase("true"))
                 registeredToLSM = true;

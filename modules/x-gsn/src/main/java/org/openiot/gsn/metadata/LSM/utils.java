@@ -1,22 +1,22 @@
 /**
-*    Copyright (c) 2011-2014, OpenIoT
-*   
-*    This file is part of OpenIoT.
-*
-*    OpenIoT is free software: you can redistribute it and/or modify
-*    it under the terms of the GNU Lesser General Public License as published by
-*    the Free Software Foundation, version 3 of the License.
-*
-*    OpenIoT is distributed in the hope that it will be useful,
-*    but WITHOUT ANY WARRANTY; without even the implied warranty of
-*    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*    GNU Lesser General Public License for more details.
-*
-*    You should have received a copy of the GNU Lesser General Public License
-*    along with OpenIoT.  If not, see <http://www.gnu.org/licenses/>.
-*
-*     Contact: OpenIoT mailto: info@openiot.eu
-*/
+ *    Copyright (c) 2011-2014, OpenIoT
+ *
+ *    This file is part of OpenIoT.
+ *
+ *    OpenIoT is free software: you can redistribute it and/or modify
+ *    it under the terms of the GNU Lesser General Public License as published by
+ *    the Free Software Foundation, version 3 of the License.
+ *
+ *    OpenIoT is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *    GNU Lesser General Public License for more details.
+ *
+ *    You should have received a copy of the GNU Lesser General Public License
+ *    along with OpenIoT.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *     Contact: OpenIoT mailto: info@openiot.eu
+ */
 
 package org.openiot.gsn.metadata.LSM;
 
@@ -87,7 +87,7 @@ public class utils {
 
             sensorID = sensor.getId();
 
-            System.out.println(listSensor(sensor).toString());
+            //System.out.println(listSensor(sensor).toString());
 
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -168,131 +168,9 @@ public class utils {
 
     }
 
-    //TODO: add date
-    public static boolean updateSensorDataOnLSM(String username,
-                                                String password,
-                                                String metaGraph,
-                                                String dataGraph,
-                                                String sensorID,
-                                                String fieldName,
-                                                double fieldValue,
-                                                String fieldUnit) {
-        System.out.println(" *********** INSIDE ******** RUNNING **********");
-
-        System.out.println("updateSensorDataOnLSM(\"" + username + "\",");
-        System.out.println("\t\t\"" + password + "\",");
-        System.out.println("\t\t\"" + metaGraph + "\",");
-        System.out.println("\t\t\"" + dataGraph + "\",");
-        System.out.println("\t\t\"" + sensorID + "\",");
-        System.out.println("\t\t\"" + fieldName + "\",");
-        System.out.println("\t\t" + fieldValue + ",");
-        System.out.println("\t\t\"" + fieldUnit + "\");");
-
-        boolean success = true;
-        try {
-            /*
-            * Set sensor's author
-            * If you don't have LSM account, please visit LSM Home page (http://lsm.deri.ie) to sign up
-            */
-            User user = new User();
-            user.setUsername(username);
-            user.setPass(password);
-
-            Sensor sensor = new Sensor();
-
-            sensor.setId(sensorID);
-
-
-            sensor.setUser(user);
-
-            // create LSMTripleStore instance
-            LSMTripleStore lsmStore = new LSMTripleStore();
-
-            //set user information for authentication
-            lsmStore.setUser(user);
-
-            /*
-            * An Observation is a Situation in which a Sensing method has been used to estimate or
-            * calculate a value of a Property of a FeatureOfInterest.
-            */
-
-
-            //create an Observation object
-            Observation obs = new Observation();
-
-            // set SensorURL of observation
-            obs.setSensor(sensorID);
-            //set time when the observation was observed. In this example, the time is current local time.
-            obs.setTimes(new Date());
-            obs.setMetaGraph(metaGraph);
-            obs.setDataGraph(dataGraph);
-            /*
-            * Relation linking an Observation to the Property that was observed
-            */
-            ObservedProperty obvTem = new ObservedProperty();
-            obvTem.setObservationId(obs.getId());
-            obvTem.setPropertyName(fieldName);
-            obvTem.setValue(fieldValue);
-            obvTem.setUnit(fieldUnit);
-            obs.addReading(obvTem);
-
-            lsmStore.sensorDataUpdate(obs);
-
-        } catch (Exception ex) {
-            success = false;
-            ex.printStackTrace();
-            System.out.println("cannot send the data to server");
-        }
-
-        return success;
-
-    }
-
-    static void register_opensense_sensors() {
-        String s = "opensense_3";
-        String id = addSensorToLSM("swissex",
-                "swissex1234",
-                "http://lsm.deri.ie/OpenIoT/test/sensormeta#",
-                "http://lsm.deri.ie/OpenIoT/test/sensordata#",
-                s,
-                "opensense",
-                "lausanne",
-                "gsn",
-                "OpenSense station 3",
-                "http://opensensedata.epfl.ch:22002/gsn?REQUEST=113&name="+s,
-                46.521989,
-                6.639634
-        );
-        System.out.println(s+ " => ID => " + id);
-    }
-
-
-
-    /*
-
-    source=http\://planetdata.epfl.ch\:22002/gsn?REQUEST\=113&name\=mountain_1
-sensorName=mountain_1
-dataGraph=http\://lsm.deri.ie/OpenIoT/test/sensordata\#
-field.temperature.unit=C
-registered=true
-field.humidity.unit=Percent
-field.temperature.propertyName=Temperature
-sensorID=http\://lsm.deri.ie/resource/101982049433950
-author=swissex
-metaGraph=http\://lsm.deri.ie/OpenIoT/test/sensormeta\#
-fields=humidity,temperature,wind_speed
-field.wind_speed.unit=m/s
-sensorType=mountain
-field.wind_speed.propertyName=WindSpeed
-sourceType=gsn
-information=Mountain station 1
-field.humidity.propertyName=Humidity
-     */
-
-
     public static void main(String[] args) {
 
-        if (args.length<1) {
+        if (args.length < 1) {
             System.out.println("Error: Metadata file is missing.\n");
             System.exit(-1);
         }
@@ -303,6 +181,10 @@ field.humidity.propertyName=Humidity
         LSMSensorMetaData metaData = new LSMSensorMetaData();
         boolean success = metaData.initFromConfigFile(metadataFileName);
 
+        LSMSchema schema = new LSMSchema();
+        schema.initFromConfigFile(metadataFileName);
+        System.out.println(schema.toString());
+
         LSMUser user = new LSMUser();
         user.initFromConfigFile(LSMRepository.LSM_CONFIG_PROPERTIES_FILE);
 
@@ -312,49 +194,23 @@ field.humidity.propertyName=Humidity
 
         System.out.println(success);
 
+
+        String SID = addSensorToLSM(user.getUser(),
+                user.getPassword(),
+                schema.getMetaGraph(),
+                schema.getDataGraph(),
+                metaData.getSensorName(),
+                metaData.getAuthor(),
+                metaData.getSourceType(),
+                metaData.getSensorType(),
+                metaData.getInformation(),
+                metaData.getSource(),
+                metaData.getLatitude(),
+                metaData.getLongitude());
+
+        System.out.println("Sensor registered to LSM with ID: " + SID);
+
         System.exit(0);
-
-        register_opensense_sensors();
-
-        System.exit(0);
-
-        String id = addSensorToLSM("swissex",
-                "swissex1234",
-                "http://lsm.deri.ie/OpenIoT/test/sensormeta#",
-                "http://lsm.deri.ie/OpenIoT/test/sensordata#",
-                "lausanne_1057",
-                "sofiane",
-                "lausanne",
-                "gsn",
-                "air quality",
-                "http://opensensedata.epfl.ch:22002/gsn?REQUEST=113&name=lausanne_1057",
-                0,
-                0
-        );
-
-
-        //id = "http://lsm.deri.ie/resource/66582224937127";
-        System.out.println("Calling with 64 bit Sensor ID ==> " + id);
-        updateSensorDataOnLSM("swissex",
-                "swissex1234",
-                "http://lsm.deri.ie/OpenIoT/test/sensormeta#",
-                "http://lsm.deri.ie/OpenIoT/test/sensordata#",
-                id,
-                "Temperature",
-                0.0,
-                "C");
-
-        updateSensorDataOnLSM("swissex",
-                "swissex1234",
-                "http://lsm.deri.ie/OpenIoT/test/sensormeta#",
-                "http://lsm.deri.ie/OpenIoT/test/sensordata#",
-                "http://lsm.deri.ie/resource/88301583363908",
-                "Temperature",
-                81.86806200000001,
-                "C");
-
-
-
     }
 
     static StringBuilder listSensor(Sensor s) {
