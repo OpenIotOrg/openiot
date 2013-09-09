@@ -1,23 +1,23 @@
 package org.openiot.sdum.core.rest;
 
 /**
- * Copyright (c) 2011-2014, OpenIoT
+ *    Copyright (c) 2011-2014, OpenIoT
+ *    
+ *    This file is part of OpenIoT.
  *
- * This library is free software; you can redistribute it and/or
- * modify it either under the terms of the GNU Lesser General Public
- * License version 2.1 as published by the Free Software Foundation
- * (the "LGPL"). If you do not alter this
- * notice, a recipient may use your version of this file under the LGPL.
+ *    OpenIoT is free software: you can redistribute it and/or modify
+ *    it under the terms of the GNU Lesser General Public License as published by
+ *    the Free Software Foundation, version 3 of the License.
  *
- * You should have received a copy of the LGPL along with this library
- * in the file COPYING-LGPL-2.1; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ *    OpenIoT is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *    GNU Lesser General Public License for more details.
  *
- * This software is distributed on an "AS IS" basis, WITHOUT WARRANTY
- * OF ANY KIND, either express or implied. See the LGPL  for
- * the specific language governing rights and limitations.
+ *    You should have received a copy of the GNU Lesser General Public License
+ *    along with OpenIoT.  If not, see <http://www.gnu.org/licenses/>.
  *
- * Contact: OpenIoT mailto: info@openiot.eu
+ *     Contact: OpenIoT mailto: info@openiot.eu
  */
 
 import java.util.List;
@@ -28,8 +28,14 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 
+import org.openiot.commons.descriptiveids.model.DescreptiveIDs;
+import org.openiot.commons.osdspec.model.OAMO;
+import org.openiot.commons.osdspec.model.OSMO;
 import org.openiot.commons.sdum.serviceresultset.model.SdumServiceResultSet;
 import org.openiot.sdum.core.api.impl.PollForReportImpl;
+
+
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,6 +51,7 @@ public class ServiceDeliveryUtilityManagerRsControler {
 	//Logger's initialization
 	final static Logger logger = LoggerFactory.getLogger(ServiceDeliveryUtilityManagerRsControler.class);
 	
+
 
 
 	/**
@@ -76,18 +83,109 @@ public class ServiceDeliveryUtilityManagerRsControler {
 	}
 	
 	
+
+	/**
+	 * Invokes a previously defined Service having the specified applicationID.
+	 * This call will produce only one Result Set.
+	 * 
+	 * @param applicationID
+	 * @return
+	 */
 	@GET
 	@Path("/pollforreport")
-	public SdumServiceResultSet pollForReport(@QueryParam("serviceID") String serviceID){
-		
-		PollForReportImpl pollForReportImpl = new PollForReportImpl(serviceID);
-		
+	public SdumServiceResultSet pollForReport(@QueryParam("applicationID") String applicationID) {
+
+		PollForReportImpl pollForReportImpl = new PollForReportImpl(applicationID);
+
 		return pollForReportImpl.getSdumServiceResultSet();
-		
+
 	}
 	
 	
 	
+	/**
+	 * Used to retrieve the description (OAMO) of an available Application.
+	 * Requires as input the Application ID
+	 * 
+	 * @param applicationID
+	 * @return
+	 */
+	@GET
+	@Path("/getApplication")
+	public OAMO getApplication(@QueryParam("applicationID") String applicationID) {
+
+		//TODO: Implement this functionality
+		
+		OAMO oamo = new OAMO();
+
+		return oamo;
+	}
+	
+	
+	
+	
+
+	/**
+	 * Used to retrieve the description (OSMO) of an available service. Requires
+	 * as input the Service ID
+	 * 
+	 * @param serviceID
+	 * @return
+	 */
+	@GET
+	@Path("/getService")
+	public OSMO getService(@QueryParam("serviceID") String serviceID) {
+
+		//TODO: Implement this functionality
+		
+		OSMO osmo = new OSMO();
+
+		return osmo;
+	}
+	
+	
+	
+	
+	/**
+	 * Used to retrieve the available applications (a list of
+	 * applicationID/ServiceName/ServiceDescription triplet) already registered
+	 * by a specific user. Requires as input the User ID.
+	 * 
+	 * @param userID
+	 * @return
+	 */
+	@GET
+	@Path("/getAvailableAppIDs")
+	public DescreptiveIDs getAvailableAppIDs(@QueryParam("userID") String userID) {
+
+		//TODO: Implement this functionality
+		
+		DescreptiveIDs descreptiveIDs = new DescreptiveIDs();
+
+		return descreptiveIDs;
+	}
+	
+	
+	
+
+	/**
+	 * Used to retrieve the available services (a list of
+	 * serviceID/ServiceName/ServiceDescription triplet) already registered by a
+	 * specific user. Requires as input the Service ID.
+	 * 
+	 * @param applicationID
+	 * @return
+	 */
+	@GET
+	@Path("/getAvailableServiceIDs")
+	public DescreptiveIDs getAvailableServiceIDs(@QueryParam("applicationID") String applicationID) {
+
+		//TODO: Implement this functionality
+		
+		DescreptiveIDs descreptiveIDs = new DescreptiveIDs();
+
+		return descreptiveIDs;
+	}
 	
 	
 
