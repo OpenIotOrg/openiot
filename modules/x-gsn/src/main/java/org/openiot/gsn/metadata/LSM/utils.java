@@ -292,6 +292,28 @@ field.humidity.propertyName=Humidity
 
     public static void main(String[] args) {
 
+        if (args.length<1) {
+            System.out.println("Error: Metadata file is missing.\n");
+            System.exit(-1);
+        }
+
+        String metadataFileName = args[0];
+        System.out.println("Using metadata file: " + metadataFileName);
+
+        LSMSensorMetaData metaData = new LSMSensorMetaData();
+        boolean success = metaData.initFromConfigFile(metadataFileName);
+
+        LSMUser user = new LSMUser();
+        user.initFromConfigFile(LSMRepository.LSM_CONFIG_PROPERTIES_FILE);
+
+        System.out.println(user.toString());
+
+        System.out.println(metaData.toString());
+
+        System.out.println(success);
+
+        System.exit(0);
+
         register_opensense_sensors();
 
         System.exit(0);
@@ -332,17 +354,7 @@ field.humidity.propertyName=Humidity
                 "C");
 
 
-        //what do you mean for this id? This is different sensor as yours. It's not 128 bit ID of your sensor.
-        //id = "http://lsm.deri.ie/resource/8a82919d3264f4ac013264f4e14501c0";
 
-        //System.out.println("Calling with 128 bit Sensor ID ==> " + id);
-
-//        updateSensorDataOnLSM("swissex",
-//                "swissex1234",
-//                id,
-//                "Temperature",
-//                0.0,
-//                "C");
     }
 
     static StringBuilder listSensor(Sensor s) {
