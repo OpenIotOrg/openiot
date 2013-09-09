@@ -56,29 +56,29 @@ public class DiscoverSensorsImpl
 		private static String openiotMetaGraph = "http://lsm.deri.ie/OpenIoT/demo/sensormeta#";
 		private static String openiotDataGraph = "http://lsm.deri.ie/OpenIoT/demo/sensordata#";
 				
-		public static ArrayList<SensorTypeMetaData> parseSensorFullMeta(TupleQueryResult qres)
+		public static ArrayList<SensorTypeMetaData> parseSensorTypeMetaData(TupleQueryResult qres)
 		{
-			ArrayList<SensorTypeMetaData> fullMetas = new ArrayList<SensorTypeMetaData>();
+			ArrayList<SensorTypeMetaData> sensorTypeMetaDataList = new ArrayList<SensorTypeMetaData>();
 			try 
 			{
 				while (qres.hasNext())
 				{
 					BindingSet b = qres.next();
 					Set names = b.getBindingNames();
-					SensorTypeMetaData fm = new SensorTypeMetaData();
+					SensorTypeMetaData sensorTypeMetaData = new SensorTypeMetaData();
 					
 					for (Object n : names)
 					{						
 						if(((String) n).equalsIgnoreCase("measurement"))
 						{
 							String str = (b.getValue((String) n)==null) ? null : b.getValue((String) n).stringValue();
-							fm.setMeasuredVal(str);
+							sensorTypeMetaData.setMeasuredVal(str);
 							System.out.print("measurement : "+str+" ");	
 						}
 						else if(((String) n).equalsIgnoreCase("unit"))
 						{
 							String str = (b.getValue((String) n)==null) ? null : b.getValue((String) n).stringValue();
-							fm.setUnit(str);
+							sensorTypeMetaData.setUnit(str);
 							System.out.print("unit : "+str+" ");	
 						}
 						else if(((String) n).equalsIgnoreCase("avalue"))
@@ -87,14 +87,14 @@ public class DiscoverSensorsImpl
 							String st = b.getValue((String) n).toString();
 							String[] split=st.split("#");
 							
-							fm.setValue(split[1].substring(0, split[1].length()-1));
-							System.out.print("value : "+fm.getValue()+" ");	
+							sensorTypeMetaData.setValue(split[1].substring(0, split[1].length()-1));
+							System.out.print("value : "+sensorTypeMetaData.getValue()+" ");	
 						}
 						
 					}
-					fullMetas.add(fm);					
+					sensorTypeMetaDataList.add(sensorTypeMetaData);					
 				}//while
-				return fullMetas;
+				return sensorTypeMetaDataList;
 			} 
 			catch (QueryEvaluationException e)			
 			{				
@@ -109,33 +109,33 @@ public class DiscoverSensorsImpl
 		}
 		public static ArrayList<SensorTypeData> parseSensorTypeInArea(TupleQueryResult qres)
 		{
-			ArrayList<SensorTypeData> sensorTypes = new ArrayList<SensorTypeData>();
+			ArrayList<SensorTypeData> sensorTypeDataList = new ArrayList<SensorTypeData>();
 			try
 			{
 				while (qres.hasNext())
 				{
 					BindingSet b = qres.next();
 					Set names = b.getBindingNames();
-					SensorTypeData sType = new SensorTypeData();
+					SensorTypeData sensorTypeData = new SensorTypeData();
 					
 					for (Object n : names)
 					{						
 						if(((String) n).equalsIgnoreCase("sensLabelType"))
 						{
 							String str = (b.getValue((String) n)==null) ? null : b.getValue((String) n).stringValue();
-							sType.setLabel(str);
-							System.out.print("sensor label: "+sType.getLabel()+" ");	
+							sensorTypeData.setLabel(str);
+							System.out.print("sensor label: "+sensorTypeData.getLabel()+" ");	
 						}
 						else if(((String) n).equalsIgnoreCase("type"))
 						{
 							String str = (b.getValue((String) n)==null) ? null : b.getValue((String) n).stringValue();
-							sType.setID(str);
-							System.out.print("unit : "+sType.getID()+" ");
+							sensorTypeData.setID(str);
+							System.out.print("unit : "+sensorTypeData.getID()+" ");
 						}
 					}
-					sensorTypes.add(sType);					
+					sensorTypeDataList.add(sensorTypeData);					
 				}//while
-				return sensorTypes;
+				return sensorTypeDataList;
 			} 
 			catch (QueryEvaluationException e)			
 			{				
@@ -190,7 +190,7 @@ public class DiscoverSensorsImpl
 								+"WHERE "
 								+"{"
 								
-								+"?type <http://www.w3.org/2000/01/rdf-schema#label> ?"+sensorType+" ."
+								+"?type <http://www.w3.org/2000/01/rdf-schema#label> '"+sensorType+"' ."
 								+"?sensorId <http://lsm.deri.ie/ont/lsm.owl#hasSensorType> ?type. "
 								
 								+"FILTER EXISTS {?sensorId <http://www.loa-cnr.it/ontologies/DUL.owl#hasLocation> ?p. }" 
@@ -265,7 +265,7 @@ public class DiscoverSensorsImpl
 			sensorType.setName(sensorTypesList.get(i).getLabel());	
 			
 			qres = sparqlCl.sparqlToQResult(Queries.getMDataOfSensorTypeInArea(longitude, latitude, radius,sensorTypesList.get(i).getLabel()));
-			List<SensorTypeMetaData> fullMetaData = Queries.parseSensorFullMeta(qres);
+			List<SensorTypeMetaData> fullMetaData = Queries.parseSensorTypeMetaData(qres);
 			
 			for (int j=0; j<fullMetaData.size(); j++) 
 			{
