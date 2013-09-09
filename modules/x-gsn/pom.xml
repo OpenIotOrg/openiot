@@ -18,13 +18,14 @@
             </plugin>
             <plugin>
                 <groupId>org.jibx</groupId>
-                <artifactId>jibx-maven-plugin</artifactId>
-                <version>1.2.5</version>
+                <artifactId>maven-jibx-plugin</artifactId>
+                <version>1.1.6a</version>
                 <configuration>
-                    <schemaBindingDirectory>conf/bind</schemaBindingDirectory>
-                    <includeSchemaBindings>
-                        <includeSchemaBindings>*.xml</includeSchemaBindings>
-                    </includeSchemaBindings>
+                    <directory>conf/bind</directory>
+                    <includes>
+                        <include>containerJIBX.xml</include>
+                        <include>VirtualSensorDescription.xml</include>
+                    </includes>
                     <verbose>true</verbose>
                 </configuration>
                 <executions>
@@ -184,12 +185,12 @@
         <dependency>
             <groupId>org.jibx</groupId>
             <artifactId>jibx-run</artifactId>
-            <version>1.2.5</version>
+            <version>1.1.6a</version>
         </dependency>
         <dependency>
             <groupId>org.jibx</groupId>
             <artifactId>jibx-extras</artifactId>
-            <version>1.2.5</version>
+            <version>1.1.6a</version>
         </dependency>
         <dependency>
             <groupId>org.antlr</groupId>
