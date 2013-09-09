@@ -1,5 +1,25 @@
 package org.openiot.scheduler.client.ui.swing;
 
+/**
+ *    Copyright (c) 2011-2014, OpenIoT
+ *    
+ *    This file is part of OpenIoT.
+ *
+ *    OpenIoT is free software: you can redistribute it and/or modify
+ *    it under the terms of the GNU Lesser General Public License as published by
+ *    the Free Software Foundation, version 3 of the License.
+ *
+ *    OpenIoT is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *    GNU Lesser General Public License for more details.
+ *
+ *    You should have received a copy of the GNU Lesser General Public License
+ *    along with OpenIoT.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *     Contact: OpenIoT mailto: info@openiot.eu
+ */
+
 import java.awt.EventQueue;
 
 import javax.swing.JFileChooser;
@@ -14,6 +34,10 @@ import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
 
+import org.openiot.commons.sensortypes.model.MeasurementCapability;
+import org.openiot.commons.sensortypes.model.SensorType;
+import org.openiot.commons.sensortypes.model.SensorTypes;
+import org.openiot.commons.sensortypes.model.Unit;
 import org.openiot.scheduler.client.rest.SchedulerClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -103,7 +127,7 @@ public class SchedulerClientGUI extends JPanel
 		textFieldLat.setColumns(10);
 		
 		textFieldRad = new JTextField();
-		textFieldRad.setText("5");
+		textFieldRad.setText("15");
 		textFieldRad.setColumns(10);
 		GroupLayout gl_panel_1 = new GroupLayout(panel_1);
 		gl_panel_1.setHorizontalGroup(
@@ -202,17 +226,18 @@ public class SchedulerClientGUI extends JPanel
 	{
 		public void actionPerformed(ActionEvent e) 
 		{			
-			String welcomeMsg = schedulerClient.welcomeMessage();
+			String welcomeMsg = schedulerClient.welcomeMessage();			
 		}
 	}
 	private class BtnDiscoverSensorsActionListener implements ActionListener 
 	{
 		public void actionPerformed(ActionEvent e) 
 		{			
-			schedulerClient.discoverSensors(
+			SensorTypes stypes= schedulerClient.discoverSensors(
 					Double.valueOf(textFieldLong.getText()),
 					Double.valueOf(textFieldLat.getText()),
-					Float.valueOf(textFieldRad.getText()));			
+					Float.valueOf(textFieldRad.getText()));	
+
 		}
 	}
 	private class BtnRegisterServiceActionListener implements ActionListener 

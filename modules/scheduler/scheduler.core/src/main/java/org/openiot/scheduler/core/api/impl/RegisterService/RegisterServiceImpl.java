@@ -1,4 +1,4 @@
-package org.openiot.scheduler.core.api.impl;
+package org.openiot.scheduler.core.api.impl.RegisterService;
 
 
 /**
