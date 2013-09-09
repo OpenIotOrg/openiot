@@ -1,6 +1,6 @@
 <virtual-sensor name="csvReaderHBase" priority="11">
 	<processing-class>
-		<class-name>gsn.vsensor.HBaseStorageVirtualSensor</class-name>
+		<class-name>org.openiot.gsn.vsensor.HBaseStorageVirtualSensor</class-name>
 		<init-params>
 		    <param name="entries">100000</param>
 		</init-params>
