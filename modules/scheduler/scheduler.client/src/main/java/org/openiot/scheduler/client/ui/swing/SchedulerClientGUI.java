@@ -14,6 +14,10 @@ import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
 
+import org.openiot.commons.sensortypes.model.MeasurementCapability;
+import org.openiot.commons.sensortypes.model.SensorType;
+import org.openiot.commons.sensortypes.model.SensorTypes;
+import org.openiot.commons.sensortypes.model.Unit;
 import org.openiot.scheduler.client.rest.SchedulerClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -103,7 +107,7 @@ public class SchedulerClientGUI extends JPanel
 		textFieldLat.setColumns(10);
 		
 		textFieldRad = new JTextField();
-		textFieldRad.setText("5");
+		textFieldRad.setText("15");
 		textFieldRad.setColumns(10);
 		GroupLayout gl_panel_1 = new GroupLayout(panel_1);
 		gl_panel_1.setHorizontalGroup(
@@ -202,17 +206,18 @@ public class SchedulerClientGUI extends JPanel
 	{
 		public void actionPerformed(ActionEvent e) 
 		{			
-			String welcomeMsg = schedulerClient.welcomeMessage();
+			String welcomeMsg = schedulerClient.welcomeMessage();			
 		}
 	}
 	private class BtnDiscoverSensorsActionListener implements ActionListener 
 	{
 		public void actionPerformed(ActionEvent e) 
 		{			
-			schedulerClient.discoverSensors(
+			SensorTypes stypes= schedulerClient.discoverSensors(
 					Double.valueOf(textFieldLong.getText()),
 					Double.valueOf(textFieldLat.getText()),
-					Float.valueOf(textFieldRad.getText()));			
+					Float.valueOf(textFieldRad.getText()));	
+
 		}
 	}
 	private class BtnRegisterServiceActionListener implements ActionListener 
