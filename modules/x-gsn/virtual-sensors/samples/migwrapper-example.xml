@@ -33,7 +33,7 @@
 
 <virtual-sensor name="AbcMsg1" priority="11">
 	<processing-class>
-		<class-name>gsn.vsensor.BridgeVirtualSensor</class-name>
+		<class-name>org.openiot.gsn.vsensor.BridgeVirtualSensor</class-name>
 		<output-structure>
 			<field name="NODE_ID" type="double" />
 			<field name="PARENT_ID" type="double" />

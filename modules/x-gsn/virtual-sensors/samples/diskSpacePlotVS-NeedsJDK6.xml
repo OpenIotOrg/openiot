@@ -1,6 +1,6 @@
 <virtual-sensor name="FreeDiskSpaceVS" priority="11">
 	<processing-class>
-		<class-name>gsn.vsensor.ChartVirtualSensor</class-name>
+		<class-name>org.openiot.gsn.vsensor.ChartVirtualSensor</class-name>
 		<init-params>
 			<param name="input-stream">DATA</param>
 			<param name="title">System Free Disk Space in KB</param>

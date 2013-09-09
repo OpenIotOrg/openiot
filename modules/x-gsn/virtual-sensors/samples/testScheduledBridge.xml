@@ -1,6 +1,6 @@
 <virtual-sensor name="testScheduledBridge" priority="10">
 	<processing-class>
-		<class-name>gsn.vsensor.ScheduledBridgeVirtualSensor</class-name>
+		<class-name>org.openiot.gsn.vsensor.ScheduledBridgeVirtualSensor</class-name>
 		<init-params>
 			<param name="rate">300000</param>
 			<param name="start-time">2009-10-5T14:59:30.000+11:00</param>

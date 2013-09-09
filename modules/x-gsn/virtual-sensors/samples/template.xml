@@ -1,6 +1,6 @@
 <virtual-sensor name="TemplateVirtualSensor" priority="10">
 	<processing-class>
-		<class-name>gsn.vsensor.BridgeVirtualSensor</class-name>
+		<class-name>org.openiot.gsn.vsensor.BridgeVirtualSensor</class-name>
 		<init-params />
 		<output-structure>
 			<field name="tempreature" type="double" />
@@ -14,7 +14,8 @@
 	<addressing>
 		<predicate key="geographical">
 			Not Specified, please edit the file
-			$INSTALL_PATH/virtual-sensors/template.xml.
+			$INSTALL_PATH/virtual-sensors/template.xml.
+
 		</predicate>
 	</addressing>
 	<storage history-size="1s" />

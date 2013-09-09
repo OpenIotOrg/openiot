@@ -1,6 +1,6 @@
 <virtual-sensor name="EPuck" priority="10">
 	<processing-class>
-		<class-name>gsn.vsensor.EPuckVS</class-name>
+		<class-name>org.openiot.gsn.vsensor.EPuckVS</class-name>
 		<init-params />
 	</processing-class>
 	<description>Not Specified, please edit the file

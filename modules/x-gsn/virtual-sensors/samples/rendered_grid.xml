@@ -1,6 +1,6 @@
 <virtual-sensor name="rendered_grid" priority="10">
     <processing-class>
-        <class-name>gsn.vsensor.GridRenderer</class-name>
+        <class-name>org.openiot.gsn.vsensor.GridRenderer</class-name>
         <init-params>
         <param name="cellpixels">10</param>     <!-- size of cell in pixels -->
         </init-params>

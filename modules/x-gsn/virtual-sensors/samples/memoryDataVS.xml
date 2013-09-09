@@ -1,6 +1,6 @@
 <virtual-sensor name="MemoryMonitorVS" priority="11">
 	<processing-class>
-		<class-name>gsn.vsensor.BridgeVirtualSensor</class-name>
+		<class-name>org.openiot.gsn.vsensor.BridgeVirtualSensor</class-name>
 		<output-structure>
 			<field name="HEAP" type="double" />
 			<field name="NON_HEAP" type="double" />

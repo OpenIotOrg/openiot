@@ -1,6 +1,6 @@
 <virtual-sensor name="GPSlim" priority="10">
 	<processing-class>
-		<class-name>gsn.vsensor.GPSNMEAVS</class-name>
+		<class-name>org.openiot.gsn.vsensor.GPSNMEAVS</class-name>
 		<init-params></init-params>
 		<output-structure>
 			<field name="latitude" type="double" />

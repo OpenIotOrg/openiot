@@ -1,6 +1,6 @@
 <virtual-sensor name="SensorScope2VS" priority="10">
     <processing-class>
-        <class-name>gsn.vsensor.SensorScope2VS</class-name>
+        <class-name>org.openiot.gsn.vsensor.SensorScope2VS</class-name>
         <unique-timestamps>false</unique-timestamps>
         <init-params/>
 

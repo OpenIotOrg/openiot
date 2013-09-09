@@ -1,6 +1,6 @@
 <virtual-sensor name="TestSVG" priority="11">
 	<processing-class>
-		<class-name>gsn.vsensor.WebInteractiveVirtualSensor</class-name>
+		<class-name>org.openiot.gsn.vsensor.WebInteractiveVirtualSensor</class-name>
 		<init-params>
 			<param name="memory-size-in-seconds">1200</param>
 		</init-params>

@@ -10,7 +10,7 @@
 
 <virtual-sensor name="Sensorscope" priority="11">
 	<processing-class>
-		<class-name>gsn.vsensor.SensorscopeVS</class-name>
+		<class-name>org.openiot.gsn.vsensor.SensorscopeVS</class-name>
 		<output-structure>
 			<field name="NTWSENDERID" type="double" />
 			<field name="NTWDISTTOBS" type="double" />

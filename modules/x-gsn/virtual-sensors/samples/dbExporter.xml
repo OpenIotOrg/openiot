@@ -1,6 +1,6 @@
 <virtual-sensor name="TestExportStream" priority="11">
 	<processing-class>
-		<class-name>gsn.vsensor.StreamExporterVirtualSensor</class-name>
+		<class-name>org.openiot.gsn.vsensor.StreamExporterVirtualSensor</class-name>
 		<init-params>
 			<param name="url">jdbc:mysql://localhost:3306/gsntest</param>
 			<param name="user">root</param>

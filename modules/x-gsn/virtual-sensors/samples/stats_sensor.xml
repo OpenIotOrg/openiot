@@ -1,6 +1,6 @@
 <virtual-sensor name="stats_sensor" priority="10">
     <processing-class>
-        <class-name>gsn.vsensor.StatsBridgeVirtualSensor</class-name>
+        <class-name>org.openiot.gsn.vsensor.StatsBridgeVirtualSensor</class-name>
         <init-params>
 
             <param name="logging-interval">10</param> <!-- logging interval in number of tuples -->

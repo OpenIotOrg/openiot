@@ -1,6 +1,6 @@
 <virtual-sensor name="TwitterScriptlet" priority="10">
     <processing-class>
-        <class-name>gsn.processor.ScriptletProcessor</class-name>
+        <class-name>org.openiot.gsn.processor.ScriptletProcessor</class-name>
         <init-params>
             <param name="persistant">false</param>
             <param name="scriptlet">

@@ -1,6 +1,6 @@
 <virtual-sensor name="ss_migwrapper" priority="10">
 	<processing-class>
-		<class-name>gsn.vsensor.BridgeVirtualSensor</class-name>
+		<class-name>org.openiot.gsn.vsensor.BridgeVirtualSensor</class-name>
 		<unique-timestamps>true</unique-timestamps>
 		<output-structure>
 			<field name="SYSVOLTAGE" type="DOUBLE" />

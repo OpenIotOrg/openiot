@@ -1,6 +1,6 @@
 <virtual-sensor name="testScheduledStreamExporter" priority="10">
 	<processing-class>
-    <class-name>gsn.vsensor.ScheduledStreamExporterVirtualSensor</class-name>
+    <class-name>org.openiot.gsn.vsensor.ScheduledStreamExporterVirtualSensor</class-name>
 		<init-params>
 			<param name="url">jdbc:mysql://localhost:3306/csaw</param>
 			<param name="user">root</param>

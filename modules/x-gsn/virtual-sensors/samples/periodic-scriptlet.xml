@@ -1,6 +1,6 @@
 <virtual-sensor name="PeriodicScriptlet" priority="10">
     <processing-class>
-        <class-name>gsn.processor.ScriptletProcessor</class-name>
+        <class-name>org.openiot.gsn.processor.ScriptletProcessor</class-name>
         <init-params>
             <param name="persistant">true</param>
             <param name="scriptlet">

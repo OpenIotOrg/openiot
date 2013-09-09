@@ -1,6 +1,6 @@
 <virtual-sensor name="RSampleVS" priority="11">
 	<processing-class>
-		<class-name>gsn.vsensor.RVirtualSensor</class-name>
+		<class-name>org.openiot.gsn.vsensor.RVirtualSensor</class-name>
 		<init-params>
 			<param name="input-Stream">DATA</param>
 			<param name="title">Temperature Data</param>

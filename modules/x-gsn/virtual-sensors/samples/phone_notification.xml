@@ -1,6 +1,6 @@
 <virtual-sensor name="phone" priority="10">
 	<processing-class>
-		<class-name>gsn.vsensor.VoipVirtualSensor</class-name>
+		<class-name>org.openiot.gsn.vsensor.VoipVirtualSensor</class-name>
 		<init-params>
 			<param name="username">testuser</param>
 			<param name="password">mypassword</param>

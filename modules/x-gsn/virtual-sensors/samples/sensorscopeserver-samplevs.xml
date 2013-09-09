@@ -1,6 +1,6 @@
 <virtual-sensor name="sensorscope_1080_csv" priority="10">
     <processing-class>
-        <class-name>gsn.vsensor.BridgeVirtualSensor</class-name>
+        <class-name>org.openiot.gsn.vsensor.BridgeVirtualSensor</class-name>
         <init-params/>
         <output-structure>
             <field name="int_batt_volt" type="double"/>

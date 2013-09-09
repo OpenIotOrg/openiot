@@ -1,6 +1,6 @@
 <virtual-sensor name="GPSVS">
 	<processing-class>
-		<class-name>gsn.vsensor.BridgeVirtualSensor</class-name>
+		<class-name>org.openiot.gsn.vsensor.BridgeVirtualSensor</class-name>
 		<init-params />
 		<web-input password="test">
 			<command name="ploppy">

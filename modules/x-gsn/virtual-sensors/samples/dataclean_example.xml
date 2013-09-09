@@ -1,6 +1,6 @@
 <virtual-sensor name="dataclean_example" priority="10">
     <processing-class>
-        <class-name>gsn.vsensor.DataCleanVirtualSensor</class-name>
+        <class-name>org.openiot.gsn.vsensor.DataCleanVirtualSensor</class-name>
         <init-params>
             <param name="model">chebyschev_deg3</param> <!-- possible values: constant, linear, quadratic, chebyschev_deg1, chebyschev_deg2, chebyschev_deg3, arma_garch -->
             <param name="error_bound">5</param>

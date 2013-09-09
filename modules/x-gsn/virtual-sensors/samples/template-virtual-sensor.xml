@@ -8,7 +8,7 @@
 
 <virtual-sensor name="---" priority="10">
 	<processing-class>
-		<class-name>gsn.vsensor.BridgeVirtualSensor</class-name>
+		<class-name>org.openiot.gsn.vsensor.BridgeVirtualSensor</class-name>
 		<init-params>
 			<param name="---">---</param>
 		</init-params>
