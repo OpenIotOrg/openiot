@@ -3,6 +3,8 @@ package org.openiot.scheduler.core.api.impl.GetAvailableAppIDs;
 import java.util.ArrayList;
 import java.util.Set;
 
+import org.openiot.commons.descriptiveids.model.DescreptiveIDs;
+import org.openiot.commons.descriptiveids.model.DescriptiveID;
 import org.openiot.scheduler.core.utils.sparql.SesameSPARQLClient;
 import org.openrdf.query.BindingSet;
 import org.openrdf.query.QueryEvaluationException;
@@ -11,7 +13,7 @@ import org.openrdf.repository.RepositoryException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class GetAvailableAppIDs 
+public class GetAvailableAppIDsImpl 
 {
 	private static class Queries
 	{		
@@ -101,12 +103,13 @@ public class GetAvailableAppIDs
 	
 	/////
 	
-	final static Logger logger = LoggerFactory.getLogger(GetAvailableAppIDs.class);	
+	final static Logger logger = LoggerFactory.getLogger(GetAvailableAppIDsImpl.class);	
 	
-	private String userID;	
+	private String userID;
+	private DescreptiveIDs descriptiveIDs;
 	
 	//constructor
-	public GetAvailableAppIDs(String userID)
+	public GetAvailableAppIDsImpl(String userID)
 	{
 		this.userID = userID;
 		
@@ -116,8 +119,10 @@ public class GetAvailableAppIDs
 		findAvailableAppIDs();
 	}
 	
-	
-	
+	public DescreptiveIDs getAvailableAppIDs()
+	{
+		return descriptiveIDs;
+	}
 	
 	private void findAvailableAppIDs()
 	{
@@ -130,14 +135,17 @@ public class GetAvailableAppIDs
 		}
 		
 		TupleQueryResult qres = sparqlCl.sparqlToQResult(Queries.getAvailableAppIDsOfUser(userID));
-		ArrayList<Queries.OAMOData> oamoServicesList = Queries.parseAvailableAppIDsOfUser(qres);
+		ArrayList<Queries.OAMOData> appDataOfUserList = Queries.parseAvailableAppIDsOfUser(qres);
 
-//		for (String oamoID :oamoServicesList)
-//		{
-//			qres = sparqlCl.sparqlToQResult(Queries.getServiceStatusOfOSMO(oamoID));
-//			Queries.ServiceStatusData serviceStatusData = Queries.parseServiceStatusOfOSMO(qres);
-//			
-//			//need to populate the ServiceStatus object which is described in Community&DevelopmentCookbook
-//		}	
+		descriptiveIDs = new DescreptiveIDs();
+		
+		for (Queries.OAMOData oamoData :appDataOfUserList)
+		{
+			DescriptiveID dID = new DescriptiveID();
+			dID.setId(oamoData.getOamoID());
+			dID.setName(oamoData.getOamoName());
+			
+			descriptiveIDs.getDescriptiveID().add(dID);
+		}	
 	}	
 }
