@@ -39,6 +39,7 @@ import org.openiot.scheduler.core.api.impl.DiscoverSensors.DiscoverSensorsImpl;
 import org.openiot.scheduler.core.api.impl.GetApplication.GetApplicationImpl;
 import org.openiot.scheduler.core.api.impl.GetAvailableAppIDs.GetAvailableAppIDsImpl;
 import org.openiot.scheduler.core.api.impl.GetAvailableServiceIDs.GetAvailableServiceIDsImpl;
+import org.openiot.scheduler.core.api.impl.GetService.GetServiceImpl;
 import org.openiot.scheduler.core.api.impl.RegisterService.RegisterServiceImpl;
 //=======
 //import org.openiot.scheduler.core.api.impl.DiscoverSensorsImpl;
@@ -210,11 +211,9 @@ public class SchedulerRsControler {
 	@Path("/getService")
 	public OSMO getService(@QueryParam("serviceID") String serviceID) {
 
-		//TODO: Implement this functionality
-		
-		OSMO osmo = new OSMO();
+		GetServiceImpl service =  new GetServiceImpl(serviceID);
 
-		return osmo;
+		return service.getService();
 	}
 	
 	
