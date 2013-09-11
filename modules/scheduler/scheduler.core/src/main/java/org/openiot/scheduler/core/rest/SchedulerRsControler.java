@@ -36,6 +36,8 @@ import org.openiot.commons.sensortypes.model.SensorTypes;
 
 //<<<<<<< HEAD
 import org.openiot.scheduler.core.api.impl.DiscoverSensors.DiscoverSensorsImpl;
+import org.openiot.scheduler.core.api.impl.GetApplication.GetApplicationImpl;
+import org.openiot.scheduler.core.api.impl.GetAvailableAppIDs.GetAvailableAppIDsImpl;
 import org.openiot.scheduler.core.api.impl.RegisterService.RegisterServiceImpl;
 //=======
 //import org.openiot.scheduler.core.api.impl.DiscoverSensorsImpl;
@@ -187,11 +189,9 @@ public class SchedulerRsControler {
 	@Path("/getApplication")
 	public OAMO getApplication(@QueryParam("applicationID") String applicationID) {
 
-		//TODO: Implement this functionality
-		
-		OAMO oamo = new OAMO();
+		GetApplicationImpl application = new GetApplicationImpl(applicationID);		
 
-		return oamo;
+		return application.getOAMO();
 	}
 	
 	
@@ -231,11 +231,9 @@ public class SchedulerRsControler {
 	@Path("/getAvailableAppIDs")
 	public DescreptiveIDs getAvailableAppIDs(@QueryParam("userID") String userID) {
 
-		//TODO: Implement this functionality
-		
-		DescreptiveIDs descreptiveIDs = new DescreptiveIDs();
+		GetAvailableAppIDsImpl availableAppIDs = new GetAvailableAppIDsImpl(userID);
 
-		return descreptiveIDs;
+		return availableAppIDs.getAvailableAppIDs();
 	}
 	
 	
