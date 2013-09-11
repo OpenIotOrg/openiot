@@ -38,6 +38,7 @@ import org.openiot.commons.sensortypes.model.SensorTypes;
 import org.openiot.scheduler.core.api.impl.DiscoverSensors.DiscoverSensorsImpl;
 import org.openiot.scheduler.core.api.impl.GetApplication.GetApplicationImpl;
 import org.openiot.scheduler.core.api.impl.GetAvailableAppIDs.GetAvailableAppIDsImpl;
+import org.openiot.scheduler.core.api.impl.GetAvailableApps.GetAvailableAppsImpl;
 import org.openiot.scheduler.core.api.impl.GetAvailableServiceIDs.GetAvailableServiceIDsImpl;
 import org.openiot.scheduler.core.api.impl.GetService.GetServiceImpl;
 import org.openiot.scheduler.core.api.impl.RegisterService.RegisterServiceImpl;
@@ -267,11 +268,9 @@ public class SchedulerRsControler {
 	@Path("/getAvailableApps")
 	public OSDSpec getAvailableApps(@QueryParam("userID") String userID) {
 
-		//TODO: Implement this functionality
-		
-		OSDSpec osdSpec = new OSDSpec();
+		GetAvailableAppsImpl availableApps = new GetAvailableAppsImpl(userID); 
 
-		return osdSpec;
+		return availableApps.getAvailableApps();
 	}
 	
 }
