@@ -1,0 +1,411 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions targetNamespace="http://http.gsn" xmlns:ns1="http://org.apache.axis2/xsd" xmlns:ns="http://http.gsn" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/">
+  <wsdl:types>
+    <xs:schema attributeFormDefault="qualified" elementFormDefault="qualified" targetNamespace="http://http.gsn">
+            <xs:element name="getLatestMeteoData">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="1" maxOccurs="1" name="sensor" nillable="true" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="getLatestMeteoDataResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="return" nillable="true" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="getLatestMeteoDataMeasurement">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="1" maxOccurs="1" name="sensor" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="1" maxOccurs="1" name="measurement" nillable="true" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="getLatestMeteoDataMeasurementResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="return" nillable="true" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="getMeteoData">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="1" maxOccurs="1" name="sensor" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="1" maxOccurs="1" name="from" type="xs:long"/>
+                        <xs:element minOccurs="1" maxOccurs="1" name="to" type="xs:long"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="getMeteoDataResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="return" nillable="true" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="getMeteoDataMeasurement">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="1" maxOccurs="1" name="sensor" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="1" maxOccurs="1" name="measurement" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="1" maxOccurs="1" name="from" type="xs:long"/>
+                        <xs:element minOccurs="1" maxOccurs="1" name="to" type="xs:long"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="getMeteoDataMeasurementResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="return" nillable="true" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="getSensorInfo">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="1" maxOccurs="1" name="sensor" nillable="true" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="getSensorInfoResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="return" nillable="true" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="getSensorLocation">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="1" maxOccurs="1" name="sensor" nillable="true" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="getSensorLocationResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="return" nillable="true" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="getSensorsResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="return" nillable="true" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:schema>
+  </wsdl:types>
+  <wsdl:message name="getSensorInfoRequest">
+    <wsdl:part name="parameters" element="ns:getSensorInfo">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getMeteoDataMeasurementResponse">
+    <wsdl:part name="parameters" element="ns:getMeteoDataMeasurementResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getMeteoDataResponse">
+    <wsdl:part name="parameters" element="ns:getMeteoDataResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getLatestMeteoDataRequest">
+    <wsdl:part name="parameters" element="ns:getLatestMeteoData">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getSensorsResponse">
+    <wsdl:part name="parameters" element="ns:getSensorsResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getLatestMeteoDataMeasurementResponse">
+    <wsdl:part name="parameters" element="ns:getLatestMeteoDataMeasurementResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getMeteoDataMeasurementRequest">
+    <wsdl:part name="parameters" element="ns:getMeteoDataMeasurement">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getLatestMeteoDataMeasurementRequest">
+    <wsdl:part name="parameters" element="ns:getLatestMeteoDataMeasurement">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getLatestMeteoDataResponse">
+    <wsdl:part name="parameters" element="ns:getLatestMeteoDataResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getMeteoDataRequest">
+    <wsdl:part name="parameters" element="ns:getMeteoData">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getSensorLocationResponse">
+    <wsdl:part name="parameters" element="ns:getSensorLocationResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getSensorInfoResponse">
+    <wsdl:part name="parameters" element="ns:getSensorInfoResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getSensorLocationRequest">
+    <wsdl:part name="parameters" element="ns:getSensorLocation">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getSensorsRequest">
+  </wsdl:message>
+  <wsdl:portType name="A3DWebServicePortType">
+    <wsdl:operation name="getMeteoDataMeasurement">
+      <wsdl:input message="ns:getMeteoDataMeasurementRequest" wsaw:Action="urn:getMeteoDataMeasurement">
+    </wsdl:input>
+      <wsdl:output message="ns:getMeteoDataMeasurementResponse" wsaw:Action="urn:getMeteoDataMeasurementResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getSensorInfo">
+      <wsdl:input message="ns:getSensorInfoRequest" wsaw:Action="urn:getSensorInfo">
+    </wsdl:input>
+      <wsdl:output message="ns:getSensorInfoResponse" wsaw:Action="urn:getSensorInfoResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getLatestMeteoData">
+      <wsdl:input message="ns:getLatestMeteoDataRequest" wsaw:Action="urn:getLatestMeteoData">
+    </wsdl:input>
+      <wsdl:output message="ns:getLatestMeteoDataResponse" wsaw:Action="urn:getLatestMeteoDataResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getMeteoData">
+      <wsdl:input message="ns:getMeteoDataRequest" wsaw:Action="urn:getMeteoData">
+    </wsdl:input>
+      <wsdl:output message="ns:getMeteoDataResponse" wsaw:Action="urn:getMeteoDataResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getSensorLocation">
+      <wsdl:input message="ns:getSensorLocationRequest" wsaw:Action="urn:getSensorLocation">
+    </wsdl:input>
+      <wsdl:output message="ns:getSensorLocationResponse" wsaw:Action="urn:getSensorLocationResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getLatestMeteoDataMeasurement">
+      <wsdl:input message="ns:getLatestMeteoDataMeasurementRequest" wsaw:Action="urn:getLatestMeteoDataMeasurement">
+    </wsdl:input>
+      <wsdl:output message="ns:getLatestMeteoDataMeasurementResponse" wsaw:Action="urn:getLatestMeteoDataMeasurementResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getSensors">
+      <wsdl:input message="ns:getSensorsRequest" wsaw:Action="urn:getSensors">
+    </wsdl:input>
+      <wsdl:output message="ns:getSensorsResponse" wsaw:Action="urn:getSensorsResponse">
+    </wsdl:output>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="A3DWebServiceSoap12Binding" type="ns:A3DWebServicePortType">
+    <soap12:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="getMeteoDataMeasurement">
+      <soap12:operation soapAction="urn:getMeteoDataMeasurement" style="document"/>
+      <wsdl:input>
+        <soap12:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getSensorInfo">
+      <soap12:operation soapAction="urn:getSensorInfo" style="document"/>
+      <wsdl:input>
+        <soap12:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getLatestMeteoData">
+      <soap12:operation soapAction="urn:getLatestMeteoData" style="document"/>
+      <wsdl:input>
+        <soap12:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getMeteoData">
+      <soap12:operation soapAction="urn:getMeteoData" style="document"/>
+      <wsdl:input>
+        <soap12:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getSensorLocation">
+      <soap12:operation soapAction="urn:getSensorLocation" style="document"/>
+      <wsdl:input>
+        <soap12:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getLatestMeteoDataMeasurement">
+      <soap12:operation soapAction="urn:getLatestMeteoDataMeasurement" style="document"/>
+      <wsdl:input>
+        <soap12:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getSensors">
+      <soap12:operation soapAction="urn:getSensors" style="document"/>
+      <wsdl:input>
+        <soap12:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="A3DWebServiceSoap11Binding" type="ns:A3DWebServicePortType">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="getMeteoDataMeasurement">
+      <soap:operation soapAction="urn:getMeteoDataMeasurement" style="document"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getSensorInfo">
+      <soap:operation soapAction="urn:getSensorInfo" style="document"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getLatestMeteoData">
+      <soap:operation soapAction="urn:getLatestMeteoData" style="document"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getMeteoData">
+      <soap:operation soapAction="urn:getMeteoData" style="document"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getSensorLocation">
+      <soap:operation soapAction="urn:getSensorLocation" style="document"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getLatestMeteoDataMeasurement">
+      <soap:operation soapAction="urn:getLatestMeteoDataMeasurement" style="document"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getSensors">
+      <soap:operation soapAction="urn:getSensors" style="document"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="A3DWebServiceHttpBinding" type="ns:A3DWebServicePortType">
+    <http:binding verb="POST"/>
+    <wsdl:operation name="getMeteoDataMeasurement">
+      <http:operation location="A3DWebService/getMeteoDataMeasurement"/>
+      <wsdl:input>
+        <mime:content part="getMeteoDataMeasurement" type="text/xml"/>
+      </wsdl:input>
+      <wsdl:output>
+        <mime:content part="getMeteoDataMeasurement" type="text/xml"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getSensorInfo">
+      <http:operation location="A3DWebService/getSensorInfo"/>
+      <wsdl:input>
+        <mime:content part="getSensorInfo" type="text/xml"/>
+      </wsdl:input>
+      <wsdl:output>
+        <mime:content part="getSensorInfo" type="text/xml"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getLatestMeteoData">
+      <http:operation location="A3DWebService/getLatestMeteoData"/>
+      <wsdl:input>
+        <mime:content part="getLatestMeteoData" type="text/xml"/>
+      </wsdl:input>
+      <wsdl:output>
+        <mime:content part="getLatestMeteoData" type="text/xml"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getMeteoData">
+      <http:operation location="A3DWebService/getMeteoData"/>
+      <wsdl:input>
+        <mime:content part="getMeteoData" type="text/xml"/>
+      </wsdl:input>
+      <wsdl:output>
+        <mime:content part="getMeteoData" type="text/xml"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getSensorLocation">
+      <http:operation location="A3DWebService/getSensorLocation"/>
+      <wsdl:input>
+        <mime:content part="getSensorLocation" type="text/xml"/>
+      </wsdl:input>
+      <wsdl:output>
+        <mime:content part="getSensorLocation" type="text/xml"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getLatestMeteoDataMeasurement">
+      <http:operation location="A3DWebService/getLatestMeteoDataMeasurement"/>
+      <wsdl:input>
+        <mime:content part="getLatestMeteoDataMeasurement" type="text/xml"/>
+      </wsdl:input>
+      <wsdl:output>
+        <mime:content part="getLatestMeteoDataMeasurement" type="text/xml"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getSensors">
+      <http:operation location="A3DWebService/getSensors"/>
+      <wsdl:input>
+        <mime:content part="getSensors" type="text/xml"/>
+      </wsdl:input>
+      <wsdl:output>
+        <mime:content part="getSensors" type="text/xml"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="A3DWebService">
+    <wsdl:port name="A3DWebServiceHttpSoap11Endpoint" binding="ns:A3DWebServiceSoap11Binding">
+      <soap:address location="http://localhost:22001/service/service.wsdl"/>
+    </wsdl:port>
+    <wsdl:port name="A3DWebServiceHttpSoap12Endpoint" binding="ns:A3DWebServiceSoap12Binding">
+      <soap12:address location="http://localhost:22001/service/service.wsdl"/>
+    </wsdl:port>
+    <wsdl:port name="A3DWebServiceHttpEndpoint" binding="ns:A3DWebServiceHttpBinding">
+      <http:address location="http://localhost:22001/service/service.wsdl"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

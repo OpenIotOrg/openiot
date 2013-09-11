@@ -1,0 +1,74 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>org.openiot</groupId>
+	<artifactId>security.server</artifactId>
+	<version>1.0-SNAPSHOT</version>
+	<packaging>war</packaging>
+
+	<name>security.server</name>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<cas.version>3.5.2</cas.version>
+		<version.war.plugin>2.4</version.war.plugin>
+		<war-name>openiot-cas</war-name>
+	</properties>
+
+	<build>
+		<!-- Maven will append the version to the finalName (which is the name 
+			given to the generated war, and hence the context root) -->
+		<finalName>${war-name}</finalName>
+		<plugins>
+			<plugin>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>${version.war.plugin}</version>
+			</plugin>
+
+			<plugin>
+				<groupId>org.jboss.as.plugins</groupId>
+				<artifactId>jboss-as-maven-plugin</artifactId>
+				<version>7.4.Final</version>
+			</plugin>
+
+		</plugins>
+	</build>
+
+	<dependencies>
+
+		<dependency>
+			<groupId>org.jasig.cas</groupId>
+			<artifactId>cas-server-webapp</artifactId>
+			<version>${cas.version}</version>
+			<type>war</type>
+			<scope>runtime</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.jasig.cas</groupId>
+			<artifactId>cas-server-support-oauth</artifactId>
+			<version>${cas.version}</version>
+			<scope>runtime</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.jasig.cas</groupId>
+			<artifactId>cas-server-support-jdbc</artifactId>
+			<version>${cas.version}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>2.5</version>
+		</dependency>
+
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>3.8.1</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+</project>

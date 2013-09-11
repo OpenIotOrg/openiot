@@ -1,1 +1,0 @@
-OpenIoT's version of GSN. This is the version to be modified in OpenIoT.

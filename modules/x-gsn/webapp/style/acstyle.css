@@ -1,0 +1,667 @@
+/***********************************default body properties*********************************/
+body {
+text-align:center;
+font-size:12px;
+font-family:'Lucida Grande',Verdana,sans-serif;
+margin:10px;
+}
+.loginhandlerbody {
+text-align:left;
+
+}
+
+.displaydiv
+{
+ text-align:center;
+}
+
+/***********************************Headings***********************************************/
+h1 {
+font-size:22px;
+}
+
+h2 {
+font-size:15px;
+/*color: #0000FF;*/
+/*background-color:#DFDFDF;*/
+color: #000000;
+background:#EEEEE0;
+padding:0.3em;
+}
+
+h3 {
+font-size:14px;
+/*color:#66CC66;*/
+color:#CD853F;
+}
+
+.registerli
+{
+ font-size:14px;
+color:#000000;
+/*color:#EE9A00;*/
+font-family:'Lucida Grande',Verdana,sans-serif;
+font-weight:bold;
+}
+
+
+
+.myhead {
+
+font-size:17px;
+/*color: #0000FF;*/
+/*background-color:#DFDFDF;*/
+border-top: 2px solid #FFA84C;
+border-bottom: 2px solid #FFA84C;
+background: #FFE0BF;
+margin: 5px 0;
+padding:0.3em;
+font-weight:bold;
+
+}
+
+.grouphead {
+font-size:14px;
+font-weight:bold;
+
+}
+
+.changegroupmyhead {
+font-size:14px;
+color:#0000FF;
+background-color:#DFDFDF;
+font-weight:bold;
+}
+
+/*********************************layout structure ***************************************/
+
+#container {
+text-align:left;
+width: 1200px;
+margin: 10px auto 10px auto;
+padding: none;
+border: none;
+background-color:#FCFDDC;
+}
+
+
+
+#groupcontainer {
+text-align:left;
+width: 600px;
+margin: 10px;
+padding: none;
+border: none;
+background-color:#FCFDDC;
+}
+
+#loginhandlercontainer {
+width:300px;
+border: none;
+padding: 20px;
+}
+
+.box {
+width:100%;
+margin:none;
+padding:non;
+border: 2px ridge #DFDFDF;
+}
+
+
+
+#masthead {
+margin:0;
+padding:10px;
+border:1px solid #FFF;
+background-color:#FFEE00;
+}
+
+#groupmasthead {
+margin:none;
+padding:none;
+border:none;
+background-color:#FFEE00;
+}
+
+#mastheadborder {
+margin:0 0 10px 0;
+padding:10px;
+border:1px solid #FFF;
+background-color:#FFA84C;
+}
+
+#groupmastheadborder {
+margin:none;
+padding:none;
+border:none;
+background-color:#FFA84C;
+}
+
+#content {
+margin-bottom:10px;
+padding:10px;
+background-color:#FCFDDC;
+}
+
+#groupcontent {
+margin-bottom:none;
+padding:none;
+background-color:#FCFDDC;
+}
+
+#twocolumnscontent {
+float:left;
+width:34%;
+margin-bottom:10px;
+padding:10px;
+border:1px solid transparent;
+background-color:#FCFDDC;
+}
+
+
+#sidebar {
+float:right;
+width:56%;
+margin-bottom:10px;
+padding:10px;
+border:1px solid transparent;
+background-color:#FCFDDC;
+}
+
+#footer {
+padding:10px;
+border:1px solid #FFF;
+background-color:#FFA84C;
+}
+
+#groupfooter {
+padding:10px;
+border:1px solid #FFF;
+background-color:#FFA84C;
+}
+
+#twocolumnsfooter {
+clear:both;
+padding:10px;
+border:1px solid #FFF;
+background-color:#FFA84C;
+}
+
+p {
+font-size:12px;
+line-height:150%;
+}
+/*********************************link list ***************************************/
+.linklistul {
+list-style-type:none;
+margin:5px; padding:2px;
+border:1px solid #333;
+width:450px;
+font: bold 12px 'Lucida Grande',Verdana,sans-serif;
+}
+
+
+.linklistli {
+background: #EEEEE0;
+margin: 0; padding: 2px 10px;
+border-left: 1px solid #fff;
+border-top: 1px solid #fff;
+border-right: 1px solid #aaa;
+border-bottom: 1px solid #666;
+}
+
+ul a:link, ul a:visited, ul a:hover, ul a:active {
+display:block; padding: 2px 10px;
+text-decoration:none;
+}
+
+ul a:link {
+color:#0000;
+}
+
+ul a:visited {
+color:#666;
+}
+
+ul a:hover {
+color:#0000FF;
+background:#FFF;
+}
+
+ul a:active {
+color:#333;
+}
+.linkclass {
+background: #FFE0BF;
+font-size: 10px;
+line-height: 14px;
+font-weight: bold;
+padding: 2px 10px 2px 10px;
+margin-right: 4px;
+border: 1px solid #FFE0BF;
+text-decoration: none;
+color: #666;
+}
+
+
+.displaylinkul {
+list-style-type:none;
+margin:none;
+border:none;
+width:450px;
+font: bold 12px 'Lucida Grande',Verdana,sans-serif;
+list-style-type: none;
+text-align:center;
+
+
+}
+
+.displaylinkli {
+background: #EEEEE0;
+font :12px 'Lucida Grande',Verdana,sans-serif;
+margin: 0; padding: 2px 10px;
+border-left: 1px solid #fff;
+border-top: 1px solid #fff;
+border-right: 1px solid #aaa;
+border-bottom: 1px solid #666;
+list-style-type: none;
+text-align:center;
+padding:auto;
+
+
+
+
+}
+
+.displaylinkli a:link, .displaylinkli a:visited, .displaylinkli a:hover, .displaylinkli a:active {
+display:block; padding: 2px 10px;
+text-decoration:none;
+text-align:center;
+
+}
+
+.displaylinkli a:link {
+color:#000000;
+text-align:center;
+}
+
+.displaylinkli a:visited {
+color:#000000;
+}
+
+.displaylinkli a:hover {
+color:#0000FF;
+background:#FFFFFF;
+}
+
+.displaylinkli a:active {
+color:#0000FF;
+}
+
+
+
+/*********************************table link list ***************************************/
+
+
+/*lists and links*/
+
+.tablelinkul {
+list-style-type:none;
+margin:5px;
+padding:2px;
+border:1px solid transparent;
+width:250px;
+
+}
+
+
+
+.tablelinkli {
+background: transparent;
+margin: 0;
+padding: 2px 10px;
+border-left: 1px solid transparent;
+border-top: 1px solid transparent;
+border-right: 1px solid transparent;
+border-bottom: 1px solid transparent;
+}
+
+.tablelinkul input {
+width:250px;
+text-decoration:none;
+display:block; padding: 2px 10px;
+color:#858585;
+background-color: #EEEEE0;
+font: bold 12px 'Lucida Grande',Verdana,sans-serif;
+margin:5px;
+}
+
+
+/*********************************link ***************************************/
+.nonedecolink {
+color:#333;
+text-decoration:none;
+}
+
+.linkclass {
+background: #FFE0BF;
+font-size: 10px;
+line-height: 14px;
+font-weight: bold;
+padding: 2px 10px 2px 10px;
+margin-right: 4px;
+border: 1px solid #FFE0BF;
+text-decoration: none; color: #666;
+}
+
+#signup {
+font: normal 12px 'Lucida Grande',Verdana,sans-serif;
+margin:5px 0 5px 0;
+color:#333;
+text-decoration:none;
+border:3px double #333;
+background:#DDDDDD;
+padding:2px;
+line-height:200%;
+}
+
+
+
+.loginhandlerlink a {
+color:#aaa;
+text-decoration:none;
+background-color:inherit;
+font: bold 10px 'Lucida Grande',Verdana,sans-serif;
+}
+
+.loginhandlerlink a:hover {
+color:#333;
+}
+
+/*********************************floats ***************************************/
+.image_float {
+float:left; margin:0 5px 5px 0;
+}
+/*group_float*/
+.group_float {
+float:left;
+margin:0 115px 5px 0px;
+}
+
+.management_group_float {
+float:left;
+margin:0 300px 5px 0;
+}
+
+.spacer {
+clear:left;
+}
+/*********************************login text***************************************/
+#login {
+float:right;
+margin-bottom:10px;
+}
+/********************************* table ***************************************/
+
+table
+{
+/*border: 1px solid transparent;*/
+border: 1px solid #FFA84C;
+font: normal 12px 'Lucida Grande',Verdana,sans-serif;
+font-color:#515435;
+/*background-color:#D1A695;*/
+/*background-color:#A28C75;*/
+background-color:transparent;
+
+
+
+}
+
+td, th {
+padding:3px;
+}
+
+th {
+
+
+color:#000;
+/*background-color:#515435;*/
+background-color:#FFA84C;
+border-style:solid; border-width:1px;
+border-color:transparent;
+}
+
+td {
+background-color:#FFE0BF;
+border-style:solid;
+border-width:1px;
+border-color:transparent;
+padding:8px;
+}
+
+table caption {
+font-weight:bold; font-size:10px;
+padding:5px;
+}
+
+.invisibletable {
+border: none;
+font: normal 12px 'Lucida Grande',Verdana,sans-serif;
+}
+
+.invisibletable td {
+background-color:#FCFDDC;
+border:none;
+}
+
+
+.transparenttable
+{
+border: 1px solid transparent;
+font: normal 12px 'Lucida Grande',Verdana,sans-serif;
+background-color:transparent;
+}
+
+.transparenttable td {
+background-color:transparent;
+border-style:solid;
+border-width:1px;
+border-color:transparent transparent transparent transparent;
+}
+
+.transparenttable td input
+{
+
+}
+
+
+/********************************* form ***************************************/
+
+.formcaontainer {
+width:400px;
+margin:none;
+padding:non;
+border: 2px ridge transparent;
+}
+
+form {
+margin:0;
+padding:0;
+}
+
+.loginhandlerfieldset {
+font: normal 12px 'Lucida Grande',Verdana,sans-serif;
+margin:0 0 10px 0;
+padding:5px;
+border:1px solid #FFA84C;
+
+}
+
+.loginhandlerfieldset p {
+margin:3px 0 2px 0;
+padding:5px;
+border:1px solid #FFA84C;
+background-color:#FFE0BF;
+}
+label {
+font-weight:bold;
+}
+
+fieldset {
+font: normal 12px 'Lucida Grande',Verdana,sans-serif;
+margin:0 0 10px 0;
+padding:5px;
+border:1px solid #8A8A8A;
+
+}
+
+fieldset p {
+margin:3px 0 2px 0;
+padding:5px;
+border:1px solid #FFA84C;
+background-color:#FFEE00;
+}
+
+legend {
+background-color:#EEEEE0 ;
+margin: 0;
+padding:5px;
+border-style:solid;
+border-width:1px;
+border-color:#FFF #AAA #666 #FFF;
+
+}
+
+.inputclass{
+margin:5px 0 5px 0;
+border:3px double #FFA84C;
+}
+
+.checkboxclass{
+margin:5px 0 5px 0;
+border:3px double #FFA84C;
+}
+
+.textarea {
+margin:5px 0 5px 0;
+border:3px double #FFA84C;
+}
+
+#vsname {
+width:100%;
+}
+
+#file {
+width:100%;
+}
+
+#loginhandlerusername, #loginhandlerpassword, #selectbox {
+width:100%;
+}
+
+
+/********************************* button ***************************************/
+.buttonstyle {
+color: #000;
+background:#D8E3CA;
+border: 2px outset #d7b9c9;
+width:50px;
+text-align:center;
+width:100px;
+}
+
+.fileuploaderbuttonstyle {
+color: #000;
+background:#D8E3CA;
+border: 2px outset #d7b9c9;
+width:50px;
+text-align:center;
+width:100px;
+height:30px;
+}
+
+.loginhandlerbuttonstyle {
+background:#EEEEE0;
+margin:5px 0 5px 0;
+border:1px double #8A8A8A;
+/*border-color:#FFF #AAA #666 #FFF;*/
+width:90px;
+height:30px;
+text-align:center;
+
+}
+
+.bigsumitbuttonstyle{
+color: #000;
+background: #D8E3CA;
+border: 2px outset #d7b9c9;
+width:160px;
+height:40px;
+text-align:center;
+
+padding:10px;
+}
+
+.sumitbuttonstyle{
+color: #000;
+background:#D8E3CA;
+border: 2px outset #d7b9c9;
+width:50px;
+text-align:center;
+width:100px;
+height:30px;
+}
+
+
+.halfsumitbuttonstyle{
+color: #000;
+background: #D8E3CA;
+border: 2px outset #d7b9c9;
+width:100px;
+height:40px;
+text-align:center;
+
+padding:10px;
+}
+
+
+.changegroupbuttonstyle {
+color: #000;
+background: #FFA84C;
+border: 2px outset #d7b9c9;
+width:180px;
+text-align:center;
+line-height:250%;
+font-weight:bold;
+}
+
+.creategroupbuttonstyle {
+color: #000;
+background: #D8E3CA;
+border: 2px outset #d7b9c9;
+width:180px;
+text-align:center;
+
+}
+
+.alertbuttonstyle {
+color: #000;
+background: #B4C39A;
+border: 2px outset #d7b9c9;
+width:180px;
+text-align:center;
+}
+
+/********************************* alert box ***************************************/
+.alert {
+display:none;
+position:absolute;
+top:1px; left:1px; width:300px;
+background-color:#ECE9D8;
+border-style:solid;
+border-width:1px;
+padding:15px 20px 5px 20px;
+font: normal 12px 'Lucida Grande',Verdana,sans-serif;
+}
+
