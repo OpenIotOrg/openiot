@@ -13,7 +13,7 @@ import org.openrdf.repository.RepositoryException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class GetAvailableServiceIDs 
+public class GetAvailableServiceIDsImpl 
 {
 	private static class Queries
 	{	
@@ -86,12 +86,12 @@ public class GetAvailableServiceIDs
 	}
 
 	/////
-	final static Logger logger = LoggerFactory.getLogger(GetAvailableServiceIDs.class);	
+	final static Logger logger = LoggerFactory.getLogger(GetAvailableServiceIDsImpl.class);	
 	
 	private String applicationID;
 	private DescreptiveIDs descriptiveIDs;
 	
-	public GetAvailableServiceIDs(String applicationID)
+	public GetAvailableServiceIDsImpl(String applicationID)
 	{
 		this.applicationID=applicationID;
 	}
