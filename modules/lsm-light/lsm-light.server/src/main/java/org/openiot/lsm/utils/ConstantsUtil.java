@@ -19,14 +19,13 @@ package org.openiot.lsm.utils;
 *     Contact: OpenIoT mailto: info@openiot.eu
 */
 
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 public class ConstantsUtil {
 	public static final String databaseName = "DERI.DBA.";
 	public static final String urlHost = "jdbc:virtuoso://140.203.155.176:1111/DERI.DBA/log_enable=2";
 //	public static final String urlHost = "jdbc:virtuoso://localhost:1111";
+	public static String realPath = "";
+	
 	/*---------------------------------- components' constraints constants ----------------------------------*/
 	public static final String stringConstraints = "no item selected";
 	

@@ -26,6 +26,7 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.Scanner;
 
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -41,6 +42,7 @@ import org.openiot.lsm.beans.User;
 import org.openiot.lsm.manager.SensorManager;
 import org.openiot.lsm.manager.TriplesDataRetriever;
 import org.openiot.lsm.manager.UserActiveManager;
+import org.openiot.lsm.utils.ConstantsUtil;
 import org.openiot.lsm.utils.NumberUtil;
 import org.openiot.lsm.utils.VirtuosoConstantUtil;
 import org.openiot.lsm.utils.XMLUtil;
@@ -59,9 +61,14 @@ public class TriplesServlet extends HttpServlet {
      */
     public TriplesServlet() {
         super();
-        // TODO Auto-generated constructor stub
+        // TODO Auto-generated constructor stub        
     }
 
+    public void init(ServletConfig config) throws ServletException {
+	    super.init(config);
+	    ConstantsUtil.realPath = this.getServletContext().getRealPath("WEB-INF");	   
+	}
+    
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
@@ -84,6 +91,7 @@ public class TriplesServlet extends HttpServlet {
 	         stringBuilder.append(scanner.nextLine());
 	     }
 	     String triples = stringBuilder.toString();
+	     String graphURL = request.getHeader("graphURL");
 //	     System.out.println(triples);  
 	     
         String api = request.getParameter("api");
@@ -122,7 +130,7 @@ public class TriplesServlet extends HttpServlet {
 	                out.close();
 	        	}
 	        }else if(responseType.equals("object")){
-	        	Sensor sensor = returnObjectFunction(api,triples);
+	        	Sensor sensor = returnObjectFunction(api,triples,graphURL);
 	        	response.setContentType("application/x-java-serialized-object");
 	        	OutputStream outputStream = response.getOutputStream();
 	        	ObjectOutputStream objOutStr = new ObjectOutputStream(outputStream);
@@ -139,11 +147,12 @@ public class TriplesServlet extends HttpServlet {
 	}
 	
 
-	private Sensor returnObjectFunction(String api, String sensorInfo) {
+	private Sensor returnObjectFunction(String api, String sensorInfo, String graphURL) {
 		// TODO Auto-generated method stub		
 		Sensor sensor = null;
 		try {
-			 SensorManager sensorManager = new SensorManager();				 
+			 SensorManager sensorManager = new SensorManager();			
+			 sensorManager.setMetaGraph(graphURL);
 			 switch(api){
 	        	case "5":
 	        		sensor = sensorManager.getSpecifiedSensorWithSensorId(sensorInfo);

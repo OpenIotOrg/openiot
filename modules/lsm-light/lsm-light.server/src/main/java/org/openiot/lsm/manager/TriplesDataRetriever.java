@@ -40,6 +40,7 @@ import org.openiot.lsm.beans.Place;
 import org.openiot.lsm.beans.Sensor;
 import org.openiot.lsm.beans.User;
 import org.openiot.lsm.http.ObjectServlet;
+import org.openiot.lsm.utils.ConstantsUtil;
 import org.openiot.lsm.utils.DateUtil;
 import org.openiot.lsm.utils.VirtuosoConstantUtil;
 import org.openiot.lsm.utils.XSLTMapFile;
@@ -100,10 +101,10 @@ public class TriplesDataRetriever {
 		return triples;
 	}
 	
-	public static String getSensorTripleMetadata(Sensor s){
+	public static String getSensorTripleMetadata(Sensor s,String sensorTypeId){
 		String triples = "";
 		String xsltPath = XSLTMapFile.sensormeta2xslt;
-		xsltPath = ObjectServlet.realPath + xsltPath;
+		xsltPath = ConstantsUtil.realPath + xsltPath;
 //		xsltPath = "webapp/WEB-INF" + xsltPath;
 		TransformerFactory tFactory = TransformerFactory.newInstance();
         String xml = "";
@@ -138,6 +139,15 @@ public class TriplesDataRetriever {
             StreamResult result = new StreamResult( outWriter );            
             transformer.transform(new StreamSource(inputStream),result);
             triples = outWriter.toString().trim();       
+            
+            String sensorTypeTriples = "";
+            String typeId = "";
+            if(sensorTypeId=="")
+            	typeId = "http://lsm.deri.ie/resource/"+System.nanoTime();
+        	sensorTypeTriples="\n<" + s.getId() + "> <http://lsm.deri.ie/ont/lsm.owl#hasSensorType> <" + typeId +">.\n"
+        		+"<" + typeId + "> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://lsm.deri.ie/ont/lsm.owl#SensorType>.\n"
+        		+"<" + typeId + "> <http://www.w3.org/2000/01/rdf-schema#label> \"" + s.getSensorType()+"\".\n";
+        	triples+=sensorTypeTriples;
             
             String observesTriples = "";           
             for(String classURL:s.getProperties().keySet()){
@@ -175,6 +185,6 @@ public class TriplesDataRetriever {
         place.setLat(32325);
         place.setLng(324);
         sensor.setPlace(place);
-        System.out.println(TriplesDataRetriever.getSensorTripleMetadata(sensor));
+        System.out.println(TriplesDataRetriever.getSensorTripleMetadata(sensor,""));
 	}
 }

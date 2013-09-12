@@ -329,15 +329,15 @@ public class SensorManager {
 		PlaceManager placeManager = new PlaceManager(metaGraph,dataGraph);
 //		PlaceManager placeManager = new PlaceManager(conn);		
 		Sensor sensor = null;
-		String sql = "sparql select ?sensor ?sourceType ?place ?userId "+
-//		String sql = "sparql select ?sensor ?sensorType ?sourceType ?place ?userId "+
+//		String sql = "sparql select ?sensor ?sourceType ?place ?userId "+
+		String sql = "sparql select ?sensor ?sensorType ?sourceType ?place ?userId "+
 				" from <"+ metaGraph +"> \n" +
 					"where{ "+
 					   "?sensor <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://purl.oclc.org/NET/ssnx/ssn#Sensor>."+
 					   "?sensor <http://purl.org/net/provenance/ns#PerformedBy> <"+source+">."+
 					   "?sensor <http://www.loa-cnr.it/ontologies/DUL.owl#hasLocation> ?place."+
-//					   "?sensor <http://lsm.deri.ie/ont/lsm.owl#hasSensorType> ?typeId."+
-//					   "?typeId <http://www.w3.org/2000/01/rdf-schema#label> ?sensorType."+
+					   "?sensor <http://lsm.deri.ie/ont/lsm.owl#hasSensorType> ?typeId."+
+					   "?typeId <http://www.w3.org/2000/01/rdf-schema#label> ?sensorType."+
 					   "?sensor <http://lsm.deri.ie/ont/lsm.owl#hasSourceType> ?sourceType."+
 					   "?sensor <http://lsm.deri.ie/ont/lsm.owl#isAddedBy> ?userId."+
 					"}";			 
@@ -349,7 +349,7 @@ public class SensorManager {
 					while(rs.next()){
 						sensor = new Sensor();
 						sensor.setId(rs.getString("sensor"));
-//						sensor.setSensorType(rs.getString(2));
+						sensor.setSensorType(rs.getString("sensorType"));
 						sensor.setSource(source);
 						sensor.setSourceType(rs.getString("sourceType"));
 						Place place = placeManager.getPlaceWithPlaceId(rs.getString("place"));
@@ -370,15 +370,15 @@ public class SensorManager {
 	public Sensor getSpecifiedSensorWithPlaceId(String placeId){
 		Sensor sensor = null;
 		PlaceManager placeManager = new PlaceManager(metaGraph,dataGraph);		
-		String sql = "sparql select ?sensor ?source ?sourceType ?place ?userId "+
-//		String sql = "sparql select ?sensor ?sensorType ?source ?sourceType ?place ?userId "+
+//		String sql = "sparql select ?sensor ?source ?sourceType ?place ?userId "+
+		String sql = "sparql select ?sensor ?sensorType ?source ?sourceType ?place ?userId "+
 				" from <"+ metaGraph +"> \n" +
 				"where{ "+
 				   "?sensor <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://purl.oclc.org/NET/ssnx/ssn#Sensor>."+
 				   "?sensor <http://purl.org/net/provenance/ns#PerformedBy> ?source."+
 				   "?sensor <http://www.loa-cnr.it/ontologies/DUL.owl#hasLocation> <"+placeId+">."+
-//				   "?sensor <http://lsm.deri.ie/ont/lsm.owl#hasSensorType> ?typeId."+
-//				   "?typeId <http://www.w3.org/2000/01/rdf-schema#label> ?sensorType."+
+				   "?sensor <http://lsm.deri.ie/ont/lsm.owl#hasSensorType> ?typeId."+
+				   "?typeId <http://www.w3.org/2000/01/rdf-schema#label> ?sensorType."+
 				   "?sensor <http://lsm.deri.ie/ont/lsm.owl#hasSourceType> ?sourceType."+
 				   "?sensor <http://lsm.deri.ie/ont/lsm.owl#isAddedBy> ?userId." +				  
 				"}";			 
@@ -391,7 +391,7 @@ public class SensorManager {
 					sensor = new Sensor();					
 					sensor.setId(rs.getString("sensor"));
 					sensor.setSource(rs.getString("source"));
-//					sensor.setSensorType(rs.getString("sensorType"));
+					sensor.setSensorType(rs.getString("sensorType"));
 					sensor.setSourceType(rs.getString("sourceType"));
 					Place place = placeManager.getPlaceWithPlaceId(placeId);
 					sensor.setPlace(place);								
@@ -410,16 +410,16 @@ public class SensorManager {
 
 	public Sensor getSpecifiedSensorWithSensorId(String id){		
 		Sensor sensor = null;
-		String sql = "sparql select ?name ?source ?sourceType ?place ?userId "+
-//		String sql = "sparql select ?name ?sensorType ?source ?sourceType ?place ?userId "+
+//		String sql = "sparql select ?name ?source ?sourceType ?place ?userId "+
+		String sql = "sparql select ?name ?sensorType ?source ?sourceType ?place ?userId "+
 				" from <"+ metaGraph +"> \n" +
 				"where{ "+
 				   "<"+id+"> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://purl.oclc.org/NET/ssnx/ssn#Sensor>."+
 				   "<"+id+"> <http://purl.org/net/provenance/ns#PerformedBy> ?source."+
 				   "<"+id+"> <http://www.loa-cnr.it/ontologies/DUL.owl#hasLocation> ?place."+
 				   "<"+id+"> <http://www.w3.org/2000/01/rdf-schema#label> ?name."+
-//				   "<"+id+"> <http://lsm.deri.ie/ont/lsm.owl#hasSensorType> ?typeId."+
-//				   "?typeId <http://www.w3.org/2000/01/rdf-schema#label> ?sensorType."+
+				   "<"+id+"> <http://lsm.deri.ie/ont/lsm.owl#hasSensorType> ?typeId."+
+				   "?typeId <http://www.w3.org/2000/01/rdf-schema#label> ?sensorType."+
 				   "<"+id+"> <http://lsm.deri.ie/ont/lsm.owl#hasSourceType> ?sourceType."+
 				   "<"+id+"> <http://lsm.deri.ie/ont/lsm.owl#isAddedBy> ?userId." +				  
 				"}";			 
@@ -433,7 +433,7 @@ public class SensorManager {
 					sensor = new Sensor();					
 					sensor.setId(id);
 					sensor.setSource(rs.getString("source"));
-//					sensor.setSensorType(rs.getString("sensorType"));
+					sensor.setSensorType(rs.getString("sensorType"));
 					sensor.setSourceType(rs.getString("sourceType"));
 					sensor.setName(rs.getString("name"));
 					Place place = placeManager.getPlaceWithPlaceId(rs.getString("place"));
@@ -454,15 +454,15 @@ public class SensorManager {
 
 	public Sensor getSpecifiedSensorWithLatLng(double lat, double lng) {		
 		Sensor sensor = null;
-		String sql = "sparql select ?sensor ?source ?sourceType ?place "+
-//		String sql = "sparql select ?sensor ?sensorType ?source ?sourceType ?place "+
+//		String sql = "sparql select ?sensor ?source ?sourceType ?place "+
+		String sql = "sparql select ?sensor ?sensorType ?source ?sourceType ?place "+
 				" from <"+ metaGraph +"> \n" +
 				"where{ "+
 				   "?sensor <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://purl.oclc.org/NET/ssnx/ssn#Sensor>."+
 				   "?sensor <http://purl.org/net/provenance/ns#PerformedBy> ?source."+
 				   "?sensor <http://www.loa-cnr.it/ontologies/DUL.owl#hasLocation> ?place."+
-//				   "?sensor <http://lsm.deri.ie/ont/lsm.owl#hasSensorType> ?typeId."+
-//				   "?typeId <http://www.w3.org/2000/01/rdf-schema#label> ?sensorType."+
+				   "?sensor <http://lsm.deri.ie/ont/lsm.owl#hasSensorType> ?typeId."+
+				   "?typeId <http://www.w3.org/2000/01/rdf-schema#label> ?sensorType."+
 				   "?sensor <http://lsm.deri.ie/ont/lsm.owl#hasSourceType> ?sourceType."+				  
 				   "?place <http://www.w3.org/2003/01/geo/wgs84_pos#lat> "+lat+";" +
 				   "<http://www.w3.org/2003/01/geo/wgs84_pos#long> "+lng+"." +
@@ -477,7 +477,7 @@ public class SensorManager {
 					sensor = new Sensor();
 					sensor.setId(rs.getString("sensor"));
 					sensor.setSource(rs.getString("source"));
-//					sensor.setSensorType(rs.getString("sensorType"));
+					sensor.setSensorType(rs.getString("sensorType"));
 					sensor.setSourceType(rs.getString("sourceType"));
 					Place place = placeManager.getPlaceWithPlaceId(rs.getString("place"));
 					sensor.setPlace(place);
@@ -746,8 +746,8 @@ public class SensorManager {
 		// TODO Auto-generated method stub 
 		Sensor sensor = null;
 		PlaceManager placeManager = new PlaceManager(metaGraph,dataGraph);
-		String sql = "sparql select ?sensor ?source ?sourceType ?place ?userId "+
-//		String sql = "sparql select ?sensor ?source ?sourceType ?sensorType ?place ?userId "+
+//		String sql = "sparql select ?sensor ?source ?sourceType ?place ?userId "+
+		String sql = "sparql select ?sensor ?source ?sourceType ?sensorType ?place ?userId "+
 				" from <"+ metaGraph +"> " +
 				"where{ "+
 				   "{select ?sensor from <"+dataGraph +"> " +
@@ -756,8 +756,8 @@ public class SensorManager {
 				   "?sensor <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://purl.oclc.org/NET/ssnx/ssn#Sensor>."+
 				   "?sensor <http://purl.org/net/provenance/ns#PerformedBy> ?source."+
 				   "?sensor <http://www.loa-cnr.it/ontologies/DUL.owl#hasLocation> ?place."+
-//				   "?sensor <http://lsm.deri.ie/ont/lsm.owl#hasSensorType> ?typeId."+
-//				   "?typeId <http://www.w3.org/2000/01/rdf-schema#label> ?sensorType."+
+				   "?sensor <http://lsm.deri.ie/ont/lsm.owl#hasSensorType> ?typeId."+
+				   "?typeId <http://www.w3.org/2000/01/rdf-schema#label> ?sensorType."+
 				   "?sensor <http://lsm.deri.ie/ont/lsm.owl#hasSourceType> ?sourceType."+
 				   "?sensor <http://lsm.deri.ie/ont/lsm.owl#isAddedBy> ?userId." +				  
 				"}";			 
@@ -770,7 +770,7 @@ public class SensorManager {
 					sensor = new Sensor();
 					sensor.setId(rs.getString("sensor"));
 					sensor.setSource(rs.getString("source"));
-//					sensor.setSensorType(rs.getString("sensorType"));
+					sensor.setSensorType(rs.getString("sensorType"));
 					sensor.setSourceType(rs.getString("sourceType"));
 					Place place = placeManager.getPlaceWithPlaceId(rs.getString("place"));
 					sensor.setPlace(place);
@@ -896,6 +896,34 @@ public class SensorManager {
 			ConnectionPool.attemptClose(conn);
 		}
 		
+	}
+
+	public String getSensorTypeId(String sensorType) {
+		// TODO Auto-generated method stub
+		String typeId = "";
+		String sql = "sparql select ?type "+
+				" from <"+ metaGraph +"> \n" +
+				"where{ "+
+				  "?type <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://lsm.deri.ie/ont/lsm.owl#SensorType>."+
+				  "?type <http://www.w3.org/2000/01/rdf-schema#label> \""+sensorType+"\"."+				 
+				"}";			 
+		try{
+			conn = ConnectionPool.getConnectionPool().getConnection();							
+			Statement st = conn.createStatement();
+			if(st.execute(sql)){
+				ResultSet rs = st.getResultSet();
+				while(rs.next()){
+					typeId = rs.getString("type");
+				}
+				ConnectionPool.attemptClose(rs);				
+			}
+			ConnectionPool.attemptClose(st);
+			ConnectionPool.attemptClose(conn);
+		}catch(Exception e){
+			e.printStackTrace();
+			ConnectionPool.attemptClose(conn);
+		}
+		return typeId;
 	}
 
 	

@@ -54,7 +54,7 @@ public class ConnectionPool {
 	    	  
 	    	  //load a LSM Database Connector properties file
 //	    	System.out.println(ObjectServlet.realPath);  
-	    	prop.load(new FileInputStream(ObjectServlet.realPath+"/classes/lsm_DBConnector_config.properties"));
+	    	prop.load(new FileInputStream(ConstantsUtil.realPath+"/classes/lsm_DBConnector_config.properties"));
 	    	String driver = prop.getProperty("connection.driver_class");
 	    	  
 	        Class.forName(driver);		

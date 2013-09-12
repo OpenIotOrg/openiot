@@ -44,6 +44,7 @@ import org.openiot.lsm.beans.User;
 import org.openiot.lsm.manager.SensorManager;
 import org.openiot.lsm.manager.TriplesDataRetriever;
 import org.openiot.lsm.manager.UserActiveManager;
+import org.openiot.lsm.utils.ConstantsUtil;
 import org.openiot.lsm.utils.NumberUtil;
 import org.openiot.lsm.utils.VirtuosoConstantUtil;
 import org.openiot.lsm.utils.XMLUtil;
@@ -61,11 +62,9 @@ public class ObjectServlet extends HttpServlet {
         // TODO Auto-generated constructor stub
     }
 
-    public static String realPath;
-
 	public void init(ServletConfig config) throws ServletException {
 	    super.init(config);
-	    realPath = this.getServletContext().getRealPath("WEB-INF");	   
+	    ConstantsUtil.realPath = this.getServletContext().getRealPath("WEB-INF");	   
 	}
 	  
 	/**
@@ -142,7 +141,8 @@ public class ObjectServlet extends HttpServlet {
 					else break;						
 //				    System.out.println(sensor.getId()); 
 			        sensor.setUser(user);
-	        		String triples = TriplesDataRetriever.getSensorTripleMetadata(sensor);
+			        String sensorTypeId = sensorManager.getSensorTypeId(sensor.getSensorType().toLowerCase());
+	        		String triples = TriplesDataRetriever.getSensorTripleMetadata(sensor,sensorTypeId);
 	        		System.out.println(triples);
 	        		if((sensor.getMetaGraph()==null)||(sensor.getMetaGraph()==""))
 	        			sensor.setMetaGraph(VirtuosoConstantUtil.sensormasherMetadataGraphURI);
