@@ -91,9 +91,12 @@ public class GetAvailableServiceIDsImpl
 	private String applicationID;
 	private DescreptiveIDs descriptiveIDs;
 	
+	//constructor
 	public GetAvailableServiceIDsImpl(String applicationID)
 	{
 		this.applicationID=applicationID;
+		logger.debug("Received Parameters: " +	"applicationID=" + applicationID );
+		findAvailableServiceIDs();
 	}
 	
 	public DescreptiveIDs getAvailableServiceIDs()
@@ -101,7 +104,7 @@ public class GetAvailableServiceIDsImpl
 		return descriptiveIDs;
 	}
 	
-	private void findServiceIDsByUser()
+	private void findAvailableServiceIDs()
 	{
 		SesameSPARQLClient sparqlCl = null;
 		try {

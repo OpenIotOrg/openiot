@@ -51,7 +51,7 @@ public class GetAvailableAppIDsImpl
 					BindingSet b = qres.next();
 					Set names = b.getBindingNames();					
 					
-					OAMOData oamoData = null;
+					OAMOData oamoData = new OAMOData();
 					
 					for (Object n : names)
 					{						

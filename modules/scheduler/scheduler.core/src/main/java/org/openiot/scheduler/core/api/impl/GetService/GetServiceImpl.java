@@ -288,11 +288,13 @@ public class GetServiceImpl
 	public GetServiceImpl (String osmoID)
 	{
 		this.osmoID=osmoID;
+		logger.debug("Received Parameters: " +	"osmoID=" + osmoID );
+		findOSMO();
 	}
 	
 	public OSMO getService()
 	{
-		return osmo;
+		return osmo;		
 	}
 	
 	
@@ -307,7 +309,7 @@ public class GetServiceImpl
 		}
 		
 		TupleQueryResult qres = sparqlCl.sparqlToQResult(Queries.getOSMORootData(osmoID));
-		OSMO osmo =  Queries.parseOSMORootData(qres);
+		osmo =  Queries.parseOSMORootData(qres);
 		osmo.setId(osmoID);
 				
 		qres = sparqlCl.sparqlToQResult(Queries.getWidgetPreListByOSMO(osmoID));

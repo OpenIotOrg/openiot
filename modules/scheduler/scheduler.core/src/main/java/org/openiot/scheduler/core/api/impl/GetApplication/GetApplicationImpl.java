@@ -505,7 +505,7 @@ public class GetApplicationImpl
 	public GetApplicationImpl(String oamoID)
 	{
 		this.oamoID = oamoID;		
-		logger.debug("Recieved Parameters: " +	"oamoID=" + oamoID );
+		logger.debug("Received Parameters: " +	"oamoID=" + oamoID );
 		findApplication();
 	}
 	

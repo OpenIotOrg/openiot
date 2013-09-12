@@ -212,8 +212,8 @@ public class SchedulerRsControler {
 	@Path("/getService")
 	public OSMO getService(@QueryParam("serviceID") String serviceID) {
 
-		GetServiceImpl service =  new GetServiceImpl(serviceID);
-
+		GetServiceImpl service =  new GetServiceImpl(serviceID);		
+		
 		return service.getService();
 	}
 	

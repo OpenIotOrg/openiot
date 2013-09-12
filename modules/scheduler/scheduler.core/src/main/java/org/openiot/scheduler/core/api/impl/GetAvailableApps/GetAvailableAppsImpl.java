@@ -25,6 +25,8 @@ public class GetAvailableAppsImpl
 	public GetAvailableAppsImpl(String userID)
 	{
 		this.userID=userID;
+		logger.debug("Received Parameters: " +	"userID=" + userID );
+		findAvailableApps();
 	}
 	
 	public OSDSpec getAvailableApps()
