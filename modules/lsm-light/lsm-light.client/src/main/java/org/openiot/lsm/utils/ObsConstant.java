@@ -40,7 +40,6 @@ public class ObsConstant {
 	public static String STATUS = "http://lsm.deri.ie/ont/lsm.owl#Status";
 	public static String CAMERA_IMAGE = "http://lsm.deri.ie/ont/lsm.owl#WebcamSnapShot";
 	
-	
 	/**
 	 * @param args
 	 */

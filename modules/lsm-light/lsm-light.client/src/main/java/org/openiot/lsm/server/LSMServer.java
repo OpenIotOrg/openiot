@@ -40,15 +40,15 @@ public interface LSMServer {
 	 *
 	 */
 	public String sensorAdd(Sensor sensor);
-	public boolean sensorAdd(String triple);
-	public boolean sensorDelete(String sensorURL);
-	public Sensor getSensorById(String sensorURL);
-	public Sensor getSensorBySource(String sensorsource);
+	public boolean sensorAdd(String triple,String graphURL);
+	public boolean sensorDelete(String sensorURL,String graphURL);
+	public Sensor getSensorById(String sensorURL,String graphURL);
+	public Sensor getSensorBySource(String sensorsource,String graphURL);
 	
-	public boolean sensorDataUpdate(String triples);
+	public boolean sensorDataUpdate(String triples,String graphURL);
 	public boolean sensorDataUpdate(Observation observation);
-	public boolean deleteAllReadings(String sensorURL);
-	public boolean deleteAllReadings(String sensorURL, String dateOperator, Date fromTime, Date toTime);
+	public boolean deleteAllReadings(String sensorURL,String graphURL);
+	public boolean deleteAllReadings(String sensorURL, String graphURL,String dateOperator, Date fromTime, Date toTime);
 	
 	public boolean pushRDF(String graphURL,String triples);
 	public boolean deleteTriples(String graphURL, String triples);

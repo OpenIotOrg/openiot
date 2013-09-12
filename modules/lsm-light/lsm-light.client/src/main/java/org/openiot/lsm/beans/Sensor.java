@@ -29,6 +29,7 @@ public class Sensor implements java.io.Serializable {
 	private String name = "";
 	private String source = "";
 	private String sourceType = "";
+	private String sensorType = "";
 	private String infor = "";
 	private Date times = new Date();
 	private String author="admin";
@@ -61,6 +62,12 @@ public class Sensor implements java.io.Serializable {
 		return id;
 	}
 	
+	public String getSensorType() {
+		return sensorType;
+	}
+	public void setSensorType(String sensorType) {
+		this.sensorType = sensorType;
+	}
 	@SuppressWarnings("unused")
 	public void setId(String id) {
 		this.id = id;
@@ -160,7 +167,8 @@ public class Sensor implements java.io.Serializable {
 	@Override
 	public String toString() {
 		return 
-		  (sourceType.trim().equals("") ? "" : ("sourceType:"+sourceType + ", ")) 
+		  (sensorType.trim().equals("") ? "" : ("sensorType:"+sensorType + ", "))
+		+ (sourceType.trim().equals("") ? "" : ("sourceType:"+sourceType + ", ")) 
 		+ (source.trim().equals("") ? "" : ("source:"+source + ", ")) ;
 	}
 

@@ -80,6 +80,7 @@ public class TestServer {
 	     sensor.setName("lab_temp_hp");
 	     sensor.setAuthor("admin");
 		 sensor.setSourceType("peania");
+		 sensor.setSensorType("weather");
 		 sensor.setInfor("Temperature sensor inside lab");
 		 sensor.setSource("http://www.ait.gr/sensor/test1");
 		 sensor.addProperty(ObsConstant.TEMPERATURE);
@@ -108,15 +109,18 @@ public class TestServer {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub		        
         try{  
-        	Sensor sensor = addNewSensor();         
+//        	Sensor sensor = addNewSensor();         
         	User user = new User();
    		 	user.setUsername("admin");
-   		 	user.setPass("admin");       
-            
+   		 	user.setPass("admin");    
             lsmStore.setUser(user);
-            Observation obs = TestServer.updateData();
-	        obs.setSensor(sensor.getId());
-	        System.out.println(lsmStore.sensorDataUpdate(obs));
+            
+//            Observation obs = TestServer.updateData();
+//	        obs.setSensor(sensor.getId());
+//	        System.out.println(lsmStore.sensorDataUpdate(obs));
+	        
+	        Sensor s = lsmStore.getSensorById("http://lsm.deri.ie/resource/1379003367317467000","http://lsm.deri.ie/OpenIoT/new/sensormeta#");
+	        System.out.println(s.getId());
         }catch (Exception ex) {  
         	ex.printStackTrace();
             System.out.println("cannot send the string to servlet");                                            }  

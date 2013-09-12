@@ -65,7 +65,7 @@ public class LSMTripleStore implements LSMServer {
 	}
 
 	@Override
-	public boolean sensorAdd(String triple) {
+	public boolean sensorAdd(String triple,String graphURL) {
 		// TODO Auto-generated method stub
 		HttpURLConnection conn = null;  
         DataOutputStream dos = null;  
@@ -87,7 +87,8 @@ public class LSMTripleStore implements LSMServer {
 
          conn.setRequestProperty("Connection", "Keep-Alive");  
          conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");  
-        
+         conn.setRequestProperty("graphURL", graphURL);
+         
          dos = new DataOutputStream( conn.getOutputStream() );  
 //         System.out.println(triple);
          dos.writeBytes(triple);  
@@ -131,7 +132,7 @@ public class LSMTripleStore implements LSMServer {
     }
 
 	@Override
-	public boolean sensorDataUpdate(String triples){
+	public boolean sensorDataUpdate(String triples,String graphURL){
 		HttpURLConnection conn = null;  
         DataOutputStream dos = null;  
         String api = "2";
@@ -152,7 +153,8 @@ public class LSMTripleStore implements LSMServer {
 
          conn.setRequestProperty("Connection", "Keep-Alive");  
          conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");  
-        
+         conn.setRequestProperty("graphURL", graphURL);
+         
          dos = new DataOutputStream( conn.getOutputStream() );  
 //         System.out.println(triples);
          dos.writeBytes(triples);  
@@ -189,7 +191,7 @@ public class LSMTripleStore implements LSMServer {
 	}
 
 	@Override
-	public boolean sensorDelete(String sensorURL) {
+	public boolean sensorDelete(String sensorURL,String graphURL) {
 		// TODO Auto-generated method stub
 		HttpURLConnection conn = null;  
         DataOutputStream dos = null;  
@@ -211,7 +213,8 @@ public class LSMTripleStore implements LSMServer {
 
          conn.setRequestProperty("Connection", "Keep-Alive");  
          conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");  
-        
+         conn.setRequestProperty("graphURL", graphURL);
+         
          dos = new DataOutputStream( conn.getOutputStream() );  
          dos.writeBytes(sensorURL);  
          dos.flush();  
@@ -248,7 +251,7 @@ public class LSMTripleStore implements LSMServer {
 	}
 	
 	@Override
-	public boolean deleteAllReadings(String sensorURL) {
+	public boolean deleteAllReadings(String sensorURL,String graphURL) {
 		// TODO Auto-generated method stub
 		HttpURLConnection conn = null;  
         DataOutputStream dos = null;  
@@ -270,7 +273,8 @@ public class LSMTripleStore implements LSMServer {
 
          conn.setRequestProperty("Connection", "Keep-Alive");  
          conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");  
-        
+         conn.setRequestProperty("graphURL", graphURL);
+         
          dos = new DataOutputStream( conn.getOutputStream() );  
 //         System.out.println(triples);
          dos.writeBytes(sensorURL);  
@@ -308,9 +312,8 @@ public class LSMTripleStore implements LSMServer {
 	}
 
 	@Override
-	public boolean deleteAllReadings(String sensorURL, String dateOperator,
+	public boolean deleteAllReadings(String sensorURL, String graphURL,String dateOperator,
 			Date fromTime, Date toTime) {
-		// TODO Auto-generated method stub
 		// TODO Auto-generated method stub
 				HttpURLConnection conn = null;  
 		        DataOutputStream dos = null;  
@@ -332,7 +335,11 @@ public class LSMTripleStore implements LSMServer {
 
 		         conn.setRequestProperty("Connection", "Keep-Alive");  
 		         conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");  
-		        
+		         conn.setRequestProperty("graphURL", graphURL);
+		         conn.setRequestProperty("dateOperator", dateOperator);
+		         conn.setRequestProperty("fromTime", fromTime.toString());
+		         conn.setRequestProperty("toTime", toTime.toString());
+		         
 		         dos = new DataOutputStream( conn.getOutputStream() );  
 //		         System.out.println(triples);
 		         dos.writeBytes(sensorURL);  
@@ -368,7 +375,7 @@ public class LSMTripleStore implements LSMServer {
 	}
 
 	@Override
-	public Sensor getSensorById(String sensorURL) {
+	public Sensor getSensorById(String sensorURL,String graphURL) {
 		// TODO Auto-generated method stub
 		HttpURLConnection conn = null;  
         DataOutputStream dos = null;  
@@ -391,7 +398,8 @@ public class LSMTripleStore implements LSMServer {
 
          conn.setRequestProperty("Connection", "Keep-Alive");  
          conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");  
-        
+         conn.setRequestProperty("graphURL", graphURL);
+         
          dos = new DataOutputStream( conn.getOutputStream() );  
          dos.writeBytes(sensorURL);  
          dos.flush();  
@@ -409,7 +417,7 @@ public class LSMTripleStore implements LSMServer {
 	}
 
 	@Override
-	public Sensor getSensorBySource(String sensorsource) {
+	public Sensor getSensorBySource(String sensorsource,String graphURL) {
 		// TODO Auto-generated method stub		
 		HttpURLConnection conn = null;  
         DataOutputStream dos = null;  
@@ -431,7 +439,8 @@ public class LSMTripleStore implements LSMServer {
 
          conn.setRequestProperty("Connection", "Keep-Alive");  
          conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");  
-        
+         conn.setRequestProperty("graphURL", graphURL);
+         
          dos = new DataOutputStream( conn.getOutputStream() );  
          dos.writeBytes(sensorsource);  
          dos.flush();  
