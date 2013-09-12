@@ -1,25 +1,28 @@
 package org.openiot.lsm.server;
 /**
- * Copyright (c) 2011-2014, OpenIoT
- *
- * This library is free software; you can redistribute it and/or
- * modify it either under the terms of the GNU Lesser General Public
- * License version 2.1 as published by the Free Software Foundation
- * (the "LGPL"). If you do not alter this
- * notice, a recipient may use your version of this file under the LGPL.
- *
- * You should have received a copy of the LGPL along with this library
- * in the file COPYING-LGPL-2.1; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- *
- * This software is distributed on an "AS IS" basis, WITHOUT WARRANTY
- * OF ANY KIND, either express or implied. See the LGPL  for
- * the specific language governing rights and limitations.
- *
- * Contact: OpenIoT mailto: info@openiot.eu
- */
+*    Copyright (c) 2011-2014, OpenIoT
+*   
+*    This file is part of OpenIoT.
+*
+*    OpenIoT is free software: you can redistribute it and/or modify
+*    it under the terms of the GNU Lesser General Public License as published by
+*    the Free Software Foundation, version 3 of the License.
+*
+*    OpenIoT is distributed in the hope that it will be useful,
+*    but WITHOUT ANY WARRANTY; without even the implied warranty of
+*    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+*    GNU Lesser General Public License for more details.
+*
+*    You should have received a copy of the GNU Lesser General Public License
+*    along with OpenIoT.  If not, see <http://www.gnu.org/licenses/>.
+*
+*     Contact: OpenIoT mailto: info@openiot.eu
+*/
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
@@ -29,6 +32,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Date;
 import java.util.List;
+import java.util.Properties;
 
 
 import org.dom4j.Document;
@@ -45,16 +49,13 @@ import org.openiot.lsm.utils.ObsConstant;
 
 
 public class LSMTripleStore implements LSMServer {
-//	String RDFServletURL = "http://lsm.deri.ie/lsmservlet/ServletAPI";
-//	String ObjectServletURL = "http://lsm.deri.ie/lsmservlet/ObjectServlet";
-//	static final String UPLOAD_URL = "http://lsm.deri.ie/lsmservlet/UploadFileServlet";
     static final int BUFFER_SIZE = 4096;
 	final String RDFServletURL = ObsConstant.ServerHost + "rdfservlet";
 	final String ObjectServletURL = ObsConstant.ServerHost + "objservlet";
     final String UPLOAD_URL = ObsConstant.ServerHost + "upload";
 	private User user;
 	
-	
+		
 	public User getUser() {
 		return user;
 	}
@@ -758,22 +759,11 @@ public class LSMTripleStore implements LSMServer {
 	        // opens output stream of the HTTP connection for writing data
 	        OutputStream outputStream = httpConn.getOutputStream();
 	 
-	        // Opens input stream of the file for reading data
-	//        FileInputStream inputStream = new FileInputStream(uploadFile);
-	// 
-	//        byte[] buffer = new byte[BUFFER_SIZE];
-	//        int bytesRead = -1;
-	 
 	        System.out.println("Start writing data...");
-	 
-	//        while ((bytesRead = inputStream.read(buffer)) != -1) {
-	//            outputStream.write(buffer, 0, bytesRead);
-	//        }
 	        schema.getBase().write(outputStream,"RDF/XML");
 	        System.out.println("Data was written.");
 	        outputStream.close();
-	//        inputStream.close();
-	 
+
 	        // always check HTTP response code from server
 	        int responseCode = httpConn.getResponseCode();
 	        if (responseCode == HttpURLConnection.HTTP_OK) {
