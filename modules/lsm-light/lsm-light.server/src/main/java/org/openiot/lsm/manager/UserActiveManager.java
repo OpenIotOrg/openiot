@@ -1,24 +1,24 @@
 package org.openiot.lsm.manager;
 
 /**
- * Copyright (c) 2011-2014, OpenIoT
- *
- * This library is free software; you can redistribute it and/or
- * modify it either under the terms of the GNU Lesser General Public
- * License version 2.1 as published by the Free Software Foundation
- * (the "LGPL"). If you do not alter this
- * notice, a recipient may use your version of this file under the LGPL.
- *
- * You should have received a copy of the LGPL along with this library
- * in the file COPYING-LGPL-2.1; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- *
- * This software is distributed on an "AS IS" basis, WITHOUT WARRANTY
- * OF ANY KIND, either express or implied. See the LGPL  for
- * the specific language governing rights and limitations.
- *
- * Contact: OpenIoT mailto: info@openiot.eu
- */
+*    Copyright (c) 2011-2014, OpenIoT
+*   
+*    This file is part of OpenIoT.
+*
+*    OpenIoT is free software: you can redistribute it and/or modify
+*    it under the terms of the GNU Lesser General Public License as published by
+*    the Free Software Foundation, version 3 of the License.
+*
+*    OpenIoT is distributed in the hope that it will be useful,
+*    but WITHOUT ANY WARRANTY; without even the implied warranty of
+*    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+*    GNU Lesser General Public License for more details.
+*
+*    You should have received a copy of the GNU Lesser General Public License
+*    along with OpenIoT.  If not, see <http://www.gnu.org/licenses/>.
+*
+*     Contact: OpenIoT mailto: info@openiot.eu
+*/
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -135,20 +135,20 @@ public class UserActiveManager {
 		return user;		
 	}
 
-	public void addNewUser(String username,String email, String pass) {
-		// TODO Auto-generated method stub
-		long id = System.nanoTime();
-		String sql = "insert into deri.dba.users values('"+id+"','"+email+"','"+username+"','"+pass+"')";
-		try{
-			conn= ConnectionPool.getConnectionPool().getConnection();			
-			PreparedStatement ps = conn.prepareStatement(sql);
-			boolean i = ps.execute(sql);
-			System.out.println("Insert new user");
-			ConnectionPool.attemptClose(ps);			
-			ConnectionPool.attemptClose(conn);
-		}catch(Exception e){
-			e.printStackTrace();
-			ConnectionPool.attemptClose(conn);
-		}
-	}
+//	public void addNewUser(String username,String email, String pass) {
+//		// TODO Auto-generated method stub
+//		long id = System.nanoTime();
+//		String sql = "insert into deri.dba.users values('"+id+"','"+email+"','"+username+"','"+pass+"')";
+//		try{
+//			conn= ConnectionPool.getConnectionPool().getConnection();			
+//			PreparedStatement ps = conn.prepareStatement(sql);
+//			boolean i = ps.execute(sql);
+//			System.out.println("Insert new user");
+//			ConnectionPool.attemptClose(ps);			
+//			ConnectionPool.attemptClose(conn);
+//		}catch(Exception e){
+//			e.printStackTrace();
+//			ConnectionPool.attemptClose(conn);
+//		}
+//	}
 }

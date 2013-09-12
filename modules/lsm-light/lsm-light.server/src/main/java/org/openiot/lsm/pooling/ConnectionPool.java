@@ -1,5 +1,23 @@
 package org.openiot.lsm.pooling;
-
+/**
+*    Copyright (c) 2011-2014, OpenIoT
+*   
+*    This file is part of OpenIoT.
+*
+*    OpenIoT is free software: you can redistribute it and/or modify
+*    it under the terms of the GNU Lesser General Public License as published by
+*    the Free Software Foundation, version 3 of the License.
+*
+*    OpenIoT is distributed in the hope that it will be useful,
+*    but WITHOUT ANY WARRANTY; without even the implied warranty of
+*    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+*    GNU Lesser General Public License for more details.
+*
+*    You should have received a copy of the GNU Lesser General Public License
+*    along with OpenIoT.  If not, see <http://www.gnu.org/licenses/>.
+*
+*     Contact: OpenIoT mailto: info@openiot.eu
+*/
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -35,7 +53,7 @@ public class ConnectionPool {
 	      try {	    	  	       
 	    	  
 	    	  //load a LSM Database Connector properties file
-	    	System.out.println(ObjectServlet.realPath);  
+//	    	System.out.println(ObjectServlet.realPath);  
 	    	prop.load(new FileInputStream(ObjectServlet.realPath+"/classes/lsm_DBConnector_config.properties"));
 	    	String driver = prop.getProperty("connection.driver_class");
 	    	  
@@ -48,7 +66,7 @@ public class ConnectionPool {
 			
 			int minConn = Integer.parseInt(prop.getProperty("minConnection"));
 			int maxConn = Integer.parseInt(prop.getProperty("maxConnection"));
-			int acq_attemps = Integer.parseInt(prop.getProperty("maxConnection"));
+			int acq_attemps = Integer.parseInt(prop.getProperty("acquireRetryAttempts"));
 			
 			config.setMinConnectionsPerPartition(minConn);
 			config.setMaxConnectionsPerPartition(maxConn);
