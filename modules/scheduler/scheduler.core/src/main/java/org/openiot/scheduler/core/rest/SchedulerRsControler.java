@@ -34,11 +34,21 @@ import org.openiot.commons.osdspec.model.OSMO;
 import org.openiot.commons.sensortypes.model.SensorTypes;
 
 
-import org.openiot.scheduler.core.api.impl.DiscoverSensorsImpl;
-import org.openiot.scheduler.core.api.impl.RegisterServiceImpl;
+//<<<<<<< HEAD
+import org.openiot.scheduler.core.api.impl.DiscoverSensors.DiscoverSensorsImpl;
+import org.openiot.scheduler.core.api.impl.GetApplication.GetApplicationImpl;
+import org.openiot.scheduler.core.api.impl.GetAvailableAppIDs.GetAvailableAppIDsImpl;
+import org.openiot.scheduler.core.api.impl.GetAvailableApps.GetAvailableAppsImpl;
+import org.openiot.scheduler.core.api.impl.GetAvailableServiceIDs.GetAvailableServiceIDsImpl;
+import org.openiot.scheduler.core.api.impl.GetService.GetServiceImpl;
+import org.openiot.scheduler.core.api.impl.RegisterService.RegisterServiceImpl;
+//=======
+//import org.openiot.scheduler.core.api.impl.DiscoverSensorsImpl;
+//import org.openiot.scheduler.core.api.impl.RegisterServiceImpl;
 
 
 import org.openiot.commons.descriptiveids.model.DescreptiveIDs;
+//>>>>>>> branch 'ait-develop' of https://github.com/OpenIotOrg/openiot.git
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -182,11 +192,9 @@ public class SchedulerRsControler {
 	@Path("/getApplication")
 	public OAMO getApplication(@QueryParam("applicationID") String applicationID) {
 
-		//TODO: Implement this functionality
-		
-		OAMO oamo = new OAMO();
+		GetApplicationImpl application = new GetApplicationImpl(applicationID);		
 
-		return oamo;
+		return application.getOAMO();
 	}
 	
 	
@@ -204,11 +212,9 @@ public class SchedulerRsControler {
 	@Path("/getService")
 	public OSMO getService(@QueryParam("serviceID") String serviceID) {
 
-		//TODO: Implement this functionality
+		GetServiceImpl service =  new GetServiceImpl(serviceID);		
 		
-		OSMO osmo = new OSMO();
-
-		return osmo;
+		return service.getService();
 	}
 	
 	
@@ -226,11 +232,9 @@ public class SchedulerRsControler {
 	@Path("/getAvailableAppIDs")
 	public DescreptiveIDs getAvailableAppIDs(@QueryParam("userID") String userID) {
 
-		//TODO: Implement this functionality
-		
-		DescreptiveIDs descreptiveIDs = new DescreptiveIDs();
+		GetAvailableAppIDsImpl availableAppIDs = new GetAvailableAppIDsImpl(userID);
 
-		return descreptiveIDs;
+		return availableAppIDs.getAvailableAppIDs();
 	}
 	
 	
@@ -248,11 +252,9 @@ public class SchedulerRsControler {
 	@Path("/getAvailableServiceIDs")
 	public DescreptiveIDs getAvailableServiceIDs(@QueryParam("applicationID") String applicationID) {
 
-		//TODO: Implement this functionality
-		
-		DescreptiveIDs descreptiveIDs = new DescreptiveIDs();
-
-		return descreptiveIDs;
+		GetAvailableServiceIDsImpl availableServiceIDs = new GetAvailableServiceIDsImpl(applicationID);
+				
+		return availableServiceIDs.getAvailableServiceIDs();
 	}
 	
 	/**
@@ -266,11 +268,9 @@ public class SchedulerRsControler {
 	@Path("/getAvailableApps")
 	public OSDSpec getAvailableApps(@QueryParam("userID") String userID) {
 
-		//TODO: Implement this functionality
-		
-		OSDSpec osdSpec = new OSDSpec();
+		GetAvailableAppsImpl availableApps = new GetAvailableAppsImpl(userID); 
 
-		return osdSpec;
+		return availableApps.getAvailableApps();
 	}
 	
 }
