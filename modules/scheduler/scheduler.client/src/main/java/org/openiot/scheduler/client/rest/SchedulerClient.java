@@ -39,6 +39,8 @@ import org.openiot.commons.sensortypes.model.SensorType;
 import org.openiot.commons.sensortypes.model.SensorTypes;
 import org.openiot.commons.sensortypes.model.Unit;
 
+import org.openiot.commons.descriptiveids.model.DescreptiveIDs;
+import org.openiot.commons.descriptiveids.model.DescriptiveID;
 import org.openiot.commons.osdspec.model.OAMO;
 import org.openiot.commons.osdspec.model.OSDSpec;
 import org.openiot.commons.osdspec.model.OSMO;
@@ -200,6 +202,294 @@ public class SchedulerClient
 		}
 	}
 
+	public OAMO getApplication(String applicationID)
+	{
+		ClientRequest getApplicationRequest = clientRequestFactory
+				.createRelativeRequest("/rest/services/getApplication");
+		
+		//Prepare the request
+		getApplicationRequest.queryParameter("applicationID", applicationID);
+		
+		getApplicationRequest.accept("application/xml");
+		
+		//Handle the response		
+		String str = null;
+		try {
+			ClientResponse<String> response = getApplicationRequest.get(String.class);
+
+			if (response.getStatus() != 200) {
+				throw new RuntimeException("Failed : HTTP error code : " + response.getStatus());
+			}
+
+			str = response.getEntity();
+			logger.debug(str);
+		} catch (Exception e) {
+			logger.error("getApplicationRequest getEntity error",e);
+			//no need to proceed to umarshalling
+			return null;
+		}
+		
+		try {
+			String sensorTypes_JAXB_CONTEXT = "org.openiot.commons.osdspec.model";						
+			
+			JAXBContext context = JAXBContext.newInstance(sensorTypes_JAXB_CONTEXT);
+			Unmarshaller um = context.createUnmarshaller();
+			OAMO oamo = (OAMO) um.unmarshal(new StreamSource(new StringReader(str)));
+			
+			logger.debug("oamo.getId():" + oamo.getId());
+			logger.debug("oamo.getName():" + oamo.getName());
+			logger.debug("oamo.getDescription():" + oamo.getDescription());
+			
+
+			//debug
+			for (OSMO osmo : oamo.getOSMO()) {
+				logger.debug("osmo.getId():" + osmo.getId());
+				logger.debug("osmo.getName():" + osmo.getName());
+				logger.debug("osmo.getName():" + osmo.getDescription());
+				logger.debug("osmo.getQueryRequest().getQuery():" + osmo.getQueryRequest().getQuery());
+				
+				for (Widget w : osmo.getRequestPresentation().getWidget()) {
+					
+					logger.debug("w.getWidgetID():" + w.getWidgetID());
+					for (PresentationAttr pattr : w.getPresentationAttr()) {
+						logger.debug("pattr.getName():" + pattr.getName());
+						logger.debug("pattr.getValue():" + pattr.getValue());
+					}
+				}
+			}
+			
+			return oamo;
+		}
+		catch (Exception e) {
+			logger.error("Unmarshal OAMO error",e);
+			return null;
+		}
+	}
+	
+	public OSMO getService(String serviceID)
+	{
+		ClientRequest getServiceRequest = clientRequestFactory
+				.createRelativeRequest("/rest/services/getService");
+		
+		//Prepare the request
+		getServiceRequest.queryParameter("serviceID", serviceID);
+		
+		getServiceRequest.accept("application/xml");
+		
+		//Handle the response		
+		String str = null;
+		try {
+			ClientResponse<String> response = getServiceRequest.get(String.class);
+
+			if (response.getStatus() != 200) {
+				throw new RuntimeException("Failed : HTTP error code : " + response.getStatus());
+			}
+
+			str = response.getEntity();
+			logger.debug(str);
+		} catch (Exception e) {
+			logger.error("getServiceRequest getEntity error",e);
+			//no need to proceed to umarshalling
+			return null;
+		}
+		
+		try {
+			String sensorTypes_JAXB_CONTEXT = "org.openiot.commons.osdspec.model";						
+			
+			JAXBContext context = JAXBContext.newInstance(sensorTypes_JAXB_CONTEXT);
+			Unmarshaller um = context.createUnmarshaller();
+			OSMO osmo = (OSMO) um.unmarshal(new StreamSource(new StringReader(str)));
+					
+
+			//debug			
+			logger.debug("osmo.getId():" + osmo.getId());
+			logger.debug("osmo.getName():" + osmo.getName());
+			logger.debug("osmo.getName():" + osmo.getDescription());
+			logger.debug("osmo.getQueryRequest().getQuery():" + osmo.getQueryRequest().getQuery());
+			
+			for (Widget w : osmo.getRequestPresentation().getWidget()) {
+				
+				logger.debug("w.getWidgetID():" + w.getWidgetID());
+				for (PresentationAttr pattr : w.getPresentationAttr()) {
+					logger.debug("pattr.getName():" + pattr.getName());
+					logger.debug("pattr.getValue():" + pattr.getValue());
+				}
+			}
+			
+			
+			return osmo;
+		}
+		catch (Exception e) {
+			logger.error("Unmarshal OAMO error",e);
+			return null;
+		}
+	}
+	
+	public DescreptiveIDs getAvailableAppIDs(String userID)
+	{
+		ClientRequest getServiceRequest = clientRequestFactory
+				.createRelativeRequest("/rest/services/getAvailableAppIDs");
+		
+		//Prepare the request
+		getServiceRequest.queryParameter("userID", userID);
+		
+		getServiceRequest.accept("application/xml");
+		
+		//Handle the response		
+		String str = null;
+		try {
+			ClientResponse<String> response = getServiceRequest.get(String.class);
+
+			if (response.getStatus() != 200) {
+				throw new RuntimeException("Failed : HTTP error code : " + response.getStatus());
+			}
+
+			str = response.getEntity();
+			logger.debug(str);
+		} catch (Exception e) {
+			logger.error("getServiceRequest getEntity error",e);
+			//no need to proceed to umarshalling
+			return null;
+		}
+		
+		try {
+			String sensorTypes_JAXB_CONTEXT = "org.openiot.commons.descriptiveids.model";						
+			
+			JAXBContext context = JAXBContext.newInstance(sensorTypes_JAXB_CONTEXT);
+			Unmarshaller um = context.createUnmarshaller();
+			DescreptiveIDs dids = (DescreptiveIDs) um.unmarshal(new StreamSource(new StringReader(str)));
+
+			//debug			
+			for (DescriptiveID did : dids.getDescriptiveID()) {				
+				logger.debug("did.getId():" + did.getId());
+				logger.debug("did.getName():" + did.getName());
+				logger.debug("did.getDescription():" + did.getDescription());				
+			}
+			
+			return dids;
+		}
+		catch (Exception e) {
+			logger.error("Unmarshal DescriptiveID error",e);
+			return null;
+		}
+	}
+	
+	public DescreptiveIDs getAvailableServiceIDs(String applicationID)
+	{
+		ClientRequest getServiceRequest = clientRequestFactory
+				.createRelativeRequest("/rest/services/getAvailableServiceIDs");
+		
+		//Prepare the request
+		getServiceRequest.queryParameter("applicationID", applicationID);
+		
+		getServiceRequest.accept("application/xml");
+		
+		//Handle the response		
+		String str = null;
+		try {
+			ClientResponse<String> response = getServiceRequest.get(String.class);
+
+			if (response.getStatus() != 200) {
+				throw new RuntimeException("Failed : HTTP error code : " + response.getStatus());
+			}
+
+			str = response.getEntity();
+			logger.debug(str);
+		} catch (Exception e) {
+			logger.error("getServiceRequest getEntity error",e);
+			//no need to proceed to umarshalling
+			return null;
+		}
+		
+		try {
+			String sensorTypes_JAXB_CONTEXT = "org.openiot.commons.descriptiveids.model";						
+			
+			JAXBContext context = JAXBContext.newInstance(sensorTypes_JAXB_CONTEXT);
+			Unmarshaller um = context.createUnmarshaller();
+			DescreptiveIDs dids = (DescreptiveIDs) um.unmarshal(new StreamSource(new StringReader(str)));
+
+			//debug			
+			for (DescriptiveID did : dids.getDescriptiveID()) {				
+				logger.debug("did.getId():" + did.getId());
+				logger.debug("did.getName():" + did.getName());
+				logger.debug("did.getDescription():" + did.getDescription());				
+			}
+			
+			return dids;
+		}
+		catch (Exception e) {
+			logger.error("Unmarshal DescriptiveID error",e);
+			return null;
+		}
+	}
+	
+	public OSDSpec getAvailableApps(String userID)
+	{
+		ClientRequest getServiceRequest = clientRequestFactory
+				.createRelativeRequest("/rest/services/getAvailableApps");
+		
+		//Prepare the request
+		getServiceRequest.queryParameter("userID", userID);
+		
+		getServiceRequest.accept("application/xml");
+		
+		//Handle the response		
+		String str = null;
+		try {
+			ClientResponse<String> response = getServiceRequest.get(String.class);
+
+			if (response.getStatus() != 200) {
+				throw new RuntimeException("Failed : HTTP error code : " + response.getStatus());
+			}
+
+			str = response.getEntity();
+			logger.debug(str);
+		} catch (Exception e) {
+			logger.error("getAvailableApps getEntity error",e);
+			//no need to proceed to umarshalling
+			return null;
+		}
+		
+		try {
+			String sensorTypes_JAXB_CONTEXT = "org.openiot.commons.osdspec.model";						
+			
+			JAXBContext context = JAXBContext.newInstance(sensorTypes_JAXB_CONTEXT);
+			Unmarshaller um = context.createUnmarshaller();
+			OSDSpec osdspec = (OSDSpec) um.unmarshal(new StreamSource(new StringReader(str)));
+
+			logger.debug("osdspec.getUserID():" + osdspec.getUserID());
+			for (OAMO oamo : osdspec.getOAMO()) 
+			{				
+				logger.debug("oamo.getId():" + oamo.getId());
+				logger.debug("oamo.getName():" + oamo.getName());
+				logger.debug("oamo.getDescription():" + oamo.getDescription());
+				
+
+				//debug
+				for (OSMO osmo : oamo.getOSMO()) {
+					logger.debug("osmo.getId():" + osmo.getId());
+					logger.debug("osmo.getName():" + osmo.getName());
+					logger.debug("osmo.getName():" + osmo.getDescription());
+					logger.debug("osmo.getQueryRequest().getQuery():" + osmo.getQueryRequest().getQuery());
+					
+					for (Widget w : osmo.getRequestPresentation().getWidget()) {
+						
+						logger.debug("w.getWidgetID():" + w.getWidgetID());
+						for (PresentationAttr pattr : w.getPresentationAttr()) {
+							logger.debug("pattr.getName():" + pattr.getName());
+							logger.debug("pattr.getValue():" + pattr.getValue());
+						}
+					}
+				}
+			}
+			
+			return osdspec;
+		}
+		catch (Exception e) {
+			logger.error("Unmarshal DescriptiveID error",e);
+			return null;
+		}
+	}
 	
 	
 	// helper methods //	

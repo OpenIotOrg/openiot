@@ -63,6 +63,11 @@ public class SchedulerClientGUI extends JPanel
 	private JTextField textFieldLong;
 	private JTextField textFieldLat;
 	private JTextField textFieldRad;
+	private JTextField textFieldOAMOID;
+	private JTextField textFieldOSMOId;
+	private JTextField textFieldOAMOuserID;
+	private JTextField txtOAMOid;
+	private JTextField textFieldGetSpecUserID;
 
 	
 	public SchedulerClientGUI() 
@@ -78,7 +83,7 @@ public class SchedulerClientGUI extends JPanel
 	private void initialize() {
 		frmSchedulerClient = new JFrame();
 		frmSchedulerClient.setTitle("Scheduler Client");
-		frmSchedulerClient.setBounds(100, 100, 464, 327);
+		frmSchedulerClient.setBounds(100, 100, 470, 529);
 		frmSchedulerClient.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmSchedulerClient.getContentPane().setLayout(null);
 		
@@ -176,7 +181,7 @@ public class SchedulerClientGUI extends JPanel
 		
 		JPanel panel_2 = new JPanel();
 		panel_2.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "register osdspec", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		panel_2.setBounds(10, 132, 430, 142);
+		panel_2.setBounds(10, 327, 268, 142);
 		frmSchedulerClient.getContentPane().add(panel_2);
 		
 		osdSpecpathTextField = new JTextField();
@@ -192,33 +197,218 @@ public class SchedulerClientGUI extends JPanel
 		btnRegisterService.addActionListener(new BtnRegisterServiceActionListener());
 		GroupLayout gl_panel_2 = new GroupLayout(panel_2);
 		gl_panel_2.setHorizontalGroup(
-			gl_panel_2.createParallelGroup(Alignment.TRAILING)
-				.addGroup(gl_panel_2.createSequentialGroup()
-					.addContainerGap()
-					.addGroup(gl_panel_2.createParallelGroup(Alignment.TRAILING)
-						.addComponent(btnRegisterService, GroupLayout.PREFERRED_SIZE, 147, GroupLayout.PREFERRED_SIZE)
-						.addComponent(osdSpecpathTextField, GroupLayout.DEFAULT_SIZE, 250, Short.MAX_VALUE)
-						.addComponent(btnOpenOsdspec, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 250, Short.MAX_VALUE))
-					.addGap(19)
-					.addComponent(btnRegisterOsdspec))
-		);
-		gl_panel_2.setVerticalGroup(
 			gl_panel_2.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_panel_2.createSequentialGroup()
 					.addGroup(gl_panel_2.createParallelGroup(Alignment.LEADING)
 						.addGroup(gl_panel_2.createSequentialGroup()
-							.addComponent(btnOpenOsdspec, GroupLayout.PREFERRED_SIZE, 23, GroupLayout.PREFERRED_SIZE)
-							.addPreferredGap(ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-							.addComponent(osdSpecpathTextField, GroupLayout.PREFERRED_SIZE, 20, GroupLayout.PREFERRED_SIZE)
-							.addGap(54))
-						.addComponent(btnRegisterOsdspec, GroupLayout.PREFERRED_SIZE, 48, GroupLayout.PREFERRED_SIZE))
-					.addGap(23))
-				.addGroup(Alignment.TRAILING, gl_panel_2.createSequentialGroup()
-					.addContainerGap(91, Short.MAX_VALUE)
-					.addComponent(btnRegisterService, GroupLayout.PREFERRED_SIZE, 23, GroupLayout.PREFERRED_SIZE)
-					.addContainerGap())
+							.addContainerGap()
+							.addGroup(gl_panel_2.createParallelGroup(Alignment.LEADING, false)
+								.addGroup(gl_panel_2.createSequentialGroup()
+									.addComponent(btnOpenOsdspec, GroupLayout.PREFERRED_SIZE, 119, GroupLayout.PREFERRED_SIZE)
+									.addPreferredGap(ComponentPlacement.RELATED)
+									.addComponent(btnRegisterOsdspec, 0, 0, Short.MAX_VALUE))
+								.addComponent(osdSpecpathTextField, GroupLayout.PREFERRED_SIZE, 241, GroupLayout.PREFERRED_SIZE)))
+						.addGroup(gl_panel_2.createSequentialGroup()
+							.addGap(57)
+							.addComponent(btnRegisterService, GroupLayout.PREFERRED_SIZE, 147, GroupLayout.PREFERRED_SIZE)))
+					.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+		);
+		gl_panel_2.setVerticalGroup(
+			gl_panel_2.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_panel_2.createSequentialGroup()
+					.addGroup(gl_panel_2.createParallelGroup(Alignment.BASELINE)
+						.addComponent(btnOpenOsdspec, GroupLayout.PREFERRED_SIZE, 23, GroupLayout.PREFERRED_SIZE)
+						.addComponent(btnRegisterOsdspec))
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(osdSpecpathTextField, GroupLayout.PREFERRED_SIZE, 20, GroupLayout.PREFERRED_SIZE)
+					.addPreferredGap(ComponentPlacement.RELATED, 40, Short.MAX_VALUE)
+					.addComponent(btnRegisterService))
 		);
 		panel_2.setLayout(gl_panel_2);
+		
+		JPanel panel_3 = new JPanel();
+		panel_3.setBorder(new TitledBorder(null, "oamo", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		panel_3.setBounds(10, 126, 167, 166);
+		frmSchedulerClient.getContentPane().add(panel_3);
+		
+		JButton btnGetOAMO = new JButton("get oamo");
+		btnGetOAMO.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) 
+			{
+				schedulerClient.getApplication(textFieldOAMOID.getText());
+			}
+		});
+		
+		JLabel lblId = new JLabel("id");
+		
+		textFieldOAMOID = new JTextField();
+		textFieldOAMOID.setText("nodeID://b47205");
+		textFieldOAMOID.setColumns(10);
+		
+		JLabel lblOamoUid = new JLabel("uid");
+		
+		textFieldOAMOuserID = new JTextField();
+		textFieldOAMOuserID.setText("nodeID://b47204");
+		textFieldOAMOuserID.setColumns(10);
+		
+		JButton btnGetOamoIds = new JButton("get oamo ids");
+		btnGetOamoIds.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) 
+			{
+				schedulerClient.getAvailableAppIDs(textFieldOAMOuserID.getText());
+			}
+		});
+		GroupLayout gl_panel_3 = new GroupLayout(panel_3);
+		gl_panel_3.setHorizontalGroup(
+			gl_panel_3.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_panel_3.createSequentialGroup()
+					.addContainerGap()
+					.addGroup(gl_panel_3.createParallelGroup(Alignment.LEADING)
+						.addGroup(gl_panel_3.createParallelGroup(Alignment.LEADING, false)
+							.addComponent(btnGetOAMO, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+							.addGroup(gl_panel_3.createSequentialGroup()
+								.addComponent(lblId, GroupLayout.PREFERRED_SIZE, 17, GroupLayout.PREFERRED_SIZE)
+								.addPreferredGap(ComponentPlacement.RELATED)
+								.addComponent(textFieldOAMOID, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
+						.addGroup(gl_panel_3.createSequentialGroup()
+							.addComponent(lblOamoUid, GroupLayout.PREFERRED_SIZE, 17, GroupLayout.PREFERRED_SIZE)
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addComponent(textFieldOAMOuserID, GroupLayout.PREFERRED_SIZE, 116, GroupLayout.PREFERRED_SIZE))
+						.addComponent(btnGetOamoIds, GroupLayout.PREFERRED_SIZE, 138, GroupLayout.PREFERRED_SIZE))
+					.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+		);
+		gl_panel_3.setVerticalGroup(
+			gl_panel_3.createParallelGroup(Alignment.TRAILING)
+				.addGroup(gl_panel_3.createSequentialGroup()
+					.addGroup(gl_panel_3.createParallelGroup(Alignment.BASELINE)
+						.addComponent(textFieldOAMOID, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addComponent(lblId))
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(btnGetOAMO)
+					.addGap(18)
+					.addGroup(gl_panel_3.createParallelGroup(Alignment.BASELINE)
+						.addComponent(lblOamoUid)
+						.addComponent(textFieldOAMOuserID, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+					.addPreferredGap(ComponentPlacement.UNRELATED)
+					.addComponent(btnGetOamoIds)
+					.addGap(37))
+		);
+		panel_3.setLayout(gl_panel_3);
+		
+		JPanel panel_4 = new JPanel();
+		panel_4.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "osmo", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		panel_4.setBounds(189, 126, 194, 166);
+		frmSchedulerClient.getContentPane().add(panel_4);
+		
+		JButton btnGetOsmo = new JButton("get osmo");
+		btnGetOsmo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) 
+			{
+				schedulerClient.getService(textFieldOSMOId.getText());
+			}
+		});
+		
+		JLabel label = new JLabel("id");
+		
+		textFieldOSMOId = new JTextField();
+		textFieldOSMOId.setText("nodeID://b47207");
+		textFieldOSMOId.setColumns(10);
+		
+		JLabel lblOamoid = new JLabel("oamoid");
+		
+		txtOAMOid = new JTextField();
+		txtOAMOid.setText("nodeID://b47205");
+		txtOAMOid.setColumns(10);
+		
+		JButton btnNewButton = new JButton("get osmo ids");
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) 
+			{
+				schedulerClient.getAvailableServiceIDs(txtOAMOid.getText());
+			}
+		});
+		GroupLayout gl_panel_4 = new GroupLayout(panel_4);
+		gl_panel_4.setHorizontalGroup(
+			gl_panel_4.createParallelGroup(Alignment.LEADING)
+				.addGroup(Alignment.TRAILING, gl_panel_4.createSequentialGroup()
+					.addContainerGap()
+					.addGroup(gl_panel_4.createParallelGroup(Alignment.TRAILING)
+						.addComponent(btnNewButton, GroupLayout.DEFAULT_SIZE, 166, Short.MAX_VALUE)
+						.addGroup(Alignment.LEADING, gl_panel_4.createParallelGroup(Alignment.LEADING, false)
+							.addComponent(btnGetOsmo, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+							.addGroup(gl_panel_4.createSequentialGroup()
+								.addComponent(label, GroupLayout.PREFERRED_SIZE, 17, GroupLayout.PREFERRED_SIZE)
+								.addPreferredGap(ComponentPlacement.RELATED)
+								.addComponent(textFieldOSMOId, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
+						.addGroup(Alignment.LEADING, gl_panel_4.createSequentialGroup()
+							.addComponent(lblOamoid, GroupLayout.PREFERRED_SIZE, 55, GroupLayout.PREFERRED_SIZE)
+							.addPreferredGap(ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+							.addComponent(txtOAMOid, GroupLayout.PREFERRED_SIZE, 106, GroupLayout.PREFERRED_SIZE)))
+					.addContainerGap())
+		);
+		gl_panel_4.setVerticalGroup(
+			gl_panel_4.createParallelGroup(Alignment.TRAILING)
+				.addGroup(Alignment.LEADING, gl_panel_4.createSequentialGroup()
+					.addGroup(gl_panel_4.createParallelGroup(Alignment.BASELINE)
+						.addComponent(textFieldOSMOId, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addComponent(label))
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(btnGetOsmo)
+					.addGap(18)
+					.addGroup(gl_panel_4.createParallelGroup(Alignment.BASELINE)
+						.addComponent(lblOamoid)
+						.addComponent(txtOAMOid, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+					.addPreferredGap(ComponentPlacement.UNRELATED)
+					.addComponent(btnNewButton)
+					.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+		);
+		panel_4.setLayout(gl_panel_4);
+		
+		JPanel panel_5 = new JPanel();
+		panel_5.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "get osdspec", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		panel_5.setBounds(279, 327, 161, 142);
+		frmSchedulerClient.getContentPane().add(panel_5);
+		
+		JButton btnGetOSDSpec = new JButton("get");
+		btnGetOSDSpec.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) 
+			{
+				schedulerClient.getAvailableApps(textFieldGetSpecUserID.getText());
+			}
+		});
+		
+		JLabel lblUserid = new JLabel("userid");
+		
+		textFieldGetSpecUserID = new JTextField();
+		textFieldGetSpecUserID.setText("nodeID://b47204");
+		textFieldGetSpecUserID.setColumns(10);
+		GroupLayout gl_panel_5 = new GroupLayout(panel_5);
+		gl_panel_5.setHorizontalGroup(
+			gl_panel_5.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_panel_5.createSequentialGroup()
+					.addGroup(gl_panel_5.createParallelGroup(Alignment.LEADING)
+						.addGroup(Alignment.TRAILING, gl_panel_5.createSequentialGroup()
+							.addGap(4)
+							.addGroup(gl_panel_5.createParallelGroup(Alignment.TRAILING)
+								.addComponent(btnGetOSDSpec, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 112, Short.MAX_VALUE)
+								.addComponent(textFieldGetSpecUserID, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 77, Short.MAX_VALUE)))
+						.addGroup(gl_panel_5.createSequentialGroup()
+							.addGap(36)
+							.addComponent(lblUserid)))
+					.addContainerGap())
+		);
+		gl_panel_5.setVerticalGroup(
+			gl_panel_5.createParallelGroup(Alignment.TRAILING)
+				.addGroup(Alignment.LEADING, gl_panel_5.createSequentialGroup()
+					.addGap(7)
+					.addComponent(lblUserid)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(textFieldGetSpecUserID, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+					.addPreferredGap(ComponentPlacement.RELATED, 27, Short.MAX_VALUE)
+					.addComponent(btnGetOSDSpec)
+					.addContainerGap())
+		);
+		panel_5.setLayout(gl_panel_5);
 		btnDiscoverSensors.addActionListener(new BtnDiscoverSensorsActionListener());
 		btnWelcome.addActionListener(new BtnWelcomeActionListener());
 	}
