@@ -94,6 +94,34 @@ public class SchedulerAPIWrapper {
 		}
 	}
 
+	public static OSDSpec getAvailableApps(String userId) throws APICommunicationException, APIException {
+		ClientRequestFactory clientRequestFactory = new ClientRequestFactory(UriBuilder.fromUri("http://localhost:8080/scheduler.core").build());
+		ClientRequest getAvailableAppsClientRequest = clientRequestFactory.createRelativeRequest("/rest/services/getAvailableApps");
+
+		getAvailableAppsClientRequest.queryParameter("userID", userId);
+		getAvailableAppsClientRequest.accept("application/xml");
+
+		ClientResponse<String> response;
+		String responseText = null;
+
+		try {
+			OSDSpec spec = null;
+				response = getAvailableAppsClientRequest.get(String.class);
+
+				if (response.getStatus() != 200) {
+					throw new APICommunicationException("Error communicating with scheduler (method: getAvailableApps, HTTP error code : " + response.getStatus() + ")");
+				}
+
+				responseText = response.getEntity();
+
+				JAXBContext jaxbContext = JAXBContext.newInstance(OSDSpec.class);
+				Unmarshaller um = jaxbContext.createUnmarshaller();
+				return (OSDSpec) um.unmarshal(new StreamSource(new StringReader(responseText)));
+		} catch (Throwable ex) {
+			throw new APIException(ex);
+		}
+	}
+	
 	public static OSDSpec getAvailableServices(String userId) throws APICommunicationException, APIException {
 		ClientRequestFactory clientRequestFactory = new ClientRequestFactory(UriBuilder.fromUri("http://localhost:8080/scheduler.core").build());
 		ClientRequest discoverSensorsClientRequest = clientRequestFactory.createRelativeRequest("/rest/services/getAvailableServices");
