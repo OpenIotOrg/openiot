@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  elementFormDefault="qualified">
+
 <!-- 
      Copyright (c) 2011-2014, OpenIoT
      
@@ -25,7 +27,7 @@
   <xs:element name="SensorTypes">
     <xs:complexType>
       <xs:sequence>
-        <xs:element maxOccurs="unbounded" ref="SensorType"/>
+        <xs:element maxOccurs="unbounded" ref="SensorType" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -35,39 +37,41 @@
     <xs:complexType>
       <xs:sequence>
         <xs:sequence>
-          <xs:element maxOccurs="unbounded" minOccurs="0" ref="CoreMetaData"/>
+          <xs:element maxOccurs="unbounded" minOccurs="0"
+            ref="CoreMetaData" />
         </xs:sequence>
         <xs:sequence>
-          <xs:element maxOccurs="unbounded" minOccurs="0" ref="MeasurementCapability"/>
+          <xs:element maxOccurs="unbounded" minOccurs="0"
+            ref="MeasurementCapability" />
         </xs:sequence>
       </xs:sequence>
-      <xs:attribute name="name" type="xs:Name"/>
-      <xs:attribute name="id" type="xs:anyURI"/>
+      <xs:attribute name="name" type="xs:Name" />
+      <xs:attribute name="id" type="xs:anyURI" />
     </xs:complexType>
   </xs:element>
 
 
   <xs:element name="CoreMetaData" nillable="false">
     <xs:complexType>
-      <xs:attribute name="name" type="xs:anyURI"/>
-      <xs:attribute name="value" type="xs:string"/>
+      <xs:attribute name="name" type="xs:anyURI" />
+      <xs:attribute name="value" type="xs:string" />
     </xs:complexType>
   </xs:element>
 
   <xs:element name="MeasurementCapability" nillable="false">
     <xs:complexType>
       <xs:sequence>
-        <xs:element maxOccurs="unbounded" minOccurs="1" ref="Unit"/>
+        <xs:element maxOccurs="unbounded" minOccurs="1" ref="Unit" />
       </xs:sequence>
-      <xs:attribute name="id" type="xs:anyURI" use="optional"/>
-      <xs:attribute fixed="" name="type" type="xs:string"/>
+      <xs:attribute name="id" type="xs:anyURI" use="optional" />
+      <xs:attribute fixed="" name="type" type="xs:string" />
     </xs:complexType>
   </xs:element>
 
   <xs:element name="Unit">
     <xs:complexType>
-      <xs:attribute name="name" type="xs:string"/>
-      <xs:attribute name="type" type="xs:string"/>
+      <xs:attribute name="name" type="xs:string" />
+      <xs:attribute name="type" type="xs:string" />
     </xs:complexType>
   </xs:element>
 
