@@ -93,7 +93,7 @@ public class LineChart extends DefaultGraphNode implements Serializable, Observe
 			if( yep == null ){
 				return;
 			}
-			int insIndex = Math.max(0, getEndpointDefinitions().indexOf(yep) - 1);
+			int insIndex = Math.max(0, getEndpointDefinitions().indexOf(yep));
 			GraphNodeEndpoint ep = getEndpointByLabel("x" + (i + 1));
 			if (ep == null) {
 				ep = new DefaultGraphNodeEndpoint();

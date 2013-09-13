@@ -16,31 +16,35 @@
 
 <!-- IMPLEMENTATION -->
 <cc:implementation>
-	<p:dialog header="#{messages.UI_NEW_SERVICE_DIALOG_HEADER}"
+	<p:dialog header="#{messages.UI_NEW_APPLICATION_DIALOG_HEADER}"
 		modal="true" closable="false" closeOnEscape="true" resizable="false"
-		widgetVar="#{cc.attrs.id}">
-		<h:form id="newServiceDialogForm">
+		widgetVar="#{cc.attrs.id}"
+		width="500">
+		<h:form id="newApplicationDialogForm">
 
 			<h:panelGrid columns="2" style="width:100%;box-sizing:border-box;"
 				columnClasses="half-available-width">
 
 				<p:outputPanel>
-					<p:outputLabel for="serviceName"
-						value="#{messages.UI_NEW_SERVICE_DIALOG_NAME}" />
+					<p:outputLabel for="applicationName"
+						value="#{messages.UI_NEW_APPLICATION_DIALOG_NAME}" />
 				</p:outputPanel>
 				<p:outputPanel>
-					<p:inputText id="serviceName" required="true"
-						value="#{serviceDesignPageController.context.newServiceName}" />
+					<p:inputText id="applicationName" required="true"
+						style="width:98%;"
+						value="#{applicationDesignPageController.context.newApplicationName}" />
 				</p:outputPanel>
 
 				<p:outputPanel>
-					<p:outputLabel for="serviceDescription"
-						value="#{messages.UI_NEW_SERVICE_DIALOG_DESCRIPTION}" />
+					<p:outputLabel for="applicationDescription"
+						value="#{messages.UI_NEW_APPLICATION_DIALOG_DESCRIPTION}" />
 				</p:outputPanel>
 				<p:outputPanel>
 					<p:inputTextarea
-						id="serviceDescription"
-						value="#{serviceDesignPageController.context.newServiceDescription}" />
+						id="applicationDescription"
+						value="#{applicationDesignPageController.context.newApplicationDescription}"
+						style="width:98%;" 
+						rows="6"/>
 				</p:outputPanel>
 
 			</h:panelGrid>
@@ -50,7 +54,7 @@
 				<p:separator />
 
 				<p:commandButton value="#{messages.DIALOG_CONFIRM}" process="@form"
-					actionListener="#{serviceDesignPageController.createNewOAMO()}"
+					actionListener="#{applicationDesignPageController.createNewApplication()}"
 					update="@form,:consoleForm, :nodeGraphForm, :toolboxForm, :propertyGridForm, :menubar"
 					onstart="windowBlockUI.block();"
 					oncomplete="windowBlockUI.unblock();if( args &amp;&amp; (args.notValid || args.validationFailed ) ){return false;}#{cc.attrs.id}.hide();return false;" />

@@ -36,6 +36,7 @@ import org.openiot.commons.sensortypes.model.SensorTypes;
 import org.openiot.ui.request.commons.annotations.scanners.GraphNodeScanner;
 import org.openiot.ui.request.commons.interfaces.GraphModel;
 import org.openiot.ui.request.commons.logging.LoggerService;
+import org.openiot.ui.request.commons.models.OAMOManager;
 import org.openiot.ui.request.commons.nodes.base.DefaultGraphNodeEndpoint;
 import org.openiot.ui.request.commons.nodes.enums.AnchorType;
 import org.openiot.ui.request.commons.nodes.enums.ConnectorType;
@@ -52,11 +53,10 @@ import org.primefaces.extensions.model.dynaform.DynaFormModel;
  * 
  * @author Achilleas Anagnostopoulos (aanag) email: aanag@sensap.eu
  */
-public class ServiceDesignPageContext extends DisposableContext {
+public class ApplicationDesignPageContext extends DisposableContext {
 
+	private OAMOManager appManager;
 	// The Node graph model
-	private OSDSpec osdSpec;
-	private OAMO selectedOAMO;
 	private GraphModel graphModel;
 	// The active property editor form model
 	private DynaFormModel propertyEditorModel;
@@ -74,10 +74,10 @@ public class ServiceDesignPageContext extends DisposableContext {
 	private double filterLocationLon;
 	private double filterLocationRadius;
 	// New application
-	private String newServiceName;
-	private String newServiceDescription;
+	private String newApplicationName;
+	private String newApplicationDescription;
 
-	public ServiceDesignPageContext() {
+	public ApplicationDesignPageContext() {
 		super();
 		this.register();
 
@@ -87,13 +87,18 @@ public class ServiceDesignPageContext extends DisposableContext {
 
 		// Scan for available nodes
 		detectAvailableNodes();
+		
+		this.appManager = new OAMOManager();
 	}
 
 	@Override
 	public String getContextUID() {
-		return "serviceDesignPageContext";
+		return "applicationDesignPageContext";
 	}
 
+	public OAMOManager getAppManager(){
+		return appManager;
+	}
 	// --------------------------------------------------------------------------
 	// Workspace
 	// --------------------------------------------------------------------------
@@ -165,7 +170,7 @@ public class ServiceDesignPageContext extends DisposableContext {
 	}
 
 	// --------------------------------------------------------------------------
-	// Sensor lookup
+	// Sensor lookup dialog
 	// --------------------------------------------------------------------------
 
 	public double getFilterLocationLat() {
@@ -298,53 +303,23 @@ public class ServiceDesignPageContext extends DisposableContext {
 	}
 
 	// --------------------------------------------------------------------------
-	// Service management
+	// New service dialog
 	// --------------------------------------------------------------------------
 
-	public OSDSpec getOsdSpec() {
-		return osdSpec;
+	public String getNewApplicationName() {
+		return newApplicationName;
 	}
 
-	public void setOsdSpec(OSDSpec osdSpec) {
-		this.osdSpec = osdSpec;
-		cleanupWorkspace();
-		setSelectedOAMO(null);
+	public void setNewApplicationName(String newServiceName) {
+		this.newApplicationName = newServiceName;
 	}
 
-	public OAMO getSelectedOAMO() {
-		return selectedOAMO;
+	public String getNewApplicationDescription() {
+		return newApplicationDescription;
 	}
 
-	public void setSelectedOAMO(OAMO selectedOAMO) {
-		this.selectedOAMO = selectedOAMO;
-	}
-
-	public Map<String, OAMO> getOAMOMap() {
-		Map<String, OAMO> map = new LinkedHashMap<String, OAMO>();
-		for (OAMO oamo : osdSpec.getOAMO()) {
-			map.put(oamo.getName(), oamo);
-		}
-		return map;
-	}
-
-	// --------------------------------------------------------------------------
-	// New service
-	// --------------------------------------------------------------------------
-
-	public String getNewServiceName() {
-		return newServiceName;
-	}
-
-	public void setNewServiceName(String newServiceName) {
-		this.newServiceName = newServiceName;
-	}
-
-	public String getNewServiceDescription() {
-		return newServiceDescription;
-	}
-
-	public void setNewServiceDescription(String newServiceDescription) {
-		this.newServiceDescription = newServiceDescription;
+	public void setNewApplicationDescription(String newApplicationDescription) {
+		this.newApplicationDescription = newApplicationDescription;
 	}
 
 	// --------------------------------------------------------------------------

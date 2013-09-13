@@ -10,6 +10,10 @@ body{
     margin:0;
 }
 
+.full-available-width{
+	width:100%;
+}
+
 .ui-growl{
     z-index:4000;
 }

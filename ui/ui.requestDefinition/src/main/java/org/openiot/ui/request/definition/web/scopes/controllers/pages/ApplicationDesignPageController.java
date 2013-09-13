@@ -30,6 +30,8 @@ import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.RequestScoped;
 import javax.faces.context.FacesContext;
 
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
@@ -58,8 +60,9 @@ import org.openiot.ui.request.definition.web.model.validation.validators.OpenIoT
 import org.openiot.ui.request.definition.web.scopes.application.ApplicationBean;
 import org.openiot.ui.request.definition.web.scopes.session.SessionBean;
 import org.openiot.ui.request.definition.web.scopes.session.context.dialogs.FindSensorDialogContext;
-import org.openiot.ui.request.definition.web.scopes.session.context.pages.ServiceDesignPageContext;
+import org.openiot.ui.request.definition.web.scopes.session.context.pages.ApplicationDesignPageContext;
 import org.openiot.ui.request.definition.web.util.FaceletLocalization;
+import org.primefaces.context.RequestContext;
 
 import sparql.Generator;
 
@@ -67,13 +70,13 @@ import sparql.Generator;
  * 
  * @author Achilleas Anagnostopoulos (aanag) email: aanag@sensap.eu
  */
-@ManagedBean(name = "serviceDesignPageController")
+@ManagedBean(name = "applicationDesignPageController")
 @RequestScoped
-public class ServiceDesignPageController implements Serializable {
+public class ApplicationDesignPageController implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	// Cached context
-	private ServiceDesignPageContext cachedContext;
+	private ApplicationDesignPageContext cachedContext;
 	// Injected properties
 	@ManagedProperty(value = "#{applicationBean}")
 	protected transient ApplicationBean applicationBean;
@@ -81,16 +84,16 @@ public class ServiceDesignPageController implements Serializable {
 	protected transient SessionBean sessionBean;
 	protected transient ResourceBundle messages;
 
-	public ServiceDesignPageController() {
+	public ApplicationDesignPageController() {
 		this.messages = FaceletLocalization.getLocalizedResourceBundle();
 	}
 
-	public ServiceDesignPageContext getContext() {
+	public ApplicationDesignPageContext getContext() {
 		if (cachedContext == null) {
-			cachedContext = (ServiceDesignPageContext) (sessionBean == null ? ApplicationBean.lookupSessionBean() : sessionBean).getContext("serviceDesignPageContext");
+			cachedContext = (ApplicationDesignPageContext) (sessionBean == null ? ApplicationBean.lookupSessionBean() : sessionBean).getContext("applicationDesignPageContext");
 			if (cachedContext == null) {
-				cachedContext = new ServiceDesignPageContext();
-				reloadServices();
+				cachedContext = new ApplicationDesignPageContext();
+				reloadApplications();
 			}
 		}
 		return cachedContext;
@@ -108,7 +111,7 @@ public class ServiceDesignPageController implements Serializable {
 	// ------------------------------------
 
 	public void onGraphNodeSelected() {
-		ServiceDesignPageContext context = getContext();
+		ApplicationDesignPageContext context = getContext();
 
 		if (context.getGraphModel().getSelectedNode() != null) {
 			context.setPropertyEditorModel(PropertyGridFormFactory.generatePropertyGridDynaForm(context.getGraphModel().getSelectedNode()));
@@ -118,7 +121,7 @@ public class ServiceDesignPageController implements Serializable {
 	}
 
 	public void onGraphNodeInserted(NodeInsertedEvent event) {
-		ServiceDesignPageContext context = getContext();
+		ApplicationDesignPageContext context = getContext();
 
 		// Lookup node category
 		List<GraphNode> nodesInGroup = context.getAvailableNodesByTypeMap().get(event.getNodeGroup());
@@ -149,41 +152,13 @@ public class ServiceDesignPageController implements Serializable {
 	}
 
 	public void onGraphNodeDeleted() {
-		ServiceDesignPageContext context = getContext();
+		ApplicationDesignPageContext context = getContext();
 		context.getGraphModel().setSelectedNode(null);
 		context.setPropertyEditorModel(null);
 	}
-	
-	public void validateDesign() {
-		ServiceDesignPageContext context = getContext();
-		OpenIoTGraphNodeValidator validator = new OpenIoTGraphNodeValidator(context.getGraphModel());
-		boolean success = validator.validate();
-		context.setGraphValidationErrors(validator.getValidationErrors());
-		context.setGraphValidationWarnings(validator.getValidationWarnings());
-
-		if (success) {
-			if (validator.getValidationWarnings().isEmpty()) {
-				String codeOutput = "";
-				Generator generator = new Generator();
-
-				// Generate code for each visualization node
-				GraphModel model = context.getGraphModel();
-				for (GraphNode node : model.getNodes()) {
-					if (node.getType().equals("SINK")) {
-						codeOutput += generator.generateCode(model, node);
-					}
-				}
-				context.setGeneratedCode(codeOutput);
-
-				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, messages.getString("GROWL_INFO_HEADER"), FaceletLocalization.getLocalisedMessage(messages, "UI_GRAPH_COMPILER_SUCCESS")));
-			}
-		} else {
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, messages.getString("GROWL_ERROR_HEADER"), FaceletLocalization.getLocalisedMessage(messages, "UI_VALIDATION_FAILED", validator.getValidationErrors().size(), validator.getValidationWarnings().size())));
-		}
-	}
 
 	public void executeSensorDiscoveryQuery() {
-		ServiceDesignPageContext context = getContext();
+		ApplicationDesignPageContext context = getContext();
 		FindSensorDialogContext findContext = (FindSensorDialogContext) (sessionBean == null ? ApplicationBean.lookupSessionBean() : sessionBean).getContext("findSensorDialogContext");
 
 		// Save filter options so we can inject them into the generated sparql
@@ -203,40 +178,76 @@ public class ServiceDesignPageController implements Serializable {
 	}
 
 	// ------------------------------------
-	// Controller for service editing
+	// Controllers for application editing
 	// ------------------------------------
-	public void prepareNewServiceDialog() {
-		ServiceDesignPageContext context = getContext();
-		context.setNewServiceName(null);
-		context.setNewServiceDescription(null);
+	public void prepareNewApplicationDialog() {
+		ApplicationDesignPageContext context = getContext();
+		context.setNewApplicationName(null);
+		context.setNewApplicationDescription(null);
 	}
 
-	public void createNewOAMO() {
-		ServiceDesignPageContext context = getContext();
-		OAMO oamo = new OAMO();
-		oamo.setName(context.getNewServiceName());
-		oamo.setDescription(context.getNewServiceDescription());
-		context.getOsdSpec().getOAMO().add(oamo);
+	public void createNewApplication() {
+		ApplicationDesignPageContext context = getContext();
 
-		activateOAMO(oamo);
-	}
-
-	public void clearOAMO() {
-		ServiceDesignPageContext context = getContext();
-		OAMO selectedOAMO = context.getSelectedOAMO();
-		if (selectedOAMO != null) {
-			selectedOAMO.setGraphMeta(null);
-			selectedOAMO.getOSMO().clear();
+		// Check for duplicate names
+		if (context.getAppManager().exists(context.getNewApplicationName())) {
+			RequestContext.getCurrentInstance().addCallbackParam("validationFailed", "1");
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, messages.getString("GROWL_ERROR_HEADER"), FaceletLocalization.getLocalisedMessage(messages, "ERROR_DUPLICATE_APPLICATION_NAME", context.getNewApplicationName())));
+			return;
 		}
+
+		// Create a new OAMO and select it
+		context.getAppManager().createOAMO(context.getNewApplicationName(), context.getNewApplicationDescription(), true);
 		
+		// Setup workspace
+		GraphModel graphModel = new DefaultGraphModel();
+		context.setGraphModel(graphModel);
+		context.clearAvailableSensors();
+	}
+
+	public void validateApplication() {
+		ApplicationDesignPageContext context = getContext();
+		OpenIoTGraphNodeValidator validator = new OpenIoTGraphNodeValidator(context.getGraphModel());
+		boolean success = validator.validate();
+		context.setGraphValidationErrors(validator.getValidationErrors());
+		context.setGraphValidationWarnings(validator.getValidationWarnings());
+
+		if (success) {
+			if (validator.getValidationWarnings().isEmpty()) {
+				String codeOutput = "";
+				Generator generator = new Generator();
+
+				// Generate code for each visualization node
+				GraphModel model = context.getGraphModel();
+				for (GraphNode node : model.getNodes()) {
+					if (node.getType().equals("SINK")) {
+						codeOutput += StringUtils.join( generator.generateQueriesForNodeEndpoints(model, node), "\n\n#-----------------------------------\n\n");
+					}
+				}
+				context.setGeneratedCode(codeOutput);
+
+				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, messages.getString("GROWL_INFO_HEADER"), FaceletLocalization.getLocalisedMessage(messages, "UI_GRAPH_COMPILER_SUCCESS")));
+			}
+		} else {
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, messages.getString("GROWL_ERROR_HEADER"), FaceletLocalization.getLocalisedMessage(messages, "UI_VALIDATION_FAILED", validator.getValidationErrors().size(), validator.getValidationWarnings().size())));
+		}
+	}
+
+	public void clearApplicationWorkspace() {
+		ApplicationDesignPageContext context = getContext();
+		context.getAppManager().resetSelectedOAMO();
 		context.cleanupWorkspace();
 	}
 
-	public void activateOAMO(OAMO oamo) {
-		ServiceDesignPageContext context = getContext();
-		GraphModel graphModel = new DefaultGraphModel();
+	// ------------------------------------
+	// Controllers for application management
+	// ------------------------------------
+	public void loadApplication(String name) {
+		ApplicationDesignPageContext context = getContext();
+		context.getAppManager().selectOAMOByName(name);
 
-		String graphMeta = oamo.getGraphMeta();
+		GraphModel graphModel = new DefaultGraphModel();
+		String graphMeta = context.getAppManager().getSelectedOAMO() != null ? context.getAppManager().getSelectedOAMO().getGraphMeta() : null;
 		if (graphMeta != null) {
 			try {
 				JSONObject spec = new JSONObject(new JSONTokener(graphMeta));
@@ -244,23 +255,22 @@ public class ServiceDesignPageController implements Serializable {
 			} catch (JSONException ex) {
 				LoggerService.log(ex);
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, messages.getString("GROWL_ERROR_HEADER"), FaceletLocalization.getLocalisedMessage(messages, "ERROR_LOADING_APPLICATION_DESIGN")));
-				
-				context.setSelectedOAMO(null);
+
 				context.setGraphModel(null);
-				return;				
+				context.cleanupWorkspace();
+				return;
 			}
 		}
 
-		context.setSelectedOAMO(oamo);
 		context.setGraphModel(graphModel);
 		context.clearAvailableSensors();
 	}
 
-	public void saveServices() {
+	public void saveApplication() {
 
-		if (encodeSelectedOAMO()) {
+		if (encodeApplication()) {
 			try {
-				SchedulerAPIWrapper.registerService(getContext().getOsdSpec());
+				getContext().getAppManager().saveSelectedOAMO();
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, messages.getString("GROWL_INFO_HEADER"), FaceletLocalization.getLocalisedMessage(messages, "UI_GRAPH_SAVE_SUCCESS")));
 			} catch (APIException ex) {
 				LoggerService.log(ex);
@@ -269,29 +279,20 @@ public class ServiceDesignPageController implements Serializable {
 		}
 	}
 
-	public void resetServices() {
-		ServiceDesignPageContext context = getContext();
-		context.getOsdSpec().getOAMO().clear();
-		context.setSelectedOAMO(null);
-		context.cleanupWorkspace();
-	}
-	
-	public void reloadServices() {
-		ServiceDesignPageContext context = getContext();
-		
+	public void reloadApplications() {
+		ApplicationDesignPageContext context = getContext();
+
 		// Load services
 		try {
-			OSDSpec osdSpec = SchedulerAPIWrapper.getAvailableServices(ApplicationBean.lookupSessionBean().getUserId());
-			context.setOsdSpec(osdSpec);
+			context.getAppManager().loadUserOAMOs(ApplicationBean.lookupSessionBean().getUserId());
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, messages.getString("GROWL_INFO_HEADER"), FaceletLocalization.getLocalisedMessage(messages, "APPLICATIONS_LOADED_SUCCESSFULLY")));
 
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, messages.getString("GROWL_INFO_HEADER"), FaceletLocalization.getLocalisedMessage(messages, "SERVICES_LOADED_SUCCESSFULLY")));
-			
 		} catch (APIException ex) {
 			LoggerService.log(ex);
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, messages.getString("GROWL_ERROR_HEADER"), FaceletLocalization.getLocalisedMessage(messages, "ERROR_CONNECTING_TO_REGISTRATION_SERVICE")));
 		}
 
-		context.setSelectedOAMO(null);
+		context.cleanupWorkspace();
 	}
 
 	// ------------------------------------
@@ -305,8 +306,8 @@ public class ServiceDesignPageController implements Serializable {
 		this.sessionBean = sessionBean;
 	}
 
-	private boolean encodeSelectedOAMO() {
-		ServiceDesignPageContext context = getContext();
+	private boolean encodeApplication() {
+		ApplicationDesignPageContext context = getContext();
 		OpenIoTGraphNodeValidator validator = new OpenIoTGraphNodeValidator(context.getGraphModel());
 		boolean success = validator.validate();
 		context.setGraphValidationErrors(validator.getValidationErrors());
@@ -318,7 +319,7 @@ public class ServiceDesignPageController implements Serializable {
 				Generator generator = new Generator();
 				GraphModel model = context.getGraphModel();
 
-				OAMO oamo = context.getSelectedOAMO();
+				OAMO oamo = context.getAppManager().getSelectedOAMO();
 				oamo.getOSMO().clear();
 				oamo.setId("node://" + model.getUID());
 				oamo.setGraphMeta(model.toJSON().toString());
@@ -337,11 +338,13 @@ public class ServiceDesignPageController implements Serializable {
 						osmo.setQueryControls(queryControls);
 
 						// Setup query request
-						QueryRequest queryRequest = new QueryRequest();
-						String codeBlock = generator.generateCode(model, node);
-						codeOutput += codeBlock;
-						queryRequest.setQuery(codeBlock);
-						osmo.setQueryRequest(queryRequest);
+						List<String> queryBlocks = generator.generateQueriesForNodeEndpoints(model, node);
+						for (String query : queryBlocks) {
+							QueryRequest queryRequest = new QueryRequest();
+							queryRequest.setQuery(query);
+							osmo.getQueryRequest().add(queryRequest);
+						}
+						codeOutput += StringUtils.join(queryBlocks, "\n\n#-----------------------------------\n\n");
 
 						// Encode dynamic attributes
 						for (Map.Entry<GraphNodeProperty, Object> entry : generator.getVariableMap().entrySet()) {

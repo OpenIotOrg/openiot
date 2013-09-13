@@ -71,9 +71,9 @@
 					value="#{messages.UI_FIND_SOURCE_DIALOG_RUN_SEARCH}"
 					process="@form" 
 					update="searchRadius, :toolboxForm, :nodeGraphForm"
-					actionListener="#{serviceDesignPageController.executeSensorDiscoveryQuery}"
-					onstart="windowBlockUI.block();"
-					oncomplete="windowBlockUI.unblock();if( args &amp;&amp; (args.notValid || args.validationFailed ) ){return false;}#{cc.attrs.id}.hide();return false;" />
+					actionListener="#{applicationDesignPageController.executeSensorDiscoveryQuery}"
+					onstart="windowBlockUI.block();#{cc.attrs.id}.hide();"
+					oncomplete="windowBlockUI.unblock();if( args &amp;&amp; (args.notValid || args.validationFailed ) ){#{cc.attrs.id}.show();return false;}#{cc.attrs.id}.hide();return false;" />
 
 				<p:button value="#{messages.DIALOG_CANCEL}"
 					style="margin-left:10px;"

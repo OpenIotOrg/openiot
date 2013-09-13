@@ -20,6 +20,7 @@
 package sparql;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -61,8 +62,6 @@ import sparql.nodes.base.Where;
 public class Generator extends AbstractGraphNodeVisitor {
 
 	private GraphModel model;
-	// Generated code
-	private String generatedCode;
 	// Nodes
 	private Root primaryRootNode;
 	private Comment primaryCommentNode;
@@ -82,14 +81,17 @@ public class Generator extends AbstractGraphNodeVisitor {
 	private Set<String> visitedSensorTypes;
 	private Map<GraphNodeProperty, Object> variableMap;
 	private Stack<GraphNodeConnection> visitedConnectionGraphStack;
+	// Generated code blocks
+	private List<String> queryBlocks;
 
 	public Generator() {
 		this.visitedConnectionGraphStack = new Stack<GraphNodeConnection>();
 		this.visitedSensorTypes = new LinkedHashSet<String>();
 		this.variableMap = new LinkedHashMap<GraphNodeProperty, Object>();
+		this.queryBlocks = new ArrayList<String>();
 	}
 
-	public String generateCode(GraphModel model, GraphNode visualizerNode) {
+	public List<String> generateQueriesForNodeEndpoints(GraphModel model, GraphNode visualizerNode) {
 		this.model = model;
 		reset();
 
@@ -97,8 +99,7 @@ public class Generator extends AbstractGraphNodeVisitor {
 		visitViaReflection(visualizerNode);
 
 		// Return output
-		this.generatedCode = primaryRootNode.generate();
-		return this.generatedCode;
+		return this.queryBlocks;
 	}
 
 	public Map<GraphNodeProperty, Object> getVariableMap() {
@@ -106,7 +107,6 @@ public class Generator extends AbstractGraphNodeVisitor {
 	}
 
 	private void reset() {
-		this.generatedCode = "";
 		this.visitedConnectionGraphStack.clear();
 		this.visitedSensorTypes.clear();
 		this.variableMap.clear();
@@ -126,14 +126,15 @@ public class Generator extends AbstractGraphNodeVisitor {
 		primaryRootNode.appendToScope(primaryGroupNode);
 	}
 
-	private void beginService(GraphNode visNode) {
+	private void beginQueryBlock(GraphNode visNode, int tupleIndex, int totalTuples) {
+		reset();
 		this.visitedConnectionGraphStack.clear();
 
-		primaryCommentNode.appendComment("Service with visualization widget of type '" + visNode.getLabel() + "' and sensors of type:");
+		primaryCommentNode.appendComment("[" + tupleIndex + " / " + totalTuples + "] visualization type: '" + visNode.getLabel() + "' and sensors of type:");
 		this.visitedSensorTypes.clear();
 	}
 
-	private void endService() {
+	private void endQueryBlock() {
 		// Setup comments
 		primaryCommentNode.appendComment("\t - " + org.apache.commons.lang3.StringUtils.join(visitedSensorTypes, "\n#\t - "));
 		primaryCommentNode.appendComment("Generated: " + (new Date()));
@@ -143,6 +144,8 @@ public class Generator extends AbstractGraphNodeVisitor {
 				primaryCommentNode.appendComment("- " + entry.getKey().getVariableName() + " (default value: " + entry.getValue() + ")");
 			}
 		}
+		
+		queryBlocks.add(primaryRootNode.generate());
 	}
 
 	/*
@@ -229,11 +232,14 @@ public class Generator extends AbstractGraphNodeVisitor {
 		// Group queries for xy tuples
 		int seriesCount = Integer.valueOf((String) node.getPropertyValueMap().get("SERIES"));
 		for (int i =0 ; i < seriesCount; i++) {
-			GraphNodeEndpoint xep = node.getEndpointByLabel("x" + (i+1));
-			GraphNodeEndpoint yep = node.getEndpointByLabel("y" + (i+1));
+			// Start a new code block for each series
+			beginQueryBlock(node, i+1, seriesCount);
+			
+			GraphNodeEndpoint xEndpoint = node.getEndpointByLabel("x" + (i+1));
+			GraphNodeEndpoint yEndpoint = node.getEndpointByLabel("y" + (i+1));
 
 			// Follow Y axis value
-			for( GraphNodeConnection connection : model.findGraphEndpointConnections(yep)){
+			for( GraphNodeConnection connection : model.findGraphEndpointConnections(yEndpoint)){
  
 				Scope subScope = new Scope();
 				primaryWhereNode.appendToScope(subScope);
@@ -255,17 +261,17 @@ public class Generator extends AbstractGraphNodeVisitor {
 				this.visitViaReflection(connection.getSourceNode());
 				this.visitedConnectionGraphStack.pop();
 
-				subSelectNode.appendToScope(new Expression("AS ?" + yep.getLabel()));	
-				primarySelectNode.appendToScope(new Expression("?" + yep.getLabel()));
+				subSelectNode.appendToScope(new Expression("AS ?" + yEndpoint.getLabel()));	
+				primarySelectNode.appendToScope(new Expression("?" + yEndpoint.getLabel()));
 			}
 			
 			// Process x axis endpoint
-			if( xep != null ){
-				for( GraphNodeConnection connection : model.findGraphEndpointConnections(xep)){
+			if( xEndpoint != null ){
+				for( GraphNodeConnection connection : model.findGraphEndpointConnections(xEndpoint)){
 					if( xAxisType.equals("Date (observation)")){
 						String timeComponent = connection.getSourceEndpoint().getLabel().replace("grp_recordTime_", "");
-						subSelectNode.appendToScope(new Expression("( fn:"+ timeComponent +"-from-dateTime(?" + targetDataSource.getUID() + "_recordTime) ) AS ?" + xep.getLabel() + "_" + timeComponent));
-						primarySelectNode.appendToScope(new Expression("?" + xep.getLabel() + "_" + timeComponent));
+						subSelectNode.appendToScope(new Expression("( fn:"+ timeComponent +"-from-dateTime(?" + targetDataSource.getUID() + "_recordTime) ) AS ?" + xEndpoint.getLabel() + "_" + timeComponent));
+						primarySelectNode.appendToScope(new Expression("?" + xEndpoint.getLabel() + "_" + timeComponent));
 					}else{
 						Scope subScope = new Scope();
 						primaryWhereNode.appendToScope(subScope);
@@ -287,18 +293,18 @@ public class Generator extends AbstractGraphNodeVisitor {
 						this.visitViaReflection(connection.getSourceNode());
 						this.visitedConnectionGraphStack.pop();
 			
-						subSelectNode.appendToScope(new Expression("AS ?" + xep.getLabel()));		
-						primarySelectNode.appendToScope(new Expression("?" + xep.getLabel()));
+						subSelectNode.appendToScope(new Expression("AS ?" + xEndpoint.getLabel()));		
+						primarySelectNode.appendToScope(new Expression("?" + xEndpoint.getLabel()));
 					}
 				}
-			}			
+			}		
+
+			endQueryBlock();
 		}
 	}
 
 	public void visitSink(GraphNode node) {
-		System.out.println("Visit GenericSink version");
-		// Start a new service generation
-		beginService(node);
+		beginQueryBlock(node, 1, 1);
 		
 		// Visit incoming neighbors
 		for (GraphNodeEndpoint endpoint : node.getEndpointDefinitions()) {
@@ -340,7 +346,7 @@ public class Generator extends AbstractGraphNodeVisitor {
 			}
 		}
 
-		endService();
+		endQueryBlock();
 	}
 
 	private void visitIncomingConnections(GraphNode destinationNode) {
