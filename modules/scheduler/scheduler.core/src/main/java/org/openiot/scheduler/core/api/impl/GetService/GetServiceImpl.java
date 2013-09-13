@@ -114,8 +114,8 @@ public class GetServiceImpl
 							String str = (b.getValue((String) n)==null) ? null : b.getValue((String) n).stringValue();
 							QueryRequest qr = new QueryRequest();
 							qr.setQuery(str);							
-							osmo.setQueryRequest(qr);
-							System.out.print("srvcQstring : "+osmo.getQueryRequest().getQuery()+" ");
+							osmo.getQueryRequest().add(qr);
+							System.out.print("srvcQstring : "+osmo.getQueryRequest().get(0).getQuery()+" ");
 						}
 					}						
 //				}//while

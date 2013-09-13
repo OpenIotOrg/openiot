@@ -550,7 +550,7 @@ public class GetApplicationImpl
 			
 			QueryRequest qr = new QueryRequest();
 			qr.setQuery(osmodata.getqString());
-			osmo.setQueryRequest(qr);
+			osmo.getQueryRequest().add(qr);
 			
 			qres = sparqlCl.sparqlToQResult(Queries.getWidgetPreListByService(osmodata.getId()));
 			ArrayList<Queries.WidgetPresentationData> widgetPresentationDataList =  Queries.parseWidgetPreListByService(qres);

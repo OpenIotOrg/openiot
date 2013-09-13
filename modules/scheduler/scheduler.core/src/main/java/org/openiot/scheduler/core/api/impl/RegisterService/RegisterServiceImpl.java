@@ -37,6 +37,7 @@ import org.openiot.commons.osdspec.model.OSDSpec;
 import org.openiot.commons.osdspec.model.OSMO;
 import org.openiot.commons.osdspec.model.PresentationAttr;
 import org.openiot.commons.osdspec.model.Widget;
+import org.openiot.commons.sparql.protocoltypes.model.QueryRequest;
 import org.openiot.scheduler.core.utils.lsmpa.entities.Service;
 import org.openiot.scheduler.core.utils.lsmpa.entities.WidgetAttributes;
 import org.openiot.scheduler.core.utils.lsmpa.entities.WidgetAvailable;
@@ -137,12 +138,14 @@ public class RegisterServiceImpl {
 				logger.debug("OSMO ID: {}",osmo.getId());
 				logger.debug("OSMO Name: {}",osmo.getName());
 				logger.debug("OSMO Description: {}",osmo.getDescription());
-				logger.debug("Query request query{}",osmo.getQueryRequest().getQuery());				
+				for( QueryRequest qr : osmo.getQueryRequest() ){
+					logger.debug("Query request query{}",qr.getQuery());
+				}
 				
 				srvc = new Service(myOnt, myOntInstance,"http://lsm.deri.ie/OpenIoT/testSchema#",lsmStore);	
 				srvc.setName(osmo.getName());
 				srvc.setDescription(osmo.getDescription());
-				srvc.setQueryString(osmo.getQueryRequest().getQuery());
+				//srvc.setQueryString(osmo.getQueryRequest().getQuery());
 				srvc.setUser(schedulerUser);
 				srvc.setId(osmo.getId());
 				//
