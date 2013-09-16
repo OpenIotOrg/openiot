@@ -19,7 +19,25 @@ import org.slf4j.LoggerFactory;
 public class GetServiceImpl 
 {
 	private static class Queries
-	{		
+	{
+		public static class QueryData
+		{
+			private String id;
+			private String queryString;			
+			
+			public String getId() {
+				return id;
+			}
+			public void setId(String id) {
+				this.id = id;
+			}
+			public String getQueryString() {
+				return queryString;
+			}
+			public void setQueryString(String queryString) {
+				this.queryString = queryString;
+			}			
+		}
 		public static class WidgetPresentationData
 		{
 			private String id; 
@@ -109,14 +127,16 @@ public class GetServiceImpl
 							osmo.setDescription(str);
 							System.out.print("srvcDesc : "+osmo.getDescription()+" ");
 						}
-						else if(((String) n).equalsIgnoreCase("srvcQstring"))
-						{
-							String str = (b.getValue((String) n)==null) ? null : b.getValue((String) n).stringValue();
-							QueryRequest qr = new QueryRequest();
-							qr.setQuery(str);							
-							osmo.setQueryRequest(qr);
-							System.out.print("srvcQstring : "+osmo.getQueryRequest().getQuery()+" ");
-						}
+//						else if(((String) n).equalsIgnoreCase("srvcQstring"))
+//						{
+//							String str = (b.getValue((String) n)==null) ? null : b.getValue((String) n).stringValue();
+//							//TODO: FIX IT!!!!!!!!!!!!!!!!!
+//							QueryRequest qr = new QueryRequest();
+//							qr.setQuery(str);							
+//							osmo.getQueryRequest().add(qr);
+//							System.out.print("srvcQstring : "+osmo.getQueryRequest().get(0).getQuery()+" ");
+//							//TODO: FIX IT!!!!!!!!!!!!!!!!!
+//						}
 					}						
 //				}//while
 				return osmo;
@@ -132,6 +152,48 @@ public class GetServiceImpl
 				return null;
 			}
 		}
+		public static ArrayList<QueryData> parseOSMOQueryData(TupleQueryResult qres)
+		{
+			ArrayList<QueryData> queryDataList = new ArrayList<QueryData>();
+			
+			try 
+			{
+				while (qres.hasNext())
+				{
+					BindingSet b = qres.next();
+					Set names = b.getBindingNames();
+					QueryData queryData = new QueryData();
+					
+					for (Object n : names)
+					{						
+						if(((String) n).equalsIgnoreCase("queryID"))
+						{
+							String str = (b.getValue((String) n)==null) ? null : b.getValue((String) n).stringValue();
+							queryData.setId(str);
+							System.out.print("srvcStatus id: "+queryData.getId()+" ");	
+						}
+						else if(((String) n).equalsIgnoreCase("queryString"))
+						{
+							String str = (b.getValue((String) n)==null) ? null : b.getValue((String) n).stringValue();
+							queryData.setQueryString(str);
+							System.out.print("srvcStatusTime : "+queryData.getQueryString()+" ");	
+						}
+					}
+					queryDataList.add(queryData);					
+				}//while
+				return queryDataList;
+			} 
+			catch (QueryEvaluationException e)			
+			{				
+				e.printStackTrace();
+				return null;
+			}
+			catch (Exception e)			
+			{				
+				e.printStackTrace();
+				return null;
+			}
+		}		
 		public static ArrayList<WidgetPresentationData> parseWidgetPreListByService(TupleQueryResult qres)
 		{
 			ArrayList<WidgetPresentationData> widgetPresentationDataList = new ArrayList<WidgetPresentationData>();
@@ -243,6 +305,21 @@ public class GetServiceImpl
 			update.append(str);
 			return update.toString();
 		}
+		public static String getQueryListOfOSMO(String osmoID)
+		{
+			StringBuilder update = new StringBuilder();			
+			
+			String str=("SELECT ?queryID ?queryString" 
+					+"from <"+openiotFunctionalGraph+"> "
+					+"WHERE "
+					+"{"
+					+"?queryID <http://openiot.eu/ontology/ns/queryString> ?queryString . "
+					+"<"+osmoID+"> <http://openiot.eu/ontology/ns/query> ?queryID . "
+					+"}");
+			
+			update.append(str);
+			return update.toString();
+		}
 		public static String getWidgetPreListByOSMO(String osmoID)
 		{
 			StringBuilder update = new StringBuilder();
@@ -311,6 +388,16 @@ public class GetServiceImpl
 		TupleQueryResult qres = sparqlCl.sparqlToQResult(Queries.getOSMORootData(osmoID));
 		osmo =  Queries.parseOSMORootData(qres);
 		osmo.setId(osmoID);
+		
+		qres = sparqlCl.sparqlToQResult(Queries.getQueryListOfOSMO(osmoID));
+		ArrayList<Queries.QueryData> queryDataList =  Queries.parseOSMOQueryData(qres);
+		
+		for (Queries.QueryData queryData : queryDataList)
+		{
+			QueryRequest qr = new QueryRequest();
+			qr.setQuery(queryData.getQueryString());
+			osmo.getQueryRequest().add(qr);				
+		}
 				
 		qres = sparqlCl.sparqlToQResult(Queries.getWidgetPreListByOSMO(osmoID));
 		ArrayList<Queries.WidgetPresentationData> widgetPresentationDataList =  Queries.parseWidgetPreListByService(qres);
