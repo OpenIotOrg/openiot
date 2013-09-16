@@ -38,6 +38,7 @@ import org.openiot.commons.sensortypes.model.MeasurementCapability;
 import org.openiot.commons.sensortypes.model.SensorType;
 import org.openiot.commons.sensortypes.model.SensorTypes;
 import org.openiot.commons.sensortypes.model.Unit;
+import org.openiot.commons.sparql.protocoltypes.model.QueryRequest;
 
 import org.openiot.commons.descriptiveids.model.DescreptiveIDs;
 import org.openiot.commons.descriptiveids.model.DescriptiveID;
@@ -246,7 +247,10 @@ public class SchedulerClient
 				logger.debug("osmo.getId():" + osmo.getId());
 				logger.debug("osmo.getName():" + osmo.getName());
 				logger.debug("osmo.getName():" + osmo.getDescription());
-				logger.debug("osmo.getQueryRequest().getQuery():" + osmo.getQueryRequest().getQuery());
+				
+				for (QueryRequest qr : osmo.getQueryRequest()) {
+					logger.debug("qr.getQuery():" + qr.getQuery());
+				}
 				
 				for (Widget w : osmo.getRequestPresentation().getWidget()) {
 					
@@ -305,7 +309,10 @@ public class SchedulerClient
 			logger.debug("osmo.getId():" + osmo.getId());
 			logger.debug("osmo.getName():" + osmo.getName());
 			logger.debug("osmo.getName():" + osmo.getDescription());
-			logger.debug("osmo.getQueryRequest().getQuery():" + osmo.getQueryRequest().getQuery());
+			
+			for (QueryRequest qr : osmo.getQueryRequest()) {
+				logger.debug("qr.getQuery():" + qr.getQuery());
+			}
 			
 			for (Widget w : osmo.getRequestPresentation().getWidget()) {
 				
@@ -470,7 +477,10 @@ public class SchedulerClient
 					logger.debug("osmo.getId():" + osmo.getId());
 					logger.debug("osmo.getName():" + osmo.getName());
 					logger.debug("osmo.getName():" + osmo.getDescription());
-					logger.debug("osmo.getQueryRequest().getQuery():" + osmo.getQueryRequest().getQuery());
+					
+					for (QueryRequest qr : osmo.getQueryRequest()) {
+						logger.debug("qr.getQuery():" + qr.getQuery());
+					}
 					
 					for (Widget w : osmo.getRequestPresentation().getWidget()) {
 						
@@ -562,7 +572,7 @@ public class SchedulerClient
 	}
 		
 	/**
-	 * Registers a service that 
+	 * Registers a service from an xml file 
 	 * 
 	 * @param osdSpec  the path of the osdspec XML file
 	 * 
