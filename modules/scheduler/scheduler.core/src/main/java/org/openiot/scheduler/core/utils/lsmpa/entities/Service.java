@@ -60,33 +60,35 @@ public class Service
 						{
 							String str = (b.getValue((String) n)==null) ? null : b.getValue((String) n).stringValue();
 							srvc.setId(str);
-							System.out.print("srvc id: "+srvc.getId()+" ");	
+							System.out.println("srvc id: "+srvc.getId()+" ");	
 						}
 						else if(((String) n).equalsIgnoreCase("srvcName"))
 						{
 							String str = (b.getValue((String) n)==null) ? null : b.getValue((String) n).stringValue();
 							srvc.setName(str);
-							System.out.print("srvcName : "+srvc.getName()+" ");	
+							System.out.println("srvcName : "+srvc.getName()+" ");	
 						}
 						else if(((String) n).equalsIgnoreCase("srvcDesc"))
 						{
 							String str = (b.getValue((String) n)==null) ? null : b.getValue((String) n).stringValue();
 							srvc.setDescription(str);
-							System.out.print("srvcDesc : "+srvc.getDescription()+" ");	
+							System.out.println("srvcDesc : "+srvc.getDescription()+" ");	
 						}
 						else if(((String) n).equalsIgnoreCase("srvcQstring"))
 						{
 							String str = (b.getValue((String) n)==null) ? null : b.getValue((String) n).stringValue();
-							srvc.setQueryString(str);
-							System.out.print("srvcQstring : "+srvc.getQueryString()+" ");	
+							Query qString = new Query();
+							qString.setqString(str);
+							srvc.addQueryString(qString);
+							System.out.println("srvcQstring : "+srvc.getQueryString()+" ");	
 						}
-						else if(((String) n).equalsIgnoreCase("srvcUser"))
+						else if(((String) n).equalsIgnoreCase("oamo"))
 						{
 							String str = (b.getValue((String) n)==null) ? null : b.getValue((String) n).stringValue();
-							User u = new User();
-							u.setId(str);
-							srvc.setUser(u);
-							System.out.print("srvcUser : "+srvc.getUser().getId()+" ");	
+							OAMO oamo = new OAMO();
+							oamo.setId(str);
+							srvc.setOAMO(oamo);
+							System.out.println("oamo : "+srvc.getOAMO().getId()+" ");	
 						}
 					}
 					serviceList.add(srvc);					
@@ -140,100 +142,82 @@ public class Service
 //			update.append(str);
 //			return update.toString();
 //		}
-		public static String selectServiceByName(String srvcName)
+//		public static String selectServiceByName(String srvcName)
+//		{
+//			StringBuilder update = new StringBuilder();
+//	        update.append(getNamespaceDeclarations());
+//			
+//			String str=("SELECT ?serviceID from <"+graph+"> "
+//								+"WHERE "
+//								+"{"								
+//								+"?serviceID <http://openiot.eu/ontology/ns/serviceName> ?name FILTER regex(?name, \"" +srvcName+ "\" )  . "								
+//								+"}");								
+//			
+//			update.append(str);
+//			return update.toString();
+//		}
+//		public static String selectServiceByDescription(String desc)
+//		{
+//			StringBuilder update = new StringBuilder();
+//	        update.append(getNamespaceDeclarations());
+//			
+//			String str=("SELECT ?serviceID from <"+graph+"> "
+//								+"WHERE "
+//								+"{"								
+//								+"?serviceID <http://openiot.eu/ontology/ns/serviceDescription> ?desc FILTER regex(?desc, \"" +desc+ "\" )  . "								
+//								+"}");								
+//			
+//			update.append(str);
+//			return update.toString();
+//		}
+//		public static String selectSrvcByQString(String qString)
+//		{
+//			StringBuilder update = new StringBuilder();
+//	        update.append(getNamespaceDeclarations());
+//			
+//			String str=("SELECT ?serviceID from <"+graph+"> "
+//								+"WHERE "
+//								+"{"								
+//								+"?serviceID <http://openiot.eu/ontology/ns/queryString> ?email FILTER regex(?email, \"" +qString+ "\" )  . "								
+//								+"}");								
+//			
+//			update.append(str);
+//			return update.toString();
+//		}
+		public static String selectSrvcByUser(OAMO oamo)
 		{
 			StringBuilder update = new StringBuilder();
 	        update.append(getNamespaceDeclarations());
 			
-			String str=("SELECT ?serviceID from <"+graph+"> "
-								+"WHERE "
-								+"{"								
-								+"?serviceID <http://openiot.eu/ontology/ns/serviceName> ?name FILTER regex(?name, \"" +srvcName+ "\" )  . "								
-								+"}");								
-			
-			update.append(str);
-			return update.toString();
-		}
-		public static String selectServiceByDescription(String desc)
-		{
-			StringBuilder update = new StringBuilder();
-	        update.append(getNamespaceDeclarations());
-			
-			String str=("SELECT ?serviceID from <"+graph+"> "
-								+"WHERE "
-								+"{"								
-								+"?serviceID <http://openiot.eu/ontology/ns/serviceDescription> ?desc FILTER regex(?desc, \"" +desc+ "\" )  . "								
-								+"}");								
-			
-			update.append(str);
-			return update.toString();
-		}
-		public static String selectSrvcByQString(String qString)
-		{
-			StringBuilder update = new StringBuilder();
-	        update.append(getNamespaceDeclarations());
-			
-			String str=("SELECT ?serviceID from <"+graph+"> "
-								+"WHERE "
-								+"{"								
-								+"?serviceID <http://openiot.eu/ontology/ns/queryString> ?qs FILTER regex(?qs, \"" +qString+ "\" )  . "								
-								+"}");								
-			
-			update.append(str);
-			return update.toString();
-		}
-		public static String selectSrvcByUser(User usr)
-		{
-			StringBuilder update = new StringBuilder();
-	        update.append(getNamespaceDeclarations());
-			
-			String str=("SELECT ?serviceID ?srvcName ?srvcDesc ?srvcQstring ?srvcUser from <"+graph+"> "
+			String str=("SELECT ?serviceID ?srvcName ?srvcDesc ?srvcQstring ?oamo from <"+graph+"> "
 								+"WHERE "
 								+"{"
-								+"?serviceID <http://openiot.eu/ontology/ns/user> ?srvcUser . "
+								+"?serviceID <http://openiot.eu/ontology/ns/oamo> ?oamo . "
 								+"?serviceID <http://openiot.eu/ontology/ns/serviceName> ?srvcName . "
 								+"?serviceID <http://openiot.eu/ontology/ns/serviceDescription> ?srvcDesc . "
-								+"?serviceID <http://openiot.eu/ontology/ns/queryString> ?srvcQstring . "
-								+"?serviceID <http://openiot.eu/ontology/ns/user> <"+usr.getId()+"> . "								
+								+"?serviceID <http://openiot.eu/ontology/ns/query> ?srvcQstring . "
+								+"?serviceID <http://openiot.eu/ontology/ns/oamo> <"+oamo.getId()+"> . "								
 								+"}");								
 			
 			update.append(str);
 			return update.toString();
 		}
-		public static String selectSrvcByUserByNameByDescByQuery(User usr,String name,String desc,String query)
-		{
-			StringBuilder update = new StringBuilder();
-	        update.append(getNamespaceDeclarations());
-			
-			String str=("SELECT ?serviceID from <"+graph+"> "
-								+"WHERE "
-								+"{"
-								
-								+"?serviceID <http://openiot.eu/ontology/ns/queryString> <"+query+"> . "
-								+"?serviceID <http://openiot.eu/ontology/ns/serviceName> <"+name+"> . "
-								+"?serviceID <http://openiot.eu/ontology/ns/serviceDescription> <"+desc+"> . "								
-								+"?serviceID <http://openiot.eu/ontology/ns/user> <"+usr.getId()+"> . "								
-								+"}");								
-			
-			update.append(str);
-			return update.toString();
-		}
-		public static String selectSrvcBySrvcStatus(ArrayList<ServiceStatus> serviceStatusList)
-		{
-			StringBuilder update = new StringBuilder();
-	        update.append(getNamespaceDeclarations());
-			
-	        update.append("SELECT ?serviceID from <"+graph+"> "
-								+"WHERE "
-								+"{");								
-			for(int i=0; i<serviceStatusList.size(); i++)
-			{
-				update.append("?serviceID <http://openiot.eu/ontology/ns/serviceStatus> <"+serviceStatusList.get(i).getId()+"> )  . ");				
-			}	        
-	        update.append("}");
-	        
-			return update.toString();
-		}
+//		public static String selectSrvcBySrvcStatus(ArrayList<ServiceStatus> serviceStatusList)
+//		{
+//			StringBuilder update = new StringBuilder();
+//	        update.append(getNamespaceDeclarations());
+//			
+//	        update.append("SELECT ?serviceID from <"+graph+"> "
+//								+"WHERE "
+//								+"{");								
+//			for(int i=0; i<serviceStatusList.size(); i++)
+//			{
+//				update.append("?serviceID <http://openiot.eu/ontology/ns/serviceStatus> <"+serviceStatusList.get(i).getId()+"> )  . ");				
+//			}	        
+//	        update.append("}");
+//	        
+//			return update.toString();
+//		}
 	}//class
 		
 	
@@ -248,18 +232,18 @@ public class Service
 	private OntProperty ontPserviceName;
 	private OntProperty ontPserviceDescription;
 	//private OntProperty lExecuted;
-	private OntProperty ontPqString;
+	private OntProperty ontPquery;
 	private OntProperty ontPserviceStatus;
-	private OntProperty ontPuser;
+	private OntProperty ontPoamo;
 	private OntProperty ontPwidgePres;
 	
 	private String id;
 	private String name;
 	private String description;
 	//private String lastExecuted;
-	private String queryString;
+	private List<Query> queryString = new ArrayList<Query>();
 	private List<ServiceStatus> serviceStatusList = new ArrayList<ServiceStatus>();
-	private User user;
+	private OAMO oamo;
 	private List<WidgetPresentation> widgetPresList = new ArrayList<WidgetPresentation>();
 	
 	
@@ -292,19 +276,19 @@ public class Service
 	
 	private void initOnt_Service()
 	{
-		ontClsServiceClass = myOnt.createClass("http://openiot.eu/ontology/ns/Service");
-		ontPserviceName = myOnt.createProperty("http://openiot.eu/ontology/ns/serviceName");
-		ontPserviceDescription = myOnt.createProperty("http://openiot.eu/ontology/ns/serviceDescription");
+		ontClsServiceClass = myOnt.getClass("http://openiot.eu/ontology/ns/Service");
+		ontPserviceName = myOnt.getProperty("http://openiot.eu/ontology/ns/serviceName");
+		ontPserviceDescription = myOnt.getProperty("http://openiot.eu/ontology/ns/serviceDescription");
 		//lExecuted = myOnt.getProperty("http://openiot.eu/ontology/ns/lastExecuted");
-		ontPqString = myOnt.createProperty("http://openiot.eu/ontology/ns/queryString");
-		ontPserviceStatus = myOnt.createProperty("http://openiot.eu/ontology/ns/serviceStatus");
-		ontPuser = myOnt.createProperty("http://openiot.eu/ontology/ns/user");
+		ontPquery = myOnt.createProperty("http://openiot.eu/ontology/ns/query");
+		ontPserviceStatus = myOnt.getProperty("http://openiot.eu/ontology/ns/serviceStatus");
+		ontPoamo = myOnt.createProperty("http://openiot.eu/ontology/ns/oamo");
 		ontPwidgePres= myOnt.createProperty("http://openiot.eu/ontology/ns/widgetPres");
 	}
 	
 	public void createClassIdv()
 	{
-		if(id==null || id.isEmpty())
+		if(id==null)
 			serviceClassIdv = ontInstance.createIndividual(ontClsServiceClass);
 		else
 			serviceClassIdv = ontInstance.createIndividual(id,ontClsServiceClass);
@@ -321,13 +305,16 @@ public class Service
 	}
 	public void createPqString()
 	{
-		if(queryString!=null)	
-			serviceClassIdv.setPropertyValue(ontPqString, ontInstance.getBase().createTypedLiteral(queryString));
+		for(int i=0; i<queryString.size(); i++)
+		{
+			//serviceClassIdv.setPropertyValue(ontPqString, ontInstance.getBase().createTypedLiteral(queryString));
+			serviceClassIdv.addProperty(ontPquery,queryString.get(i).getClassIndividual());
+		}	
 	}	
-	public void createPUser()
+	public void createPOAMO()
 	{
-		if(user!=null)
-			serviceClassIdv.addProperty(ontPuser, user.getClassIndividual());
+		if(oamo!=null)
+			serviceClassIdv.addProperty(ontPoamo, oamo.getClassIndividual());
 	}
 	public void createPserviceStatus()
 	{
@@ -351,7 +338,7 @@ public class Service
 		createPserviceDescription();
 		//serviceClassIdv.setPropertyValue(lExecuted, ontInstance.getBase().createTypedLiteral(lastExecuted));
 		createPqString();
-		createPUser();
+		createPOAMO();
 		createPserviceStatus();		
 		createPwidgetPres();
 	}
@@ -411,20 +398,24 @@ public class Service
 //		this.lastExecuted = lastExecuted;
 //	}
 
-	public String getQueryString() 
+	public List<Query> getQueryString() 
 	{
 		return queryString;
 	}
-	public void setQueryString(String queryString) 
+	public void setQueryString(List<Query> queryString) 
 	{
 		this.queryString = queryString;		
+	}
+	public void addQueryString(Query queryString) 
+	{
+		this.queryString.add(queryString);				
 	}
 
 	public List<ServiceStatus> getServiceStatusList() 
 	{
 		return serviceStatusList;
 	}
-	public void ssetServiceStatus(List<ServiceStatus> serviceStatusList) 
+	public void setServiceStatus(List<ServiceStatus> serviceStatusList) 
 	{
 		this.serviceStatusList=serviceStatusList;		
 	}
@@ -433,11 +424,11 @@ public class Service
 		this.serviceStatusList.add(serviceStatus);				
 	}
 
-	public User getUser() {
-		return user;
+	public OAMO getOAMO() {
+		return oamo;
 	}
-	public void setUser(User user) {
-		this.user = user;
+	public void setOAMO(OAMO oamo) {
+		this.oamo = oamo;
 	}
 	
 	public List<WidgetPresentation> getWidgetPresList() {
