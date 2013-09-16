@@ -367,7 +367,7 @@ public class PollForReportImpl
 		{
 			StringBuilder update = new StringBuilder();			
 			
-			String str=("SELECT ?queryID ?queryString" 
+			String str=("SELECT ?queryID ?queryString " 
 					+"from <"+openiotTestGraph+"> "
 					+"WHERE "
 					+"{"

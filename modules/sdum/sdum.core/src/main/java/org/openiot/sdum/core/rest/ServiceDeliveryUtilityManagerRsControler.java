@@ -85,15 +85,15 @@ public class ServiceDeliveryUtilityManagerRsControler {
 	
 
 	/**
-	 * Invokes a previously defined Service having the specified applicationID.
-	 * This call will produce only one Result Set.
+	 * Invokes a previously defined Service having the specified serviceID.
+	 * 
 	 * 
 	 * @param applicationID
 	 * @return
 	 */
 	@GET
 	@Path("/pollforreport")
-	public SdumServiceResultSet pollForReport(@QueryParam("applicationID") String applicationID) {
+	public SdumServiceResultSet pollForReport(@QueryParam("serviceID") String applicationID) {
 
 		PollForReportImpl pollForReportImpl = new PollForReportImpl(applicationID);
 
