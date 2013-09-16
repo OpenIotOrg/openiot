@@ -286,8 +286,8 @@ public class User
 		ontPName = myOnt.createProperty("http://openiot.eu/ontology/ns/userName");
 		ontPemail = myOnt.createProperty("http://openiot.eu/ontology/ns/userMail");
 		ontPdescription = myOnt.createProperty("http://openiot.eu/ontology/ns/userDescription");
-		ontPaccess = myOnt.getProperty("http://openiot.eu/ontology/ns/access");
-		ontPuserOf = myOnt.getProperty("http://openiot.eu/ontology/ns/userOf");
+		ontPaccess = myOnt.createProperty("http://openiot.eu/ontology/ns/access");
+		ontPuserOf = myOnt.createProperty("http://openiot.eu/ontology/ns/userOf");
 	}
 	
 	public void createClassIdv()
