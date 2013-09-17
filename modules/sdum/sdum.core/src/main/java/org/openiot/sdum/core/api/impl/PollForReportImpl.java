@@ -43,6 +43,7 @@ import org.openiot.sdum.core.utils.sparql.SesameSPARQLClient;
 import org.openrdf.query.BindingSet;
 import org.openrdf.query.QueryEvaluationException;
 import org.openrdf.query.TupleQueryResult;
+import org.openrdf.repository.RepositoryException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -424,7 +425,14 @@ public class PollForReportImpl
 	//helper methods
 	private void pollForReport() 
 	{
-		SesameSPARQLClient sparqlCl = new SesameSPARQLClient();
+		SesameSPARQLClient sparqlCl = null;
+		try {
+			sparqlCl = new SesameSPARQLClient();
+		} catch (RepositoryException e) {			
+			logger.error("Init sparql repository error. ",e);
+			return;
+		}
+		
 		TupleQueryResult qres = sparqlCl.sparqlToQResult(PollForReportImpl.Queries.getQueryFromService(this.serviceID));		
 		String serviceQuery = PollForReportImpl.Queries.parseQueryFromService(qres);
 				
@@ -527,7 +535,13 @@ public class PollForReportImpl
 	
 	private void pollForReport2() 
 	{
-		SesameSPARQLClient sparqlCl = new SesameSPARQLClient();
+		SesameSPARQLClient sparqlCl = null;
+		try {
+			sparqlCl = new SesameSPARQLClient();
+		} catch (RepositoryException e) {			
+			logger.error("Init sparql repository error. ",e);
+			return;
+		}
 		
 		TupleQueryResult qres = sparqlCl.sparqlToQResult(QueriesV2.getQueryListOfOSMO(serviceID));
 		ArrayList<QueriesV2.QueryData> queryDataList = QueriesV2.parseOSMOQueryData(qres);
