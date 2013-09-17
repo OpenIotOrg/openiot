@@ -96,6 +96,7 @@ public class RegisterServiceImpl {
 			logger.debug("OAMO Name: {}",oamo.getName());			
 			
 			org.openiot.scheduler.core.utils.lsmpa.entities.OAMO oamoEnt = new org.openiot.scheduler.core.utils.lsmpa.entities.OAMO(myOnt, myOntInstance,"http://lsm.deri.ie/OpenIoT/testSchema#",lsmStore);				
+			oamoEnt.setId(oamo.getId());
 			oamoEnt.setName(oamo.getName());
 			oamoEnt.setUser(userEnt);
 			//
