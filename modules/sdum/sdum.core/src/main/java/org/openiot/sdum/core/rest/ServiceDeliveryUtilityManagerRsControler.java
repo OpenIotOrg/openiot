@@ -36,7 +36,7 @@ import org.openiot.sdum.core.api.impl.GetAvailableServiceIDs.GetAvailableService
 import org.openiot.sdum.core.api.impl.GetAvailableAppIDs.GetAvailableAppIDsImpl;
 import org.openiot.sdum.core.api.impl.GetService.GetServiceImpl;
 import org.openiot.sdum.core.api.impl.GetApplication.GetApplicationImpl;
-import org.openiot.sdum.core.api.impl.PollForReportImpl;
+import org.openiot.sdum.core.api.impl.PollForReport.PollForReportImpl;
 
 
 
