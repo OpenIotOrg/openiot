@@ -56,145 +56,8 @@ import org.xml.sax.InputSource;
  */
 
 public class PollForReportImpl 
-{
+{	
 	private static class Queries
-	{		
-		private static String openiotTestGraph = "http://lsm.deri.ie/OpenIoT/testSchema#";
-				
-		public static String parseQueryFromService(TupleQueryResult qres)
-		{
-			String query = null;
-			try
-			{
-//				while (qres.hasNext())
-//				{
-					BindingSet b = qres.next();
-					Set names = b.getBindingNames();
-//					String sensorType = null;
-					
-					for (Object n : names)
-					{						
-						if(((String) n).equalsIgnoreCase("srvcQstring"))
-						{
-							//TODO: FIX IT!!!!!!!!!!!!!!!!!
-							String str = (b.getValue((String) n)==null) ? null : b.getValue((String) n).stringValue();
-							query =str;
-							System.out.print("query string: "+query+" ");
-							//TODO: FIX IT!!!!!!!!!!!!!!!!!
-						}
-					}
-//					sensorTypes.add(sensorType);					
-//				}//while
-				return query;
-			} 
-			catch (QueryEvaluationException e)			
-			{				
-				e.printStackTrace();
-				return null;
-			}
-			catch (Exception e)			
-			{				
-				e.printStackTrace();
-				return null;
-			}
-		}
-		public static ArrayList<ServicePresentationData> parseWPresentationFromService(TupleQueryResult qres)
-		{
-			ArrayList<ServicePresentationData> srvcPreDataList = new ArrayList<ServicePresentationData>();
-			try
-			{
-				while (qres.hasNext())
-				{
-					BindingSet b = qres.next();
-					Set names = b.getBindingNames();
-					ServicePresentationData srvcPreData = new ServicePresentationData();
-					
-					for (Object n : names)
-					{						
-						if(((String) n).equalsIgnoreCase("widgetPreID"))
-						{
-							String str = (b.getValue((String) n)==null) ? null : b.getValue((String) n).stringValue();
-							srvcPreData.setWidgetPreID(str);
-							System.out.print("widgetPreID : "+str+" ");	
-						}
-						else if(((String) n).equalsIgnoreCase("widgetID"))
-						{
-							String str = (b.getValue((String) n)==null) ? null : b.getValue((String) n).stringValue();
-							srvcPreData.setWidgetID(str);
-							System.out.print("widgetID : "+str+" ");	
-						}
-						else if(((String) n).equalsIgnoreCase("widgetAttrID"))
-						{
-							String str = (b.getValue((String) n)==null) ? null : b.getValue((String) n).stringValue();
-							srvcPreData.setWidgetAttrID(str);
-							System.out.print("widgetAttrID : "+str+" ");	
-						}
-						else if(((String) n).equalsIgnoreCase("widgetAttrName"))
-						{
-							String str = (b.getValue((String) n)==null) ? null : b.getValue((String) n).stringValue();
-							srvcPreData.setWidgetAttrName(str);
-							System.out.print("widgetAttrName : "+str+" ");	
-						}
-						else if(((String) n).equalsIgnoreCase("widgetAttrDesc"))
-						{
-							String str = (b.getValue((String) n)==null) ? null : b.getValue((String) n).stringValue();
-							srvcPreData.setWidgetAttrDesc(str);
-							System.out.print("widgetAttrDesc : "+str+" ");	
-						}
-					}
-					srvcPreDataList.add(srvcPreData);					
-				}//while
-				return srvcPreDataList;
-			} 
-			catch (QueryEvaluationException e)			
-			{				
-				e.printStackTrace();
-				return null;
-			}
-			catch (Exception e)			
-			{				
-				e.printStackTrace();
-				return null;
-			}
-		}
-		
-		
-		public static String getQueryFromService(String serviceID)
-		{
-			StringBuilder update = new StringBuilder();	        
-			
-			String str=("SELECT ?srvcQstring " 
-					+"from <"+openiotTestGraph+"> "
-					+"WHERE "
-					+"{"
-					+"<"+serviceID+"> <http://openiot.eu/ontology/ns/queryString> ?srvcQstring . "													
-					+"}");	
-			
-			update.append(str);
-			return update.toString();
-		}
-		public static String getWPresentationFromService(String serviceID)
-		{
-			StringBuilder update = new StringBuilder();	        
-			
-			String str=("SELECT ?widgetPreID ?widgetID  ?widgetAttrID  ?widgetAttrName ?widgetAttrDesc " 
-					+"from <"+openiotTestGraph+"> "
-					+"WHERE "
-					+"{"
-					+"?widgetAttrID <http://openiot.eu/ontology/ns/widgeAttrDescription> ?widgetAttrDesc . "
-					+"?widgetAttrID <http://openiot.eu/ontology/ns/widgetAttrName> ?widgetAttrName . "
-					
-					+"?widgetPreID <http://openiot.eu/ontology/ns/widgetAttribute> ?widgetAttrID . "
-					+"?widgetPreID <http://openiot.eu/ontology/ns/widget> ?widgetID . "
-					+"?widgetPreID <http://openiot.eu/ontology/ns/widgetPresOf> <"+serviceID+"> ."
-					+"}");	
-			
-			update.append(str);
-			return update.toString();
-		}
-	}
-	
-	private static class QueriesV2
 	{
 		public static class QueryData
 		{
@@ -412,7 +275,7 @@ public class PollForReportImpl
 		
 		this.serviceID=serviceID;
 		
-		pollForReport2();		
+		pollForReport();		
 	}	
 	
 	
@@ -423,6 +286,7 @@ public class PollForReportImpl
 	
 	
 	//helper methods
+	
 	private void pollForReport() 
 	{
 		SesameSPARQLClient sparqlCl = null;
@@ -433,122 +297,12 @@ public class PollForReportImpl
 			return;
 		}
 		
-		TupleQueryResult qres = sparqlCl.sparqlToQResult(PollForReportImpl.Queries.getQueryFromService(this.serviceID));		
-		String serviceQuery = PollForReportImpl.Queries.parseQueryFromService(qres);
-				
-		//String xmlResult = sparqlCl.sparqlToXml(serviceQuery);
-		TupleQueryResult qres2 = sparqlCl.sparqlToQResult(serviceQuery);
-		
-
-		SdumServiceResultSet testSdumServiceResultSet2 = new SdumServiceResultSet();
-		
-		try
-		{
-			Sparql sparql = new Sparql();
-			
-			Head head = new Head();
-			for (String value : qres2.getBindingNames()) 
-			{			
-				Variable var = new Variable();
-				var.setName(value);
-				head.getVariable().add(var);
-			}
-			
-			sparql.setHead(head);
-						
-			Results sparqlResults = new Results();	
-			while (qres2.hasNext())
-			{				
-				BindingSet b = qres2.next();
-				Set<String> names = b.getBindingNames();				
-				
-				Result sparqlResult = new Result();
-				for (String n : names)
-				{
-					Binding sparqlResultBinding = new Binding();
-					sparqlResultBinding.setName(n);
-					
-					Literal literalValue = new Literal();
-					literalValue.setContent(b.getValue((String) n).stringValue());
-					sparqlResultBinding.setLiteral(literalValue );
-//					sparqlResultBinding.setBnode("BnodeValue");		
-//					sparqlResultBinding.setUri("UriValue");
-					
-					sparqlResult.getBinding().add(sparqlResultBinding);
-				}
-				
-				sparqlResults.getResult().add(sparqlResult);				
-			}//while
-			
-			
-			sparql.setResults(sparqlResults);
-			
-			QueryResult queryResult = new QueryResult();
-			queryResult.setSparql(sparql);
-			
-			testSdumServiceResultSet2.getQueryResult().add(queryResult);
-			
-		} 
-		catch (QueryEvaluationException e)			
-		{				
-			e.printStackTrace();			
-		}
-		catch (Exception e)			
-		{				
-			e.printStackTrace();			
-		}
-				
-		/////////////////////////////////////////////////////////////////////////////////
-
-		TupleQueryResult qres3 = sparqlCl.sparqlToQResult(PollForReportImpl.Queries.getWPresentationFromService(this.serviceID));				
-		ArrayList<ServicePresentationData> srvcPreDatas = PollForReportImpl.Queries.parseWPresentationFromService(qres3);
-		
-		ArrayList<String> distinctWidgetP = new ArrayList<String>();
-		
-		//Fill the RequestPresentation
-		RequestPresentation requestPresentation = new RequestPresentation();
-		
-		for (ServicePresentationData srvcPreData : srvcPreDatas) 
-		{
-			Widget widget = new Widget();
-			widget.setWidgetID(srvcPreData.getWidgetID());
-			
-			int idx = checkExists(widget.getWidgetID(),requestPresentation);
-			if(idx==-1){
-				requestPresentation.getWidget().add(widget);
-			}
-			else{
-				widget = requestPresentation.getWidget().get(idx);
-			}
-			
-			PresentationAttr presentationAttr = new PresentationAttr();
-			presentationAttr.setName(srvcPreData.getWidgetAttrName());
-			presentationAttr.setValue(srvcPreData.getWidgetAttrDesc());
-			
-			widget.getPresentationAttr().add(presentationAttr);			
-		}
-		
-		testSdumServiceResultSet2.setRequestPresentation(requestPresentation);
-	
-		this.sdumServiceResultSet = testSdumServiceResultSet2;
-	}
-	
-	private void pollForReport2() 
-	{
-		SesameSPARQLClient sparqlCl = null;
-		try {
-			sparqlCl = new SesameSPARQLClient();
-		} catch (RepositoryException e) {			
-			logger.error("Init sparql repository error. ",e);
-			return;
-		}
-		
-		TupleQueryResult qres = sparqlCl.sparqlToQResult(QueriesV2.getQueryListOfOSMO(serviceID));
-		ArrayList<QueriesV2.QueryData> queryDataList = QueriesV2.parseOSMOQueryData(qres);
+		TupleQueryResult qres = sparqlCl.sparqlToQResult(Queries.getQueryListOfOSMO(serviceID));
+		ArrayList<Queries.QueryData> queryDataList = Queries.parseOSMOQueryData(qres);
 		
 		SdumServiceResultSet sdumServiceResultSet = new SdumServiceResultSet();
 		
-		for (QueriesV2.QueryData queryData : queryDataList)
+		for (Queries.QueryData queryData : queryDataList)
 		{
 			try
 			{
@@ -610,15 +364,15 @@ public class PollForReportImpl
 		
 		///////////////////////////////////
 		
-		TupleQueryResult qres3 = sparqlCl.sparqlToQResult(QueriesV2.getWPresentationFromOSMO(this.serviceID));				
-		ArrayList<QueriesV2.ServicePresentationData> srvcPreDatas = QueriesV2.parseWPresentationFromService(qres3);
+		TupleQueryResult qres3 = sparqlCl.sparqlToQResult(Queries.getWPresentationFromOSMO(this.serviceID));				
+		ArrayList<Queries.ServicePresentationData> srvcPreDatas = Queries.parseWPresentationFromService(qres3);
 		
 		ArrayList<String> distinctWidgetP = new ArrayList<String>();
 		
 		//Fill the RequestPresentation
 		RequestPresentation requestPresentation = new RequestPresentation();
 		
-		for (QueriesV2.ServicePresentationData srvcPreData : srvcPreDatas) 
+		for (Queries.ServicePresentationData srvcPreData : srvcPreDatas) 
 		{
 			Widget widget = new Widget();
 			widget.setWidgetID(srvcPreData.getWidgetID());
