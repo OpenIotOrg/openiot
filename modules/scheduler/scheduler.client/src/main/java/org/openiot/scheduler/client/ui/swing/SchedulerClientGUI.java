@@ -83,7 +83,7 @@ public class SchedulerClientGUI extends JPanel
 	private void initialize() {
 		frmSchedulerClient = new JFrame();
 		frmSchedulerClient.setTitle("Scheduler Client");
-		frmSchedulerClient.setBounds(100, 100, 470, 529);
+		frmSchedulerClient.setBounds(100, 100, 470, 496);
 		frmSchedulerClient.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmSchedulerClient.getContentPane().setLayout(null);
 		
@@ -181,7 +181,7 @@ public class SchedulerClientGUI extends JPanel
 		
 		JPanel panel_2 = new JPanel();
 		panel_2.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "register osdspec", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		panel_2.setBounds(10, 327, 268, 142);
+		panel_2.setBounds(10, 305, 268, 142);
 		frmSchedulerClient.getContentPane().add(panel_2);
 		
 		osdSpecpathTextField = new JTextField();
@@ -366,7 +366,7 @@ public class SchedulerClientGUI extends JPanel
 		
 		JPanel panel_5 = new JPanel();
 		panel_5.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "get osdspec", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		panel_5.setBounds(279, 327, 161, 142);
+		panel_5.setBounds(279, 305, 161, 142);
 		frmSchedulerClient.getContentPane().add(panel_5);
 		
 		JButton btnGetOSDSpec = new JButton("get");

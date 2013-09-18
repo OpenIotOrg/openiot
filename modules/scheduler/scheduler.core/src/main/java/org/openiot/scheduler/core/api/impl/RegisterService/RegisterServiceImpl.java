@@ -22,12 +22,6 @@ package org.openiot.scheduler.core.api.impl.RegisterService;
  */
 
 
-
-
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-
 import lsm.beans.User;
 import lsm.schema.LSMSchema;
 import lsm.server.LSMTripleStore;
@@ -38,6 +32,7 @@ import org.openiot.commons.osdspec.model.OSMO;
 import org.openiot.commons.osdspec.model.PresentationAttr;
 import org.openiot.commons.osdspec.model.Widget;
 import org.openiot.commons.sparql.protocoltypes.model.QueryRequest;
+import org.openiot.scheduler.core.utils.lsmpa.entities.Query;
 import org.openiot.scheduler.core.utils.lsmpa.entities.Service;
 import org.openiot.scheduler.core.utils.lsmpa.entities.WidgetAttributes;
 import org.openiot.scheduler.core.utils.lsmpa.entities.WidgetAvailable;
@@ -52,7 +47,8 @@ import com.hp.hpl.jena.ontology.OntModelSpec;
 
 
 /**
- * @author Nikos Kefalakis (nkef) e-mail: nkef@ait.edu.gr
+ *  @author Stavros Petris (spet) e-mail: spet@ait.edu.gr
+ *  @author Nikos Kefalakis (nkef) e-mail: nkef@ait.edu.gr
  *
  */
 public class RegisterServiceImpl {
@@ -66,51 +62,18 @@ public class RegisterServiceImpl {
 	
 	
 	
-	public RegisterServiceImpl (OSDSpec osdSpec){	
-
+	public RegisterServiceImpl (OSDSpec osdSpec){
 		
 		this.osdSpec = osdSpec;
 		
 		logger.debug("Recieved OSDSpec from User with userID: " + osdSpec.getUserID());
-		
-		
-		//uncoment after test
-//		registerService();
-		registerServiceTestV1();
-		//insertUser();		
-	}
 	
-		
-//	private void registerService() 
-//	{		
-//		for (OAMO oamo: osdSpec.getOAMO())
-//		{			
-//			logger.debug("OAMO Description: {}  ID: {}",oamo.getDescription(), oamo.getId());
-//			logger.debug("OAMO Name: {}",oamo.getName());			
-//			
-//			for (OSMO osmo : oamo.getOSMO())
-//			{								
-//				logger.debug("OSMO Description: {}  ID: {}",osmo.getDescription(), osmo.getId());
-//				logger.debug("OSMO Name: {}",osmo.getName());
-//				
-//				logger.debug("Query request query{}",osmo.getQueryRequest().getQuery());
-//				
-//				//List<Widget> wList = osmo.getRequestPresentation().getWidget();
-//				for (Widget widget : osmo.getRequestPresentation().getWidget())
-//				{
-//					logger.debug("widget id: {}",widget.getWidgetID());
-//					for (PresentationAttr pAttr : widget.getPresentationAttr())
-//					{
-//						logger.debug("pAttr id: {} --- name: {}",pAttr.getName(),pAttr.getValue());
-//					}//PresentationAttr
-//				}//widget
-//			}//osmo
-//		}//oamo
-//		
-//		replyMessage= "successfuly";
-//	}
+
+		registerService();				
+	}		
+
 	
-	private void registerServiceTestV1() 
+	private void registerService() 
 	{
 		User user = new User();
 		user.setUsername("spet");
@@ -122,55 +85,74 @@ public class RegisterServiceImpl {
 		LSMSchema myOnt  =  new  LSMSchema (OntModelSpec.OWL_DL_MEM);
 		LSMSchema myOntInstance = new LSMSchema();
 		
-		org.openiot.scheduler.core.utils.lsmpa.entities.User schedulerUser = new org.openiot.scheduler.core.utils.lsmpa.entities.User(myOnt, myOntInstance,"http://lsm.deri.ie/OpenIoT/testSchema#",lsmStore);
-		schedulerUser.setId(osdSpec.getUserID());		
+		org.openiot.scheduler.core.utils.lsmpa.entities.User userEnt = new org.openiot.scheduler.core.utils.lsmpa.entities.User(myOnt, myOntInstance,"http://lsm.deri.ie/OpenIoT/testSchema#",lsmStore);
+		userEnt.setId(osdSpec.getUserID());		
 //		//
-		schedulerUser.createClassIdv();
+		userEnt.createClassIdv();
 		
 		for (OAMO oamo: osdSpec.getOAMO())
 		{			
 			logger.debug("OAMO Description: {}  ID: {}",oamo.getDescription(), oamo.getId());
 			logger.debug("OAMO Name: {}",oamo.getName());			
 			
-			Service srvc = null;
+			org.openiot.scheduler.core.utils.lsmpa.entities.OAMO oamoEnt = new org.openiot.scheduler.core.utils.lsmpa.entities.OAMO(myOnt, myOntInstance,"http://lsm.deri.ie/OpenIoT/testSchema#",lsmStore);				
+			oamoEnt.setId(oamo.getId());
+			oamoEnt.setName(oamo.getName());
+			oamoEnt.setUser(userEnt);
+			//
+			oamoEnt.createClassIdv();
+			oamoEnt.createPoamoName();
+			oamoEnt.createPoamoUserOf();
+			
+			userEnt.addService(oamoEnt);
+			//
+			userEnt.createPuserOf();
+			
+			
 			for (OSMO osmo : oamo.getOSMO())
 			{
 				logger.debug("OSMO ID: {}",osmo.getId());
 				logger.debug("OSMO Name: {}",osmo.getName());
-				logger.debug("OSMO Description: {}",osmo.getDescription());
-				for( QueryRequest qr : osmo.getQueryRequest() ){
-					logger.debug("Query request query{}",qr.getQuery());
+				logger.debug("OSMO Description: {}",osmo.getDescription());				
+				for (QueryRequest qr : osmo.getQueryRequest()) {
+					logger.debug("qr.getQuery():" + qr.getQuery());
+				}				
+				
+				Service srvcEnt = new Service(myOnt, myOntInstance,"http://lsm.deri.ie/OpenIoT/testSchema#",lsmStore);	
+				srvcEnt.setId(osmo.getId());
+				srvcEnt.setName(osmo.getName());
+				srvcEnt.setDescription(osmo.getDescription());
+				//
+				
+				
+				for (QueryRequest qr :osmo.getQueryRequest())
+				{
+					Query qstring = new Query(myOnt, myOntInstance,"http://lsm.deri.ie/OpenIoT/testSchema#",lsmStore);					
+					qstring.setqString(qr.getQuery());
+					//
+					qstring.createClassIdv();
+					qstring.createPqueryString();					
+					
+					srvcEnt.addQueryString(qstring);
 				}
 				
-				srvc = new Service(myOnt, myOntInstance,"http://lsm.deri.ie/OpenIoT/testSchema#",lsmStore);	
-				srvc.setName(osmo.getName());
-				srvc.setDescription(osmo.getDescription());
-				//srvc.setQueryString(osmo.getQueryRequest().getQuery());
-				srvc.setUser(schedulerUser);
-				srvc.setId(osmo.getId());
 				//
-				srvc.createClassIdv();
-				srvc.createPserviceName();
-				srvc.createPserviceDescription();
-				srvc.createPqString();								
-				srvc.createPUser();
-				//
-				schedulerUser.addService(srvc);
-				schedulerUser.createPuserOf();
-				
-
+				srvcEnt.createClassIdv();
+				srvcEnt.createPserviceName();
+				srvcEnt.createPserviceDescription();
+				srvcEnt.createPqString();								
 								
-				WidgetPresentation widgetPre = null;
+				
 				for (Widget widget : osmo.getRequestPresentation().getWidget())
 				{
-					widgetPre = new WidgetPresentation(myOnt, myOntInstance,"http://lsm.deri.ie/OpenIoT/testSchema#",lsmStore);
-					widgetPre.setService(srvc);
+					WidgetPresentation widgetPre  = new WidgetPresentation(myOnt, myOntInstance,"http://lsm.deri.ie/OpenIoT/testSchema#",lsmStore);
+					widgetPre.setService(srvcEnt);
 					//
 					widgetPre.createClassIdv();					
 					widgetPre.createPwidgetPresOf();
 					//
-					srvc.addWidgetPresentation(widgetPre);
-					srvc.createPwidgetPres();
+					srvcEnt.addWidgetPresentation(widgetPre);
+					srvcEnt.createPwidgetPres();
 					
 					logger.debug("widget available id: {}",widget.getWidgetID());
 					WidgetAvailable wAvail = new WidgetAvailable(myOnt, myOntInstance,"http://lsm.deri.ie/OpenIoT/testSchema#",lsmStore);				
@@ -182,13 +164,12 @@ public class RegisterServiceImpl {
 					//
 					widgetPre.setWidgetAvailable(wAvail);
 					widgetPre.createPwidget();
-					
-					WidgetAttributes wAttr = null;
+////										
 					for (PresentationAttr pAttr : widget.getPresentationAttr())
 					{
 						logger.debug("pAttr id: {} --- name: {}",pAttr.getName(),pAttr.getValue());
 						
-						wAttr = new WidgetAttributes(myOnt, myOntInstance,"http://lsm.deri.ie/OpenIoT/testSchema#",lsmStore);
+						WidgetAttributes wAttr = new WidgetAttributes(myOnt, myOntInstance,"http://lsm.deri.ie/OpenIoT/testSchema#",lsmStore);
 						wAttr.setDescription(pAttr.getName());
 						wAttr.setName(pAttr.getValue());
 						wAttr.setWidgetPre(widgetPre);
@@ -203,45 +184,33 @@ public class RegisterServiceImpl {
 						
 					}//PresentationAttr					
 				}//widget
-			}//osmo
+				
+				srvcEnt.setOAMO(oamoEnt);
+//				//
+				srvcEnt.createPOAMO();
+				
+				oamoEnt.addService(srvcEnt);
+				//
+				oamoEnt.createPoamoService();
+//				
+
+				
+			}//osmo			
 		}//oamo
 
 				
 		logger.debug(myOntInstance.exportToTriples("TURTLE"));
 		boolean ok = lsmStore.pushRDF("http://lsm.deri.ie/OpenIoT/testSchema#",myOntInstance.exportToTriples("N-TRIPLE"));
+
+		if(ok){
+			replyMessage= "regester service successfull";
+		}
+		else{
+			replyMessage= "regester service error";
+		}
 		
-		if(ok)
-		{
-//			StringBuilder listsID = new StringBuilder();
-//			
-//			SesameSPARQLClient sparqlCl = new SesameSPARQLClient();
-//			for(int i=0; i<schedulerUser.getServiceList().size(); i++)
-//			{
-//				TupleQueryResult qres = sparqlCl.sparqlToQResult(Service.Queries.
-//							selectSrvcByUserByNameByDescByQuery(
-//									schedulerUser,
-//									schedulerUser.getServiceList().get(i).getName(), 
-//									schedulerUser.getServiceList().get(i).getDescription(),
-//									schedulerUser.getServiceList().get(i).getDescription()));
-//				ArrayList<Service> sl= Service.Queries.parseService(qres);
-//				listsID.append(sl.get(0));
-//				listsID.append(",");
-//			}
-//			
-//			for(int i=0; i<schedulerUser.getServiceList().size(); i++)
-//			{
-//				replyMessage= "added:"+listsID.toString();
-//			}
-			replyMessage= "regestering successfull";
-			
-		}
-		else
-		{
-			replyMessage= "error regestering service";
-		}
+		logger.debug(replyMessage);
 	}
-	
-	
 	
 	/**
 	 * @return String

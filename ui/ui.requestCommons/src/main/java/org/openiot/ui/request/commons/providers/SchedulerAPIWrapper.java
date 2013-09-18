@@ -63,17 +63,8 @@ public class SchedulerAPIWrapper {
 		ClientRequestFactory clientRequestFactory = new ClientRequestFactory(UriBuilder.fromUri("http://localhost:8080/scheduler.core").build());
 		ClientRequest registerServiceRequest = clientRequestFactory.createRelativeRequest("/rest/services/registerService");
 
-		String osdSpecString = "";
 		try {
-			JAXBContext jc = JAXBContext.newInstance(OSDSpec.class);
-			Marshaller marshaller = jc.createMarshaller();
-			marshaller.setProperty(Marshaller.JAXB_ENCODING, "UTF-8");
-			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-			java.io.StringWriter sw = new StringWriter();
-			marshaller.marshal(osdSpec, sw);
-			osdSpecString = sw.toString().replace("&lt;", "<").replace("&gt;", ">");
-
-			LoggerService.log(Level.INFO, osdSpecString);
+			String osdSpecString = marshalOSDSpec(osdSpec);
 
 			registerServiceRequest.body("application/xml", osdSpecString);
 
@@ -89,6 +80,37 @@ public class SchedulerAPIWrapper {
 			} catch (Throwable ex) {
 				throw new APIException(ex);
 			}
+		} catch (Exception ex) {
+			throw new APIException(ex);
+		}
+	}
+	
+	public static String marshalOSDSpec(OSDSpec osdSpec) throws APIException{
+		String osdSpecString = "";
+		try {
+			JAXBContext jc = JAXBContext.newInstance(OSDSpec.class);
+			Marshaller marshaller = jc.createMarshaller();
+			marshaller.setProperty(Marshaller.JAXB_ENCODING, "UTF-8");
+			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+			java.io.StringWriter sw = new StringWriter();
+			marshaller.marshal(osdSpec, sw);
+			osdSpecString = sw.toString().replace("&lt;", "<").replace("&gt;", ">");
+
+			LoggerService.log(Level.INFO, osdSpecString);
+			return osdSpecString;
+		} catch (Exception ex) {
+			throw new APIException(ex);
+		}
+	}
+	
+	public static OSDSpec unmarshalOSDSpec(String osdSpecString) throws APIException{
+		try {
+			// Unserialize
+			JAXBContext jaxbContext = JAXBContext.newInstance(OSDSpec.class);
+			Unmarshaller um = jaxbContext.createUnmarshaller();
+			OSDSpec spec = (OSDSpec) um.unmarshal(new StreamSource(new StringReader(osdSpecString)));
+			
+			return spec;
 		} catch (Exception ex) {
 			throw new APIException(ex);
 		}

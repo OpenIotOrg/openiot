@@ -32,7 +32,11 @@ import org.openiot.commons.descriptiveids.model.DescreptiveIDs;
 import org.openiot.commons.osdspec.model.OAMO;
 import org.openiot.commons.osdspec.model.OSMO;
 import org.openiot.commons.sdum.serviceresultset.model.SdumServiceResultSet;
-import org.openiot.sdum.core.api.impl.PollForReportImpl;
+import org.openiot.sdum.core.api.impl.GetAvailableServiceIDs.GetAvailableServiceIDsImpl;
+import org.openiot.sdum.core.api.impl.GetAvailableAppIDs.GetAvailableAppIDsImpl;
+import org.openiot.sdum.core.api.impl.GetService.GetServiceImpl;
+import org.openiot.sdum.core.api.impl.GetApplication.GetApplicationImpl;
+import org.openiot.sdum.core.api.impl.PollForReport.PollForReportImpl;
 
 
 
@@ -51,8 +55,6 @@ public class ServiceDeliveryUtilityManagerRsControler {
 	//Logger's initialization
 	final static Logger logger = LoggerFactory.getLogger(ServiceDeliveryUtilityManagerRsControler.class);
 	
-
-
 
 	/**
 	 * @return
@@ -81,19 +83,18 @@ public class ServiceDeliveryUtilityManagerRsControler {
 
 		return welcomeText;
 	}
-	
-	
+		
 
 	/**
-	 * Invokes a previously defined Service having the specified applicationID.
-	 * This call will produce only one Result Set.
+	 * Invokes a previously defined Service having the specified serviceID.
+	 * 
 	 * 
 	 * @param applicationID
 	 * @return
 	 */
 	@GET
 	@Path("/pollforreport")
-	public SdumServiceResultSet pollForReport(@QueryParam("applicationID") String applicationID) {
+	public SdumServiceResultSet pollForReport(@QueryParam("serviceID") String applicationID) {
 
 		PollForReportImpl pollForReportImpl = new PollForReportImpl(applicationID);
 
@@ -101,8 +102,7 @@ public class ServiceDeliveryUtilityManagerRsControler {
 
 	}
 	
-	
-	
+		
 	/**
 	 * Used to retrieve the description (OAMO) of an available Application.
 	 * Requires as input the Application ID
@@ -114,16 +114,10 @@ public class ServiceDeliveryUtilityManagerRsControler {
 	@Path("/getApplication")
 	public OAMO getApplication(@QueryParam("applicationID") String applicationID) {
 
-		//TODO: Implement this functionality
-		
-		OAMO oamo = new OAMO();
+		GetApplicationImpl application = new GetApplicationImpl(applicationID);		
 
-		return oamo;
-	}
-	
-	
-	
-	
+		return application.getOAMO();
+	}	
 
 	/**
 	 * Used to retrieve the description (OSMO) of an available service. Requires
@@ -136,15 +130,11 @@ public class ServiceDeliveryUtilityManagerRsControler {
 	@Path("/getService")
 	public OSMO getService(@QueryParam("serviceID") String serviceID) {
 
-		//TODO: Implement this functionality
+		GetServiceImpl service =  new GetServiceImpl(serviceID);		
 		
-		OSMO osmo = new OSMO();
-
-		return osmo;
+		return service.getService();
 	}
-	
-	
-	
+		
 	
 	/**
 	 * Used to retrieve the available applications (a list of
@@ -158,14 +148,10 @@ public class ServiceDeliveryUtilityManagerRsControler {
 	@Path("/getAvailableAppIDs")
 	public DescreptiveIDs getAvailableAppIDs(@QueryParam("userID") String userID) {
 
-		//TODO: Implement this functionality
-		
-		DescreptiveIDs descreptiveIDs = new DescreptiveIDs();
+		GetAvailableAppIDsImpl availableAppIDs = new GetAvailableAppIDsImpl(userID);
 
-		return descreptiveIDs;
-	}
-	
-	
+		return availableAppIDs.getAvailableAppIDs();
+	}	
 	
 
 	/**
@@ -180,13 +166,8 @@ public class ServiceDeliveryUtilityManagerRsControler {
 	@Path("/getAvailableServiceIDs")
 	public DescreptiveIDs getAvailableServiceIDs(@QueryParam("applicationID") String applicationID) {
 
-		//TODO: Implement this functionality
+		GetAvailableServiceIDsImpl availableServiceIDs = new GetAvailableServiceIDsImpl(applicationID);
 		
-		DescreptiveIDs descreptiveIDs = new DescreptiveIDs();
-
-		return descreptiveIDs;
+		return availableServiceIDs.getAvailableServiceIDs();
 	}
-	
-	
-
 }

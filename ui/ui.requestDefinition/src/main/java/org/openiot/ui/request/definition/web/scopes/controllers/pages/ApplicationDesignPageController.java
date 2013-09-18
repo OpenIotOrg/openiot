@@ -19,10 +19,12 @@
  ******************************************************************************/
 package org.openiot.ui.request.definition.web.scopes.controllers.pages;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -30,6 +32,7 @@ import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.RequestScoped;
 import javax.faces.context.FacesContext;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
@@ -63,6 +66,7 @@ import org.openiot.ui.request.definition.web.scopes.session.context.dialogs.Find
 import org.openiot.ui.request.definition.web.scopes.session.context.pages.ApplicationDesignPageContext;
 import org.openiot.ui.request.definition.web.util.FaceletLocalization;
 import org.primefaces.context.RequestContext;
+import org.primefaces.model.DefaultStreamedContent;
 
 import sparql.Generator;
 
@@ -295,6 +299,47 @@ public class ApplicationDesignPageController implements Serializable {
 		context.cleanupWorkspace();
 	}
 
+	public void prepareImportApplicationsDialog(){
+		ApplicationDesignPageContext context = getContext();
+		context.setUploadedSpec(null);
+		context.setPersistSpec(false);
+	}
+	
+	public void importApplications(){
+		ApplicationDesignPageContext context = getContext();
+		if( context.getUploadedSpec() == null ){
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, messages.getString("GROWL_ERROR_HEADER"), FaceletLocalization.getLocalisedMessage(messages, "ERROR_SELECT_A_FILE_TO_UPLOAD")));
+			return;
+		}
+		
+		// Try to parse OSDSpec
+		OSDSpec spec = null;
+		try{
+			spec = SchedulerAPIWrapper.unmarshalOSDSpec(IOUtils.toString(context.getUploadedSpec().getInputstream(), "UTF-8"));
+		}catch(Exception ex){
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, messages.getString("GROWL_ERROR_HEADER"), FaceletLocalization.getLocalisedMessage(messages, "ERROR_COULD_NOT_PARSE_OSDSPEC_FILE")));
+			return;
+		}
+		
+		context.getAppManager().loadOSDSPec(spec);
+		context.cleanupWorkspace();		
+		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, messages.getString("GROWL_INFO_HEADER"), FaceletLocalization.getLocalisedMessage(messages, "INFO_APPLICATION_IMPORT_SUCCESS")));
+	}
+	
+	public void exportApplications() throws APIException, IOException{
+		ApplicationDesignPageContext context = getContext();
+		// If an OAMO is active, make sure we validate and encode it before continuing
+		if( context.getAppManager().getSelectedOAMO() != null && !encodeApplication()){
+			context.setExportedSpec(null);
+			return;
+		}
+		
+		// Export spec
+		OSDSpec spec = getContext().getAppManager().exportOSDSpec();
+		String osdSpecString = SchedulerAPIWrapper.marshalOSDSpec(spec);
+		
+		getContext().setExportedSpec(new DefaultStreamedContent(IOUtils.toInputStream(osdSpecString, "UTF-8"), "application/xml", "applications.xml"));
+	}
 	// ------------------------------------
 	// Helpers
 	// ------------------------------------

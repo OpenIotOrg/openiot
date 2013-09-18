@@ -36,11 +36,19 @@ public class OAMOManager {
 	 */
 	public void loadUserOAMOs(String userId) throws APIException {
 		this.userId = userId;
-
+		availableOAMOs.clear();
+		selectOAMO(null);
+		OSDSpec spec = SchedulerAPIWrapper.getAvailableApps(userId);
+		loadOSDSPec(spec);
+	}
+	
+	/**
+	 * Load all OAMOs in the given OSDSpec
+	 */
+	public void loadOSDSPec( OSDSpec spec ){
 		availableOAMOs.clear();
 		selectOAMO(null);
 		
-		OSDSpec spec = SchedulerAPIWrapper.getAvailableApps(userId);
 		availableOAMOs.addAll(spec.getOAMO());
 	}
 
@@ -209,5 +217,16 @@ public class OAMOManager {
 		return false;
 	}
 
+	/**
+	 * Export all OAMOs as an OSDSpec
+	 * @return The OSDSpec
+	 */
+	public OSDSpec exportOSDSpec(){
+		OSDSpec spec = new OSDSpec();
+		spec.setUserID(this.userId);
+		spec.getOAMO().addAll(availableOAMOs);
+		
+		return spec;
+	}
 
 }

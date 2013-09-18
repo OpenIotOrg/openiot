@@ -36,6 +36,7 @@ import org.openiot.commons.sdum.serviceresultset.model.PresentationAttr;
 import org.openiot.commons.sdum.serviceresultset.model.SdumServiceResultSet;
 import org.openiot.commons.sdum.serviceresultset.model.Widget;
 import org.openiot.commons.sensortypes.model.SensorTypes;
+import org.openiot.commons.sparql.protocoltypes.model.QueryResult;
 import org.openiot.commons.sparql.result.model.Binding;
 import org.openiot.commons.sparql.result.model.Result;
 import org.openiot.commons.sparql.result.model.Results;
@@ -119,20 +120,22 @@ public class ServiceDeliveryUtilityManagerClient
 					.unmarshal(new StreamSource(new StringReader(str)));
 
 			System.out.println("---------Service Query result---------");
-
-			for (Variable var : sdumServiceResultSet.getQueryResult()
-					.getSparql().getHead().getVariable()) {
-				System.out.println("----var:---- " + var.getName());
-			}
-			for (Result result : sdumServiceResultSet.getQueryResult()
-					.getSparql().getResults().getResult()) {
-				System.out.println("----result:---- ");
-
-				for (Binding binding : result.getBinding()) {
-					System.out.println("binding name: " + binding.getName());
-					System.out.println("literal: "
-							+ binding.getLiteral().getContent());
+			
+			for (QueryResult queryResult :sdumServiceResultSet.getQueryResult()){
+				
+				for (Variable var : queryResult.getSparql().getHead().getVariable()) {
+					System.out.println("----var:---- " + var.getName());
 				}
+				
+				for (Result result : queryResult.getSparql().getResults().getResult()) {
+					System.out.println("----result:---- ");
+
+					for (Binding binding : result.getBinding()) {
+						System.out.println("binding name: " + binding.getName());
+						System.out.println("literal: "
+								+ binding.getLiteral().getContent());
+					}
+				}				
 			}
 
 			System.out.println("---------Service Presentation---------");

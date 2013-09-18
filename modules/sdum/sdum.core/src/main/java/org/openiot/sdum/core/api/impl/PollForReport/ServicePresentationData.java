@@ -1,4 +1,4 @@
-package org.openiot.sdum.core.api.impl;
+package org.openiot.sdum.core.api.impl.PollForReport;
 
 /**
  *    Copyright (c) 2011-2014, OpenIoT

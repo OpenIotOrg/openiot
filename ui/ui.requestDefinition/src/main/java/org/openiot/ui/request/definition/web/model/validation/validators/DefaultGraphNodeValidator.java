@@ -33,6 +33,7 @@ import org.openiot.ui.request.commons.nodes.interfaces.GraphNodeEndpoint;
 import org.openiot.ui.request.commons.nodes.interfaces.GraphNodeProperty;
 import org.openiot.ui.request.definition.web.model.validation.GraphValidationError;
 import org.openiot.ui.request.definition.web.model.validation.GraphValidationWarning;
+import org.openiot.ui.request.definition.web.model.validation.GraphValidationError.ErrorType;
 
 /**
  *
@@ -68,6 +69,10 @@ public class DefaultGraphNodeValidator extends AbstractGraphNodeVisitor {
         visitedConnectionGraphStack.clear();
         visitedNodes.clear();
 
+        if( model.getNodes().isEmpty() ){
+        	validationErrors.add(new GraphValidationError(ErrorType.EmptyGraph, "", "", ""));
+        }
+        
         // Visit all nodes once
         for (GraphNode node : model.getNodes()) {
             if (!visitedNodes.contains(node)) {

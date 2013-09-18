@@ -1,4 +1,4 @@
-package org.openiot.scheduler.core.api.impl.GetApplication;
+package org.openiot.sdum.core.api.impl.GetApplication;
 
 import java.util.ArrayList;
 import java.util.Set;
@@ -9,7 +9,7 @@ import org.openiot.commons.osdspec.model.PresentationAttr;
 import org.openiot.commons.osdspec.model.RequestPresentation;
 import org.openiot.commons.osdspec.model.Widget;
 import org.openiot.commons.sparql.protocoltypes.model.QueryRequest;
-import org.openiot.scheduler.core.utils.sparql.SesameSPARQLClient;
+import org.openiot.sdum.core.utils.sparql.SesameSPARQLClient;
 import org.openrdf.query.BindingSet;
 import org.openrdf.query.QueryEvaluationException;
 import org.openrdf.query.TupleQueryResult;

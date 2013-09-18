@@ -20,7 +20,6 @@
 package org.openiot.ui.request.definition.web.scopes.session.context.pages;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -28,8 +27,6 @@ import java.util.TreeMap;
 import java.util.logging.Level;
 
 import org.apache.commons.lang3.StringUtils;
-import org.openiot.commons.osdspec.model.OAMO;
-import org.openiot.commons.osdspec.model.OSDSpec;
 import org.openiot.commons.sensortypes.model.MeasurementCapability;
 import org.openiot.commons.sensortypes.model.SensorType;
 import org.openiot.commons.sensortypes.model.SensorTypes;
@@ -48,6 +45,8 @@ import org.openiot.ui.request.definition.web.model.validation.GraphValidationErr
 import org.openiot.ui.request.definition.web.model.validation.GraphValidationWarning;
 import org.openiot.ui.request.definition.web.scopes.session.base.DisposableContext;
 import org.primefaces.extensions.model.dynaform.DynaFormModel;
+import org.primefaces.model.StreamedContent;
+import org.primefaces.model.UploadedFile;
 
 /**
  * 
@@ -76,6 +75,12 @@ public class ApplicationDesignPageContext extends DisposableContext {
 	// New application
 	private String newApplicationName;
 	private String newApplicationDescription;
+	// OSD import/export
+	private StreamedContent exportedSpec;
+	private UploadedFile uploadedSpec;
+	private boolean persistSpec;
+
+private StreamedContent osdExport;
 
 	public ApplicationDesignPageContext() {
 		super();
@@ -87,7 +92,7 @@ public class ApplicationDesignPageContext extends DisposableContext {
 
 		// Scan for available nodes
 		detectAvailableNodes();
-		
+
 		this.appManager = new OAMOManager();
 	}
 
@@ -96,9 +101,10 @@ public class ApplicationDesignPageContext extends DisposableContext {
 		return "applicationDesignPageContext";
 	}
 
-	public OAMOManager getAppManager(){
+	public OAMOManager getAppManager() {
 		return appManager;
 	}
+
 	// --------------------------------------------------------------------------
 	// Workspace
 	// --------------------------------------------------------------------------
@@ -156,7 +162,7 @@ public class ApplicationDesignPageContext extends DisposableContext {
 	}
 
 	public void cleanupWorkspace() {
-		if( graphModel != null ){
+		if (graphModel != null) {
 			graphModel.clear();
 		}
 		graphValidationErrors.clear();
@@ -197,11 +203,11 @@ public class ApplicationDesignPageContext extends DisposableContext {
 		this.filterLocationRadius = filterLocationRadius;
 	}
 
-	public void clearAvailableSensors(){
+	public void clearAvailableSensors() {
 		List<GraphNode> sensorList = availableNodesByTypeMap.get("SOURCE");
 		sensorList.clear();
 	}
-	
+
 	public void updateAvailableSensors(SensorTypes sensorTypes) {
 		List<GraphNode> sensorList = availableNodesByTypeMap.get("SOURCE");
 		sensorList.clear();
@@ -253,26 +259,26 @@ public class ApplicationDesignPageContext extends DisposableContext {
 
 				String scope = "Number";
 				String capScope = cap.getUnit().get(0).getType();
-				if( StringUtils.containsIgnoreCase(capScope, "Int")){
+				if (StringUtils.containsIgnoreCase(capScope, "Int")) {
 					scope = "Integer";
-				} else if( StringUtils.containsIgnoreCase(capScope, "Long")){
+				} else if (StringUtils.containsIgnoreCase(capScope, "Long")) {
 					scope = "Long";
-				} else if( StringUtils.containsIgnoreCase(capScope, "Float")){
+				} else if (StringUtils.containsIgnoreCase(capScope, "Float")) {
 					scope = "Float";
-				} else if( StringUtils.containsIgnoreCase(capScope, "Double")){
+				} else if (StringUtils.containsIgnoreCase(capScope, "Double")) {
 					scope = "Double";
-				} else if( StringUtils.containsIgnoreCase(capScope, "Decimal")){
+				} else if (StringUtils.containsIgnoreCase(capScope, "Decimal")) {
 					scope = "Number";
-				} else if( StringUtils.containsIgnoreCase(capScope, "Date")){
+				} else if (StringUtils.containsIgnoreCase(capScope, "Date")) {
 					scope = "Date";
 				}
-				
+
 				endpoint.setScope("sensor_" + scope);
-			
+
 				// Add to endpoint list
 				endpointList.add(endpoint);
 			}
-			
+
 			// Add additional endpoint for sensor lat
 			endpoint = new DefaultGraphNodeEndpoint();
 			endpoint.setAnchor(AnchorType.Right);
@@ -323,6 +329,34 @@ public class ApplicationDesignPageContext extends DisposableContext {
 	}
 
 	// --------------------------------------------------------------------------
+	// Import/export
+	// --------------------------------------------------------------------------
+
+	public boolean isPersistSpec() {
+		return persistSpec;
+	}
+
+	public StreamedContent getExportedSpec() {
+		return exportedSpec;
+	}
+
+	public void setExportedSpec(StreamedContent exportedSpec) {
+		this.exportedSpec = exportedSpec;
+	}
+
+	public UploadedFile getUploadedSpec() {
+		return uploadedSpec;
+	}
+
+	public void setUploadedSpec(UploadedFile uploadedSpec) {
+		this.uploadedSpec = uploadedSpec;
+	}
+
+	public void setPersistSpec(boolean persistSpec) {
+		this.persistSpec = persistSpec;
+	}
+
+	// --------------------------------------------------------------------------
 	// GraphNode annotation scanner
 	// --------------------------------------------------------------------------
 	private void detectAvailableNodes() {
@@ -359,4 +393,5 @@ public class ApplicationDesignPageContext extends DisposableContext {
 			}
 		}
 	}
+
 }

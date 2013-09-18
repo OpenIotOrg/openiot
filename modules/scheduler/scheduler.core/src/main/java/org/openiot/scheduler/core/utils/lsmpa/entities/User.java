@@ -42,6 +42,8 @@ import com.hp.hpl.jena.vocabulary.RDF;
 import com.hp.hpl.jena.vocabulary.RDFS;
 import com.hp.hpl.jena.vocabulary.XSD;
 
+
+
 public class User 
 {
 	public static class Queries
@@ -63,25 +65,25 @@ public class User
 						{
 							String str = (b.getValue((String) n)==null) ? null : b.getValue((String) n).stringValue();
 							user.setId(str);
-							System.out.print("user id: "+user.getId()+" ");	
+							System.out.println("user id: "+user.getId()+" ");	
 						}
 						else if(((String) n).equalsIgnoreCase("userName"))
 						{
 							String str = (b.getValue((String) n)==null) ? null : b.getValue((String) n).stringValue();
 							user.setName(str);
-							System.out.print("userName : "+user.getName()+" ");	
+							System.out.println("userName : "+user.getName()+" ");	
 						}
 						else if(((String) n).equalsIgnoreCase("userDesc"))
 						{
 							String str = (b.getValue((String) n)==null) ? null : b.getValue((String) n).stringValue();
 							user.setDescription(str);
-							System.out.print("userDesc : "+user.getDescription()+" ");	
+							System.out.println("userDesc : "+user.getDescription()+" ");	
 						}
 						else if(((String) n).equalsIgnoreCase("userMail"))
 						{
 							String str = (b.getValue((String) n)==null) ? null : b.getValue((String) n).stringValue();
 							user.setEmail(str);
-							System.out.print("userMail : "+user.getEmail()+" ");	
+							System.out.println("userMail : "+user.getEmail()+" ");	
 						}
 					}
 					userList.add(user);					
@@ -137,95 +139,95 @@ public class User
 			update.append(str);
 			return update.toString();
 		}
-		public static String selectUserByName(String usrName)
-		{
-			StringBuilder update = new StringBuilder();
-	        update.append(getNamespaceDeclarations());
-			
-			String str=("SELECT ?userID from <"+graph+"> "
-								+"WHERE "
-								+"{"								
-								+"?userID <http://openiot.eu/ontology/ns/userName> ?name FILTER regex(?name, \"" +usrName+ "\" )  . "								
-								+"}");								
-			
-			update.append(str);
-			return update.toString();
-		}
-		public static String selectUserByDescription(String desc)
-		{
-			StringBuilder update = new StringBuilder();
-	        update.append(getNamespaceDeclarations());
-			
-			String str=("SELECT ?userID from <"+graph+"> "
-								+"WHERE "
-								+"{"								
-								+"?userID <http://openiot.eu/ontology/ns/userDescription> ?desc FILTER regex(?desc, \"" +desc+ "\" )  . "								
-								+"}");								
-			
-			update.append(str);
-			return update.toString();
-		}
-		public static String selectUserByEmail(String email)
-		{
-			StringBuilder update = new StringBuilder();
-	        update.append(getNamespaceDeclarations());
-			
-			String str=("SELECT ?userID from <"+graph+"> "
-								+"WHERE "
-								+"{"								
-								+"?userID <http://openiot.eu/ontology/ns/userMail> ?email FILTER regex(?email, \"" +email+ "\" )  . "								
-								+"}");								
-			
-			update.append(str);
-			return update.toString();
-		}
-		public static String selectUserByAccess(Access access)
-		{
-			StringBuilder update = new StringBuilder();
-	        update.append(getNamespaceDeclarations());
-			
-			String str=("SELECT ?userID from <"+graph+"> "
-								+"WHERE "
-								+"{"								
-								+"?userID <http://openiot.eu/ontology/ns/access> <"+access.getId()+"> )  . "								
-								+"}");								
-			
-			update.append(str);
-			return update.toString();
-		}
+//		public static String selectUserByName(String usrName)
+//		{
+//			StringBuilder update = new StringBuilder();
+//	        update.append(getNamespaceDeclarations());
+//			
+//			String str=("SELECT ?userID from <"+graph+"> "
+//								+"WHERE "
+//								+"{"								
+//								+"?userID <http://openiot.eu/ontology/ns/userName> ?name FILTER regex(?name, \"" +usrName+ "\" )  . "								
+//								+"}");								
+//			
+//			update.append(str);
+//			return update.toString();
+//		}
+//		public static String selectUserByDescription(String desc)
+//		{
+//			StringBuilder update = new StringBuilder();
+//	        update.append(getNamespaceDeclarations());
+//			
+//			String str=("SELECT ?userID from <"+graph+"> "
+//								+"WHERE "
+//								+"{"								
+//								+"?userID <http://openiot.eu/ontology/ns/userDescription> ?desc FILTER regex(?desc, \"" +desc+ "\" )  . "								
+//								+"}");								
+//			
+//			update.append(str);
+//			return update.toString();
+//		}
+//		public static String selectUserByEmail(String email)
+//		{
+//			StringBuilder update = new StringBuilder();
+//	        update.append(getNamespaceDeclarations());
+//			
+//			String str=("SELECT ?userID from <"+graph+"> "
+//								+"WHERE "
+//								+"{"								
+//								+"?userID <http://openiot.eu/ontology/ns/userMail> ?email FILTER regex(?email, \"" +email+ "\" )  . "								
+//								+"}");								
+//			
+//			update.append(str);
+//			return update.toString();
+//		}
+//		public static String selectUserByAccess(Access access)
+//		{
+//			StringBuilder update = new StringBuilder();
+//	        update.append(getNamespaceDeclarations());
+//			
+//			String str=("SELECT ?userID from <"+graph+"> "
+//								+"WHERE "
+//								+"{"								
+//								+"?userID <http://openiot.eu/ontology/ns/access> <"+access.getId()+"> )  . "								
+//								+"}");								
+//			
+//			update.append(str);
+//			return update.toString();
+//		}
 		
-		public static String selectUserByNameAndDescription(String usrName,String desc,String email)
-		{
-			StringBuilder update = new StringBuilder();
-	        update.append(getNamespaceDeclarations());
-			
-			String str=("SELECT ?userID from <"+graph+"> "
-								+"WHERE "
-								+"{"								
-								+"?userID <http://openiot.eu/ontology/ns/userName> ?name FILTER regex(?name, \"" +usrName+ "\" )  . "
-								+"?userID <http://openiot.eu/ontology/ns/userDescription> ?desc FILTER regex(?desc, \"" +desc+ "\" )  . "
-								+"?userID <http://openiot.eu/ontology/ns/userMail> ?email FILTER regex(?email, \"" +email+ "\" )  . "
-								+"}");								
-			
-			update.append(str);
-			return update.toString();
-		}
-		public static String selectUserByService(ArrayList<Service> serviceList)
-		{
-			StringBuilder update = new StringBuilder();
-	        update.append(getNamespaceDeclarations());
-			
-	        update.append("SELECT ?userID from <"+graph+"> "
-								+"WHERE "
-								+"{");								
-			for(int i=0; i<serviceList.size(); i++)
-			{
-				update.append("?userID <http://openiot.eu/ontology/ns/userOf> <"+serviceList.get(i).getId()+"> )  . ");				
-			}	        
-	        update.append("}");
-	        
-			return update.toString();
-		}
+//		public static String selectUserByNameAndDescription(String usrName,String desc,String email)
+//		{
+//			StringBuilder update = new StringBuilder();
+//	        update.append(getNamespaceDeclarations());
+//			
+//			String str=("SELECT ?userID from <"+graph+"> "
+//								+"WHERE "
+//								+"{"								
+//								+"?userID <http://openiot.eu/ontology/ns/userName> ?name FILTER regex(?name, \"" +usrName+ "\" )  . "
+//								+"?userID <http://openiot.eu/ontology/ns/userDescription> ?desc FILTER regex(?desc, \"" +desc+ "\" )  . "
+//								+"?userID <http://openiot.eu/ontology/ns/userMail> ?email FILTER regex(?email, \"" +email+ "\" )  . "
+//								+"}");								
+//			
+//			update.append(str);
+//			return update.toString();
+//		}
+//		public static String selectUserByService(ArrayList<Service> serviceList)
+//		{
+//			StringBuilder update = new StringBuilder();
+//	        update.append(getNamespaceDeclarations());
+//			
+//	        update.append("SELECT ?userID from <"+graph+"> "
+//								+"WHERE "
+//								+"{");								
+//			for(int i=0; i<serviceList.size(); i++)
+//			{
+//				update.append("?userID <http://openiot.eu/ontology/ns/userOf> <"+serviceList.get(i).getId()+"> )  . ");				
+//			}	        
+//	        update.append("}");
+//	        
+//			return update.toString();
+//		}
 	}//class
 	
 	
@@ -249,14 +251,12 @@ public class User
 	private String name;
 	private String email;
 	private String description;
-	private Access access;
-	//private String userType;
-	private ArrayList<Service> serviceList = new ArrayList<Service>();
+	
+	private ArrayList<OAMO> oamoList = new ArrayList<OAMO>();
 		
 	
 	public User()
 	{
-
 	}
 	public User(LSMSchema  myOnt,LSMSchema  ontInstance,String graph,LSMTripleStore lsmStore)
 	{
@@ -282,7 +282,7 @@ public class User
 		
 	private void initOnt_USer()
 	{
-		ontClsUserClass = myOnt.createClass("http://openiot.eu/ontology/ns/User");
+		ontClsUserClass = myOnt.getClass("http://openiot.eu/ontology/ns/User");
 		ontPName = myOnt.createProperty("http://openiot.eu/ontology/ns/userName");
 		ontPemail = myOnt.createProperty("http://openiot.eu/ontology/ns/userMail");
 		ontPdescription = myOnt.createProperty("http://openiot.eu/ontology/ns/userDescription");
@@ -312,17 +312,12 @@ public class User
 		if(description!=null)
 			userClassIdv.setPropertyValue(ontPdescription, ontInstance.getBase().createTypedLiteral(description));
 	}
-	public void createPaccess()
-	{
-		if(access!=null && access.getClassIndividual()!=null)
-			userClassIdv.addProperty(ontPaccess, access.getClassIndividual());
-	}
+	
 	public void createPuserOf()
 	{
-		for(int i=0; i<serviceList.size(); i++)
+		for(int i=0; i<oamoList.size(); i++)
 		{
-			userClassIdv.addProperty(ontPuserOf, serviceList.get(i).getClassIndividual());
-			
+			userClassIdv.addProperty(ontPuserOf, oamoList.get(i).getClassIndividual());			
 		}
 	}
 	
@@ -332,7 +327,7 @@ public class User
 		createPName();
 		createPemail();
 		createPdescription();
-		createPaccess();
+		
 		createPuserOf();
 	}
 	
@@ -386,32 +381,15 @@ public class User
 	public void setDescription(String description) {
 		this.description = description;
 	}
-
-
-	public Access getAccess() {
-		return access;	
+	public ArrayList<OAMO> getServiceList() {
+		return oamoList;
 	}
-	public void setAccess(Access access) {
-		this.access=access;
+	public void setServiceList(ArrayList<OAMO> serviceList) {
+		this.oamoList = serviceList;
 	}
-
-	
-//	public String getUserType() {
-//		return userType;
-//	}
-//	public void setUserType(String userType) {
-//		this.userType = userType;
-//	}
-	
-	public ArrayList<Service> getServiceList() {
-		return serviceList;
-	}
-	public void setServiceList(ArrayList<Service> serviceList) {
-		this.serviceList = serviceList;
-	}
-	public void addService(Service service) 
+	public void addService(OAMO oamo) 
 	{
-		this.serviceList.add(service);
+		this.oamoList.add(oamo);
 	}
 	
 }//class

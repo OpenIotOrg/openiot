@@ -78,14 +78,24 @@
 								process="@this" onclick="windowBlockUI.block();"
 								oncomplete="windowBlockUI.unblock();" />
 
-							<!--
-							<p:menuitem value="#{messages.UI_MENUBAR_FILE_RESET}"
-								icon="ui-icon-close"
-								actionListener="#{applicationDesignPageController.resetServices()}"
-								process="@this" onclick="windowBlockUI.block();"
-								update=":consoleForm, :nodeGraphForm :toolboxForm, :propertyGridForm, :menubar"
-								oncomplete="windowBlockUI.unblock();" />
- -->
+							<p:separator />
+
+							<p:menuitem value="#{messages.UI_MENUBAR_FILE_IMPORT}"
+								icon="ui-icon-arrowthickstop-1-n"
+								process="@this"
+								actionListener="#{applicationDesignPageController.prepareImportApplicationsDialog()}"
+								update=":importApplicationsDialog:importApplicationsDialogForm"								 
+								onclick="windowBlockUI.block();"
+								oncomplete="importApplicationsDialog.show();windowBlockUI.unblock();" />
+
+							<p:menuitem value="#{messages.UI_MENUBAR_FILE_EXPORT}"
+								icon="ui-icon-arrowthickstop-1-s"
+								disabled="#{applicationDesignPageController.context.appManager.availableOAMOs.isEmpty()}"
+								actionListener="#{applicationDesignPageController.exportApplications()}"
+								process="@this" ajax="false">
+								<p:fileDownload value="#{applicationDesignPageController.context.osdSpec}" />
+							</p:menuitem>
+
 						</p:submenu>
 
 						<p:submenu label="#{messages.UI_MENUBAR_APP}" icon="ui-icon-gear">
@@ -133,7 +143,8 @@
 				</f:facet>
 
 				<h:form id="toolboxForm">
-					<p:accordionPanel multiple="true" styleClass="toolbox" rendered="#{(! empty applicationDesignPageController.context.appManager.selectedOAMO)}">
+					<p:accordionPanel multiple="true" styleClass="toolbox"
+						rendered="#{(! empty applicationDesignPageController.context.appManager.selectedOAMO)}">
 						<c:forEach var="type"
 							items="#{applicationDesignPageController.context.availableNodesByTypeMap.keySet()}">
 							<p:tab titleStyleClass="ellipsis"
@@ -356,6 +367,7 @@
 		<dialogs:editVariableDialog id="editVariableDialog" />
 		<dialogs:newApplicationDialog id="newApplicationDialog" />
 		<dialogs:editGroupsDialog id="editGroupsDialog" />
+		<dialogs:importApplicationsDialog id="importApplicationsDialog" />
 
 	</h:body>
 

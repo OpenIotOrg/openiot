@@ -20,58 +20,63 @@
 package org.openiot.ui.request.definition.web.model.validation;
 
 /**
- *
+ * 
  * @author Achilleas Anagnostopoulos (aanag) email: aanag@sensap.eu
  */
 public class GraphValidationError {
-    public enum ErrorType{
-        /**
-         * Connections form a closed loop
-         */
-        ConnectionsFormClosedLoop,
-        
-        /**
-         * A required property is missing
-         */
-        RequiredPropertyMissing,
-        
-        /**
-         * An endpoint with required connection is not connected
-         */
-        RequiredEndpointNotConnected,
+	public enum ErrorType {
+		/**
+		 * No SINKS defined
+		 */
+		EmptyGraph,
 
-        /**
-         * No groups specified
-         */
-        NoGroupsSpecified
+		/**
+		 * Connections form a closed loop
+		 */
+		ConnectionsFormClosedLoop,
 
-    }
-    
-    private ErrorType type;
-    private String nodeClassName;
-    private String details;
-    private String elementId;
+		/**
+		 * A required property is missing
+		 */
+		RequiredPropertyMissing,
 
-    public GraphValidationError(ErrorType type, String nodeClassName, String details, String elementId) {
-        this.type = type;
-        this.nodeClassName = nodeClassName;
-        this.details = details;
-        this.elementId = elementId;
-    }
+		/**
+		 * An endpoint with required connection is not connected
+		 */
+		RequiredEndpointNotConnected,
 
-    public String getNodeClassName() {
-        return nodeClassName;
-    }
+		/**
+		 * No groups specified
+		 */
+		NoGroupsSpecified
 
-    public String getDetails() {
-        return details;
-    }
-    
-    public ErrorType getType() {
-        return type;
-    }
+	}
 
-    public String getElementId() {
-        return elementId;
-    }
+	private ErrorType type;
+	private String nodeClassName;
+	private String details;
+	private String elementId;
+
+	public GraphValidationError(ErrorType type, String nodeClassName, String details, String elementId) {
+		this.type = type;
+		this.nodeClassName = nodeClassName;
+		this.details = details;
+		this.elementId = elementId;
+	}
+
+	public String getNodeClassName() {
+		return nodeClassName;
+	}
+
+	public String getDetails() {
+		return details;
+	}
+
+	public ErrorType getType() {
+		return type;
+	}
+
+	public String getElementId() {
+		return elementId;
+	}
 }
