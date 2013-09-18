@@ -20,6 +20,7 @@ import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import org.openiot.commons.util.CDataAdapter;
 
 /**
  * <p>Java class for anonymous complex type.
@@ -53,8 +54,10 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 @XmlRootElement(name = "OAMO")
 public class OAMO {
 
-    protected String description;
-    protected String graphMeta;
+	//@XmlJavaTypeAdapter(CDataAdapter.class)
+	protected String description;
+	//@XmlJavaTypeAdapter(CDataAdapter.class)
+	protected String graphMeta;
     @XmlElement(name = "OSMO", required = true)
     protected List<OSMO> osmo;
     @XmlAttribute(name = "id")
