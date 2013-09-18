@@ -80,8 +80,6 @@ public class ApplicationDesignPageContext extends DisposableContext {
 	private UploadedFile uploadedSpec;
 	private boolean persistSpec;
 
-private StreamedContent osdExport;
-
 	public ApplicationDesignPageContext() {
 		super();
 		this.register();

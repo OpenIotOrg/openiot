@@ -63,6 +63,6 @@
 		<session-timeout>30</session-timeout>
 	</session-config>
 	<welcome-file-list>
-		<welcome-file>pages/applicationDesigner.xhtml</welcome-file>
+		<welcome-file>pages/login.xhtml</welcome-file>
 	</welcome-file-list>
 </web-app>

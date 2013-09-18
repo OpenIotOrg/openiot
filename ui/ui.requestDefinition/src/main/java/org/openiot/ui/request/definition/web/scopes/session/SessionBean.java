@@ -31,7 +31,7 @@ import org.openiot.ui.request.definition.web.scopes.session.base.DisposableConte
 import org.openiot.ui.request.commons.logging.LoggerService;
 
 /**
- *
+ * 
  * @author Achilleas Anagnostopoulos (aanag) email: aanag@sensap.eu
  */
 @ManagedBean(name = "sessionBean")
@@ -39,57 +39,62 @@ import org.openiot.ui.request.commons.logging.LoggerService;
 public class SessionBean implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-    private Map<String, DisposableContext> contextMap;
-    private String userId = "nodeID://b47098";
+	private Map<String, DisposableContext> contextMap;
+	private String userId;
 
-    /**
-     * Creates a new instance of SessionBean
-     */
-    public SessionBean() {
-        contextMap = new HashMap<String, DisposableContext>();
-    }
-    public String getUserId(){
-    	return userId;
-    }
+	/**
+	 * Creates a new instance of SessionBean
+	 */
+	public SessionBean() {
+		contextMap = new HashMap<String, DisposableContext>();
+	}
 
-    //------------------------------------
-    // Context API
-    //------------------------------------
-    public DisposableContext getContext(String contextName) {
-        if (contextMap.containsKey(contextName)) {
-            return contextMap.get(contextName);
-        }
+	public String getUserId() {
+		return userId;
+	}
 
-        return null;
-    }
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
 
-    public void purgeContext(DisposableContext context) {
-        if (contextMap.containsValue(context)) {
-            for (Map.Entry<String, DisposableContext> entry : contextMap.entrySet()) {
-                if (entry.getValue().equals(context)) {
-                    contextMap.remove(entry.getKey());
-                    LoggerService.log(Level.FINER, "SessionBean: purged context '" + entry.getKey() + "' of type " + entry.getValue().getClass().getSimpleName());
-                    return;
-                }
-            }
-        }
-    }
+	// ------------------------------------
+	// Context API
+	// ------------------------------------
+	public DisposableContext getContext(String contextName) {
+		if (contextMap.containsKey(contextName)) {
+			return contextMap.get(contextName);
+		}
 
-    public void registerContext(DisposableContext context) {
-        if (contextMap.containsValue(context)) {
-            LoggerService.log(Level.FINER, "SessionBean: overwriting old context '" + context.getContextUID() + "' of type " + context.getClass().getSimpleName());
-        }
-        contextMap.put(context.getContextUID(), context);
-        LoggerService.log(Level.FINER, "SessionBean: registered context '" + context.getContextUID() + "' of type " + context.getClass().getSimpleName());
-    }
+		return null;
+	}
 
-    public String addToFlashScopeAndRedirect(String key, String value, String redirectTo) {
-        FacesContext.getCurrentInstance().getExternalContext().getFlash().put(key, value);
-        return redirectTo;
-    }
+	public void purgeContext(DisposableContext context) {
+		if (contextMap.containsValue(context)) {
+			for (Map.Entry<String, DisposableContext> entry : contextMap.entrySet()) {
+				if (entry.getValue().equals(context)) {
+					contextMap.remove(entry.getKey());
+					LoggerService.log(Level.FINER, "SessionBean: purged context '" + entry.getKey() + "' of type " + entry.getValue().getClass().getSimpleName());
+					return;
+				}
+			}
+		}
+	}
 
-    public Map<String, DisposableContext> getContextMap() {
-        return contextMap;
-    }
+	public void registerContext(DisposableContext context) {
+		if (contextMap.containsValue(context)) {
+			LoggerService.log(Level.FINER, "SessionBean: overwriting old context '" + context.getContextUID() + "' of type " + context.getClass().getSimpleName());
+		}
+		contextMap.put(context.getContextUID(), context);
+		LoggerService.log(Level.FINER, "SessionBean: registered context '" + context.getContextUID() + "' of type " + context.getClass().getSimpleName());
+	}
+
+	public String addToFlashScopeAndRedirect(String key, String value, String redirectTo) {
+		FacesContext.getCurrentInstance().getExternalContext().getFlash().put(key, value);
+		return redirectTo;
+	}
+
+	public Map<String, DisposableContext> getContextMap() {
+		return contextMap;
+	}
 
 }

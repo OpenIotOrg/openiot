@@ -10,6 +10,9 @@
 	xmlns:widgets="http://java.sun.com/jsf/composite/components/widgets">
 
 <f:view contentType="text/html">
+	<f:event type="javax.faces.event.PreRenderViewEvent"
+		listener="#{applicationDesignPageController.doAccessControl}" />
+
 	<h:head>
 		<meta content='text/html; charset=UTF-8' http-equiv="Conmenutent-Type" />
 		<h:outputStylesheet library="css" name="core.css" />
@@ -81,10 +84,9 @@
 							<p:separator />
 
 							<p:menuitem value="#{messages.UI_MENUBAR_FILE_IMPORT}"
-								icon="ui-icon-arrowthickstop-1-n"
-								process="@this"
+								icon="ui-icon-arrowthickstop-1-n" process="@this"
 								actionListener="#{applicationDesignPageController.prepareImportApplicationsDialog()}"
-								update=":importApplicationsDialog:importApplicationsDialogForm"								 
+								update=":importApplicationsDialog:importApplicationsDialogForm"
 								onclick="windowBlockUI.block();"
 								oncomplete="importApplicationsDialog.show();windowBlockUI.unblock();" />
 
@@ -93,7 +95,8 @@
 								disabled="#{applicationDesignPageController.context.appManager.availableOAMOs.isEmpty()}"
 								actionListener="#{applicationDesignPageController.exportApplications()}"
 								process="@this" ajax="false">
-								<p:fileDownload value="#{applicationDesignPageController.context.osdSpec}" />
+								<p:fileDownload
+									value="#{applicationDesignPageController.context.exportedSpec}" />
 							</p:menuitem>
 
 						</p:submenu>
@@ -130,6 +133,11 @@
 							<p:button icon="ui-icon-document" style="margin-left:10px;"
 								value="#{empty applicationDesignPageController.context.appManager.selectedOAMO ? '-' : applicationDesignPageController.context.appManager.selectedOAMO.name}"
 								onclick="return false;" />
+								
+							<p:commandButton icon="ui-icon-unlocked" style="margin-left:10px;"
+								value="#{messages.UI_LOGIN_LOGOUT_BUTTON}"
+								process="@this"
+								actionListener="#{loginPageController.handleLogout()}" />
 						</f:facet>
 
 					</p:menubar>

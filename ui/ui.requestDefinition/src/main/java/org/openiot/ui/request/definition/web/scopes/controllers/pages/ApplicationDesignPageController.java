@@ -94,6 +94,10 @@ public class ApplicationDesignPageController implements Serializable {
 
 	public ApplicationDesignPageContext getContext() {
 		if (cachedContext == null) {
+			if( sessionBean.getUserId() == null ){
+				return null;
+			}
+			
 			cachedContext = (ApplicationDesignPageContext) (sessionBean == null ? ApplicationBean.lookupSessionBean() : sessionBean).getContext("applicationDesignPageContext");
 			if (cachedContext == null) {
 				cachedContext = new ApplicationDesignPageContext();
@@ -108,6 +112,12 @@ public class ApplicationDesignPageController implements Serializable {
 	// ------------------------------------
 	public void keepAlivePing() {
 
+	}
+	
+	public void doAccessControl(){
+		if( sessionBean.getUserId() == null ){
+			applicationBean.redirect("/pages/login.xhtml?faces-redirect=true");
+		}
 	}
 
 	// ------------------------------------
@@ -366,7 +376,6 @@ public class ApplicationDesignPageController implements Serializable {
 
 				OAMO oamo = context.getAppManager().getSelectedOAMO();
 				oamo.getOSMO().clear();
-				oamo.setId("node://" + model.getUID());
 				oamo.setGraphMeta(model.toJSON().toString());
 
 				// Generate an OSMO object for each visualization node
