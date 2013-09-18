@@ -37,9 +37,9 @@ import org.openiot.ui.request.commons.nodes.enums.PropertyType;
  */
 @GraphNodeClass(label = "Map", type = "SINK", scanProperties = true)
 @Endpoints({
+    @Endpoint(type = EndpointType.Input, anchorType = AnchorType.Left, scope = "agr_Number agr_Integer agr_Long, agr_Float agr_Double", label = "VALUE", required = true),
     @Endpoint(type = EndpointType.Input, anchorType = AnchorType.Left, scope = "geo_lat", label = "LAT", required = true),
     @Endpoint(type = EndpointType.Input, anchorType = AnchorType.Left, scope = "geo_lon", label = "LON", required = true),
-    @Endpoint(type = EndpointType.Input, anchorType = AnchorType.Left, scope = "Number Integer Long Float Double", label = "VALUE", required = true),
 })
 @NodeProperties({
 	@NodeProperty(type = PropertyType.Writable, javaType = java.lang.String.class, name = "TITLE", required = true),

@@ -75,6 +75,7 @@ public class Generator extends AbstractGraphNodeVisitor {
 	private Where subWhereNode;
 	private Group subGroupNode;
 	private Order subOrderNode;
+	private boolean sinkNodeNeedsGeoCoords;
 	//
 	private GenericSource targetDataSource;
 	private GraphNodeEndpoint targetAttribute;
@@ -144,32 +145,14 @@ public class Generator extends AbstractGraphNodeVisitor {
 				primaryCommentNode.appendComment("- " + entry.getKey().getVariableName() + " (default value: " + entry.getValue() + ")");
 			}
 		}
-		
+
 		queryBlocks.add(primaryRootNode.generate());
 	}
-
-	/*
-	 * private void genereteAttributeSubQuerySelectCode(GenericSource
-	 * sensorNode, GraphNodeEndpoint attributeEndpoint, String
-	 * attributeExpression) { Map<String, Set<String>> subQueriesPerSensor =
-	 * this.selectSubQueriesPerSensorPerAttribute.get(sensorNode.getUID()); if
-	 * (subQueriesPerSensor == null) { subQueriesPerSensor = new
-	 * LinkedHashMap<String, Set<String>>();
-	 * this.selectSubQueriesPerSensorPerAttribute.put(sensorNode.getUID(),
-	 * subQueriesPerSensor); }
-	 * 
-	 * Set<String> subQueryCode =
-	 * subQueriesPerSensor.get(attributeEndpoint.getUID()); if (subQueryCode ==
-	 * null) { subQueryCode = new LinkedHashSet<String>();
-	 * subQueriesPerSensor.put(attributeEndpoint.getUID(), subQueryCode); }
-	 * 
-	 * subQueryCode.add(attributeExpression); }
-	 */
 
 	private void generateAttributeSubQueryWhereCode(GenericSource sensorNode, GraphNodeEndpoint attributeEndpoint) {
 
 		// Encode attribute selection
-		if( attributeEndpoint != null ){
+		if (attributeEndpoint != null) {
 			subWhereNode.appendToScope(new Expression("?" + sensorNode.getUID() + "_record <http://lsm.deri.ie/ont/lsm.owl#value> ?" + attributeEndpoint.getUID() + " ."));
 			subWhereNode.appendToScope(new Expression("?" + sensorNode.getUID() + "_record <http://www.w3.org/2000/01/rdf-schema#label> '" + attributeEndpoint.getUserData() + "' ."));
 		}
@@ -195,7 +178,7 @@ public class Generator extends AbstractGraphNodeVisitor {
 			radiusQuery = "#" + prop.getVariableName() + "#";
 		}
 
-		subWhereNode.appendToScope(new SensorSelectExpression(sensorNode.getUID(), latQuery, lonQuery, radiusQuery));
+		subWhereNode.appendToScope(new SensorSelectExpression(sensorNode.getUID(), latQuery, lonQuery, radiusQuery, this.sinkNodeNeedsGeoCoords));
 	}
 
 	private void defineVariable(GraphNodeProperty property, Object defaultValue) {
@@ -213,9 +196,13 @@ public class Generator extends AbstractGraphNodeVisitor {
 		}
 
 		if (node.getType().equals("SINK")) {
-			if( node instanceof LineChart ){
-				visitSink((LineChart)node);
-			}else{
+			this.sinkNodeNeedsGeoCoords = false;
+
+			if (node instanceof LineChart) {
+				visitSink((LineChart) node);
+			} else if (node instanceof org.openiot.ui.request.definition.web.model.nodes.impl.sinks.Map) {
+				visitSink((org.openiot.ui.request.definition.web.model.nodes.impl.sinks.Map) node);
+			} else {
 				visitSink(node);
 			}
 			return;
@@ -223,27 +210,86 @@ public class Generator extends AbstractGraphNodeVisitor {
 
 		LoggerService.log(Level.SEVERE, "[SparqlGenerator] Default visitor called for node of class: " + node.getClass().getSimpleName());
 	}
-	
-	public void visitSink(LineChart node){
-		System.out.println("Visit LineChart version");
 
-		String xAxisType = (String) node.getPropertyValueMap().get("X_AXIS_TYPE");
-		
-		// Group queries for xy tuples
-		int seriesCount = Integer.valueOf((String) node.getPropertyValueMap().get("SERIES"));
-		for (int i =0 ; i < seriesCount; i++) {
-			// Start a new code block for each series
-			beginQueryBlock(node, i+1, seriesCount);
+	public void visitSink(org.openiot.ui.request.definition.web.model.nodes.impl.sinks.Map node) {
+		this.sinkNodeNeedsGeoCoords = true;
+		beginQueryBlock(node, 1, 1);
+
+		// Visit incoming neighbors
+		for (GraphNodeEndpoint endpoint : node.getEndpointDefinitions()) {
+			if (endpoint.getType().equals(EndpointType.Output)) {
+				continue;
+			}
+
+			// If this is a LAT or LON connection, skip it because we will
+			// include it
+			// together with the VALUE endpoint
+			if (endpoint.getScope().contains("geo_lat") || endpoint.getScope().contains("geo_lon")) {
+				continue;
+			}
 			
-			GraphNodeEndpoint xEndpoint = node.getEndpointByLabel("x" + (i+1));
-			GraphNodeEndpoint yEndpoint = node.getEndpointByLabel("y" + (i+1));
+			LoggerService.log(Level.INFO, "Visit endpoint with scope: " + endpoint.getScope());
 
-			// Follow Y axis value
-			for( GraphNodeConnection connection : model.findGraphEndpointConnections(yEndpoint)){
- 
+			List<GraphNodeConnection> incomingConnections = model.findGraphEndpointConnections(endpoint);
+			for (GraphNodeConnection connection : incomingConnections) {
+
+				// Generate primary select (also include LAT/LON fields)
+				primarySelectNode.appendToScope(new Expression("?" + endpoint.getLabel()));
+				primarySelectNode.appendToScope(new Expression("?LAT"));
+				primarySelectNode.appendToScope(new Expression("?LON"));
+
+				// Generate new scope for assembling the selection queries
+				// *unless* this is a grp_Date scope where
+				// we re use the current
 				Scope subScope = new Scope();
 				primaryWhereNode.appendToScope(subScope);
-	
+
+				// Generate subquery helpers
+				subSelectNode = subSelectOriginalNode = new Select();
+				subWhereNode = new Where();
+				subGroupNode = new Group();
+				subScope.appendToScope(subSelectNode);
+				subScope.appendToScope(subWhereNode);
+				subScope.appendToScope(subGroupNode);
+
+				// Explore graph till we reach a sensor node.
+				targetDataSource = null;
+				targetAttribute = null;
+				this.visitedConnectionGraphStack.push(connection);
+				this.visitViaReflection(connection.getSourceNode());
+
+				// Append the endpoint label to the end of the generated select
+				// statement
+				subSelectNode.appendToScope(new Expression("AS ?" + endpoint.getLabel()));
+				subSelectNode.appendToScope(new Expression("?" + targetDataSource.getUID() + "_lat AS ?LAT"));
+				subSelectNode.appendToScope(new Expression("?" + targetDataSource.getUID() + "_lon AS ?LON"));
+
+				//
+				this.visitedConnectionGraphStack.pop();
+			}
+		}
+
+		endQueryBlock();
+	}
+
+	public void visitSink(LineChart node) {
+		String xAxisType = (String) node.getPropertyValueMap().get("X_AXIS_TYPE");
+
+		// Group queries for xy tuples
+		int seriesCount = Integer.valueOf((String) node.getPropertyValueMap().get("SERIES"));
+		for (int i = 0; i < seriesCount; i++) {
+			// Start a new code block for each series
+			beginQueryBlock(node, i + 1, seriesCount);
+
+			GraphNodeEndpoint xEndpoint = node.getEndpointByLabel("x" + (i + 1));
+			GraphNodeEndpoint yEndpoint = node.getEndpointByLabel("y" + (i + 1));
+
+			// Follow Y axis value
+			for (GraphNodeConnection connection : model.findGraphEndpointConnections(yEndpoint)) {
+
+				Scope subScope = new Scope();
+				primaryWhereNode.appendToScope(subScope);
+
 				// Generate subquery helpers
 				subSelectNode = subSelectOriginalNode = new Select();
 				subWhereNode = new Where();
@@ -253,7 +299,7 @@ public class Generator extends AbstractGraphNodeVisitor {
 				subScope.appendToScope(subWhereNode);
 				subScope.appendToScope(subGroupNode);
 				subScope.appendToScope(subOrderNode);
-	
+
 				// Explore graph till we reach a sensor node.
 				targetDataSource = null;
 				targetAttribute = null;
@@ -261,21 +307,21 @@ public class Generator extends AbstractGraphNodeVisitor {
 				this.visitViaReflection(connection.getSourceNode());
 				this.visitedConnectionGraphStack.pop();
 
-				subSelectNode.appendToScope(new Expression("AS ?" + yEndpoint.getLabel()));	
+				subSelectNode.appendToScope(new Expression("AS ?" + yEndpoint.getLabel()));
 				primarySelectNode.appendToScope(new Expression("?" + yEndpoint.getLabel()));
 			}
-			
+
 			// Process x axis endpoint
-			if( xEndpoint != null ){
-				for( GraphNodeConnection connection : model.findGraphEndpointConnections(xEndpoint)){
-					if( xAxisType.equals("Date (observation)")){
+			if (xEndpoint != null) {
+				for (GraphNodeConnection connection : model.findGraphEndpointConnections(xEndpoint)) {
+					if (xAxisType.equals("Date (observation)")) {
 						String timeComponent = connection.getSourceEndpoint().getLabel().replace("grp_recordTime_", "");
-						subSelectNode.appendToScope(new Expression("( fn:"+ timeComponent +"-from-dateTime(?" + targetDataSource.getUID() + "_recordTime) ) AS ?" + xEndpoint.getLabel() + "_" + timeComponent));
+						subSelectNode.appendToScope(new Expression("( fn:" + timeComponent + "-from-dateTime(?" + targetDataSource.getUID() + "_recordTime) ) AS ?" + xEndpoint.getLabel() + "_" + timeComponent));
 						primarySelectNode.appendToScope(new Expression("?" + xEndpoint.getLabel() + "_" + timeComponent));
-					}else{
+					} else {
 						Scope subScope = new Scope();
 						primaryWhereNode.appendToScope(subScope);
-			
+
 						// Generate subquery helpers
 						subSelectNode = subSelectOriginalNode = new Select();
 						subWhereNode = new Where();
@@ -285,19 +331,19 @@ public class Generator extends AbstractGraphNodeVisitor {
 						subScope.appendToScope(subWhereNode);
 						subScope.appendToScope(subGroupNode);
 						subScope.appendToScope(subOrderNode);
-			
+
 						// Explore graph till we reach a sensor node.
 						targetDataSource = null;
 						targetAttribute = null;
 						this.visitedConnectionGraphStack.push(connection);
 						this.visitViaReflection(connection.getSourceNode());
 						this.visitedConnectionGraphStack.pop();
-			
-						subSelectNode.appendToScope(new Expression("AS ?" + xEndpoint.getLabel()));		
+
+						subSelectNode.appendToScope(new Expression("AS ?" + xEndpoint.getLabel()));
 						primarySelectNode.appendToScope(new Expression("?" + xEndpoint.getLabel()));
 					}
 				}
-			}		
+			}
 
 			endQueryBlock();
 		}
@@ -305,7 +351,7 @@ public class Generator extends AbstractGraphNodeVisitor {
 
 	public void visitSink(GraphNode node) {
 		beginQueryBlock(node, 1, 1);
-		
+
 		// Visit incoming neighbors
 		for (GraphNodeEndpoint endpoint : node.getEndpointDefinitions()) {
 			if (endpoint.getType().equals(EndpointType.Output)) {
@@ -318,8 +364,9 @@ public class Generator extends AbstractGraphNodeVisitor {
 				// Generate primary select
 				primarySelectNode.appendToScope(new Expression("?" + endpoint.getLabel()));
 
-				// Generate new scope for assembling the selection queries *unless* this is a grp_Date scope where
-				// we re use the current 
+				// Generate new scope for assembling the selection queries
+				// *unless* this is a grp_Date scope where
+				// we re use the current
 				Scope subScope = new Scope();
 				primaryWhereNode.appendToScope(subScope);
 
@@ -425,42 +472,43 @@ public class Generator extends AbstractGraphNodeVisitor {
 			}
 		}
 	}
-	
-	protected void generateTimeGroups(List<String> groupList){
+
+	protected void generateTimeGroups(List<String> groupList) {
 	}
 
 	@SuppressWarnings("unchecked")
 	public void visit(org.openiot.ui.request.definition.web.model.nodes.impl.filters.Group node) {
-		
+
 		// Unwind the stack till we find the sink
 		GraphNodeEndpoint ourEndpoint = null;
 		ListIterator<GraphNodeConnection> connectionIt = visitedConnectionGraphStack.listIterator(visitedConnectionGraphStack.size());
 		ourEndpoint = connectionIt.previous().getSourceEndpoint();
-		
+
 		// Get attributes endpoint
 		GraphNodeEndpoint attributesEndpoint = node.getEndpointByLabel("ATTRIBUTES");
 		this.targetDataSource = (GenericSource) model.findGraphEndpointConnections(attributesEndpoint).get(0).getSourceNode();
 
 		// Generate groups
-		List<String> groupList = (List<String>)node.getPropertyValueMap().get("GROUPS");
-		for( String group : groupList ){
-			String timeComponent = group.replace("recordTime_",  "");
-			subGroupNode.appendToScope(new Expression("( fn:"+ timeComponent +"-from-dateTime(?" + targetDataSource.getUID() + "_recordTime) )"));
-			subOrderNode.appendToScope(new Expression("( fn:"+ timeComponent +"-from-dateTime(?" + targetDataSource.getUID() + "_recordTime) )"));
+		List<String> groupList = (List<String>) node.getPropertyValueMap().get("GROUPS");
+		for (String group : groupList) {
+			String timeComponent = group.replace("recordTime_", "");
+			subGroupNode.appendToScope(new Expression("( fn:" + timeComponent + "-from-dateTime(?" + targetDataSource.getUID() + "_recordTime) )"));
+			subOrderNode.appendToScope(new Expression("( fn:" + timeComponent + "-from-dateTime(?" + targetDataSource.getUID() + "_recordTime) )"));
 		}
-		
-		// Follow the connection that matches our endpoint label (ie the currently grouped property)
+
+		// Follow the connection that matches our endpoint label (ie the
+		// currently grouped property)
 		List<GraphNodeConnection> incomingConnections = model.findGraphEndpointConnections(attributesEndpoint);
 		String attrName = ourEndpoint.getLabel().replace("grp_", "");
 		for (GraphNodeConnection connection : incomingConnections) {
-			if(!attrName.equals(connection.getSourceEndpoint().getLabel())){
+			if (!attrName.equals(connection.getSourceEndpoint().getLabel())) {
 				continue;
 			}
-			
+
 			this.visitedConnectionGraphStack.push(connection);
 			this.visitViaReflection(connection.getSourceNode());
 			this.visitedConnectionGraphStack.pop();
-		}			
+		}
 	}
 
 	// -------------------------------------------------------------------------
@@ -580,9 +628,8 @@ public class Generator extends AbstractGraphNodeVisitor {
 	}
 
 	/**
-	 * public void
-	 * visit(org.openiot.ui.request.definition.web.model.nodes.impl.comparators
-	 * .Between node) {
+	 * public void visit(org.openiot.ui.request.definition.web.model.nodes.impl.
+	 * comparators .Between node) {
 	 * 
 	 * // Since the filter node cloned the original attribute endpoint, we need
 	 * // to // match the incoming endpoint from the last connection on stack to

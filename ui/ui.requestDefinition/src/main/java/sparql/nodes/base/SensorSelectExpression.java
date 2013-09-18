@@ -8,7 +8,7 @@ public class SensorSelectExpression extends AbstractSparqlNode implements Serial
 
 	private static final long serialVersionUID = 1L;
 
-	public SensorSelectExpression(String nodeId, Object lat, Object lon, Object rad) {
+	public SensorSelectExpression(String nodeId, Object lat, Object lon, Object rad, boolean includeGeoCoordFields) {
 		super();
 		
 		// Generate Expr
@@ -17,6 +17,10 @@ public class SensorSelectExpression extends AbstractSparqlNode implements Serial
 		Scope scope = new Scope();
 		appendToScope(scope);
 		scope.appendToScope(new Expression("SELECT ?" + nodeId + "_sensorId"));
+		if( includeGeoCoordFields ){
+			scope.appendToScope(new Expression("?" + nodeId + "_lat"));
+			scope.appendToScope(new Expression("?" + nodeId + "_lon"));
+		}
 		scope.appendToScope(new From(AbstractSparqlNode.GRAPH_META_URI));
 		Where where = new Where();
 		scope.appendToScope(where);
