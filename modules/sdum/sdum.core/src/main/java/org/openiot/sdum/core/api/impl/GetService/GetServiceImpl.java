@@ -20,6 +20,33 @@ public class GetServiceImpl
 {
 	private static class Queries
 	{
+		public static class OsmoRootData
+		{
+			private String id;
+			private String name;
+			private String description;
+			
+			public String getId() {
+				return id;
+			}
+			public void setId(String id) {
+				this.id = id;
+			}
+			
+			public String getName() {
+				return name;
+			}
+			public void setName(String name) {
+				this.name = name;
+			}
+			
+			public String getDescription() {
+				return description;
+			}
+			public void setDescription(String description) {
+				this.description = description;
+			}
+		}		
 		public static class QueryData
 		{
 			private String id;
@@ -95,17 +122,15 @@ public class GetServiceImpl
 		
 		private static String openiotFunctionalGraph = "http://lsm.deri.ie/OpenIoT/testSchema#";
 		
-		public static OSMO parseOSMORootData(TupleQueryResult qres)
+		public static OsmoRootData parseOSMORootData(TupleQueryResult qres)
 		{
-			OSMO osmo = new OSMO();
+			OsmoRootData osmo = new OsmoRootData();
 			
 			try
 			{
-//				while (qres.hasNext())
-//				{
+				
 					BindingSet b = qres.next();
 					Set names = b.getBindingNames();					
-					
 					
 					for (Object n : names)
 					{						
@@ -127,18 +152,8 @@ public class GetServiceImpl
 							osmo.setDescription(str);
 							System.out.print("srvcDesc : "+osmo.getDescription()+" ");
 						}
-//						else if(((String) n).equalsIgnoreCase("srvcQstring"))
-//						{
-//							String str = (b.getValue((String) n)==null) ? null : b.getValue((String) n).stringValue();
-//							//TODO: FIX IT!!!!!!!!!!!!!!!!!
-//							QueryRequest qr = new QueryRequest();
-//							qr.setQuery(str);							
-//							osmo.getQueryRequest().add(qr);
-//							System.out.print("srvcQstring : "+osmo.getQueryRequest().get(0).getQuery()+" ");
-//							//TODO: FIX IT!!!!!!!!!!!!!!!!!
-//						}
-					}						
-//				}//while
+					}
+					
 				return osmo;
 			} 
 			catch (QueryEvaluationException e)			
@@ -170,13 +185,13 @@ public class GetServiceImpl
 						{
 							String str = (b.getValue((String) n)==null) ? null : b.getValue((String) n).stringValue();
 							queryData.setId(str);
-							System.out.print("srvcStatus id: "+queryData.getId()+" ");	
+							System.out.print("queryID id: "+queryData.getId()+" ");	
 						}
 						else if(((String) n).equalsIgnoreCase("queryString"))
 						{
 							String str = (b.getValue((String) n)==null) ? null : b.getValue((String) n).stringValue();
 							queryData.setQueryString(str);
-							System.out.print("srvcStatusTime : "+queryData.getQueryString()+" ");	
+							System.out.print("queryString : "+queryData.getQueryString()+" ");	
 						}
 					}
 					queryDataList.add(queryData);					
@@ -293,13 +308,12 @@ public class GetServiceImpl
 		{
 			StringBuilder update = new StringBuilder();			
 			
-			String str=("SELECT ?srvcName ?srvcDesc ?srvcQstring " 
+			String str=("SELECT ?srvcName ?srvcDesc " 
 					+"from <"+openiotFunctionalGraph+"> "
 					+"WHERE "
 					+"{"
-					+"<"+osmoID+"> <http://openiot.eu/ontology/ns/serviceName> ?srvcName . "
-					+"<"+osmoID+"> <http://openiot.eu/ontology/ns/serviceDescription> ?srvcDesc . "
-					+"<"+osmoID+"> <http://openiot.eu/ontology/ns/queryString> ?srvcQstring . "
+					+"optional {<"+osmoID+"> <http://openiot.eu/ontology/ns/serviceName> ?srvcName . }"
+					+"optional {<"+osmoID+"> <http://openiot.eu/ontology/ns/serviceDescription> ?srvcDesc . }"
 					+"}");
 			
 			update.append(str);
@@ -309,12 +323,13 @@ public class GetServiceImpl
 		{
 			StringBuilder update = new StringBuilder();			
 			
-			String str=("SELECT ?queryID ?queryString" 
+			String str=("SELECT ?queryID ?queryString " 
 					+"from <"+openiotFunctionalGraph+"> "
 					+"WHERE "
 					+"{"
 					+"?queryID <http://openiot.eu/ontology/ns/queryString> ?queryString . "
 					+"<"+osmoID+"> <http://openiot.eu/ontology/ns/query> ?queryID . "
+					//TODO:check for descirption
 					+"}");
 			
 			update.append(str);
@@ -385,9 +400,16 @@ public class GetServiceImpl
 			return;
 		}
 		
-		TupleQueryResult qres = sparqlCl.sparqlToQResult(Queries.getOSMORootData(osmoID));
-		osmo =  Queries.parseOSMORootData(qres);
+		osmo = new OSMO();
 		osmo.setId(osmoID);
+		
+		TupleQueryResult qres = sparqlCl.sparqlToQResult(Queries.getOSMORootData(osmoID));
+		Queries.OsmoRootData osmoRoot =  Queries.parseOSMORootData(qres);
+		
+		if(osmoRoot!=null) {			
+			osmo.setDescription(osmoRoot.getDescription());
+			osmo.setName(osmoRoot.getName());
+		}
 		
 		qres = sparqlCl.sparqlToQResult(Queries.getQueryListOfOSMO(osmoID));
 		ArrayList<Queries.QueryData> queryDataList =  Queries.parseOSMOQueryData(qres);

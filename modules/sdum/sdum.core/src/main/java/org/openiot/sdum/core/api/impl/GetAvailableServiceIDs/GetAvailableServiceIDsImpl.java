@@ -21,39 +21,39 @@ public class GetAvailableServiceIDsImpl
 
 		public static DescreptiveIDs parseAvailableOSMOIDsByOAMO(TupleQueryResult qres)
 		{
-			DescreptiveIDs descreptiveIDs = new DescreptiveIDs();
+			DescreptiveIDs dids = new DescreptiveIDs();
 			try 
 			{
 				while (qres.hasNext())
 				{
 					BindingSet b = qres.next();
 					Set names = b.getBindingNames();
-					DescriptiveID descID = new DescriptiveID();
+					DescriptiveID id = new DescriptiveID();;
 					
 					for (Object n : names)
 					{						
 						if(((String) n).equalsIgnoreCase("serviceID"))
 						{
 							String str = (b.getValue((String) n)==null) ? null : b.getValue((String) n).stringValue();
-							descID.setId(str);
-							System.out.println("srvc id: "+descID.getId()+" ");	
+							id.setId(str);
+							System.out.println("srvc id: "+id.getId()+" ");	
 						}
 						else if(((String) n).equalsIgnoreCase("srvcName"))
 						{
 							String str = (b.getValue((String) n)==null) ? null : b.getValue((String) n).stringValue();
-							descID.setName(str);
-							System.out.println("srvcName : "+descID.getName()+" ");	
+							id.setName(str);
+							System.out.println("srvcName : "+id.getName()+" ");	
 						}
 						else if(((String) n).equalsIgnoreCase("srvcDesc"))
 						{
 							String str = (b.getValue((String) n)==null) ? null : b.getValue((String) n).stringValue();
-							descID.setDescription(str);
-							System.out.println("srvcDesc : "+descID.getDescription()+" ");	
+							id.setDescription(str);
+							System.out.println("srvcDesc : "+id.getDescription()+" ");	
 						}
 					}
-					descreptiveIDs.getDescriptiveID().add(descID);					
+					dids.getDescriptiveID().add(id);					
 				}//while
-				return descreptiveIDs;
+				return dids;
 			} 
 			catch (QueryEvaluationException e)			
 			{				
@@ -66,18 +66,26 @@ public class GetAvailableServiceIDsImpl
 				return null;
 			}
 		}
+
 		
 		public static String getAvailableOSMOIDsByOAMO(String oamoID)
 		{
 			StringBuilder update = new StringBuilder();			
-			
+
 			String str=("SELECT ?serviceID ?srvcName ?srvcDesc " 
 					+"from <"+openiotFunctionalGraph+"> "
 					+"WHERE "
-					+"{"					
-					+"?serviceID <http://openiot.eu/ontology/ns/serviceDescription> ?srvcDesc . "
-					+"?serviceID <http://openiot.eu/ontology/ns/queryString> ?srvcQstring . "
-					+"?serviceID <http://openiot.eu/ontology/ns/oamo> <"+oamoID+"> . "								
+					+"{"
+						+"{"
+						+"SELECT ?serviceID "
+						+"WHERE " 
+						+"{"
+							+"?serviceID <http://openiot.eu/ontology/ns/oamo> <"+oamoID+"> . "
+						+"}"
+						+"}"
+					
+					+"optional { ?serviceID <http://openiot.eu/ontology/ns/serviceName> ?srvcName  . }"
+					+"optional { ?serviceID <http://openiot.eu/ontology/ns/serviceDescription> ?srvcDesc  . }"
 					+"}");								
 						
 			update.append(str);
@@ -116,6 +124,7 @@ public class GetAvailableServiceIDsImpl
 		
 		TupleQueryResult qres = sparqlCl.sparqlToQResult(Queries.getAvailableOSMOIDsByOAMO(applicationID));
 		descriptiveIDs = Queries.parseAvailableOSMOIDsByOAMO(qres);
+				
 	}
 	
 }
