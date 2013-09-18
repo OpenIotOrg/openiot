@@ -12,6 +12,7 @@ import javax.faces.event.ActionListener;
 
 import org.openiot.commons.osdspec.model.PresentationAttr;
 import org.openiot.commons.sdum.serviceresultset.model.SdumServiceResultSet;
+import org.openiot.commons.sparql.protocoltypes.model.QueryResult;
 import org.openiot.commons.sparql.result.model.Binding;
 import org.openiot.commons.sparql.result.model.Result;
 import org.openiot.ui.request.presentation.web.model.nodes.interfaces.VisualizationWidget;
@@ -106,36 +107,38 @@ public class Map implements VisualizationWidget {
 		model.getMarkers().clear();
 		model.getCircles().clear();
 
-		for (Result result : resultSet.getQueryResult().getSparql().getResults().getResult()) {
-			// Parse data
-			Double lat = null;
-			Double lon = null;
-			Double value = null;
+		for (QueryResult resultBlock : resultSet.getQueryResult()) {
+			for (Result result : resultBlock.getSparql().getResults().getResult()) {
 
-			for (Binding binding : result.getBinding()) {
-				if ("VALUE".equals(binding.getName())) {
-					value = Double.valueOf(binding.getLiteral().getContent());
-				} else if ("LAT".equals(binding.getName())) {
-					lat = Double.valueOf(binding.getLiteral().getContent());
-				} else if ("LON".equals(binding.getName())) {
-					lon = Double.valueOf(binding.getLiteral().getContent());
+				// Parse data
+				Double lat = null;
+				Double lon = null;
+				Double value = null;
+
+				for (Binding binding : result.getBinding()) {
+					if ("VALUE".equals(binding.getName())) {
+						value = Double.valueOf(binding.getLiteral().getContent());
+					} else if ("LAT".equals(binding.getName())) {
+						lat = Double.valueOf(binding.getLiteral().getContent());
+					} else if ("LON".equals(binding.getName())) {
+						lon = Double.valueOf(binding.getLiteral().getContent());
+					}
 				}
-			}
 
-			// Update series
-			if (value != null && lat != null && lon != null) {
-				LatLng coord = new LatLng(lat, lon);
-				if (MapType.Markers.equals(mapType)) {
-					model.addOverlay(new Marker(coord, "Value: " + value));
-				} else if (MapType.Circles.equals(mapType)) {
-					model.addOverlay(new Circle(coord, value / valueScaler));
-				} else {
-					model.addOverlay(new Marker(coord, "Value: " + value));
-					model.addOverlay(new Circle(coord, value / valueScaler));
+				// Update series
+				if (value != null && lat != null && lon != null) {
+					LatLng coord = new LatLng(lat, lon);
+					if (MapType.Markers.equals(mapType)) {
+						model.addOverlay(new Marker(coord, "Value: " + value));
+					} else if (MapType.Circles.equals(mapType)) {
+						model.addOverlay(new Circle(coord, value / valueScaler));
+					} else {
+						model.addOverlay(new Marker(coord, "Value: " + value));
+						model.addOverlay(new Circle(coord, value / valueScaler));
+					}
 				}
 			}
 		}
-
 		if (triggerUpdate) {
 			widget.setRendered(true);
 			emptyMessage.setRendered(false);

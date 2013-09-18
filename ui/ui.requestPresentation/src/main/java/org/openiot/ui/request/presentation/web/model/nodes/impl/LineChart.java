@@ -18,6 +18,7 @@ import javax.faces.event.ActionListener;
 
 import org.openiot.commons.osdspec.model.PresentationAttr;
 import org.openiot.commons.sdum.serviceresultset.model.SdumServiceResultSet;
+import org.openiot.commons.sparql.protocoltypes.model.QueryResult;
 import org.openiot.commons.sparql.result.model.Binding;
 import org.openiot.commons.sparql.result.model.Result;
 import org.openiot.ui.request.presentation.web.model.nodes.interfaces.VisualizationWidget;
@@ -118,85 +119,87 @@ public class LineChart implements VisualizationWidget {
 			seriesMaps[i] = new TreeMap<Object, Number>();
 		}
 
-		for (Result result : resultSet.getQueryResult().getSparql().getResults().getResult()) {
+		for (QueryResult resultBlock : resultSet.getQueryResult()) {
+			for (Result result : resultBlock.getSparql().getResults().getResult()) {
 
-			Object xValue = null;
-			Number yValue = null;
-			Integer seriesIndex = null;
+				Object xValue = null;
+				Number yValue = null;
+				Integer seriesIndex = null;
 
-			boolean hasDay = false;
-			boolean hasMonth = false;
-			boolean hasYear = false;
-			boolean hasHour = false;
-			boolean hasMin = false;
-			boolean hasSec = false;
+				boolean hasDay = false;
+				boolean hasMonth = false;
+				boolean hasYear = false;
+				boolean hasHour = false;
+				boolean hasMin = false;
+				boolean hasSec = false;
 
-			// Parse data
-			for (Binding binding : result.getBinding()) {
-				if (binding.getName().startsWith("x") && binding.getName().indexOf('_') != -1) {
-					String dateComp = binding.getName().split("_")[1];
-					int dateCompValue = Integer.valueOf(binding.getLiteral().getContent());
-					if ("day".equals(dateComp)) {
-						cal.set(Calendar.DAY_OF_MONTH, dateCompValue);
-						hasDay = true;
-					} else if ("month".equals(dateComp)) {
-						// Note: Month field is 0-based
-						cal.set(Calendar.MONTH, dateCompValue + 1);
-						hasMonth = true;
-					} else if ("year".equals(dateComp)) {
-						cal.set(Calendar.YEAR, dateCompValue);
-						hasYear = true;
-					} else if ("hour".equals(dateComp)) {
-						cal.set(Calendar.HOUR_OF_DAY, dateCompValue);
-						hasHour = true;
-					} else if ("min".equals(dateComp)) {
-						cal.set(Calendar.MINUTE, dateCompValue);
-						hasMin = true;
-					} else if ("sec".equals(dateComp)) {
-						cal.set(Calendar.SECOND, dateCompValue);
-						hasSec = true;
+				// Parse data
+				for (Binding binding : result.getBinding()) {
+					if (binding.getName().startsWith("x") && binding.getName().indexOf('_') != -1) {
+						String dateComp = binding.getName().split("_")[1];
+						int dateCompValue = Integer.valueOf(binding.getLiteral().getContent());
+						if ("day".equals(dateComp)) {
+							cal.set(Calendar.DAY_OF_MONTH, dateCompValue);
+							hasDay = true;
+						} else if ("month".equals(dateComp)) {
+							// Note: Month field is 0-based
+							cal.set(Calendar.MONTH, dateCompValue + 1);
+							hasMonth = true;
+						} else if ("year".equals(dateComp)) {
+							cal.set(Calendar.YEAR, dateCompValue);
+							hasYear = true;
+						} else if ("hour".equals(dateComp)) {
+							cal.set(Calendar.HOUR_OF_DAY, dateCompValue);
+							hasHour = true;
+						} else if ("min".equals(dateComp)) {
+							cal.set(Calendar.MINUTE, dateCompValue);
+							hasMin = true;
+						} else if ("sec".equals(dateComp)) {
+							cal.set(Calendar.SECOND, dateCompValue);
+							hasSec = true;
+						}
+					} else if (binding.getName().startsWith("y")) {
+						// y values start at index 1 (y1, y2 e.t.c)
+						seriesIndex = Integer.valueOf(binding.getName().substring(1)) - 1;
+						yValue = Double.valueOf(binding.getLiteral().getContent());
 					}
-				} else if (binding.getName().startsWith("y")) {
-					// y values start at index 1 (y1, y2 e.t.c)
-					seriesIndex = Integer.valueOf(binding.getName().substring(1)) - 1;
-					yValue = Double.valueOf(binding.getLiteral().getContent());
 				}
+
+				xValue = cal.getTime();
+
+				// Update series
+				if (seriesIndex == null || xValue == null || yValue == null) {
+					continue;
+				}
+
+				// Update formatter
+				if (seriesFormatters[seriesIndex] == null) {
+					String dateFormat = "";
+					String timeFormat = "";
+					if (hasDay) {
+						dateFormat += "dd";
+					}
+					if (hasMonth) {
+						dateFormat += (dateFormat.isEmpty() ? "" : "/") + "MM";
+					}
+					if (hasYear) {
+						dateFormat += (dateFormat.isEmpty() ? "" : "/") + "yyyy";
+					}
+					if (hasHour) {
+						timeFormat += "HH";
+					}
+					if (hasMin) {
+						timeFormat += (timeFormat.isEmpty() ? "" : ":") + "mm";
+					}
+					if (hasSec) {
+						timeFormat += (timeFormat.isEmpty() ? "" : ":") + "ss";
+					}
+					dateFormat += " " + timeFormat;
+					seriesFormatters[seriesIndex] = new SimpleDateFormat(dateFormat.trim());
+				}
+
+				seriesMaps[seriesIndex].put(xValue, yValue);
 			}
-
-			xValue = cal.getTime();
-
-			// Update series
-			if (seriesIndex == null || xValue == null || yValue == null) {
-				continue;
-			}
-
-			// Update formatter
-			if (seriesFormatters[seriesIndex] == null) {
-				String dateFormat = "";
-				String timeFormat = "";
-				if (hasDay) {
-					dateFormat += "dd";
-				}
-				if (hasMonth) {
-					dateFormat += (dateFormat.isEmpty() ? "" : "/") + "MM";
-				}
-				if (hasYear) {
-					dateFormat += (dateFormat.isEmpty() ? "" : "/") + "yyyy";
-				}
-				if (hasHour) {
-					timeFormat += "HH";
-				}
-				if (hasMin) {
-					timeFormat += (timeFormat.isEmpty() ? "" : ":") + "mm";
-				}
-				if (hasSec) {
-					timeFormat += (timeFormat.isEmpty() ? "" : ":") + "ss";
-				}
-				dateFormat += " " + timeFormat;
-				seriesFormatters[seriesIndex] = new SimpleDateFormat(dateFormat.trim());
-			}
-
-			seriesMaps[seriesIndex].put(xValue, yValue);
 		}
 
 		// Update series
@@ -215,35 +218,37 @@ public class LineChart implements VisualizationWidget {
 	public boolean processUngrouppedData(SdumServiceResultSet resultSet) {
 		boolean triggerUpdate = false;
 
-		for (Result result : resultSet.getQueryResult().getSparql().getResults().getResult()) {
+		for (QueryResult resultBlock : resultSet.getQueryResult()) {
+			for (Result result : resultBlock.getSparql().getResults().getResult()) {
 
-			Object xValue = null;
-			Number yValue = null;
-			Integer seriesIndex = null;
+				Object xValue = null;
+				Number yValue = null;
+				Integer seriesIndex = null;
 
-			// Parse data
-			for (Binding binding : result.getBinding()) {
-				if ("x".equals(binding.getName())) {
-					xValue = Double.valueOf(binding.getLiteral().getContent());
-				} else if (binding.getName().startsWith("y")) {
-					// y values start at index 1 (y1, y2 e.t.c)
-					seriesIndex = Integer.valueOf(binding.getName().substring(1)) - 1;
-					yValue = Double.valueOf(binding.getLiteral().getContent());
+				// Parse data
+				for (Binding binding : result.getBinding()) {
+					if ("x".equals(binding.getName())) {
+						xValue = Double.valueOf(binding.getLiteral().getContent());
+					} else if (binding.getName().startsWith("y")) {
+						// y values start at index 1 (y1, y2 e.t.c)
+						seriesIndex = Integer.valueOf(binding.getName().substring(1)) - 1;
+						yValue = Double.valueOf(binding.getLiteral().getContent());
+					}
 				}
-			}
 
-			if (XAxisType.DateFromResultSet.equals(xAxisType)) {
-				xValue = new Date();
-			}
+				if (XAxisType.DateFromResultSet.equals(xAxisType)) {
+					xValue = new Date();
+				}
 
-			// Update series
-			if (seriesIndex == null || xValue == null || yValue == null) {
-				continue;
-			}
+				// Update series
+				if (seriesIndex == null || xValue == null || yValue == null) {
+					continue;
+				}
 
-			ChartSeries series = model.getSeries().get(seriesIndex);
-			series.getData().put(xValue, yValue);
-			triggerUpdate = true;
+				ChartSeries series = model.getSeries().get(seriesIndex);
+				series.getData().put(xValue, yValue);
+				triggerUpdate = true;
+			}
 		}
 
 		return triggerUpdate;
@@ -273,7 +278,7 @@ public class LineChart implements VisualizationWidget {
 	private void parseAttributes(List<PresentationAttr> presentationAttributes) {
 		seriesLabels = null;
 		numSeries = 0;
-		
+
 		// Figure out number of series
 		for (PresentationAttr attr : presentationAttributes) {
 			if ("SERIES".equals(attr.getName())) {

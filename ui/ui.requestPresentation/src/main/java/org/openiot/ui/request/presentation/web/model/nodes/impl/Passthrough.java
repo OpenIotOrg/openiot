@@ -12,6 +12,7 @@ import javax.faces.event.ActionListener;
 
 import org.openiot.commons.osdspec.model.PresentationAttr;
 import org.openiot.commons.sdum.serviceresultset.model.SdumServiceResultSet;
+import org.openiot.commons.sparql.protocoltypes.model.QueryResult;
 import org.openiot.commons.sparql.result.model.Binding;
 import org.openiot.commons.sparql.result.model.Result;
 import org.openiot.ui.request.presentation.web.model.nodes.interfaces.VisualizationWidget;
@@ -89,14 +90,16 @@ public class Passthrough implements VisualizationWidget {
 			attributeValues[i] = null;
 		}
 
-		for (Result result : resultSet.getQueryResult().getSparql().getResults().getResult()) {
+		for (QueryResult resultBlock : resultSet.getQueryResult()) {
+			for (Result result : resultBlock.getSparql().getResults().getResult()) {
 
-			// Parse data
-			for (Binding binding : result.getBinding()) {
-				if (binding.getName().startsWith("attr")) {
-					// attr values start at index 1 (attr1, attr2 e.t.c)
-					Integer seriesIndex = Integer.valueOf(binding.getName().substring(5)) - 1;
-					attributeValues[seriesIndex] = binding.getLiteral().getContent();
+				// Parse data
+				for (Binding binding : result.getBinding()) {
+					if (binding.getName().startsWith("attr")) {
+						// attr values start at index 1 (attr1, attr2 e.t.c)
+						Integer seriesIndex = Integer.valueOf(binding.getName().substring(5)) - 1;
+						attributeValues[seriesIndex] = binding.getLiteral().getContent();
+					}
 				}
 			}
 		}

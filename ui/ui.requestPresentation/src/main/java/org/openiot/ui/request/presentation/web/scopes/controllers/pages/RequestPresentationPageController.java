@@ -23,6 +23,7 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -32,7 +33,6 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 
 import org.openiot.commons.osdspec.model.OAMO;
-import org.openiot.commons.osdspec.model.OSDSpec;
 import org.openiot.commons.osdspec.model.OSMO;
 import org.openiot.commons.osdspec.model.PresentationAttr;
 import org.openiot.commons.sdum.serviceresultset.model.SdumServiceResultSet;
@@ -75,14 +75,27 @@ public class RequestPresentationPageController implements Serializable {
 
 	public RequestPresentationPageContext getContext() {
 		if (cachedContext == null) {
+			if (sessionBean.getUserId() == null) {
+				return null;
+			}
 			cachedContext = (RequestPresentationPageContext) (sessionBean == null ? ApplicationBean.lookupSessionBean() : sessionBean).getContext("requestPresentationPageContext");
 			if (cachedContext == null) {
 				cachedContext = new RequestPresentationPageContext();
-				
-				reloadServices();
+				reloadApplications();
+				try {
+					LoggerService.log(Level.INFO, SchedulerAPIWrapper.marshalOSDSpec(cachedContext.getAppManager().exportOSDSpec()));
+				} catch (Exception ex) {
+					LoggerService.log(ex);
+				}
 			}
 		}
 		return cachedContext;
+	}
+
+	public void doAccessControl() {
+		if (sessionBean.getUserId() == null) {
+			applicationBean.redirect("/pages/login.xhtml?faces-redirect=true");
+		}
 	}
 
 	// ------------------------------------
@@ -92,61 +105,77 @@ public class RequestPresentationPageController implements Serializable {
 	}
 
 	// ------------------------------------
-	// Dashboard
+	// Controllers for application management
 	// ------------------------------------
+	public void reloadApplications() {
+		RequestPresentationPageContext context = getContext();
+
+		// Load services
+		try {
+			context.getAppManager().loadUserOAMOs(ApplicationBean.lookupSessionBean().getUserId());
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, messages.getString("GROWL_INFO_HEADER"), FaceletLocalization.getLocalisedMessage(messages, "APPLICATIONS_LOADED_SUCCESSFULLY")));
+
+		} catch (APIException ex) {
+			LoggerService.log(ex);
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, messages.getString("GROWL_ERROR_HEADER"), FaceletLocalization.getLocalisedMessage(messages, "ERROR_CONNECTING_TO_REGISTRATION_SERVICE")));
+		}
+
+		context.clear();
+	}
+
+	public void loadApplication(String name) {
+		RequestPresentationPageContext context = getContext();
+		context.clear();
+
+		context.getAppManager().selectOAMOByName(name);
+		generateDashboardFromOAMO(context.getAppManager().getSelectedOAMO(), 2);
+	}
+
+	// ------------------------------------
+	// Dashboard management
+	// ------------------------------------
+	public Dashboard getDashboard() {
+		RequestPresentationPageContext context = getContext();
+
+		if (context != null) {
+			return context.getDashboard();
+		}
+		return null;
+	}
+
+	public void setDashboard(Dashboard dashboard) {
+		RequestPresentationPageContext context = getContext();
+
+		if (context != null) {
+			context.setDashboard(dashboard);
+		}
+	}
 
 	public void updateDashboard() {
 		RequestPresentationPageContext context = getContext();
 		if (context.getDashboard() == null) {
 			return;
 		}
-		
+
 		for (Map.Entry<String, VisualizationWidget> entry : context.getServiceIdToWidgetMap().entrySet()) {
 			String serviceId = entry.getKey();
-			
+
 			// Fetch data
-			try{
+			try {
 				SdumServiceResultSet resultSet = SDUMAPIWrapper.pollForReport(serviceId);
 				entry.getValue().processData(resultSet);
-			}catch( APIException ex ){
+			} catch (APIException ex) {
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, messages.getString("GROWL_ERROR_HEADER"), FaceletLocalization.getLocalisedMessage(messages, "ERROR_CONNECTING_TO_SDUM_SERVICE")));
 			}
 		}
 	}
 
-	public void activateOAMO(OAMO oamo) {
-		RequestPresentationPageContext context = getContext();
-		
-		generateDashboardFromOAMO(oamo, 2);
-		context.setSelectedOAMO(oamo);
-	}
-
-	public void reloadServices() {
-		RequestPresentationPageContext context = getContext();
-		
-		// Load services
-		try {
-			OSDSpec osdSpec = SchedulerAPIWrapper.getAvailableServices(ApplicationBean.lookupSessionBean().getUserId());
-			context.setOsdSpec(osdSpec);
-
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, messages.getString("GROWL_INFO_HEADER"), FaceletLocalization.getLocalisedMessage(messages, "SERVICES_LOADED_SUCCESSFULLY")));
-			
-		} catch (APIException ex) {
-			LoggerService.log(ex);
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, messages.getString("GROWL_ERROR_HEADER"), FaceletLocalization.getLocalisedMessage(messages, "ERROR_CONNECTING_TO_SCHEDULER_SERVICE")));
-		}
-
-		context.setSelectedOAMO(null);
-	}
-	
 	// ------------------------------------
 	// Helpers
 	// ------------------------------------
 
 	private void generateDashboardFromOAMO(OAMO oamo, int columnCount) {
 		RequestPresentationPageContext context = getContext();
-		FacesContext fc = FacesContext.getCurrentInstance();
-
 		context.getServiceIdToWidgetMap().clear();
 
 		Dashboard dashboard = context.getDashboard();
@@ -157,6 +186,8 @@ public class RequestPresentationPageController implements Serializable {
 		}
 		dashboard.setRendered(true);
 		dashboard.setModel(model);
+
+		LoggerService.log(Level.INFO, "OSMOs: " + oamo.getOSMO().size());
 
 		int nextColumn = 0;
 		for (int index = 0; index < oamo.getOSMO().size(); index++) {

@@ -12,6 +12,7 @@ import javax.faces.event.ActionListener;
 
 import org.openiot.commons.osdspec.model.PresentationAttr;
 import org.openiot.commons.sdum.serviceresultset.model.SdumServiceResultSet;
+import org.openiot.commons.sparql.protocoltypes.model.QueryResult;
 import org.openiot.commons.sparql.result.model.Binding;
 import org.openiot.commons.sparql.result.model.Result;
 import org.openiot.ui.request.presentation.web.model.nodes.interfaces.VisualizationWidget;
@@ -91,35 +92,37 @@ public class Pie implements VisualizationWidget {
 	public void processData(SdumServiceResultSet resultSet) {
 		boolean triggerUpdate = false;
 
-		for (Result result : resultSet.getQueryResult().getSparql().getResults().getResult()) {
+		for (QueryResult resultBlock : resultSet.getQueryResult()) {
+			for (Result result : resultBlock.getSparql().getResults().getResult()) {
 
-			Number yValue = null;
-			Integer seriesIndex = null;
+				Number yValue = null;
+				Integer seriesIndex = null;
 
-			// Parse data
-			for (Binding binding : result.getBinding()) {
-				if (binding.getName().startsWith("y")) {
-					// y values start at index 1 (y1, y2 e.t.c)
-					seriesIndex = Integer.valueOf(binding.getName().substring(1)) - 1;
-					yValue = Double.valueOf(binding.getLiteral().getContent());
+				// Parse data
+				for (Binding binding : result.getBinding()) {
+					if (binding.getName().startsWith("y")) {
+						// y values start at index 1 (y1, y2 e.t.c)
+						seriesIndex = Integer.valueOf(binding.getName().substring(1)) - 1;
+						yValue = Double.valueOf(binding.getLiteral().getContent());
+					}
 				}
+
+				// Update series
+				if (seriesIndex == null || yValue == null) {
+					continue;
+				}
+
+				model.set(seriesLabels[seriesIndex], yValue);
+				triggerUpdate = true;
 			}
 
-			// Update series
-			if (seriesIndex == null || yValue == null) {
-				continue;
-			}
-
-			model.set(seriesLabels[seriesIndex], yValue);
-			triggerUpdate = true;
-		}
-
-		if (triggerUpdate) {
-			widget.setRendered(true);
-			emptyMessage.setRendered(false);
-			RequestContext requestContext = RequestContext.getCurrentInstance();
-			if (requestContext != null) {
-				requestContext.update(panel.getClientId());
+			if (triggerUpdate) {
+				widget.setRendered(true);
+				emptyMessage.setRendered(false);
+				RequestContext requestContext = RequestContext.getCurrentInstance();
+				if (requestContext != null) {
+					requestContext.update(panel.getClientId());
+				}
 			}
 		}
 
@@ -128,7 +131,7 @@ public class Pie implements VisualizationWidget {
 	private void parseAttributes(List<PresentationAttr> presentationAttributes) {
 		seriesLabels = null;
 		numSeries = 0;
-		
+
 		// Figure out number of series
 		for (PresentationAttr attr : presentationAttributes) {
 			if ("SERIES".equals(attr.getName())) {

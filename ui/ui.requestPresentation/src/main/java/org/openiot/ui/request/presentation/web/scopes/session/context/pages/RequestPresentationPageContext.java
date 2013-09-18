@@ -19,15 +19,13 @@
  ******************************************************************************/
 package org.openiot.ui.request.presentation.web.scopes.session.context.pages;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 import javax.faces.application.Application;
 import javax.faces.context.FacesContext;
 
-import org.openiot.commons.osdspec.model.OAMO;
-import org.openiot.commons.osdspec.model.OSDSpec;
+import org.openiot.ui.request.commons.models.OAMOManager;
 import org.openiot.ui.request.presentation.web.model.nodes.interfaces.VisualizationWidget;
 import org.openiot.ui.request.presentation.web.scopes.session.base.DisposableContext;
 import org.primefaces.component.dashboard.Dashboard;
@@ -38,18 +36,23 @@ import org.primefaces.component.dashboard.Dashboard;
  */
 public class RequestPresentationPageContext extends DisposableContext {
 
-	private OSDSpec osdSpec;
-	private OAMO selectedOAMO;
+	private OAMOManager appManager;
 	private Dashboard dashboard;
 	private Map<String, VisualizationWidget> serviceIdToWidgetMap;
 
 	public RequestPresentationPageContext() {
 		super();
 		this.register();
-		this.serviceIdToWidgetMap = new HashMap<String, VisualizationWidget>();
-		
+
+		this.appManager = new OAMOManager();
+		this.serviceIdToWidgetMap = new LinkedHashMap<String, VisualizationWidget>();
+
+		// Generate a dashboard model that will be bound to the view.
+		// Note: JSF needs an existing instance to render the form. Its
+		// *contents* however will be
+		// automatically refreshed when a specific application is selected
 		FacesContext fc = FacesContext.getCurrentInstance();
-		Application application = fc.getApplication();		
+		Application application = fc.getApplication();
 		this.dashboard = (Dashboard) application.createComponent(fc, "org.primefaces.component.Dashboard", "org.primefaces.component.DashboardRenderer");
 		this.dashboard.setId("dashboard_" + System.nanoTime());
 	}
@@ -59,32 +62,13 @@ public class RequestPresentationPageContext extends DisposableContext {
 		return "requestPresentationPageContext";
 	}
 
-	// ------------------------------------
-	// Services
-	// ------------------------------------
-
-	public OSDSpec getOsdSpec() {
-		return osdSpec;
+	public OAMOManager getAppManager() {
+		return appManager;
 	}
 
-	public void setOsdSpec(OSDSpec osdSpec) {
-		this.osdSpec = osdSpec;
-	}
-
-	public Map<String, OAMO> getOAMOMap() {
-		Map<String, OAMO> map = new LinkedHashMap<String, OAMO>();
-		for (OAMO oamo : osdSpec.getOAMO()) {
-			map.put(oamo.getName(), oamo);
-		}
-		return map;
-	}
-
-	public OAMO getSelectedOAMO() {
-		return selectedOAMO;
-	}
-
-	public void setSelectedOAMO(OAMO selectedOAMO) {
-		this.selectedOAMO = selectedOAMO;
+	public void clear() {
+		getAppManager().selectOAMO(null);
+		dashboard.setModel(null);
 	}
 
 	// ------------------------------------
@@ -94,7 +78,7 @@ public class RequestPresentationPageContext extends DisposableContext {
 	public Dashboard getDashboard() {
 		return this.dashboard;
 	}
-	
+
 	public void setDashboard(Dashboard dashboard) {
 		this.dashboard = dashboard;
 	}

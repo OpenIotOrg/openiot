@@ -10,6 +10,9 @@
 	xmlns:dialogs="http://java.sun.com/jsf/composite/components/sensap/dialogs">
 
 <f:view contentType="text/html">
+	<f:event type="javax.faces.event.PreRenderViewEvent"
+		listener="#{requestPresentationPageController.doAccessControl}" />
+
 	<h:head>
 		<meta content='text/html; charset=UTF-8' http-equiv="Content-Type" />
 		<h:outputStylesheet library="css" name="core.css" />
@@ -52,17 +55,17 @@
 							icon="ui-icon-document">
 
 							<p:submenu label="#{messages.UI_MENUBAR_FILE_OPEN}"
-								rendered="#{! requestPresentationPageController.context.OAMOMap.isEmpty()}"
+								rendered="#{! requestPresentationPageController.context.appManager.availableOAMOs.isEmpty()}"
 								icon="ui-icon-folder-open">
 
 								<c:forEach
-									items="#{requestPresentationPageController.context.OAMOMap.entrySet()}"
+									items="#{requestPresentationPageController.context.appManager.availableOAMOs}"
 									var="entry">
-									<p:menuitem value="#{entry.key}"
-										actionListener="#{requestPresentationPageController.activateOAMO(entry.value)}"
-										process="@this" update=":dashboardForm, :menubar"
-										onclick="windowBlockUI.block();"
-										oncomplete="windowBlockUI.unblock();" />
+									<p:menuitem value="#{entry.name}"
+										actionListener="#{requestPresentationPageController.loadApplication(entry.name)}"
+										process="@this" onclick="windowBlockUI.block();"
+										oncomplete="windowBlockUI.unblock();"
+										update=":dashboardForm, :menubar" />
 								</c:forEach>
 
 							</p:submenu>
@@ -71,16 +74,17 @@
 
 							<p:menuitem value="#{messages.UI_MENUBAR_FILE_REFRESH}"
 								icon="ui-icon-refresh"
-								actionListener="#{requestPresentationPageController.reloadServices()}"
+								actionListener="#{requestPresentationPageController.reloadApplications()}"
 								process="@this" onclick="windowBlockUI.block();"
-								oncomplete="windowBlockUI.unblock();" />
+								oncomplete="windowBlockUI.unblock();"
+								update=":dashboardForm, :menubar" />
 
 						</p:submenu>
 
 						<p:submenu label="#{messages.UI_MENUBAR_APP}" icon="ui-icon-gear">
 
 							<p:menuitem value="#{messages.UI_MENUBAR_APP_REFRESH}"
-								disabled="#{empty requestPresentationPageController.context.selectedOAMO}"
+								disabled="#{empty requestPresentationPageController.context.appManager.selectedOAMO}"
 								icon="ui-icon-refresh" process="@this"
 								actionListener="#{requestPresentationPageController.updateDashboard()}" />
 						</p:submenu>
@@ -88,8 +92,13 @@
 						<f:facet name="options">
 							<p:outputLabel value="#{messages.UI_MENUBAR_ACTIVE_APP}" />
 							<p:button icon="ui-icon-document" style="margin-left:10px;"
-								value="#{empty requestPresentationPageController.context.selectedOAMO ? '-' : requestPresentationPageController.context.selectedOAMO.name}"
+								value="#{empty requestPresentationPageController.context.appManager.selectedOAMO ? '-' : requestPresentationPageController.context.appManager.selectedOAMO.name}"
 								onclick="return false;" />
+
+							<p:commandButton icon="ui-icon-unlocked"
+								style="margin-left:10px;"
+								value="#{messages.UI_LOGIN_LOGOUT_BUTTON}" process="@this"
+								actionListener="#{loginPageController.handleLogout()}" />
 						</f:facet>
 
 					</p:menubar>
@@ -97,11 +106,13 @@
 			</pe:layoutPane>
 
 			<pe:layoutPane position="center" styleClass="no-border">
-				<h:form id="dashboardForm">
-					<p:dashboard binding="#{requestPresentationPageController.context.dashboard}" />
+				<h:form id="dashboardForm"
+					rendered="#{! empty requestPresentationPageController.context}">
+					<p:dashboard
+						binding="#{requestPresentationPageController.dashboard}" />
 
 					<p:outputLabel
-						rendered="#{empty requestPresentationPageController.context.selectedOAMO}"
+						rendered="#{empty requestPresentationPageController.context.appManager.selectedOAMO}"
 						value="#{messages.UI_WIDGET_NO_APPLICATION_SELECTED}"
 						styleClass="no-application-selected" />
 				</h:form>

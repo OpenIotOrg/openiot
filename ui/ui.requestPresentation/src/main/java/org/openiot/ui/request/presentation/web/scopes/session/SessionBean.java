@@ -40,7 +40,7 @@ public class SessionBean implements Serializable {
 	private static final long serialVersionUID = 1L;
 
     private Map<String, DisposableContext> contextMap;
-    private String userId = "nodeID://b47098";
+    private String userId;
 
     /**
      * Creates a new instance of SessionBean
@@ -52,8 +52,12 @@ public class SessionBean implements Serializable {
     public String getUserId(){
     	return userId;
     }
+    
+    public void setUserId(String userId) {
+		this.userId = userId;
+	}
 
-    //------------------------------------
+	//------------------------------------
     // Context API
     //------------------------------------
     public DisposableContext getContext(String contextName) {
