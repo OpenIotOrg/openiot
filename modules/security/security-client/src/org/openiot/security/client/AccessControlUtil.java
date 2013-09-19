@@ -54,8 +54,8 @@ public class AccessControlUtil {
 	}
 
 	public AuthorizationManager getAuthorizationManager() {
-		if (authorizationManager != null) {
-			AuthorizationManager authorizationManager = new AuthorizationManager();
+		if (authorizationManager == null) {
+			authorizationManager = new AuthorizationManager();
 			authorizationManager.setClient((CasOAuthWrapperClient) getClient());
 			authorizationManager.setPermissionsURL(getCasOAuthClientRealm().getPermissionsURL());
 		}
