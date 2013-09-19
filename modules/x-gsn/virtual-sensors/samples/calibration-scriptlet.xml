@@ -3,9 +3,9 @@
         <class-name>org.openiot.gsn.processor.ScriptletProcessor</class-name>
         <init-params>
             <param name="persistant">true</param>
-            <param name="scriptlet"><![CDATA[
+            <param name="scriptlet">
                 <![CDATA[
-
+                
                     //------------------------------
                     // Demo scriptlet
                     //------------------------------
@@ -19,7 +19,7 @@
                     println 'Stateful Counter: ' + statefulCounter;
 
                     // Example of getting a logger
-                    def logger = org.apache.log4j.Logger.getLogger(org.openiot.gsn.processor.ScriptletProcessor.class);
+                    def logger = org.apache.log4j.Logger.getLogger(gsn.processor.ScriptletProcessor.class);
 
                     // Define a variable x
                     def x = 1000;
@@ -38,7 +38,7 @@
                     // The NON_HEAP value is not modified.
 
                 ]]>
-            ]]></param>
+            </param>
         </init-params>
         <output-structure>
             <field name="HEAP" type="double"/>
@@ -47,8 +47,7 @@
         </output-structure>
     </processing-class>
     <description>
-        This Virtual Sensor demonstrates the use of the scriplet processor
-        (org.openiot.gsn.processor.ScriptletProcessor) for data
+        This Virtual Sensor demonstrates the use of the scriplet processor (gsn.processor.ScriptletProcessor) for data
         calibration. It gets its data from the MemoryMonitorVS and process it with a Groovy scriplet.
     </description>
     <addressing/>

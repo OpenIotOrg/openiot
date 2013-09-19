@@ -44,8 +44,8 @@
 				<address wrapper="tinyos-mig">
 					<predicate key="source">sf@lcavsrv6.epfl.ch:20100</predicate>
 					<predicate key="packet-name">SensorscopeMsg</predicate>
-					<predicate key="class-package">org.openiot.gsn.wrappers.tinyos2x.sensorscope</predicate>
-					<predicate key="path">./src/org.openiot.gsn/wrappers/tinyos2x/sensorscope/</predicate>
+					<predicate key="class-package">gsn.wrappers.tinyos2x.sensorscope</predicate>
+					<predicate key="path">./src/gsn/wrappers/tinyos2x/sensorscope/</predicate>
 				</address>
 				<query>select
 					NTWSENDERID,NTWDISTTOBS,TSPHOPCOUNT,TSPPACKETSN,REPORTERID,TIMESTAMP,RAINMETER,WINDSPEED,WATERMARK,SOLARRADIATION,AIRTEMPERATURE,AIRHUMIDITY,SKINTEMPERATURE,SOILMOISTURE,WINDDIRECTION,FOO from wrapper</query>

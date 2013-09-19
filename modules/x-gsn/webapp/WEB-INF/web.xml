@@ -59,6 +59,7 @@
         <servlet-class>org.openiot.gsn.http.GeoDataServlet</servlet-class>
     </servlet>
 
+
     <servlet>
             <servlet-name>DynamicGeoData</servlet-name>
             <display-name>Dynamic Sensor Data with Geo Location</display-name>
@@ -243,7 +244,7 @@
 	
 	<servlet-mapping>
         <servlet-name>ControllerServlet</servlet-name>
-        <url-pattern>/org.openiot.gsn</url-pattern>
+        <url-pattern>/gsn</url-pattern>
     </servlet-mapping>
 	<servlet-mapping>
         <servlet-name>DataDownload</servlet-name>
@@ -269,6 +270,7 @@
         <servlet-name>GeoData</servlet-name>
         <url-pattern>/geodata</url-pattern>
     </servlet-mapping>
+  
     <servlet-mapping>
         <servlet-name>DynamicGeoData</servlet-name>
         <url-pattern>/dynamicgeodata</url-pattern>
@@ -290,131 +292,131 @@
 
      <servlet-mapping>
             <servlet-name>MyCreateGroupServlet</servlet-name>
-            <url-pattern>/org.openiot.gsn/MyCreateGroupServlet</url-pattern>
+            <url-pattern>/gsn/MyCreateGroupServlet</url-pattern>
      </servlet-mapping>
 
      <servlet-mapping>
             <servlet-name>MyUserDetailUpdateServlet</servlet-name>
-            <url-pattern>/org.openiot.gsn/MyUserDetailUpdateServlet</url-pattern>
+            <url-pattern>/gsn/MyUserDetailUpdateServlet</url-pattern>
      </servlet-mapping>
 
      <servlet-mapping>
             <servlet-name>MyLoginHandlerServlet</servlet-name>
-            <url-pattern>/org.openiot.gsn/MyLoginHandlerServlet</url-pattern>
+            <url-pattern>/gsn/MyLoginHandlerServlet</url-pattern>
      </servlet-mapping>
 
      <servlet-mapping>
             <servlet-name>MyLogoutHandlerServlet</servlet-name>
-            <url-pattern>/org.openiot.gsn/MyLogoutHandlerServlet</url-pattern>
+            <url-pattern>/gsn/MyLogoutHandlerServlet</url-pattern>
      </servlet-mapping>
 
      <servlet-mapping>
             <servlet-name>MyDisplayACTablesContentServlet</servlet-name>
-            <url-pattern>/org.openiot.gsn/MyDisplayACTablesContentServlet</url-pattern>
+            <url-pattern>/gsn/MyDisplayACTablesContentServlet</url-pattern>
      </servlet-mapping>
 
       <servlet-mapping>
             <servlet-name>MyUserCandidateRegistrationServlet</servlet-name>
-            <url-pattern>/org.openiot.gsn/MyUserCandidateRegistrationServlet</url-pattern>
+            <url-pattern>/gsn/MyUserCandidateRegistrationServlet</url-pattern>
      </servlet-mapping>
 
       <servlet-mapping>
             <servlet-name>MyDataSourceCandidateRegistrationServlet</servlet-name>
-            <url-pattern>/org.openiot.gsn/MyDataSourceCandidateRegistrationServlet</url-pattern>
+            <url-pattern>/gsn/MyDataSourceCandidateRegistrationServlet</url-pattern>
      </servlet-mapping>
 
       <servlet-mapping>
             <servlet-name>MyUserCandidateWaitingListServlet</servlet-name>
-            <url-pattern>/org.openiot.gsn/MyUserCandidateWaitingListServlet</url-pattern>
+            <url-pattern>/gsn/MyUserCandidateWaitingListServlet</url-pattern>
      </servlet-mapping>
 
 
       <servlet-mapping>
             <servlet-name>MyGroupManagementServlet</servlet-name>
-            <url-pattern>/org.openiot.gsn/MyGroupManagementServlet</url-pattern>
+            <url-pattern>/gsn/MyGroupManagementServlet</url-pattern>
      </servlet-mapping>
 
       <servlet-mapping>
             <servlet-name>MyDeleteGroupServlet</servlet-name>
-            <url-pattern>/org.openiot.gsn/MyDeleteGroupServlet</url-pattern>
+            <url-pattern>/gsn/MyDeleteGroupServlet</url-pattern>
      </servlet-mapping>
 
       <servlet-mapping>
             <servlet-name>MyChangeGroupCombinationServlet</servlet-name>
-            <url-pattern>/org.openiot.gsn/MyChangeGroupCombinationServlet</url-pattern>
+            <url-pattern>/gsn/MyChangeGroupCombinationServlet</url-pattern>
      </servlet-mapping>
 
       <servlet-mapping>
             <servlet-name>MyDataSourceCandidateWaitingListServlet</servlet-name>
-            <url-pattern>/org.openiot.gsn/MyDataSourceCandidateWaitingListServlet</url-pattern>
+            <url-pattern>/gsn/MyDataSourceCandidateWaitingListServlet</url-pattern>
      </servlet-mapping>
 
       <servlet-mapping>
             <servlet-name>MyUserUpdateServlet</servlet-name>
-            <url-pattern>/org.openiot.gsn/MyUserUpdateServlet</url-pattern>
+            <url-pattern>/gsn/MyUserUpdateServlet</url-pattern>
      </servlet-mapping>
 
       <servlet-mapping>
             <servlet-name>MyUpdateUserWaitingForGroupServlet</servlet-name>
-            <url-pattern>/org.openiot.gsn/MyUpdateUserWaitingForGroupServlet</url-pattern>
+            <url-pattern>/gsn/MyUpdateUserWaitingForGroupServlet</url-pattern>
      </servlet-mapping>
 
       <servlet-mapping>
          <servlet-name>MyUpdateUserWaitingForDataSourceServlet</servlet-name>
-           <url-pattern>/org.openiot.gsn/MyUpdateUserWaitingForDataSourceServlet</url-pattern>
+           <url-pattern>/gsn/MyUpdateUserWaitingForDataSourceServlet</url-pattern>
      </servlet-mapping>
 
       <servlet-mapping>
             <servlet-name>MyOwnerWaitingListServlet</servlet-name>
-            <url-pattern>/org.openiot.gsn/MyOwnerWaitingListServlet</url-pattern>
+            <url-pattern>/gsn/MyOwnerWaitingListServlet</url-pattern>
      </servlet-mapping>
 
 
       <servlet-mapping>
             <servlet-name>MyUserUpdateWaitingListServlet</servlet-name>
-            <url-pattern>/org.openiot.gsn/MyUserUpdateWaitingListServlet</url-pattern>
+            <url-pattern>/gsn/MyUserUpdateWaitingListServlet</url-pattern>
      </servlet-mapping>
 
       <servlet-mapping>
             <servlet-name>MyUpdateUserGroupServlet</servlet-name>
-            <url-pattern>/org.openiot.gsn/MyUpdateUserGroupServlet</url-pattern>
+            <url-pattern>/gsn/MyUpdateUserGroupServlet</url-pattern>
      </servlet-mapping>
 
       <servlet-mapping>
             <servlet-name>MyUpdateUserDataSourceServlet</servlet-name>
-            <url-pattern>/org.openiot.gsn/MyUpdateUserDataSourceServlet</url-pattern>
+            <url-pattern>/gsn/MyUpdateUserDataSourceServlet</url-pattern>
      </servlet-mapping>
 
       <servlet-mapping>
             <servlet-name>MyAdminManagementServlet</servlet-name>
-            <url-pattern>/org.openiot.gsn/MyAdminManagementServlet</url-pattern>
+            <url-pattern>/gsn/MyAdminManagementServlet</url-pattern>
      </servlet-mapping>
 
 
       <servlet-mapping>
             <servlet-name>MyUserAccountManagementServlet</servlet-name>
-            <url-pattern>/org.openiot.gsn/MyUserAccountManagementServlet</url-pattern>
+            <url-pattern>/gsn/MyUserAccountManagementServlet</url-pattern>
      </servlet-mapping>
 
       <servlet-mapping>
             <servlet-name>MyRegistrationOkServlet</servlet-name>
-            <url-pattern>/org.openiot.gsn/MyRegistrationOkServlet</url-pattern>
+            <url-pattern>/gsn/MyRegistrationOkServlet</url-pattern>
      </servlet-mapping>
 
 
        <servlet-mapping>
             <servlet-name>MyHtmlResultSetServlet</servlet-name>
-            <url-pattern>/org.openiot.gsn/MyHtmlResultSetServlet</url-pattern>
+            <url-pattern>/gsn/MyHtmlResultSetServlet</url-pattern>
      </servlet-mapping>
 
        <servlet-mapping>
             <servlet-name>MyGroupHtmlResultSetServlet</servlet-name>
-            <url-pattern>/org.openiot.gsn/MyGroupHtmlResultSetServlet</url-pattern>
+            <url-pattern>/gsn/MyGroupHtmlResultSetServlet</url-pattern>
      </servlet-mapping>
 
        <servlet-mapping>
             <servlet-name>MyAccessRightsManagementServlet</servlet-name>
-            <url-pattern>/org.openiot.gsn/MyAccessRightsManagementServlet</url-pattern>
+            <url-pattern>/gsn/MyAccessRightsManagementServlet</url-pattern>
      </servlet-mapping>
 
 
@@ -489,7 +491,7 @@
 
    <filter-mapping>
      <filter-name>MyControllerFilter</filter-name>
-       <url-pattern>/org.openiot.gsn</url-pattern>
+       <url-pattern>/gsn</url-pattern>
        <url-pattern>/field</url-pattern>
        <url-pattern>/data</url-pattern>
        <url-pattern>/multidata</url-pattern>
@@ -511,7 +513,7 @@
    <security-constraint>
    <web-resource-collection>
      <web-resource-name>LoginHandlerServlet</web-resource-name>
-     <url-pattern>/org.openiot.gsn/loginhandlerservlet</url-pattern>
+     <url-pattern>/gsn/loginhandlerservlet</url-pattern>
    </web-resource-collection>
    <user-data-constraint>
      <transport-guarantee>CONFIDENTIAL</transport-guarantee>

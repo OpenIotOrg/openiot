@@ -44,8 +44,7 @@
         </output-structure>
     </processing-class>
     <description>
-        This Virtual Sensor demonstrates the use of the scriplet processor
-        (org.openiot.gsn.processor.ScriptletProcessor) for detecting
+        This Virtual Sensor demonstrates the use of the scriplet processor (gsn.processor.ScriptletProcessor) for detecting
         a data source which fails at producing data. It gets its data from the MemoryMonitorVS.
     </description>
     <addressing/>

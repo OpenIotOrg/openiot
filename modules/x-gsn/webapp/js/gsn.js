@@ -3,6 +3,11 @@
  */
 
 //Note: Balise creation: $.BaliseName({"attribute1":"value1",...},textInsideTag)
+
+function logIvo(msg) {
+    console.info(msg);
+}
+
 var map;
 var GSN = { 
 	
@@ -21,8 +26,7 @@ var GSN = {
                 console.info(txt);
             }
     }
-	
-	
+
     ,
     context: null //home, data, map || fullmap
     ,
@@ -46,6 +50,7 @@ var GSN = {
         params[0] = pageName[0];
 		
         GSN.context = params[0];
+
         //highlight the right tab in the navigation bar
         $("#navigation div").each(function(){
             if($("a",this).text()==GSN.context)
@@ -174,6 +179,8 @@ var GSN = {
     ,
     vsName : new Array()
     ,
+    protect: new Array()   // characterizes the above, if it is protected or not
+    ,
     selectedSensors : new Array()
     ,
     numSensorAssociatedWithCategory : new Hash()
@@ -193,15 +200,20 @@ var GSN = {
         }
         //build the rightside vs menu
         $("#vsmenu").empty();
-		
-		
-		
+
+
+
         var arraySize = 0;
         $("virtual-sensor",data).each(function(){
             name = $(this).attr("name");
+                  // logIvo($(this).attr("protected"));   // just for logging
             GSN.vsName[arraySize] = name;
+            GSN.protect[arraySize] = new Array(2);          // added May 2013
+            GSN.protect[arraySize][0]=name;
+            GSN.protect[arraySize][1] = $(this).attr("protected");
+            //logIvo(GSN.vsName[arraySize]+" -- "+GSN.protect[arraySize]);
             arraySize++;
-			
+
         //if ($("field[@name=latitude]",$(this)).text()!="")
         //	$("#menu-"+vsname).addClass("gpsenabled");
         });
@@ -210,7 +222,11 @@ var GSN = {
 		
         //Test example
         //GSN.vsName.push("genepi_meteo_10_replay", "genepi_meteo_11_replay","genepi_meteo_12_replay","genepi_meteo_13_replay","genepi_meteo_15_replay","genepi_meteo_16_replay","genepi_meteo_18_replay","genepi_meteo_2_replay","genepi_meteo_3_replay","genepi_meteo_4_replay","genepi_meteo_6_replay","genepi_meteo_7_replay");
-        GSN.vsName = GSN.util.regroupByUnderscore(GSN.vsName);
+      GSN.vsName = GSN.util.regroupByUnderscore(GSN.vsName);
+      GSN.protect.sort();
+        for(var i=0;i<GSN.vsName.length;++i){
+            logIvo(GSN.vsName[i]+"--"+GSN.protect[i][0]+"--"+GSN.protect[i][1]);
+        }
 
         // Creation of the sidebar menu with categories
         var vsName = GSN.vsName;
@@ -226,7 +242,7 @@ var GSN = {
                     },"  Group: "+vsName[i][1]));
                     $("#menu-rubric-"+vsName[i][1]).prepend($.IMG({
                         'src':'../img/group.png'
-                    }));
+                    }));                                                //vsmenu
                 }
                 else{
                     $("#vsmenu").append($.DIV({},$.A({
@@ -243,6 +259,7 @@ var GSN = {
                 GSN.numSensorAssociatedWithCategory.setItem(vsName[i][1],0);
             }
             if(vsName[i][1] != "others"){
+
                 // Append Sensor Name to menu if different from category others
                 if(GSN.context == "data"){
                     $("#vsmenu").append($.DIV({
@@ -265,7 +282,7 @@ var GSN = {
                 GSN.numSensorAssociatedWithCategory.setItem(vsName[i][1],GSN.numSensorAssociatedWithCategory.getItem(vsName[i][1])+1);
             }
         }// End for
-		
+
 		
         // Append Group Others to menu
         var othersRubricSensorPresent=false;
@@ -298,21 +315,24 @@ var GSN = {
 			
             // Append Sensor Name to menu if it corresponds to category others
             for(var i=0;i<vsName.length;++i){
+               // logIvo(vsName[i][0]+" -- "+GSN.vsName[i]+"--"+GSN.protect[i]);
+
                 if(vsName[i][1] == "others"){
-                    if(GSN.context == "data")$("#vsmenu").append($.DIV({
+                    if(GSN.context == "data")   {
+                        $("#vsmenu").append($.DIV({
                         "class":vsName[i][1]
                     },$.SPAN({
                         "class":"sensorName",
                         "id":"menu-"+vsName[i][0]
                     },vsName[i][0])));
-                    else $("#vsmenu").append($.DIV({
+                    } else $("#vsmenu").append($.DIV({
                         "class":vsName[i][1]
                     },$.A({
                         "class":"sensorName",
                         "href":"javascript:GSN.menu('"+vsName[i][0]+"');",
                         "id":"menu-"+vsName[i][0]+""
-                    },vsName[i][0])));
-                    GSN.numSensorAssociatedWithCategory.setItem(vsName[i][1],GSN.numSensorAssociatedWithCategory.getItem(vsName[i][1])+1);
+                    },vsName[i][0]+GSN.protect[i][1])));
+                    GSN.numSensorAssociatedWithCategory.setItem(vsName[i][1],GSN.numSensorAssociatedWithCategory.getItem(vsName[i][1])+1);                    // added May 2013
                 }
             }
         }
@@ -537,7 +557,7 @@ var GSN = {
   		
         $.ajax({
             type: "GET",
-            url: "gsn",
+            url: "/gsn",
             success: function(data){
                 var start = new Date();
                 //initalisation of gsn info, vsmenu
@@ -592,7 +612,7 @@ var GSN = {
         GSN.vsbox.bringToFront(vsName);
         $.ajax({
             type: "GET",
-            url: "gsn?name="+vsName,
+            url: "/gsn?name="+vsName,
             success: function(data){
                 $("virtual-sensor[@name="+vsName+"]",data).each(function(){
                     GSN.vsbox.update(this);
@@ -778,6 +798,7 @@ var GSN = {
                         }
                     } else {
                         //add to structure
+
                         var s = type ;
                         if ($(this).attr("description")!=null)
                             s += ' <img src="style/help_icon.gif" alt="" title="'+$(this).attr("description")+'"/>';
@@ -788,9 +809,9 @@ var GSN = {
                             gotDynamic = true;
                         }
                     }
-				
+
                     $(vsd).find("dl.data").show();
-							
+							                      // $(this).attr("name")
                     //set the value
                     if (cat == null) {
                         if (value == "") {
@@ -845,21 +866,53 @@ var GSN = {
                         }
                         if ($(this).attr("description")!=null)
                             value += ' <img src="style/help_icon.gif" alt="" title="'+$(this).attr("description")+'"/>';
-					
+
                         name = comp+name;
                     }
                     $(dl).append('<dt class="'+cmd+hiddenclass+'">'+name+'</dt><dd class="'+name+((cmd!=null)?' '+cmd:'')+hiddenclass+'">'+value+'</dd>');
                 });
 			  
                 if ($(vs).attr("description")!="") {
-                    $("dl.description", vsd).empty().append($.DD({},$(vs).attr("description")));
+                    var i;
+                    for(i=0;i<GSN.vsName.length;++i){
+                        //logIvo(GSN.vsName[i][0]);                 // added May 2013
+                        //logIvo($(vs).attr("name"));
+                        if (GSN.vsName[i][0] == $(vs).attr("name")) {
+                            break;
+                        }
+                    }
+                    if (GSN.protect[i][1] == " ") {
+                         value2 =  $(vs).attr("description");
+                         $("dl.description", vsd).empty().append('<p> Bla').append($.DD({}, value2)).append('</p>');
+                         logIvo("Iter = "+$(vs).attr("description"));
+                    } else  {
+                        // $("dl.description", vsd).empty().append($.DD({},$(vs).attr("description")));
+                        value2 =  $(vs).attr("description");
+                        individual_values = value2.split('#');
+                        value3 = [];
+                        value3.push('<dl>');
+
+                        for(i=0; i<individual_values.length;i++)  {
+                            parts = individual_values[i].split('@');
+                            value3.push('<dt>'+parts[0]+'</dt> <dd>'+parts[1]+'</dd>');
+                            //logIvo("Vals = "+parts[0]+" -- "+parts[1]);
+
+                        }
+                        value3.push('</dl>');
+                        var res = value3.join("").toString();
+                        //logIvo("Vals = "+res);
+                        var dummy=" Privately Owned Sensor ";
+                        $("dl.description", vsd).empty().append(res).append('<dl> <dt> Visibility: </dt> </dl>').append($.DD({}, dummy));
+                        //$("dl.description", vsd).empty().append('<dl> <dt> Bla: </dt> <dd>').append($.DD({}, value2)).append('</dd> </dl>');
+                    }
                     $("a.tabdescription", vsd).show();
                     if (!gotStatic) {
                         $(vsd).find("a.tabdescription", vsd).addClass("active");
                         $(vsd).find("> dl").hide();
                         $(vsd).find("dl.description").show();
+                        //logIvo("Iter2 = "+  $(vsd).find("dl.description"));
                     }
-				
+
                 }
                 $(vsd).find("img").ToolTip();
                 return true;
@@ -1149,7 +1202,7 @@ var GSN = {
                 $.ajax({
                     async: false,
                     type: "GET",
-                    url: "gsn?REQUEST=113&name="+GSN.selectedSensors[i],
+                    url: "/gsn?REQUEST=113&name="+GSN.selectedSensors[i],
                     success: function(msg) {
                         $("virtual-sensor field", msg).each(function() {
                             if ($(this).attr("type").substr(0,3) != "bin") {
