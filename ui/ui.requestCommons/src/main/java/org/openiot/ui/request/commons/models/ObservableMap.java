@@ -64,7 +64,11 @@ public class ObservableMap<K, V> extends Observable implements Map<K, V>, Serial
     public V remove(Object key) {
         V val = wrappedMap.remove(key);
         setChanged();
-        notifyObservers();
+        try{
+        	notifyObservers();
+        }catch(Throwable ex){
+        	ex.printStackTrace();
+        }
 
         return val;
     }
@@ -72,7 +76,11 @@ public class ObservableMap<K, V> extends Observable implements Map<K, V>, Serial
     public void clear() {
         wrappedMap.clear();
         setChanged();
-        notifyObservers();
+        try{
+        	notifyObservers();
+        }catch(Throwable ex){
+        	ex.printStackTrace();
+        }
     }
 
     public Set<K> keySet() {
@@ -97,7 +105,7 @@ public class ObservableMap<K, V> extends Observable implements Map<K, V>, Serial
 			V trimmedValue = (V) StringUtils.nullIfEmpty(entry.getValue());
             if ((originalValue == null && trimmedValue != null)
                     || (originalValue != null && trimmedValue == null)
-                    || (originalValue != null && trimmedValue != null && !originalValue.equals(trimmedValue))) {
+                    || (originalValue != null && trimmedValue != null && !originalValue.toString().equals(trimmedValue.toString()))) {
             } else {
                 // Nothing to modify
                 continue;
@@ -108,9 +116,10 @@ public class ObservableMap<K, V> extends Observable implements Map<K, V>, Serial
             modified = true;
         }
 
-        if (modified) {
-            setChanged();
-            notifyObservers();
+        try{
+        	notifyObservers();
+        }catch(Throwable ex){
+        	ex.printStackTrace();
         }
     }
 
@@ -122,7 +131,7 @@ public class ObservableMap<K, V> extends Observable implements Map<K, V>, Serial
 		V trimmedValue = (V) StringUtils.nullIfEmpty(valueIn);
         if ((originalValue == null && trimmedValue != null)
                 || (originalValue != null && trimmedValue == null)
-                || (originalValue != null && trimmedValue != null && !originalValue.equals(trimmedValue))) {
+                || (originalValue != null && trimmedValue != null && !originalValue.toString().equals(trimmedValue.toString()))) {
         } else {
             // Nothing to modify
             return valueIn;
@@ -131,7 +140,11 @@ public class ObservableMap<K, V> extends Observable implements Map<K, V>, Serial
         // Update map value and notify observers
         wrappedMap.put(key, valueIn);
         setChanged();
-        notifyObservers();
+        try{
+        	notifyObservers(key);
+        }catch(Throwable ex){
+        	ex.printStackTrace();
+        }
 
         return valueIn;
     }

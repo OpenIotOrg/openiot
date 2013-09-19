@@ -40,7 +40,7 @@ import org.openiot.ui.request.commons.nodes.interfaces.GraphNodeProperty;
  * @author Achilleas Anagnostopoulos (aanag) email: aanag@sensap.eu
  */
 @GraphNodeClass(label = "CompareRelativeDateTime", type = "COMPARATOR", scanProperties = true)
-@Endpoints({ @Endpoint(type = EndpointType.Input, anchorType = AnchorType.Left, scope = "Compare.Date", label = "IN", required = true), })
+@Endpoints({ @Endpoint(type = EndpointType.Input, anchorType = AnchorType.Left, scope = "cmp_sensor_Date", label = "IN", required = true), })
 @NodeProperties({ @NodeProperty(type = PropertyType.Writable, javaType = java.lang.String.class, name = "OPERATOR", allowedValues = { "<", "<=", ">", ">=" }, required = true), @NodeProperty(type = PropertyType.Writable, javaType = java.lang.Long.class, name = "CMP_VALUE", required = true), @NodeProperty(type = PropertyType.Writable, javaType = java.lang.String.class, name = "CMP_VALUE_UNIT", allowedValues = { "SECOND(S)", "MINUTE(S)", "HOUR(S)", "DAY(S)", "MONTH(S)", "YEAR(S)" }, required = true) })
 public class CompareRelativeDateTime extends DefaultGraphNode implements Serializable, Observer {
 	private static final long serialVersionUID = 1L;

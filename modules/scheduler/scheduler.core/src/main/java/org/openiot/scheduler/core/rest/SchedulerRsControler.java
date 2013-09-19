@@ -1,23 +1,23 @@
 package org.openiot.scheduler.core.rest;
 
 /**
- * Copyright (c) 2011-2014, OpenIoT
+ *    Copyright (c) 2011-2014, OpenIoT
+ *    
+ *    This file is part of OpenIoT.
  *
- * This library is free software; you can redistribute it and/or
- * modify it either under the terms of the GNU Lesser General Public
- * License version 2.1 as published by the Free Software Foundation
- * (the "LGPL"). If you do not alter this
- * notice, a recipient may use your version of this file under the LGPL.
+ *    OpenIoT is free software: you can redistribute it and/or modify
+ *    it under the terms of the GNU Lesser General Public License as published by
+ *    the Free Software Foundation, version 3 of the License.
  *
- * You should have received a copy of the LGPL along with this library
- * in the file COPYING-LGPL-2.1; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ *    OpenIoT is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *    GNU Lesser General Public License for more details.
  *
- * This software is distributed on an "AS IS" basis, WITHOUT WARRANTY
- * OF ANY KIND, either express or implied. See the LGPL  for
- * the specific language governing rights and limitations.
+ *    You should have received a copy of the GNU Lesser General Public License
+ *    along with OpenIoT.  If not, see <http://www.gnu.org/licenses/>.
  *
- * Contact: OpenIoT mailto: info@openiot.eu
+ *     Contact: OpenIoT mailto: info@openiot.eu
  */
 
 import javax.ws.rs.Consumes;
@@ -28,12 +28,27 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 
 
+import org.openiot.commons.osdspec.model.OAMO;
 import org.openiot.commons.osdspec.model.OSDSpec;
+import org.openiot.commons.osdspec.model.OSMO;
 import org.openiot.commons.sensortypes.model.SensorTypes;
 
 
-import org.openiot.scheduler.core.api.impl.DiscoverSensorsImpl;
-import org.openiot.scheduler.core.api.impl.RegisterServiceImpl;
+//<<<<<<< HEAD
+import org.openiot.scheduler.core.api.impl.DiscoverSensors.DiscoverSensorsImpl;
+import org.openiot.scheduler.core.api.impl.GetApplication.GetApplicationImpl;
+import org.openiot.scheduler.core.api.impl.GetAvailableAppIDs.GetAvailableAppIDsImpl;
+import org.openiot.scheduler.core.api.impl.GetAvailableApps.GetAvailableAppsImpl;
+import org.openiot.scheduler.core.api.impl.GetAvailableServiceIDs.GetAvailableServiceIDsImpl;
+import org.openiot.scheduler.core.api.impl.GetService.GetServiceImpl;
+import org.openiot.scheduler.core.api.impl.RegisterService.RegisterServiceImpl;
+//=======
+//import org.openiot.scheduler.core.api.impl.DiscoverSensorsImpl;
+//import org.openiot.scheduler.core.api.impl.RegisterServiceImpl;
+
+
+import org.openiot.commons.descriptiveids.model.DescreptiveIDs;
+//>>>>>>> branch 'ait-develop' of https://github.com/OpenIotOrg/openiot.git
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -81,6 +96,34 @@ public class SchedulerRsControler {
 		
 		return welcomeText;
 	}
+	
+	
+	/**
+	 * 
+	 * Used to help applications build a request by using existing sensor
+	 * classes. Requires as input the UserID, in String format, the location
+	 * longitude/ latitude and the radius of interest. Returns a SensorTypes
+	 * object which includes all the available sensors with their metadata.
+	 * 
+	 * @param userID
+	 * @param longitude
+	 * @param latitude
+	 * @param radius
+	 * @return
+	 */
+	@GET
+	@Path("/discoverSensors")
+//	@Consumes("application/xml")
+//	@Produces("application/xml")
+	public SensorTypes discoverSensors(@QueryParam("userID") String userID, @QueryParam("longitude") double longitude, @QueryParam("latitude") double latitude, @QueryParam("radius") float radius) {
+
+		
+		DiscoverSensorsImpl discoverSensorsImpl = new DiscoverSensorsImpl(userID, longitude, latitude, radius);
+		
+		return discoverSensorsImpl.getSensorTypes();
+	}
+	
+	
 
 	/**
 	 * @param osdSpec
@@ -96,7 +139,7 @@ public class SchedulerRsControler {
 	public String registerService(OSDSpec osdSpec) {
 
 		
-		
+
 		RegisterServiceImpl registerServiceImpl = new RegisterServiceImpl(osdSpec);
 		
 
@@ -104,15 +147,130 @@ public class SchedulerRsControler {
 
 	}
 
-	@GET
-	@Path("/discoverSensors")
-//	@Consumes("application/xml")
-//	@Produces("application/xml")
-	public SensorTypes discoverSensors(@QueryParam("userID") String userID, @QueryParam("longitude") double longitude, @QueryParam("latitude") double latitude, @QueryParam("radius") float radius) {
+	
+	
+	
+	
+	/**
+	 * Used to unregister/delete a registered/running service. Requires as input
+	 * the Application ID.
+	 * 
+	 * @param applicationID
+	 */
+	@POST
+	@Path("/unregisterApp")
+	public void unregisterApp(String applicationID) {
 
 		
-		DiscoverSensorsImpl discoverSensorsImpl = new DiscoverSensorsImpl(userID, longitude, latitude, radius);
-		
-		return discoverSensorsImpl.getSensorTypes();
+		//TODO: Implement this functionality
+
+	}	
+	
+	
+	/**
+	 * Used to update a registered service. Requires as input the OSD Specification.
+	 * 
+	 * @param osdSpec
+	 */
+	@POST
+	@Path("/updateApp")
+	public void updateApp(OSDSpec osdSpec) {
+
+		//TODO: Implement this functionality
+
+	}	
+	
+	
+	/**
+	 * Used to retrieve the description (OAMO) of an available Application.
+	 * Requires as input the Application ID
+	 * 
+	 * @param applicationID
+	 * @return
+	 */
+	@GET
+	@Path("/getApplication")
+	public OAMO getApplication(@QueryParam("applicationID") String applicationID) {
+
+		GetApplicationImpl application = new GetApplicationImpl(applicationID);		
+
+		return application.getOAMO();
 	}
+	
+	
+	
+	
+
+	/**
+	 * Used to retrieve the description (OSMO) of an available service. Requires
+	 * as input the Service ID
+	 * 
+	 * @param serviceID
+	 * @return
+	 */
+	@GET
+	@Path("/getService")
+	public OSMO getService(@QueryParam("serviceID") String serviceID) {
+
+		GetServiceImpl service =  new GetServiceImpl(serviceID);		
+		
+		return service.getService();
+	}
+	
+	
+	
+	
+	/**
+	 * Used to retrieve the available applications (a list of
+	 * applicationID/ServiceName/ServiceDescription triplet) already registered
+	 * by a specific user. Requires as input the User ID.
+	 * 
+	 * @param userID
+	 * @return
+	 */
+	@GET
+	@Path("/getAvailableAppIDs")
+	public DescreptiveIDs getAvailableAppIDs(@QueryParam("userID") String userID) {
+
+		GetAvailableAppIDsImpl availableAppIDs = new GetAvailableAppIDsImpl(userID);
+
+		return availableAppIDs.getAvailableAppIDs();
+	}
+	
+	
+	
+
+	/**
+	 * Used to retrieve the available services (a list of
+	 * serviceID/ServiceName/ServiceDescription triplet) already registered by a
+	 * specific user. Requires as input the Service ID.
+	 * 
+	 * @param applicationID
+	 * @return
+	 */
+	@GET
+	@Path("/getAvailableServiceIDs")
+	public DescreptiveIDs getAvailableServiceIDs(@QueryParam("applicationID") String applicationID) {
+
+		GetAvailableServiceIDsImpl availableServiceIDs = new GetAvailableServiceIDsImpl(applicationID);
+				
+		return availableServiceIDs.getAvailableServiceIDs();
+	}
+	
+	/**
+	 * Used to retrieve the services defined by a user. It returns an OpenIoT
+	 * Service Description Specification. Requires as input the User ID.
+	 * 
+	 * @param userID
+	 * @return
+	 */
+	@GET
+	@Path("/getAvailableApps")
+	public OSDSpec getAvailableApps(@QueryParam("userID") String userID) {
+
+		GetAvailableAppsImpl availableApps = new GetAvailableAppsImpl(userID); 
+
+		return availableApps.getAvailableApps();
+	}
+	
 }

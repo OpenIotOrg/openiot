@@ -49,8 +49,10 @@ public class DefaultGraphNodeEndpoint implements GraphNodeEndpoint, Serializable
     private String scope;
     private boolean isRequired;
     private String userData;
+    private boolean isVisible;
 
     public DefaultGraphNodeEndpoint() {
+    	this.isVisible = true;
     }
 
     public String getUID() {
@@ -116,6 +118,14 @@ public class DefaultGraphNodeEndpoint implements GraphNodeEndpoint, Serializable
     public void setConnectorType(ConnectorType type) {
         this.connectorType = type;
     }
+    
+    public boolean isVisible(){
+    	return isVisible;
+    }
+    
+	public void setVisible( boolean visible ){
+		this.isVisible = visible;
+	}
 
     public GraphNodeEndpoint getCopy() {
         GraphNodeEndpoint copy = new DefaultGraphNodeEndpoint();
@@ -127,6 +137,7 @@ public class DefaultGraphNodeEndpoint implements GraphNodeEndpoint, Serializable
         copy.setRequired(isRequired);
         copy.setType(type);
         copy.setUserData(userData);
+        copy.setVisible(isVisible);
         
         return copy;
     }
@@ -152,6 +163,7 @@ public class DefaultGraphNodeEndpoint implements GraphNodeEndpoint, Serializable
 			spec.put("scope", scope);
 			spec.put("isRequired", isRequired);
 			spec.put("userData", userData);
+			spec.put("isVisible", isVisible);
 			
 		}catch(JSONException ex){
 			LoggerService.log(ex);
@@ -169,10 +181,11 @@ public class DefaultGraphNodeEndpoint implements GraphNodeEndpoint, Serializable
 		setScope(spec.getString("scope"));
 		setRequired(spec.getBoolean("isRequired"));
 		setUserData(spec.optString("userData"));
+		setVisible(spec.optBoolean("isVisible", true));
 	}
     
     @Override
     public String toString() {
-        return "[type: " + getType() + ", anchor: " + anchor + ", label: " + getLabel() + ", javaType: " + getScope() + ", required: " + isRequired() + "]";
+        return "[type: " + getType() + ", anchor: " + anchor + ", label: " + getLabel() + ", javaType: " + getScope() + ", required: " + isRequired() + ", visible: " + isVisible + "]";
     }
 }

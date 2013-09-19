@@ -99,6 +99,7 @@ public class NodeGraphRenderer extends CoreRenderer {
 
         // Render a node for each graphNode
         for (GraphNode node : model.getNodes()) {
+        	
             GraphNodePosition position = model.lookupGraphNodePosition(node.getUID());
 
             // Count endpoints on each side
@@ -107,6 +108,9 @@ public class NodeGraphRenderer extends CoreRenderer {
             int bottomEndpoints = 0;
             int leftEndpoints = 0;
             for (GraphNodeEndpoint endpoint : node.getEndpointDefinitions()) {
+            	if( !endpoint.isVisible()){
+            		continue;
+            	}
 
                 switch (endpoint.getAnchor()) {
                     case Top:
@@ -175,6 +179,10 @@ public class NodeGraphRenderer extends CoreRenderer {
                 int bottomEndpoints = 0;
                 int leftEndpoints = 0;
                 for (GraphNodeEndpoint endpoint : node.getEndpointDefinitions()) {
+                	
+                	if( !endpoint.isVisible()){
+                		continue;
+                	}
 
                     switch (endpoint.getAnchor()) {
                         case Top:
@@ -203,6 +211,11 @@ public class NodeGraphRenderer extends CoreRenderer {
                 double leftPosition = 1.0 / (2.0 * (double) leftEndpoints);
 
                 for (GraphNodeEndpoint endpoint : node.getEndpointDefinitions()) {
+                	// Ignore invisible endpoints
+                	if( !endpoint.isVisible()){
+                		continue;
+                	}
+
                     double labelX = 0;
                     double labelY = 0;
                     double anchorXPos = 0;

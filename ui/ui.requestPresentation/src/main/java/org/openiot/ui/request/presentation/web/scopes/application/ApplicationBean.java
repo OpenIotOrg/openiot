@@ -19,18 +19,20 @@
  ******************************************************************************/
 package org.openiot.ui.request.presentation.web.scopes.application;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.logging.Level;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 
 import org.openiot.ui.request.presentation.web.scopes.session.SessionBean;
 import org.openiot.ui.request.commons.logging.LoggerService;
 
 /**
- *
+ * 
  * @author Achilleas Anagnostopoulos (aanag) email: aanag@sensap.eu
  */
 @ManagedBean(name = "applicationBean", eager = true)
@@ -38,24 +40,36 @@ import org.openiot.ui.request.commons.logging.LoggerService;
 public class ApplicationBean implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-    @PostConstruct
-    public void init() {
-    	LoggerService.setApplicationName("OpenIoT:RequestPresentation");
-        LoggerService.setLevel(Level.FINE);
-        LoggerService.log(Level.INFO, "Initializing");
-    }
-    
-    //------------------------------------
-    // Lookup API
-    //------------------------------------
-    public static ApplicationBean lookupApplicationBean() {
-        FacesContext context = FacesContext.getCurrentInstance();
-        return ((ApplicationBean) context.getApplication().evaluateExpressionGet(context, "#{applicationBean}", ApplicationBean.class));
-    }
+	@PostConstruct
+	public void init() {
+		LoggerService.setApplicationName("OpenIoT:RequestPresentation");
+		LoggerService.setLevel(Level.FINE);
+		LoggerService.log(Level.INFO, "Initializing");
+	}
 
-    public static SessionBean lookupSessionBean() {
-        FacesContext context = FacesContext.getCurrentInstance();
-        return ((SessionBean) context.getApplication().evaluateExpressionGet(context, "#{sessionBean}", SessionBean.class));
-    }
+	public void redirect(String location) {
+		try {
+			FacesContext ctx = FacesContext.getCurrentInstance();
+			ExternalContext extContext = ctx.getExternalContext();
+			String url = extContext.encodeActionURL(ctx.getApplication().getViewHandler().getActionURL(ctx, location));
+			extContext.redirect(url);
+		} catch (IOException ex) {
+			LoggerService.log(ex);
+		} catch (java.lang.IllegalStateException ex) {
+		}
+	}
+
+	// ------------------------------------
+	// Lookup API
+	// ------------------------------------
+	public static ApplicationBean lookupApplicationBean() {
+		FacesContext context = FacesContext.getCurrentInstance();
+		return ((ApplicationBean) context.getApplication().evaluateExpressionGet(context, "#{applicationBean}", ApplicationBean.class));
+	}
+
+	public static SessionBean lookupSessionBean() {
+		FacesContext context = FacesContext.getCurrentInstance();
+		return ((SessionBean) context.getApplication().evaluateExpressionGet(context, "#{sessionBean}", SessionBean.class));
+	}
 
 }

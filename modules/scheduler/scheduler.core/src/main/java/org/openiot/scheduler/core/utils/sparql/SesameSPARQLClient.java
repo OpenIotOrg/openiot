@@ -1,6 +1,26 @@
 package org.openiot.scheduler.core.utils.sparql;
 
 
+/**
+ *    Copyright (c) 2011-2014, OpenIoT
+ *    
+ *    This file is part of OpenIoT.
+ *
+ *    OpenIoT is free software: you can redistribute it and/or modify
+ *    it under the terms of the GNU Lesser General Public License as published by
+ *    the Free Software Foundation, version 3 of the License.
+ *
+ *    OpenIoT is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *    GNU Lesser General Public License for more details.
+ *
+ *    You should have received a copy of the GNU Lesser General Public License
+ *    along with OpenIoT.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *     Contact: OpenIoT mailto: info@openiot.eu
+ */
+
 import org.openrdf.query.BindingSet;
 import org.openrdf.query.QueryLanguage;
 import org.openrdf.query.TupleQuery;
@@ -10,117 +30,88 @@ import org.openrdf.repository.RepositoryException;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.sparql.SPARQLRepository;
 
-//import java.net.URL;
-//import java.net.URLConnection;
-//import java.util.*;
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Set;
-import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.core.util.StatusPrinter;
+
 
 public class SesameSPARQLClient
-{
-	//Initialize the Logger
-	final static Logger logger = LoggerFactory.getLogger(SesameSPARQLClient.class.getName()); 
-	private SPARQLRepository therepository = null;
+{	
+	final static Logger logger = LoggerFactory.getLogger(SesameSPARQLClient.class); 
 		
-	public SesameSPARQLClient()
+	private SPARQLRepository therepository = null;	
+	
+	
+	public SesameSPARQLClient() throws RepositoryException
 	{					
 		therepository = new SPARQLRepository("http://lsm.deri.ie/sparql");
 		
-		try 
-		{
+		try {
 			therepository.initialize();
 		} 
-		catch (RepositoryException e) 
-		{			
-			e.printStackTrace();
+		catch (RepositoryException e){			
+			logger.error("init sparql repository -http://lsm.deri.ie/sparql- error",e);
+			throw e;
 		}
-		
-		 // print Logger's internal state (not required for initialization)
-	    LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory(); 
-	    StatusPrinter.print(lc);
-	   
-	    logger.debug("Hello world Debug by Logger. From : {}",SesameSPARQLClient.class.getName());
-	}	
-	
-	public SesameSPARQLClient(String url)
+	}
+	public SesameSPARQLClient(String url) throws RepositoryException
 	{					
-		therepository = new SPARQLRepository(url);
-		try 
-		{
+		try {
 			therepository.initialize();
 		} 
-		catch (RepositoryException e) 
-		{			
-			e.printStackTrace();
+		catch (RepositoryException e){			
+			logger.error("init sparql repository -"+url+"- error",e);
+			throw e;
 		}
-		
-		 // print Logger's internal state (not required for initialization)
-	    LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory(); 
-	    StatusPrinter.print(lc);
-	   
-	    logger.debug("Hello world Debug by Logger. From : {}",SesameSPARQLClient.class.getName());
 	}
 	
 		
+	public SPARQLRepository getTherepository() {
+		return therepository;
+	}	
+	
+	
 	public String sparqlToXml(String queryString)
 	{
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		
-		try
-		{
+		try	{
 			RepositoryConnection con = therepository.getConnection();			
 
-			try
-			{					
+			try	{					
 				TupleQuery tupleQuery = con.prepareTupleQuery(QueryLanguage.SPARQL, queryString);
 				tupleQuery.evaluate(new SPARQLResultsXMLWriter(out));
 				
 				return out.toString();
-			} 
-			finally
-			{
+			} finally {
 				con.close();
 			}
-		} 
-		catch (Exception e)
-		{
+			
+		} catch (Exception e){
 			e.printStackTrace();
 		}
 		
 		return null;
 	}
-	
 	public TupleQueryResult sparqlToQResult(String queryString)
 	{		
-		try
-		{
+		try{
 			RepositoryConnection con = therepository.getConnection();
-			try
-			{
+			
+			try	{
 				TupleQuery query = con.prepareTupleQuery(org.openrdf.query.QueryLanguage.SPARQL, queryString);
-				TupleQueryResult qres = query.evaluate();
-				
+				TupleQueryResult qres = query.evaluate();				
 				
 				return qres;
 			} 
-			finally
-			{
+			finally	{
 				con.close();
 			}
-		} 
-		catch (Exception e)
-		{
+		} catch (Exception e) {
 			e.printStackTrace();			
 		}
+		
 		return null;
 	}
-		
-	
 }//class

@@ -13,6 +13,7 @@ import javax.faces.event.ActionListener;
 
 import org.openiot.commons.osdspec.model.PresentationAttr;
 import org.openiot.commons.sdum.serviceresultset.model.SdumServiceResultSet;
+import org.openiot.commons.sparql.protocoltypes.model.QueryResult;
 import org.openiot.commons.sparql.result.model.Binding;
 import org.openiot.commons.sparql.result.model.Result;
 import org.openiot.ui.request.presentation.web.model.nodes.interfaces.VisualizationWidget;
@@ -96,29 +97,31 @@ public class Gauge implements VisualizationWidget {
 	public void processData(SdumServiceResultSet resultSet) {
 		boolean triggerUpdate = false;
 
-		for (Result result : resultSet.getQueryResult().getSparql().getResults().getResult()) {
-			// Parse data
-			Double value = null;
+		for (QueryResult resultBlock : resultSet.getQueryResult()) {
+			for (Result result : resultBlock.getSparql().getResults().getResult()) {
+				// Parse data
+				Double value = null;
 
-			for (Binding binding : result.getBinding()) {
-				if ("VALUE".equals(binding.getName())) {
-					value = Double.valueOf(binding.getLiteral().getContent());
+				for (Binding binding : result.getBinding()) {
+					if ("VALUE".equals(binding.getName())) {
+						value = Double.valueOf(binding.getLiteral().getContent());
+					}
+				}
+
+				// Update series
+				if (value != null) {
+					model.setValue(value);
+					triggerUpdate = true;
 				}
 			}
 
-			// Update series
-			if (value != null) {
-				model.setValue(value);
-				triggerUpdate = true;
-			}
-		}
-
-		if (triggerUpdate) {
-			widget.setRendered(true);
-			emptyMessage.setRendered(false);
-			RequestContext requestContext = RequestContext.getCurrentInstance();
-			if (requestContext != null) {
-				requestContext.update(panel.getClientId());
+			if (triggerUpdate) {
+				widget.setRendered(true);
+				emptyMessage.setRendered(false);
+				RequestContext requestContext = RequestContext.getCurrentInstance();
+				if (requestContext != null) {
+					requestContext.update(panel.getClientId());
+				}
 			}
 		}
 	}

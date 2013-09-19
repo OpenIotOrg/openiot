@@ -87,6 +87,12 @@ public interface GraphNodeEndpoint {
 
 	public void setRequired(boolean required);
 
+	/** 
+	 * Endpoint visibility
+	 */
+	public boolean isVisible();
+	public void setVisible( boolean visible );
+	
 	/**
 	 * Set user data
 	 */

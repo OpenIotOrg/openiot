@@ -19,11 +19,13 @@
  ******************************************************************************/
 package org.openiot.ui.request.definition.web.scopes.application;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.logging.Level;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 
 import org.openiot.ui.request.definition.web.scopes.session.SessionBean;
@@ -44,6 +46,19 @@ public class ApplicationBean implements Serializable {
         LoggerService.setLevel(Level.FINE);
         LoggerService.log(Level.INFO, "Initializing");
     }
+    
+    public void redirect(String location) {
+        try {
+            FacesContext ctx = FacesContext.getCurrentInstance();
+            ExternalContext extContext = ctx.getExternalContext();
+            String url = extContext.encodeActionURL(ctx.getApplication().getViewHandler().getActionURL(ctx, location));
+            extContext.redirect(url);
+        } catch (IOException ex) {
+            LoggerService.log(ex);
+        } catch (java.lang.IllegalStateException ex) {
+        }
+    }
+
     
     //------------------------------------
     // Lookup API
