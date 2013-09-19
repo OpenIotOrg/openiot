@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- This file was auto-generated from WSDL -->
+<!-- by the Apache Axis2 version: 1.4.1  Built on : Aug 13, 2008 (05:03:35 LKT) -->
+<serviceGroup>
+    <service name="GSNWebService" scope="application">
+        <messageReceivers>
+            <messageReceiver mep="http://www.w3.org/ns/wsdl/in-out" class="gsn.webservice.standard.GSNWebServiceMessageReceiverInOut"/>
+        </messageReceivers>
+        <parameter name="ServiceClass">gsn.webservice.standard.GSNWebServiceSkeleton</parameter>
+        <parameter name="useOriginalwsdl">true</parameter>
+        <parameter name="modifyUserWSDLPortAddress">true</parameter>
+        <operation name="getVirtualSensorsDetails" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://standard.webservice.gsn">
+            <actionMapping>urn:getVirtualSensorsDetails</actionMapping>
+            <outputActionMapping>urn:getVirtualSensorsDetailsResponse</outputActionMapping>
+        </operation>
+        <operation name="getNextData" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://standard.webservice.gsn">
+            <actionMapping>urn:getNextData</actionMapping>
+            <outputActionMapping>urn:getNextDataResponse</outputActionMapping>
+        </operation>
+        <operation name="listWrapperURLs" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://standard.webservice.gsn">
+            <actionMapping>urn:listWrapperURLs</actionMapping>
+            <outputActionMapping>urn:listWrapperURLsResponse</outputActionMapping>
+        </operation>
+        <operation name="getLatestMultiData" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://standard.webservice.gsn">
+            <actionMapping>urn:getLatestMultiData</actionMapping>
+            <outputActionMapping>urn:getLatestMultiDataResponse</outputActionMapping>
+        </operation>
+        <operation name="unregisterQuery" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://standard.webservice.gsn">
+            <actionMapping>urn:unregisterQuery</actionMapping>
+            <outputActionMapping>urn:unregisterQueryResponse</outputActionMapping>
+        </operation>
+        <operation name="createVirtualSensor" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://standard.webservice.gsn">
+            <actionMapping>urn:createVirtualSensor</actionMapping>
+            <outputActionMapping>urn:createVirtualSensorResponse</outputActionMapping>
+        </operation>
+        <operation name="getMultiData" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://standard.webservice.gsn">
+            <actionMapping>urn:getMultiData</actionMapping>
+            <outputActionMapping>urn:getMultiDataResponse</outputActionMapping>
+        </operation>
+        <operation name="registerQuery" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://standard.webservice.gsn">
+            <actionMapping>urn:registerQuery</actionMapping>
+            <outputActionMapping>urn:registerQueryResponse</outputActionMapping>
+        </operation>
+        <operation name="getContainerInfo" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://standard.webservice.gsn">
+            <actionMapping>urn:getContainerInfo</actionMapping>
+            <outputActionMapping>urn:getContainerInfoResponse</outputActionMapping>
+        </operation>
+        <operation name="listVirtualSensorNames" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://standard.webservice.gsn">
+            <actionMapping>urn:listVirtualSensorNames</actionMapping>
+            <outputActionMapping>urn:listVirtualSensorNamesResponse</outputActionMapping>
+        </operation>
+        <operation name="deleteVirtualSensor" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://standard.webservice.gsn">
+            <actionMapping>urn:deleteVirtualSensor</actionMapping>
+            <outputActionMapping>urn:deleteVirtualSensorResponse</outputActionMapping>
+        </operation>
+    </service>
+</serviceGroup>
