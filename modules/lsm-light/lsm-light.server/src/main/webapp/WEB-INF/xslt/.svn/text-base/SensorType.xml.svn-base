@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Root>
+<sensors>
+	<sensor>
+		<label>weather</label>
+		<url>http://lsm.deri.ie/resource/8a8291b7321534e701321534ee3f0015</url>
+	</sensor>
+	<sensor>
+		<label>snowfall</label>
+		<url>http://lsm.deri.ie/resource/8a8291b7321534e701321534edeb0001</url>
+	</sensor>
+	<sensor>
+		<label>snowdepth</label>
+		<url>http://lsm.deri.ie/resource/8a8291b7321534e701321534ee170007</url>
+	</sensor>
+	<sensor>
+		<label>satellite</label>
+		<url>http://lsm.deri.ie/resource/8a8291b7321534e701321534ee0a0003</url>
+	</sensor>
+	<sensor>
+		<label>radar</label>
+		<url>http://lsm.deri.ie/resource/8a8291b7321534e701321534ee23000b</url>
+	</sensor>
+	<sensor>
+		<label>webcam</label>
+		<url>http://lsm.deri.ie/resource/8a8291b7321534e701321534ee28000d</url>
+	</sensor>
+	<sensor>
+		<label>traffic</label>
+		<url>http://lsm.deri.ie/resource/8a8291b7321534e701321534ee2d000f</url>
+	</sensor>	
+	<sensor>
+		<label>railwaystation</label>
+		<url>http://lsm.deri.ie/resource/8a8291b7321534e701321534ee350011</url>
+	</sensor>
+	<sensor>
+		<label>bikehire</label>
+		<url>http://lsm.deri.ie/resource/8a8291b7321534e701321534ee440017</url>
+	</sensor>
+	<sensor>
+		<label>roadactivity</label>
+		<url>http://lsm.deri.ie/resource/8a8291b7321534e701321534ee480019</url>
+	</sensor>
+	<sensor>
+		<label>sealevel</label>
+		<url>http://lsm.deri.ie/resource/8a8291b7321534e701321534ee110005</url>
+	</sensor>
+	<sensor>
+		<label>airport</label>
+		<url>http://lsm.deri.ie/resource/8a8291321534ee3f0015</url>
+	</sensor>
+	<sensor>
+		<label>cosm</label>
+		<url>http://lsm.deri.ie/resource/8a8291b732134ee480019</url>
+	</sensor>
+	<sensor>
+		<label>gsn</label>
+		<url>http://lsm.deri.ie/resource/8a8291b732b732113215334ee0f</url>
+	</sensor>
+</sensors>
+</Root>

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" id="WebApp_ID" version="3.0">
+  <display-name>lsm-light.server</display-name>
+  <welcome-file-list>
+    <welcome-file>index.html</welcome-file>
+    <welcome-file>index.htm</welcome-file>
+    <welcome-file>index.jsp</welcome-file>
+    <welcome-file>default.html</welcome-file>
+    <welcome-file>default.htm</welcome-file>
+    <welcome-file>default.jsp</welcome-file>
+  </welcome-file-list>
+  
+  <!-- *******************************************************************************     
+      LSM's Main Servlets, Must be enabled for any kind of HTTP based access
+     ******************************************************************************* -->
+     
+     <!-- LSM START -->
+  <servlet>
+    <servlet-name>TriplesServlet</servlet-name>
+    <servlet-class>org.openiot.lsm.http.TriplesServlet</servlet-class>
+  </servlet>
+  
+  <servlet>
+    <servlet-name>ObjectServlet</servlet-name>
+    <servlet-class>org.openiot.lsm.http.ObjectServlet</servlet-class>
+  </servlet>
+  
+  <servlet>
+    <servlet-name>UploadFileServlet</servlet-name>
+    <servlet-class>org.openiot.lsm.http.UploadFileServlet</servlet-class>
+  </servlet>
+  
+  <servlet>
+    <servlet-name>DownloadFileServlet</servlet-name>
+    <servlet-class>org.openiot.lsm.http.DownloadFileServlet</servlet-class>
+  </servlet>
+  
+    				<!-- mapping for LSM -->
+  <servlet-mapping>
+    <servlet-name>TriplesServlet</servlet-name>
+    <url-pattern>/rdfservlet</url-pattern>
+  </servlet-mapping>
+  
+  <servlet-mapping>
+    <servlet-name>ObjectServlet</servlet-name>
+    <url-pattern>/objservlet</url-pattern>
+  </servlet-mapping>
+  
+  
+  <servlet-mapping>
+    <servlet-name>UploadFileServlet</servlet-name>
+    <url-pattern>/upload</url-pattern>
+  </servlet-mapping>
+  
+  <servlet-mapping>
+    <servlet-name>DownloadFileServlet</servlet-name>
+    <url-pattern>/download</url-pattern>
+  </servlet-mapping>
+</web-app>
