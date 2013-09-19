@@ -280,6 +280,8 @@ public class SchedulerClient
 		
 		getServiceRequest.accept("application/xml");
 		
+		
+		
 		//Handle the response		
 		String str = null;
 		try {
