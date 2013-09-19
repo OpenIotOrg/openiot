@@ -52,7 +52,7 @@ import org.openiot.commons.util.CDataAdapter;
 public class QueryRequest {
 
     @XmlElement(required = true)
-    //@XmlJavaTypeAdapter(CDataAdapter.class)    
+    @XmlJavaTypeAdapter(CDataAdapter.class)    
     protected String query;
     @XmlElement(name = "default-graph-uri")
     @XmlSchemaType(name = "anyURI")
