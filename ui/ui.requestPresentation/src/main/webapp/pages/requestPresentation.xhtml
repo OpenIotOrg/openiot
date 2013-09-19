@@ -1,0 +1,127 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:s="http://www.sensap.eu/jsf"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:dialogs="http://java.sun.com/jsf/composite/components/sensap/dialogs">
+
+<f:view contentType="text/html">
+	<f:event type="javax.faces.event.PreRenderViewEvent"
+		listener="#{requestPresentationPageController.doAccessControl}" />
+
+	<h:head>
+		<meta content='text/html; charset=UTF-8' http-equiv="Content-Type" />
+		<h:outputStylesheet library="css" name="core.css" />
+		<h:outputScript library="js" name="core.js" />
+		<script src="http://maps.google.com/maps/api/js?sensor=false"
+			type="text/javascript"></script>
+		<title>#{messages.UI_REQUEST_PRESENTATION_TITLE}</title>
+	</h:head>
+
+	<h:body styleClass="request-presentation" id="body">
+		<h:form id="util">
+			<p:growl widgetVar="growl" escape="false" autoUpdate="true"
+				showSummary="false" showDetail="true" sticky="true"
+				severity="error,fatal" />
+			<p:growl widgetVar="growl2" escape="false" autoUpdate="true"
+				showSummary="false" showDetail="true" severity="info, warn"
+				life="3000" />
+			<p:poll process="@this" update="@this" interval="600"
+				listener="#{requestPresentationPageController.keepAlivePing}" />
+
+			<p:poll process="@this" update="@this" interval="30"
+				listener="#{requestPresentationPageController.updateDashboard()}" />
+		</h:form>
+
+		<pe:blockUI widgetVar="windowBlockUI"
+			targetSelector=".service-designer">
+			<span class="ui-icon-loader-big"></span>
+		</pe:blockUI>
+
+
+		<pe:layout id="pageLayout" stateCookie="true" fullPage="true">
+
+			<!-- Menubar -->
+			<pe:layoutPane position="north" size="42" closable="false"
+				resizable="false"
+				styleClassContent="no-border menubar-layout-container">
+				<h:form id="menubar">
+					<p:menubar autoDisplay="false">
+						<p:submenu label="#{messages.UI_MENUBAR_FILE}"
+							icon="ui-icon-document">
+
+							<p:submenu label="#{messages.UI_MENUBAR_FILE_OPEN}"
+								rendered="#{! requestPresentationPageController.context.appManager.availableOAMOs.isEmpty()}"
+								icon="ui-icon-folder-open">
+
+								<c:forEach
+									items="#{requestPresentationPageController.context.appManager.availableOAMOs}"
+									var="entry">
+									<p:menuitem value="#{entry.name}"
+										actionListener="#{requestPresentationPageController.loadApplication(entry.name)}"
+										process="@this" onclick="windowBlockUI.block();"
+										oncomplete="windowBlockUI.unblock();"
+										update=":dashboardForm, :menubar" />
+								</c:forEach>
+
+							</p:submenu>
+
+							<p:separator />
+
+							<p:menuitem value="#{messages.UI_MENUBAR_FILE_REFRESH}"
+								icon="ui-icon-refresh"
+								actionListener="#{requestPresentationPageController.reloadApplications()}"
+								process="@this" onclick="windowBlockUI.block();"
+								oncomplete="windowBlockUI.unblock();"
+								update=":dashboardForm, :menubar" />
+
+						</p:submenu>
+
+						<p:submenu label="#{messages.UI_MENUBAR_APP}" icon="ui-icon-gear">
+
+							<p:menuitem value="#{messages.UI_MENUBAR_APP_REFRESH}"
+								disabled="#{empty requestPresentationPageController.context.appManager.selectedOAMO}"
+								icon="ui-icon-refresh" process="@this"
+								actionListener="#{requestPresentationPageController.updateDashboard()}" />
+						</p:submenu>
+
+						<f:facet name="options">
+							<p:outputLabel value="#{messages.UI_MENUBAR_ACTIVE_APP}" />
+							<p:button icon="ui-icon-document" style="margin-left:10px;"
+								value="#{empty requestPresentationPageController.context.appManager.selectedOAMO ? '-' : requestPresentationPageController.context.appManager.selectedOAMO.name}"
+								onclick="return false;" />
+
+							<p:commandButton icon="ui-icon-unlocked"
+								style="margin-left:10px;"
+								value="#{messages.UI_LOGIN_LOGOUT_BUTTON}" process="@this"
+								actionListener="#{loginPageController.handleLogout()}" />
+						</f:facet>
+
+					</p:menubar>
+				</h:form>
+			</pe:layoutPane>
+
+			<pe:layoutPane position="center" styleClass="no-border">
+				<h:form id="dashboardForm"
+					rendered="#{! empty requestPresentationPageController.context}">
+					<p:dashboard
+						binding="#{requestPresentationPageController.dashboard}" />
+
+					<p:outputLabel
+						rendered="#{empty requestPresentationPageController.context.appManager.selectedOAMO}"
+						value="#{messages.UI_WIDGET_NO_APPLICATION_SELECTED}"
+						styleClass="no-application-selected" />
+				</h:form>
+
+			</pe:layoutPane>
+
+		</pe:layout>
+	</h:body>
+
+</f:view>
+</html>
+
