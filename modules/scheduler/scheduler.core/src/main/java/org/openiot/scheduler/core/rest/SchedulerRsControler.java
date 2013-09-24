@@ -42,6 +42,8 @@ import org.openiot.scheduler.core.api.impl.GetAvailableApps.GetAvailableAppsImpl
 import org.openiot.scheduler.core.api.impl.GetAvailableServiceIDs.GetAvailableServiceIDsImpl;
 import org.openiot.scheduler.core.api.impl.GetService.GetServiceImpl;
 import org.openiot.scheduler.core.api.impl.RegisterService.RegisterServiceImpl;
+import org.openiot.scheduler.core.api.impl.UserLogin.UserLoginImpl;
+import org.openiot.scheduler.core.api.impl.UserRegister.UserRegisterImpl;
 //=======
 //import org.openiot.scheduler.core.api.impl.DiscoverSensorsImpl;
 //import org.openiot.scheduler.core.api.impl.RegisterServiceImpl;
@@ -102,15 +104,13 @@ public class SchedulerRsControler {
 	/**
 	 *
 	 */
-	@POST
+	@GET
 	@Path("/userRegister")
-//	@Consumes("application/xml")
+	//@Consumes("application/xml")
 	public String userRegister(@QueryParam("userName") String userName, @QueryParam("userMail") String userMail, @QueryParam("description") String description, @QueryParam("password") String passwd) {
 		
-		//TODO:add code here, need to do a select query by userMail in order to get back id
-		
-		return "register user ok: id:";
-
+		UserRegisterImpl userRegister = new UserRegisterImpl(userName, userMail, description, passwd);		
+		return userRegister.getReplyMessage();
 	}
 	
 	
@@ -119,17 +119,10 @@ public class SchedulerRsControler {
 	@Path("/userLogin")
 //	@Consumes("application/xml")
 //	@Produces("application/xml")
-	public String userLogin(@QueryParam("userMail") String userMail ) {
+	public String userLogin(@QueryParam("userMail") String userMail,@QueryParam("userPaswrd") String userPaswrd  ) {
 		
-		String id = null;
-		
-		//TODO:add code here
-		
-		
-		if(id!=null)
-			return id;
-		else 
-			return "no such user mail available";
+		UserLoginImpl userLogin = new UserLoginImpl(userMail,userPaswrd);	
+		return userLogin.getReplyMessage();
 	}
 	
 	
