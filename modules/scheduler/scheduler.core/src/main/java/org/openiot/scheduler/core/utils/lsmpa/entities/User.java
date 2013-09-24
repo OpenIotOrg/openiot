@@ -182,11 +182,12 @@ public class User
 			String str=("SELECT ?userID ?userName ?userDesc ?userPasw from <"+graph+"> "
 					+"WHERE "
 					+"{"
+					+"?userID rdf:type <http://openiot.eu/ontology/ns/User> . "
 					+"?userID <http://openiot.eu/ontology/ns/userDescription> ?userDesc."
 					+"?userID <http://openiot.eu/ontology/ns/userName> ?userName."
 					+"optional { ?userID <http://openiot.eu/ontology/ns/userPassword> ?userPasw. } "
-					+"?userID <http://openiot.eu/ontology/ns/userMail> <"+email+"> ."
-					+"}");			
+					+"?userID <http://openiot.eu/ontology/ns/userMail> \""+email+"\"^^<http://www.w3.org/2001/XMLSchema#string> ."
+					+"}");
 			
 			update.append(str);
 			return update.toString();
@@ -294,7 +295,7 @@ public class User
 		
 	private void initOnt_USer()
 	{
-		ontClsUserClass = myOnt.getClass("http://openiot.eu/ontology/ns/User");
+		ontClsUserClass = myOnt.createClass("http://openiot.eu/ontology/ns/User");
 		ontPName = myOnt.createProperty("http://openiot.eu/ontology/ns/userName");
 		ontPemail = myOnt.createProperty("http://openiot.eu/ontology/ns/userMail");
 		ontPdescription = myOnt.createProperty("http://openiot.eu/ontology/ns/userDescription");
