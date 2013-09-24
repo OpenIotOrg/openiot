@@ -170,8 +170,8 @@ public class RegisterServiceImpl {
 						logger.debug("pAttr id: {} --- name: {}",pAttr.getName(),pAttr.getValue());
 						
 						WidgetAttributes wAttr = new WidgetAttributes(myOnt, myOntInstance,"http://lsm.deri.ie/OpenIoT/testSchema#",lsmStore);
-						wAttr.setDescription(pAttr.getName());
-						wAttr.setName(pAttr.getValue());
+						wAttr.setDescription(pAttr.getValue());
+						wAttr.setName(pAttr.getName());
 						wAttr.setWidgetPre(widgetPre);
 						///
 						wAttr.createClassIdv();
