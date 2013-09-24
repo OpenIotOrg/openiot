@@ -48,7 +48,7 @@ public class User
 {
 	public static class Queries
 	{
-		public static ArrayList<User> parseUser(TupleQueryResult qres)
+		public static ArrayList<User> parseSelectAllUsers(TupleQueryResult qres)
 		{
 			ArrayList<User> userList = new ArrayList<User>();
 			try 
@@ -79,6 +79,12 @@ public class User
 							user.setDescription(str);
 							System.out.println("userDesc : "+user.getDescription()+" ");	
 						}
+						else if(((String) n).equalsIgnoreCase("userPasw"))
+						{
+							String str = (b.getValue((String) n)==null) ? null : b.getValue((String) n).stringValue();
+							user.setPasswd(str);
+							System.out.println("userPasw : "+user.getPasswd()+" ");	
+						}
 						else if(((String) n).equalsIgnoreCase("userMail"))
 						{
 							String str = (b.getValue((String) n)==null) ? null : b.getValue((String) n).stringValue();
@@ -101,6 +107,67 @@ public class User
 				return null;
 			}
 		}
+		
+		public static User parseSelectUserByEmail(TupleQueryResult qres)
+		{
+			User user = new User();
+			
+			try 
+			{
+//				while (qres.hasNext())
+//				{
+					BindingSet b = qres.next();
+					Set names = b.getBindingNames();
+					
+					
+					for (Object n : names)
+					{						
+						if(((String) n).equalsIgnoreCase("userID"))
+						{
+							String str = (b.getValue((String) n)==null) ? null : b.getValue((String) n).stringValue();
+							user.setId(str);
+							System.out.println("user id: "+user.getId()+" ");	
+						}
+						else if(((String) n).equalsIgnoreCase("userName"))
+						{
+							String str = (b.getValue((String) n)==null) ? null : b.getValue((String) n).stringValue();
+							user.setName(str);
+							System.out.println("userName : "+user.getName()+" ");	
+						}
+						else if(((String) n).equalsIgnoreCase("userDesc"))
+						{
+							String str = (b.getValue((String) n)==null) ? null : b.getValue((String) n).stringValue();
+							user.setDescription(str);
+							System.out.println("userDesc : "+user.getDescription()+" ");	
+						}
+						else if(((String) n).equalsIgnoreCase("userPasw"))
+						{
+							String str = (b.getValue((String) n)==null) ? null : b.getValue((String) n).stringValue();
+							user.setPasswd(str);
+							System.out.println("userPasw : "+user.getPasswd()+" ");	
+						}
+						else if(((String) n).equalsIgnoreCase("userMail"))
+						{
+							String str = (b.getValue((String) n)==null) ? null : b.getValue((String) n).stringValue();
+							user.setEmail(str);
+							System.out.println("userMail : "+user.getEmail()+" ");	
+						}
+					}
+//				}//while
+				return user;
+			} 
+			catch (QueryEvaluationException e)			
+			{				
+				e.printStackTrace();
+				return null;
+			}
+			catch (Exception e)			
+			{				
+				e.printStackTrace();
+				return null;
+			}
+		}
+		
 		
 		private static String graph = "http://lsm.deri.ie/OpenIoT/testSchema#";
 		
@@ -126,15 +193,16 @@ public class User
 		{
 			StringBuilder update = new StringBuilder();
 	        update.append(getNamespaceDeclarations());
-			
-			String str=("SELECT ?userID ?userName ?userDesc ?userMail from <"+graph+"> "
-								+"WHERE "
-								+"{"
-								+"?userID <http://openiot.eu/ontology/ns/userMail> ?userMail."
-								+"?userID <http://openiot.eu/ontology/ns/userDescription> ?userDesc."
-								+"?userID <http://openiot.eu/ontology/ns/userName> ?userName."
-								+"?userID rdf:type <http://openiot.eu/ontology/ns/User> . "								
-								+"}");								
+									
+			String str=("SELECT ?userID ?userName ?userDesc ?userMail ?userPasw from <"+graph+"> "
+					+"WHERE "
+					+"{"
+					+"?userID <http://openiot.eu/ontology/ns/userMail> ?userMail."
+					+"?userID <http://openiot.eu/ontology/ns/userPassword> ?userPasw."
+					+"?userID <http://openiot.eu/ontology/ns/userDescription> ?userDesc."
+					+"?userID <http://openiot.eu/ontology/ns/userName> ?userName."
+					+"?userID rdf:type <http://openiot.eu/ontology/ns/User> . "								
+					+"}");
 			
 			update.append(str);
 			return update.toString();
@@ -167,20 +235,25 @@ public class User
 //			update.append(str);
 //			return update.toString();
 //		}
-//		public static String selectUserByEmail(String email)
-//		{
-//			StringBuilder update = new StringBuilder();
-//	        update.append(getNamespaceDeclarations());
-//			
-//			String str=("SELECT ?userID from <"+graph+"> "
-//								+"WHERE "
-//								+"{"								
-//								+"?userID <http://openiot.eu/ontology/ns/userMail> ?email FILTER regex(?email, \"" +email+ "\" )  . "								
-//								+"}");								
-//			
-//			update.append(str);
-//			return update.toString();
-//		}
+		public static String selectUserByEmail(String email)
+		{
+			StringBuilder update = new StringBuilder();
+	        update.append(getNamespaceDeclarations());
+			
+			String str=("SELECT ?userID ?userName ?userDesc ?userMail ?userPasw from <"+graph+"> "
+					+"WHERE "
+					+"{"
+					+"?userID <http://openiot.eu/ontology/ns/userMail> ?userMail." //this line is not needed
+					+"?userID <http://openiot.eu/ontology/ns/userPassword> ?userPasw."
+					+"?userID <http://openiot.eu/ontology/ns/userDescription> ?userDesc."
+					+"?userID <http://openiot.eu/ontology/ns/userName> ?userName."
+					+"?userID <http://openiot.eu/ontology/ns/userMail> <"+email+"> ."
+					+"}");
+			
+			
+			update.append(str);
+			return update.toString();
+		}
 //		public static String selectUserByAccess(Access access)
 //		{
 //			StringBuilder update = new StringBuilder();
