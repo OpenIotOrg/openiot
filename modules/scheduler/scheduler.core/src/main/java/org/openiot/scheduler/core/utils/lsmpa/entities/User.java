@@ -48,7 +48,7 @@ public class User
 {
 	public static class Queries
 	{
-		public static ArrayList<User> parseSelectAllUsers(TupleQueryResult qres)
+		public static ArrayList<User> parseUserData(TupleQueryResult qres)
 		{
 			ArrayList<User> userList = new ArrayList<User>();
 			try 
@@ -107,67 +107,6 @@ public class User
 				return null;
 			}
 		}
-		
-		public static User parseSelectUserByEmail(TupleQueryResult qres)
-		{
-			User user = new User();
-			
-			try 
-			{
-//				while (qres.hasNext())
-//				{
-					BindingSet b = qres.next();
-					Set names = b.getBindingNames();
-					
-					
-					for (Object n : names)
-					{						
-						if(((String) n).equalsIgnoreCase("userID"))
-						{
-							String str = (b.getValue((String) n)==null) ? null : b.getValue((String) n).stringValue();
-							user.setId(str);
-							System.out.println("user id: "+user.getId()+" ");	
-						}
-						else if(((String) n).equalsIgnoreCase("userName"))
-						{
-							String str = (b.getValue((String) n)==null) ? null : b.getValue((String) n).stringValue();
-							user.setName(str);
-							System.out.println("userName : "+user.getName()+" ");	
-						}
-						else if(((String) n).equalsIgnoreCase("userDesc"))
-						{
-							String str = (b.getValue((String) n)==null) ? null : b.getValue((String) n).stringValue();
-							user.setDescription(str);
-							System.out.println("userDesc : "+user.getDescription()+" ");	
-						}
-						else if(((String) n).equalsIgnoreCase("userPasw"))
-						{
-							String str = (b.getValue((String) n)==null) ? null : b.getValue((String) n).stringValue();
-							user.setPasswd(str);
-							System.out.println("userPasw : "+user.getPasswd()+" ");	
-						}
-						else if(((String) n).equalsIgnoreCase("userMail"))
-						{
-							String str = (b.getValue((String) n)==null) ? null : b.getValue((String) n).stringValue();
-							user.setEmail(str);
-							System.out.println("userMail : "+user.getEmail()+" ");	
-						}
-					}
-//				}//while
-				return user;
-			} 
-			catch (QueryEvaluationException e)			
-			{				
-				e.printStackTrace();
-				return null;
-			}
-			catch (Exception e)			
-			{				
-				e.printStackTrace();
-				return null;
-			}
-		}
-		
 		
 		private static String graph = "http://lsm.deri.ie/OpenIoT/testSchema#";
 		
@@ -240,10 +179,9 @@ public class User
 			StringBuilder update = new StringBuilder();
 	        update.append(getNamespaceDeclarations());
 			
-			String str=("SELECT ?userID ?userName ?userDesc ?userMail ?userPasw from <"+graph+"> "
+			String str=("SELECT ?userID ?userName ?userDesc ?userPasw from <"+graph+"> "
 					+"WHERE "
 					+"{"
-					+"?userID <http://openiot.eu/ontology/ns/userMail> ?userMail." //this line is not needed
 					+"?userID <http://openiot.eu/ontology/ns/userDescription> ?userDesc."
 					+"?userID <http://openiot.eu/ontology/ns/userName> ?userName."
 					+"optional { ?userID <http://openiot.eu/ontology/ns/userPassword> ?userPasw. } "
