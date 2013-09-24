@@ -1,5 +1,7 @@
 package org.openiot.scheduler.core.api.impl.UserRegister;
 
+import java.util.ArrayList;
+
 import javax.ws.rs.QueryParam;
 
 import org.openiot.scheduler.core.api.impl.RegisterService.RegisterServiceImpl;
@@ -46,7 +48,7 @@ public class UserRegisterImpl
 	}
 	
 	
-	public String replyMessage()
+	public String getReplyMessage()
 	{	
 		return replyMessage;
 	}
@@ -62,12 +64,13 @@ public class UserRegisterImpl
 			return;
 		}
 		
+		//check if user with same mail exists
 		TupleQueryResult qres = sparqlCl.sparqlToQResult(
 				org.openiot.scheduler.core.utils.lsmpa.entities.User.Queries.selectUserByEmail(this.mail));
-		org.openiot.scheduler.core.utils.lsmpa.entities.User usrEnt =  
-				org.openiot.scheduler.core.utils.lsmpa.entities.User.Queries.parseSelectUserByEmail(qres);
+		ArrayList<org.openiot.scheduler.core.utils.lsmpa.entities.User> usrEnt =  
+				org.openiot.scheduler.core.utils.lsmpa.entities.User.Queries.parseUserData(qres);
 		
-		if (usrEnt==null)
+		if (usrEnt.size()==0)
 		{
 			User user = new User();
 			user.setUsername("spet");
@@ -95,15 +98,14 @@ public class UserRegisterImpl
 			boolean ok = lsmStore.pushRDF("http://lsm.deri.ie/OpenIoT/testSchema#",myOntInstance.exportToTriples("N-TRIPLE"));
 
 			
-			if(ok){				
-							
+			if(ok){
 				qres = sparqlCl.sparqlToQResult(
 						org.openiot.scheduler.core.utils.lsmpa.entities.User.Queries.selectUserByEmail(this.mail));
+				//parse userdata list should always contain one element
 				org.openiot.scheduler.core.utils.lsmpa.entities.User usrEntity =  
-						org.openiot.scheduler.core.utils.lsmpa.entities.User.Queries.parseSelectUserByEmail(qres);
+						org.openiot.scheduler.core.utils.lsmpa.entities.User.Queries.parseUserData(qres).get(0);
 				
 				replyMessage= usrEntity.getId();
-				
 			}
 			else{
 				replyMessage= "register user error";
