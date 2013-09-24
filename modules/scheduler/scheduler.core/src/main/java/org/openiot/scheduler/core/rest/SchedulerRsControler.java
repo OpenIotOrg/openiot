@@ -98,6 +98,41 @@ public class SchedulerRsControler {
 	}
 	
 	
+	
+	/**
+	 *
+	 */
+	@POST
+	@Path("/userRegister")
+//	@Consumes("application/xml")
+	public String userRegister(@QueryParam("userName") String userName, @QueryParam("userMail") String userMail, @QueryParam("description") String description) {
+		
+		//TODO:add code here, need to do a select query by userMail in order to get back id
+		
+		return "register user ok: id:";
+
+	}
+	
+	
+	
+	@GET
+	@Path("/userLogin")
+//	@Consumes("application/xml")
+//	@Produces("application/xml")
+	public String userLogin(@QueryParam("userMail") String userMail ) {
+		
+		String id = null;
+		
+		//TODO:add code here
+		
+		
+		if(id!=null)
+			return id;
+		else 
+			return "no such user mail available";
+	}
+	
+	
 	/**
 	 * 
 	 * Used to help applications build a request by using existing sensor
