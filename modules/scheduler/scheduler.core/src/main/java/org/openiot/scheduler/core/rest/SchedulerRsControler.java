@@ -105,7 +105,7 @@ public class SchedulerRsControler {
 	@POST
 	@Path("/userRegister")
 //	@Consumes("application/xml")
-	public String userRegister(@QueryParam("userName") String userName, @QueryParam("userMail") String userMail, @QueryParam("description") String description) {
+	public String userRegister(@QueryParam("userName") String userName, @QueryParam("userMail") String userMail, @QueryParam("description") String description, @QueryParam("password") String passwd) {
 		
 		//TODO:add code here, need to do a select query by userMail in order to get back id
 		
