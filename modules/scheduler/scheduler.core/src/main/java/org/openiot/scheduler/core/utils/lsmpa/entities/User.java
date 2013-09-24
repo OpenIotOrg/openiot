@@ -197,11 +197,11 @@ public class User
 			String str=("SELECT ?userID ?userName ?userDesc ?userMail ?userPasw from <"+graph+"> "
 					+"WHERE "
 					+"{"
+					+"?userID rdf:type <http://openiot.eu/ontology/ns/User> . "	
 					+"?userID <http://openiot.eu/ontology/ns/userMail> ?userMail."
-					+"?userID <http://openiot.eu/ontology/ns/userPassword> ?userPasw."
 					+"?userID <http://openiot.eu/ontology/ns/userDescription> ?userDesc."
-					+"?userID <http://openiot.eu/ontology/ns/userName> ?userName."
-					+"?userID rdf:type <http://openiot.eu/ontology/ns/User> . "								
+					+"?userID <http://openiot.eu/ontology/ns/userName> ?userName."					
+					+"optional { ?userID <http://openiot.eu/ontology/ns/userPassword> ?userPasw. } "
 					+"}");
 			
 			update.append(str);
@@ -244,12 +244,11 @@ public class User
 					+"WHERE "
 					+"{"
 					+"?userID <http://openiot.eu/ontology/ns/userMail> ?userMail." //this line is not needed
-					+"?userID <http://openiot.eu/ontology/ns/userPassword> ?userPasw."
 					+"?userID <http://openiot.eu/ontology/ns/userDescription> ?userDesc."
 					+"?userID <http://openiot.eu/ontology/ns/userName> ?userName."
+					+"optional { ?userID <http://openiot.eu/ontology/ns/userPassword> ?userPasw. } "
 					+"?userID <http://openiot.eu/ontology/ns/userMail> <"+email+"> ."
-					+"}");
-			
+					+"}");			
 			
 			update.append(str);
 			return update.toString();
