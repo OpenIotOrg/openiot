@@ -243,7 +243,8 @@ public class User
 	private OntProperty ontPName;
 	private OntProperty ontPemail;
 	private OntProperty ontPdescription;
-	private OntProperty ontPaccess;
+	private OntProperty ontPpasswd;
+	//private OntProperty ontPaccess;
 	//private OntProperty ontPuserType;
 	private OntProperty ontPuserOf;
 	
@@ -251,6 +252,7 @@ public class User
 	private String name;
 	private String email;
 	private String description;
+	private String passwd;
 	
 	private ArrayList<OAMO> oamoList = new ArrayList<OAMO>();
 		
@@ -286,7 +288,8 @@ public class User
 		ontPName = myOnt.createProperty("http://openiot.eu/ontology/ns/userName");
 		ontPemail = myOnt.createProperty("http://openiot.eu/ontology/ns/userMail");
 		ontPdescription = myOnt.createProperty("http://openiot.eu/ontology/ns/userDescription");
-		ontPaccess = myOnt.createProperty("http://openiot.eu/ontology/ns/access");
+		ontPpasswd = myOnt.createProperty("http://openiot.eu/ontology/ns/userPassword");
+		//ontPaccess = myOnt.createProperty("http://openiot.eu/ontology/ns/access");
 		ontPuserOf = myOnt.createProperty("http://openiot.eu/ontology/ns/userOf");
 	}
 	
@@ -311,6 +314,11 @@ public class User
 	{
 		if(description!=null)
 			userClassIdv.setPropertyValue(ontPdescription, ontInstance.getBase().createTypedLiteral(description));
+	}
+	public void createPpasswd()
+	{
+		if(passwd!=null)
+			userClassIdv.setPropertyValue(ontPpasswd, ontInstance.getBase().createTypedLiteral(passwd));
 	}
 	
 	public void createPuserOf()
@@ -390,6 +398,13 @@ public class User
 	public void addService(OAMO oamo) 
 	{
 		this.oamoList.add(oamo);
+	}
+	
+	public String getPasswd() {
+		return passwd;
+	}
+	public void setPasswd(String passwd) {
+		this.passwd = passwd;
 	}
 	
 }//class
