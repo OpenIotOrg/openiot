@@ -53,25 +53,29 @@ import com.hp.hpl.jena.ontology.OntModelSpec;
  */
 public class RegisterServiceImpl {
 	
+	final static Logger logger = LoggerFactory.getLogger(RegisterServiceImpl.class);
 	
 	private OSDSpec osdSpec;
 	
-	final static Logger logger = LoggerFactory.getLogger(RegisterServiceImpl.class);
+	private String replyMessage= "";	
 	
-	private String replyMessage= "unsuccessfuly";
-	
-	
-	
+	//constructor
 	public RegisterServiceImpl (OSDSpec osdSpec){
 		
 		this.osdSpec = osdSpec;
 		
-		logger.debug("Recieved OSDSpec from User with userID: " + osdSpec.getUserID());
-	
+		logger.debug("Recieved OSDSpec from User with userID: " + osdSpec.getUserID());	
 
 		registerService();				
 	}		
 
+	/**
+	 * @return String
+	 */
+	public String replyMessage()
+	{	
+		return replyMessage;
+	}
 	
 	private void registerService() 
 	{
@@ -212,11 +216,5 @@ public class RegisterServiceImpl {
 		logger.debug(replyMessage);
 	}
 	
-	/**
-	 * @return String
-	 */
-	public String replyMessage()
-	{	
-		return replyMessage;
-	}
+	
 }
