@@ -53,25 +53,29 @@ import com.hp.hpl.jena.ontology.OntModelSpec;
  */
 public class RegisterServiceImpl {
 	
+	final static Logger logger = LoggerFactory.getLogger(RegisterServiceImpl.class);
 	
 	private OSDSpec osdSpec;
 	
-	final static Logger logger = LoggerFactory.getLogger(RegisterServiceImpl.class);
+	private String replyMessage= "";	
 	
-	private String replyMessage= "unsuccessfuly";
-	
-	
-	
+	//constructor
 	public RegisterServiceImpl (OSDSpec osdSpec){
 		
 		this.osdSpec = osdSpec;
 		
-		logger.debug("Recieved OSDSpec from User with userID: " + osdSpec.getUserID());
-	
+		logger.debug("Recieved OSDSpec from User with userID: " + osdSpec.getUserID());	
 
 		registerService();				
 	}		
 
+	/**
+	 * @return String
+	 */
+	public String replyMessage()
+	{	
+		return replyMessage;
+	}
 	
 	private void registerService() 
 	{
@@ -170,8 +174,8 @@ public class RegisterServiceImpl {
 						logger.debug("pAttr id: {} --- name: {}",pAttr.getName(),pAttr.getValue());
 						
 						WidgetAttributes wAttr = new WidgetAttributes(myOnt, myOntInstance,"http://lsm.deri.ie/OpenIoT/testSchema#",lsmStore);
-						wAttr.setDescription(pAttr.getName());
-						wAttr.setName(pAttr.getValue());
+						wAttr.setDescription(pAttr.getValue());
+						wAttr.setName(pAttr.getName());
 						wAttr.setWidgetPre(widgetPre);
 						///
 						wAttr.createClassIdv();
@@ -212,11 +216,5 @@ public class RegisterServiceImpl {
 		logger.debug(replyMessage);
 	}
 	
-	/**
-	 * @return String
-	 */
-	public String replyMessage()
-	{	
-		return replyMessage;
-	}
+	
 }

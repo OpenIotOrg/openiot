@@ -23,6 +23,7 @@ package org.openiot.scheduler.client.rest;
 import java.io.FileNotFoundException;
 import java.io.StringReader;
 
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriBuilder;
 
@@ -164,6 +165,65 @@ public class SchedulerClient
 		}
 		catch (Exception e) {
 			logger.error("Unmarshal SensorTypes error",e);
+			return null;
+		}
+	}
+	
+	
+	public String userRegister(String userName, String userMail,String description, String passwd) 
+	{
+		ClientRequest registerUserClientRequest = clientRequestFactory
+				.createRelativeRequest("/rest/services/userRegister");
+
+		
+
+		registerUserClientRequest.queryParameter("userName", userName);
+		registerUserClientRequest.queryParameter("userMail", userMail);
+		registerUserClientRequest.queryParameter("description", description);
+		registerUserClientRequest.queryParameter("password", passwd);
+	
+		registerUserClientRequest.accept("application/xml");
+		
+		//Handle the response
+		try {
+			ClientResponse<String> response = registerUserClientRequest.get(String.class);
+
+			if (response.getStatus() != 200) {
+				throw new RuntimeException("Failed : HTTP error code : " + response.getStatus());
+			}
+
+			String responseStr = response.getEntity();
+			logger.debug(responseStr);
+			return responseStr;
+		} catch (Exception e) {
+			logger.error("register user get response entity error",e);
+			return null;
+		}
+	}
+	
+	public String userLogin(String userMail, String passwd) 
+	{
+		ClientRequest registerUserClientRequest = clientRequestFactory
+				.createRelativeRequest("/rest/services/userLogin");
+
+		registerUserClientRequest.queryParameter("userMail", userMail);
+		registerUserClientRequest.queryParameter("userPaswrd", passwd);
+	
+		registerUserClientRequest.accept("application/xml");
+		
+		//Handle the response
+		try {
+			ClientResponse<String> response = registerUserClientRequest.get(String.class);
+
+			if (response.getStatus() != 200) {
+				throw new RuntimeException("Failed : HTTP error code : " + response.getStatus());
+			}
+
+			String responseStr = response.getEntity();
+			logger.debug(responseStr);
+			return responseStr;
+		} catch (Exception e) {
+			logger.error("login user get response entity error",e);
 			return null;
 		}
 	}

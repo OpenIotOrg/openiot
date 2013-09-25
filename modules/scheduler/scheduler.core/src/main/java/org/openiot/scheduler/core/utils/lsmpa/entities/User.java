@@ -48,7 +48,7 @@ public class User
 {
 	public static class Queries
 	{
-		public static ArrayList<User> parseUser(TupleQueryResult qres)
+		public static ArrayList<User> parseUserData(TupleQueryResult qres)
 		{
 			ArrayList<User> userList = new ArrayList<User>();
 			try 
@@ -78,6 +78,12 @@ public class User
 							String str = (b.getValue((String) n)==null) ? null : b.getValue((String) n).stringValue();
 							user.setDescription(str);
 							System.out.println("userDesc : "+user.getDescription()+" ");	
+						}
+						else if(((String) n).equalsIgnoreCase("userPasw"))
+						{
+							String str = (b.getValue((String) n)==null) ? null : b.getValue((String) n).stringValue();
+							user.setPasswd(str);
+							System.out.println("userPasw : "+user.getPasswd()+" ");	
 						}
 						else if(((String) n).equalsIgnoreCase("userMail"))
 						{
@@ -126,15 +132,16 @@ public class User
 		{
 			StringBuilder update = new StringBuilder();
 	        update.append(getNamespaceDeclarations());
-			
-			String str=("SELECT ?userID ?userName ?userDesc ?userMail from <"+graph+"> "
-								+"WHERE "
-								+"{"
-								+"?userID <http://openiot.eu/ontology/ns/userMail> ?userMail."
-								+"?userID <http://openiot.eu/ontology/ns/userDescription> ?userDesc."
-								+"?userID <http://openiot.eu/ontology/ns/userName> ?userName."
-								+"?userID rdf:type <http://openiot.eu/ontology/ns/User> . "								
-								+"}");								
+									
+			String str=("SELECT ?userID ?userName ?userDesc ?userMail ?userPasw from <"+graph+"> "
+					+"WHERE "
+					+"{"
+					+"?userID rdf:type <http://openiot.eu/ontology/ns/User> . "	
+					+"?userID <http://openiot.eu/ontology/ns/userMail> ?userMail."
+					+"?userID <http://openiot.eu/ontology/ns/userDescription> ?userDesc."
+					+"?userID <http://openiot.eu/ontology/ns/userName> ?userName."					
+					+"optional { ?userID <http://openiot.eu/ontology/ns/userPassword> ?userPasw. } "
+					+"}");
 			
 			update.append(str);
 			return update.toString();
@@ -167,20 +174,24 @@ public class User
 //			update.append(str);
 //			return update.toString();
 //		}
-//		public static String selectUserByEmail(String email)
-//		{
-//			StringBuilder update = new StringBuilder();
-//	        update.append(getNamespaceDeclarations());
-//			
-//			String str=("SELECT ?userID from <"+graph+"> "
-//								+"WHERE "
-//								+"{"								
-//								+"?userID <http://openiot.eu/ontology/ns/userMail> ?email FILTER regex(?email, \"" +email+ "\" )  . "								
-//								+"}");								
-//			
-//			update.append(str);
-//			return update.toString();
-//		}
+		public static String selectUserByEmail(String email)
+		{
+			StringBuilder update = new StringBuilder();
+	        update.append(getNamespaceDeclarations());
+			
+			String str=("SELECT ?userID ?userName ?userDesc ?userPasw from <"+graph+"> "
+					+"WHERE "
+					+"{"
+					+"?userID rdf:type <http://openiot.eu/ontology/ns/User> . "
+					+"?userID <http://openiot.eu/ontology/ns/userDescription> ?userDesc."
+					+"?userID <http://openiot.eu/ontology/ns/userName> ?userName."
+					+"optional { ?userID <http://openiot.eu/ontology/ns/userPassword> ?userPasw. } "
+					+"?userID <http://openiot.eu/ontology/ns/userMail> \""+email+"\"^^<http://www.w3.org/2001/XMLSchema#string> ."
+					+"}");
+			
+			update.append(str);
+			return update.toString();
+		}
 //		public static String selectUserByAccess(Access access)
 //		{
 //			StringBuilder update = new StringBuilder();
@@ -243,7 +254,8 @@ public class User
 	private OntProperty ontPName;
 	private OntProperty ontPemail;
 	private OntProperty ontPdescription;
-	private OntProperty ontPaccess;
+	private OntProperty ontPpasswd;
+	//private OntProperty ontPaccess;
 	//private OntProperty ontPuserType;
 	private OntProperty ontPuserOf;
 	
@@ -251,6 +263,7 @@ public class User
 	private String name;
 	private String email;
 	private String description;
+	private String passwd;
 	
 	private ArrayList<OAMO> oamoList = new ArrayList<OAMO>();
 		
@@ -282,11 +295,12 @@ public class User
 		
 	private void initOnt_USer()
 	{
-		ontClsUserClass = myOnt.getClass("http://openiot.eu/ontology/ns/User");
+		ontClsUserClass = myOnt.createClass("http://openiot.eu/ontology/ns/User");
 		ontPName = myOnt.createProperty("http://openiot.eu/ontology/ns/userName");
 		ontPemail = myOnt.createProperty("http://openiot.eu/ontology/ns/userMail");
 		ontPdescription = myOnt.createProperty("http://openiot.eu/ontology/ns/userDescription");
-		ontPaccess = myOnt.createProperty("http://openiot.eu/ontology/ns/access");
+		ontPpasswd = myOnt.createProperty("http://openiot.eu/ontology/ns/userPassword");
+		//ontPaccess = myOnt.createProperty("http://openiot.eu/ontology/ns/access");
 		ontPuserOf = myOnt.createProperty("http://openiot.eu/ontology/ns/userOf");
 	}
 	
@@ -311,6 +325,11 @@ public class User
 	{
 		if(description!=null)
 			userClassIdv.setPropertyValue(ontPdescription, ontInstance.getBase().createTypedLiteral(description));
+	}
+	public void createPpasswd()
+	{
+		if(passwd!=null)
+			userClassIdv.setPropertyValue(ontPpasswd, ontInstance.getBase().createTypedLiteral(passwd));
 	}
 	
 	public void createPuserOf()
@@ -390,6 +409,13 @@ public class User
 	public void addService(OAMO oamo) 
 	{
 		this.oamoList.add(oamo);
+	}
+	
+	public String getPasswd() {
+		return passwd;
+	}
+	public void setPasswd(String passwd) {
+		this.passwd = passwd;
 	}
 	
 }//class

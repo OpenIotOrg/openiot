@@ -42,6 +42,8 @@ import org.openiot.scheduler.core.api.impl.GetAvailableApps.GetAvailableAppsImpl
 import org.openiot.scheduler.core.api.impl.GetAvailableServiceIDs.GetAvailableServiceIDsImpl;
 import org.openiot.scheduler.core.api.impl.GetService.GetServiceImpl;
 import org.openiot.scheduler.core.api.impl.RegisterService.RegisterServiceImpl;
+import org.openiot.scheduler.core.api.impl.UserLogin.UserLoginImpl;
+import org.openiot.scheduler.core.api.impl.UserRegister.UserRegisterImpl;
 //=======
 //import org.openiot.scheduler.core.api.impl.DiscoverSensorsImpl;
 //import org.openiot.scheduler.core.api.impl.RegisterServiceImpl;
@@ -95,6 +97,32 @@ public class SchedulerRsControler {
 
 		
 		return welcomeText;
+	}
+	
+	
+	
+	/**
+	 *
+	 */
+	@GET
+	@Path("/userRegister")
+	//@Consumes("application/xml")
+	public String userRegister(@QueryParam("userName") String userName, @QueryParam("userMail") String userMail, @QueryParam("description") String description, @QueryParam("password") String passwd) {
+		
+		UserRegisterImpl userRegister = new UserRegisterImpl(userName, userMail, description, passwd);		
+		return userRegister.getReplyMessage();
+	}
+	
+	
+	
+	@GET
+	@Path("/userLogin")
+//	@Consumes("application/xml")
+//	@Produces("application/xml")
+	public String userLogin(@QueryParam("userMail") String userMail,@QueryParam("userPaswrd") String userPaswrd  ) {
+		
+		UserLoginImpl userLogin = new UserLoginImpl(userMail,userPaswrd);	
+		return userLogin.getReplyMessage();
 	}
 	
 	

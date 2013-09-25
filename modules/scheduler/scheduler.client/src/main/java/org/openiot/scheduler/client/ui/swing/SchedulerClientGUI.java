@@ -68,6 +68,12 @@ public class SchedulerClientGUI extends JPanel
 	private JTextField textFieldOAMOuserID;
 	private JTextField txtOAMOid;
 	private JTextField textFieldGetSpecUserID;
+	private JTextField textFieldName;
+	private JTextField textFieldMail;
+	private JTextField textFieldDescription;
+	private JTextField textFieldPaswd;
+	private JTextField textFieldLginMail;
+	private JTextField textFieldLginPasw;
 
 	
 	public SchedulerClientGUI() 
@@ -83,7 +89,7 @@ public class SchedulerClientGUI extends JPanel
 	private void initialize() {
 		frmSchedulerClient = new JFrame();
 		frmSchedulerClient.setTitle("Scheduler Client");
-		frmSchedulerClient.setBounds(100, 100, 470, 496);
+		frmSchedulerClient.setBounds(100, 100, 737, 496);
 		frmSchedulerClient.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmSchedulerClient.getContentPane().setLayout(null);
 		
@@ -409,6 +415,148 @@ public class SchedulerClientGUI extends JPanel
 					.addContainerGap())
 		);
 		panel_5.setLayout(gl_panel_5);
+		
+		JPanel panel_6 = new JPanel();
+		panel_6.setBorder(new TitledBorder(null, "Register USer", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		panel_6.setBounds(452, 14, 227, 166);
+		frmSchedulerClient.getContentPane().add(panel_6);
+		
+		JLabel lblName = new JLabel("Name");
+		
+		textFieldName = new JTextField();
+		textFieldName.setText("my name");
+		textFieldName.setColumns(10);
+		
+		JLabel lblMail = new JLabel("mail");
+		
+		textFieldMail = new JTextField();
+		textFieldMail.setColumns(10);
+		
+		JLabel lblDescription = new JLabel("description");
+		
+		textFieldDescription = new JTextField();
+		textFieldDescription.setColumns(10);
+		
+		textFieldPaswd = new JTextField();
+		textFieldPaswd.setColumns(10);
+		
+		JLabel labelPaswd = new JLabel("paswd");
+		
+		JButton btnRegister = new JButton("Register");
+		btnRegister.addActionListener(
+				new ActionListener() {
+					public void actionPerformed(ActionEvent e) 
+					{
+						String response = schedulerClient.userRegister(textFieldName.getText(), textFieldMail.getText(),
+								textFieldDescription.getText(), textFieldPaswd.getText());
+						System.out.println("userid:"+response);
+					}
+				});
+				
+		
+		GroupLayout gl_panel_6 = new GroupLayout(panel_6);
+		gl_panel_6.setHorizontalGroup(
+			gl_panel_6.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_panel_6.createSequentialGroup()
+					.addGap(0, 0, Short.MAX_VALUE)
+					.addGroup(gl_panel_6.createParallelGroup(Alignment.LEADING)
+						.addGroup(gl_panel_6.createSequentialGroup()
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addGroup(gl_panel_6.createParallelGroup(Alignment.TRAILING)
+								.addGroup(gl_panel_6.createParallelGroup(Alignment.LEADING)
+									.addGroup(gl_panel_6.createSequentialGroup()
+										.addGap(16)
+										.addComponent(labelPaswd, GroupLayout.PREFERRED_SIZE, 46, GroupLayout.PREFERRED_SIZE))
+									.addComponent(lblName, GroupLayout.PREFERRED_SIZE, 35, GroupLayout.PREFERRED_SIZE)
+									.addComponent(lblMail, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE))
+								.addComponent(lblDescription))
+							.addGap(18)
+							.addGroup(gl_panel_6.createParallelGroup(Alignment.LEADING)
+								.addComponent(textFieldDescription, GroupLayout.PREFERRED_SIZE, 116, GroupLayout.PREFERRED_SIZE)
+								.addComponent(textFieldMail, GroupLayout.PREFERRED_SIZE, 116, GroupLayout.PREFERRED_SIZE)
+								.addComponent(textFieldName, GroupLayout.PREFERRED_SIZE, 116, GroupLayout.PREFERRED_SIZE)
+								.addComponent(textFieldPaswd, GroupLayout.PREFERRED_SIZE, 116, GroupLayout.PREFERRED_SIZE)))
+						.addGroup(gl_panel_6.createSequentialGroup()
+							.addGap(55)
+							.addComponent(btnRegister, GroupLayout.PREFERRED_SIZE, 95, GroupLayout.PREFERRED_SIZE)))
+					.addGap(7))
+		);
+		gl_panel_6.setVerticalGroup(
+			gl_panel_6.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_panel_6.createSequentialGroup()
+					.addGroup(gl_panel_6.createParallelGroup(Alignment.BASELINE)
+						.addComponent(textFieldName, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addComponent(lblName))
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addGroup(gl_panel_6.createParallelGroup(Alignment.BASELINE)
+						.addComponent(textFieldMail, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addComponent(lblMail))
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addGroup(gl_panel_6.createParallelGroup(Alignment.BASELINE)
+						.addComponent(textFieldDescription, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addComponent(lblDescription))
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addGroup(gl_panel_6.createParallelGroup(Alignment.BASELINE)
+						.addComponent(labelPaswd)
+						.addComponent(textFieldPaswd, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+					.addPreferredGap(ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+					.addComponent(btnRegister)
+					.addGap(37))
+		);
+		panel_6.setLayout(gl_panel_6);
+		
+		JPanel panel_7 = new JPanel();
+		panel_7.setBorder(new TitledBorder(null, "Register USer", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		panel_7.setBounds(452, 193, 227, 124);
+		frmSchedulerClient.getContentPane().add(panel_7);
+		
+		JButton btnLogin = new JButton("Login");
+		btnLogin.addActionListener(new BtnLoginUser());
+		
+		JLabel label_2 = new JLabel("paswd");
+		
+		JLabel label_4 = new JLabel("mail");
+		
+		textFieldLginMail = new JTextField();
+		textFieldLginMail.setColumns(10);
+		
+		textFieldLginPasw = new JTextField();
+		textFieldLginPasw.setColumns(10);
+		GroupLayout gl_panel_7 = new GroupLayout(panel_7);
+		gl_panel_7.setHorizontalGroup(
+			gl_panel_7.createParallelGroup(Alignment.TRAILING)
+				.addGroup(gl_panel_7.createSequentialGroup()
+					.addGroup(gl_panel_7.createParallelGroup(Alignment.LEADING)
+						.addGroup(Alignment.TRAILING, gl_panel_7.createSequentialGroup()
+							.addContainerGap()
+							.addComponent(label_2, GroupLayout.PREFERRED_SIZE, 46, GroupLayout.PREFERRED_SIZE)
+							.addGap(29)
+							.addComponent(textFieldLginPasw, GroupLayout.PREFERRED_SIZE, 116, GroupLayout.PREFERRED_SIZE))
+						.addGroup(Alignment.TRAILING, gl_panel_7.createSequentialGroup()
+							.addContainerGap()
+							.addComponent(label_4, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE)
+							.addPreferredGap(ComponentPlacement.RELATED, 50, Short.MAX_VALUE)
+							.addComponent(textFieldLginMail, GroupLayout.PREFERRED_SIZE, 116, GroupLayout.PREFERRED_SIZE))
+						.addGroup(gl_panel_7.createSequentialGroup()
+							.addGap(55)
+							.addComponent(btnLogin, GroupLayout.PREFERRED_SIZE, 95, GroupLayout.PREFERRED_SIZE)))
+					.addContainerGap())
+		);
+		gl_panel_7.setVerticalGroup(
+			gl_panel_7.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_panel_7.createSequentialGroup()
+					.addGroup(gl_panel_7.createParallelGroup(Alignment.BASELINE)
+						.addComponent(label_4)
+						.addComponent(textFieldLginMail, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addGroup(gl_panel_7.createParallelGroup(Alignment.BASELINE)
+						.addComponent(textFieldLginPasw, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addComponent(label_2))
+					.addGap(18)
+					.addComponent(btnLogin)
+					.addGap(26))
+		);
+		panel_7.setLayout(gl_panel_7);
 		btnDiscoverSensors.addActionListener(new BtnDiscoverSensorsActionListener());
 		btnWelcome.addActionListener(new BtnWelcomeActionListener());
 	}
@@ -484,8 +632,16 @@ public class SchedulerClientGUI extends JPanel
 		}
 	}
 	
+	private class BtnLoginUser implements ActionListener 
+	{
+		public void actionPerformed(ActionEvent e) 
+		{			
+			String response = schedulerClient.userLogin(textFieldLginMail.getText(), textFieldLginPasw.getText());
+			System.out.println(response);
+		}
+	}
 	
-	//launch swing client
+	//launch swing cliente
 	public static void main(String[] args) 
 	{	
 		EventQueue.invokeLater(new Runnable() 
