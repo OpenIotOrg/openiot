@@ -300,6 +300,7 @@ public class SchedulerClient
 			logger.debug("oamo.getId():" + oamo.getId());
 			logger.debug("oamo.getName():" + oamo.getName());
 			logger.debug("oamo.getDescription():" + oamo.getDescription());
+			logger.debug("oamo.oamo.getGraphMeta():" + oamo.getGraphMeta());
 			
 
 			//debug
