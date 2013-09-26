@@ -63,6 +63,18 @@ public class OAMO
 //							oamo.addService(service);							
 //							System.out.print("service : "+service.getId()+" ");	
 //						}
+						else if(((String) n).equalsIgnoreCase("oamoDesc"))
+						{
+							String str = (b.getValue((String) n)==null) ? null : b.getValue((String) n).stringValue();							
+							oamo.setDescription(str);
+							System.out.println("oamoDesc : "+oamo.getDescription()+" ");	
+						}
+						else if(((String) n).equalsIgnoreCase("oamoGraphMeta"))
+						{
+							String str = (b.getValue((String) n)==null) ? null : b.getValue((String) n).stringValue();
+							oamo.setGraphMeta(str);
+							System.out.println("oamoGraphMeta : "+oamo.getGraphMeta()+" ");	
+						}
 					}
 					oamoList.add(oamo);					
 				}//while
@@ -105,10 +117,13 @@ public class OAMO
 			StringBuilder update = new StringBuilder();
 	        update.append(getNamespaceDeclarations());
 			
-			String str=("SELECT ?oamoID ?oamoName ?userID from <"+graph+"> "
+			String str=("SELECT ?oamoID ?oamoName ?userID ?oamoDesc ?oamoGraphMeta "
+								+"from <"+graph+"> "
 								+"WHERE "
 								+"{"
 								//+"?oamoID <http://openiot.eu/ontology/ns/oamoService> ?srvcID . "
+								+"?oamoID <http://openiot.eu/ontology/ns/oamoDescription> ?oamoDesc . "
+								+"?oamoID <http://openiot.eu/ontology/ns/oamoGraphMeta> ?oamoGraphMeta . "
 								+"?oamoID <http://openiot.eu/ontology/ns/oamoUserOf> ?userID . "
 								+"?oamoID <http://openiot.eu/ontology/ns/oamoName> ?oamoName . "
 								+"?oamoID <http://openiot.eu/ontology/ns/oamoUserOf> <"+usr.getId()+"> . "								
@@ -131,11 +146,15 @@ public class OAMO
 	private OntProperty ontPoamoName;
 	private OntProperty ontPoamoUserOf;
 	private OntProperty ontPoamoService;
+	private OntProperty ontPoamoDescription;
+	private OntProperty ontPoamoGraphMeta;
 	
 	private String id;
 	private String name;	
 	private List<Service> servicesList = new ArrayList<Service>();
 	private User user;
+	private String description;
+	private String graphMeta;
 	
 	public OAMO()
 	{		
@@ -166,6 +185,8 @@ public class OAMO
 		ontPoamoName = myOnt.createProperty("http://openiot.eu/ontology/ns/oamoName");
 		ontPoamoUserOf = myOnt.createProperty("http://openiot.eu/ontology/ns/oamoUserOf");
 		ontPoamoService = myOnt.createProperty("http://openiot.eu/ontology/ns/oamoService");
+		ontPoamoDescription = myOnt.createProperty("http://openiot.eu/ontology/ns/oamoDescription");
+		ontPoamoGraphMeta= myOnt.createProperty("http://openiot.eu/ontology/ns/oamoGraphMeta");
 	}
 	
 	public void createClassIdv()
@@ -191,6 +212,16 @@ public class OAMO
 		{
 			oamoClassIdv.addProperty(ontPoamoService, servicesList.get(i).getClassIndividual());
 		}
+	}
+	public void createPoamoDescription()
+	{
+		if(description!=null)	
+			oamoClassIdv.setPropertyValue(ontPoamoDescription, ontInstance.getBase().createTypedLiteral(description));
+	}
+	public void createPoamoGraphMeta()
+	{
+		if(graphMeta!=null)	
+			oamoClassIdv.setPropertyValue(ontPoamoGraphMeta, ontInstance.getBase().createTypedLiteral(graphMeta));
 	}
 	
 	public void createOnt_OAMO()
@@ -246,4 +277,19 @@ public class OAMO
 	public void setUser(User user) {
 		this.user = user;
 	}
+	
+	public String getDescription() {
+		return description;
+	}
+	public void setDescription(String description) {
+		this.description = description;
+	}
+	
+	public String getGraphMeta() {
+		return graphMeta;
+	}
+	public void setGraphMeta(String graphMeta) {
+		this.graphMeta = graphMeta;
+	}	
+	
 }//class
