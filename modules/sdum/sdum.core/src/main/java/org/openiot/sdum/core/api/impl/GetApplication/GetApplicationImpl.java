@@ -26,6 +26,8 @@ public class GetApplicationImpl
 		{
 			private String oamoName; 
 			private String userID;
+			private String oamoDesc;
+			private String oamoGraphMeta;
 //			private String serviceID;
 			
 			public String getOamoName() {
@@ -40,6 +42,20 @@ public class GetApplicationImpl
 			}
 			public void setUserID(String userID) {
 				this.userID = userID;
+			}
+			
+			public String getOamoDesc() {
+				return oamoDesc;
+			}
+			public void setOamoDesc(String oamoDesc) {
+				this.oamoDesc = oamoDesc;
+			}
+			
+			public String getOamoGraphMeta() {
+				return oamoGraphMeta;
+			}
+			public void setOamoGraphMeta(String oamoGraphMeta) {
+				this.oamoGraphMeta = oamoGraphMeta;
 			}
 			
 //			public String getServiceID() {
@@ -208,6 +224,18 @@ public class GetApplicationImpl
 //							rootOAMOData.setServiceID(str);
 //							System.out.print("serviceID: "+rootOAMOData.getServiceID());	
 //						}
+						else if(((String) n).equalsIgnoreCase("oamoDesc"))
+						{
+							String str = (b.getValue((String) n)==null) ? null : b.getValue((String) n).stringValue();							
+							rootOAMOData.setOamoDesc(str);
+							System.out.println("oamoDesc : "+rootOAMOData.getOamoDesc()+" ");	
+						}
+						else if(((String) n).equalsIgnoreCase("oamoGraphMeta"))
+						{
+							String str = (b.getValue((String) n)==null) ? null : b.getValue((String) n).stringValue();
+							rootOAMOData.setOamoGraphMeta(str);
+							System.out.println("oamoGraphMeta : "+rootOAMOData.getOamoGraphMeta()+" ");	
+						}
 					}
 				//}//while
 				return rootOAMOData;
@@ -460,10 +488,12 @@ public class GetApplicationImpl
 		{
 			StringBuilder update = new StringBuilder();	        
 			
-			String str=("SELECT ?oamoName ?userID "//?serviceID "
+			String str=("SELECT ?oamoName ?userID ?oamoGraphMeta ?oamoDesc "//?serviceID "
 								+"from <"+openiotFunctionalGraph+"> "
 								+"WHERE "
 								+"{"
+								+"<"+oamoID+"> <http://openiot.eu/ontology/ns/oamoDescription> ?oamoDesc . "
+								+"<"+oamoID+"> <http://openiot.eu/ontology/ns/oamoGraphMeta> ?oamoGraphMeta . "
 								//+"<"+oamoID+"> <http://openiot.eu/ontology/ns/oamoService> ?serviceID . "
 								+"<"+oamoID+"> <http://openiot.eu/ontology/ns/oamoUserOf> ?userID . "
 								+"<"+oamoID+">  <http://openiot.eu/ontology/ns/oamoName> ?oamoName . "
@@ -593,6 +623,8 @@ public class GetApplicationImpl
 		
 		oamo.setName(rootOAMODATA.getOamoName());		
 		oamo.setId(rootOAMODATA.getUserID());
+		oamo.setDescription(rootOAMODATA.getOamoDesc());
+		oamo.setGraphMeta(rootOAMODATA.getOamoGraphMeta());
 		
 		qres = sparqlCl.sparqlToQResult(Queries.getOSMOListOfOAMO(oamoID));
 		ArrayList<Queries.RootOsmoData> OSMODataList = Queries.parseOSMOListOfOAMO(qres);
