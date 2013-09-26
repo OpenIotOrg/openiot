@@ -103,10 +103,14 @@ public class RegisterServiceImpl {
 			oamoEnt.setId(oamo.getId());
 			oamoEnt.setName(oamo.getName());
 			oamoEnt.setUser(userEnt);
+			oamoEnt.setDescription(oamo.getDescription());
+			oamoEnt.setGraphMeta(oamo.getGraphMeta());
 			//
 			oamoEnt.createClassIdv();
 			oamoEnt.createPoamoName();
 			oamoEnt.createPoamoUserOf();
+			oamoEnt.createPoamoDescription();
+			oamoEnt.createPoamoGraphMeta();
 			
 			userEnt.addService(oamoEnt);
 			//
