@@ -61,7 +61,11 @@
 
         <!-- maven-compiler-plugin -->
         <maven.compiler.target>1.7</maven.compiler.target>
-        <maven.compiler.source>1.7</maven.compiler.source>
+        <!-- 
+        	Java 1.7+ throws compilation errors like 'error: unmappable character for encoding UTF8'
+        	for JAXB-generated classes. We need to force the source level to 1.5 to be able to compile
+	-->
+        <maven.compiler.source>1.5</maven.compiler.source>
     </properties>
 
   <!-- =========================================================== -->
