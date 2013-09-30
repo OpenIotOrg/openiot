@@ -1,2 +1,0 @@
-mvn clean package install
-
