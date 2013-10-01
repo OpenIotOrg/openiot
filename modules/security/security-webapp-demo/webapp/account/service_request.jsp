@@ -30,6 +30,20 @@
 		<p>Welcome to the OpenIoT Authentication and Authorization Demo.</p>
 
 		<shiro:user>
+		<div class="well well-large">
+		<p>
+		<strong>Your token is:</strong> <span class="label label-info"><c:out value="${requestScope.access_token}"/></span>
+		</p>
+		<p>
+		<strong>The clientId is:</strong> <span class="label label-warning"><c:out value="${requestScope.client_id}"/></span>
+		</p>
+		<!--<p>
+		<strong>The service request URL:</strong> <span class="label label-important">https://localhost:7443/servicerequest?access_token=<c:out value="${requestScope.access_token}"/>&client_id=<c:out value="${requestScope.client_id}"/></span>
+		</p> -->
+		</div>
+		</shiro:user>
+
+		<shiro:user>
 			<p>
 				Go to <a href="<c:url value="/home.jsp"/>">home page</a>.
 			</p>
@@ -43,9 +57,9 @@
 		</shiro:guest>
 
 		<% if(request.getAttribute("hasPermission").equals(true))  
-		 	out.println("<h2 style=\"color: #006B00\">You have the required permission!</h2>");
+		 	out.println("<h2 style=\"color: #006B00\">You have the permission \"stream:query:s1\" for service [" + request.getAttribute("client_id") + "]!</h2>");
 		 else
-			out.println("<h2 style=\"color:#8F0047\">You DON'T have the required permission!</h2>");
+			out.println("<h2 style=\"color:#8F0047\">You DON'T have the permission \"stream:query:s1\" for service [" + request.getAttribute("client_id") + "]!</h2>");
 		%>
 
 		

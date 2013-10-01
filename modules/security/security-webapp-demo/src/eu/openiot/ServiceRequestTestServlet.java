@@ -39,6 +39,8 @@ public class ServiceRequestTestServlet extends HttpServlet {
 			OAuthorizationCredentials credentials = new OAuthorizationCredentials(accessToken, clientId, myCredentials);
 			boolean hasPermission = authorizationManager.hasPermission("stream:query:s1", credentials);
 			
+			req.setAttribute("access_token", myCredentials.getAccessToken());
+			req.setAttribute("client_id", myCredentials.getClientId());
 			req.setAttribute("hasPermission", hasPermission);
 			req.getRequestDispatcher("/account/service_request.jsp").forward(req, resp);
 		}

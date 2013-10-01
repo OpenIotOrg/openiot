@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.openiot.security.client.AccessControlUtil;
+import org.openiot.security.client.OAuthorizationCredentials;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,8 +26,9 @@ public class OAuthPermissionTestServlet extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		Subject subject = SecurityUtils.getSubject();
+		AccessControlUtil accessControlUtil = AccessControlUtil.getInstance();
 		if (!subject.isAuthenticated()) {
-			AccessControlUtil.getInstance().redirectToLogin(req, resp);
+			accessControlUtil.redirectToLogin(req, resp);
 		} else {
 			Map<String, String> allPermissions = new HashMap<String, String>();
 
@@ -36,6 +38,9 @@ public class OAuthPermissionTestServlet extends HttpServlet {
 			for (String permission : permissions)
 				allPermissions.put(permission, "--");
 
+			OAuthorizationCredentials myCredentials = accessControlUtil.getOAuthorizationCredentials();
+			req.setAttribute("access_token", myCredentials.getAccessToken());
+			req.setAttribute("client_id", myCredentials.getClientId());
 			req.setAttribute("permissions", allPermissions);
 			req.getRequestDispatcher("/account/permissions.jsp").forward(req, resp);
 		}

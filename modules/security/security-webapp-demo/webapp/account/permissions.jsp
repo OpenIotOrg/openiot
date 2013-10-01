@@ -28,8 +28,22 @@
 			</shiro:guest>
 			)
 		</p>
+		
 
 		<p>Welcome to the OpenIoT Authentication and Authorization Demo.</p>
+		<shiro:user>
+		<div class="well well-large">
+		<p>
+		<strong>Your token is:</strong> <span class="label label-info"><c:out value="${requestScope.access_token}"/></span>
+		</p>
+		<p>
+		<strong>The clientId is:</strong> <span class="label label-warning"><c:out value="${requestScope.client_id}"/></span>
+		</p>
+		<p>
+		<strong>The service request URL:</strong> <span class="label label-important">https://localhost:7443/servicerequest?access_token=<c:out value="${requestScope.access_token}"/>&client_id=<c:out value="${requestScope.client_id}"/></span>
+		</p>
+		</div>
+		</shiro:user>
 
 		<shiro:user>
 			<p>
