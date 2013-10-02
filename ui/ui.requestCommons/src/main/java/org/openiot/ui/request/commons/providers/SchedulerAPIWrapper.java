@@ -110,8 +110,6 @@ public class SchedulerAPIWrapper {
 			java.io.StringWriter sw = new StringWriter();
 			marshaller.marshal(osdSpec, sw);
 			osdSpecString = sw.toString().replace("&lt;", "<").replace("&gt;", ">");
-
-			LoggerService.log(Level.INFO, osdSpecString);
 			return osdSpecString;
 		} catch (Exception ex) {
 			throw new APIException(ex);
