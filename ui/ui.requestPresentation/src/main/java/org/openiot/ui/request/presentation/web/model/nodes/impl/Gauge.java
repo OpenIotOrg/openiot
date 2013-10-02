@@ -52,7 +52,7 @@ public class Gauge implements VisualizationWidget {
 	private Number max;
 
 	@Override
-	public Panel createWidget(List<PresentationAttr> presentationAttributes) {
+	public Panel createWidget(String serviceId, List<PresentationAttr> presentationAttributes) {
 		FacesContext fc = FacesContext.getCurrentInstance();
 		Application application = fc.getApplication();
 
@@ -70,10 +70,10 @@ public class Gauge implements VisualizationWidget {
 		// Instanciate a panel to host the widget
 		panel = (Panel) application.createComponent(fc, "org.primefaces.component.Panel", "org.primefaces.component.PanelRenderer");
 		panel.setId("widget_panel_" + System.nanoTime());
-		panel.setHeader(title);
+		panel.setHeader(title != null ? title : "");
 		panel.setClosable(false);
 		panel.setToggleable(false);
-		panel.setStyleClass("widget");
+		panel.setStyleClass("widget service_" + serviceId);
 		panel.getChildren().add(widget);
 
 		// Generate clear data link

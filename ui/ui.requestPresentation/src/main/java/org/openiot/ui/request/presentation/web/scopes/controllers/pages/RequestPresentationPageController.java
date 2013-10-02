@@ -36,14 +36,9 @@ import org.openiot.commons.osdspec.model.OAMO;
 import org.openiot.commons.osdspec.model.OSMO;
 import org.openiot.commons.osdspec.model.PresentationAttr;
 import org.openiot.commons.sdum.serviceresultset.model.SdumServiceResultSet;
-import org.openiot.commons.sparql.protocoltypes.model.QueryResult;
-import org.openiot.commons.sparql.result.model.Binding;
-import org.openiot.commons.sparql.result.model.Literal;
-import org.openiot.commons.sparql.result.model.Result;
-import org.openiot.commons.sparql.result.model.Results;
-import org.openiot.commons.sparql.result.model.Sparql;
 import org.openiot.ui.request.commons.logging.LoggerService;
 import org.openiot.ui.request.commons.models.OAMOManager;
+import org.openiot.ui.request.commons.providers.SDUMAPIWrapper;
 import org.openiot.ui.request.commons.providers.SchedulerAPIWrapper;
 import org.openiot.ui.request.commons.providers.exceptions.APIException;
 import org.openiot.ui.request.presentation.web.model.nodes.interfaces.VisualizationWidget;
@@ -53,10 +48,12 @@ import org.openiot.ui.request.presentation.web.scopes.session.context.pages.Requ
 import org.openiot.ui.request.presentation.web.util.FaceletLocalization;
 import org.primefaces.component.dashboard.Dashboard;
 import org.primefaces.component.panel.Panel;
+import org.primefaces.event.map.StateChangeEvent;
 import org.primefaces.model.DashboardColumn;
 import org.primefaces.model.DashboardModel;
 import org.primefaces.model.DefaultDashboardColumn;
 import org.primefaces.model.DefaultDashboardModel;
+import org.primefaces.model.map.LatLng;
 
 /**
  * 
@@ -122,7 +119,7 @@ public class RequestPresentationPageController implements Serializable {
 		// Load services
 		try {
 			context.getAppManager().loadUserOAMOs(ApplicationBean.lookupSessionBean().getUserId());
-			if( !context.getAppManager().getAvailableOAMOs().isEmpty() ){
+			if (!context.getAppManager().getAvailableOAMOs().isEmpty()) {
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, messages.getString("GROWL_INFO_HEADER"), FaceletLocalization.getLocalisedMessage(messages, "APPLICATIONS_LOADED_SUCCESSFULLY")));
 			}
 
@@ -179,59 +176,12 @@ public class RequestPresentationPageController implements Serializable {
 		}
 
 		// Fetch data
-//		try {
-//			SdumServiceResultSet resultSet = SDUMAPIWrapper.pollForReport(serviceId);
-			SdumServiceResultSet resultSet = new SdumServiceResultSet();
-			QueryResult resultBlock = new QueryResult();
-			resultBlock.setSparql(new Sparql());
-			resultBlock.getSparql().setResults(new Results());
-			resultSet.getQueryResult().add(resultBlock);
-			
-			Binding binding;
-			Literal literal;
-			for( int month=5;month<=6;month++){
-				for( int day=1;day<30;day++){
-					Result result = new Result();
-					resultBlock.getSparql().getResults().getResult().add(result);
-					
-					// year
-					binding = new Binding();
-					literal = new Literal();
-					literal.setContent("2012");
-					binding.setName("x1_year");
-					binding.setLiteral(literal);
-					result.getBinding().add(binding);
-					
-					// month
-					binding = new Binding();
-					literal = new Literal();
-					literal.setContent(month + "");
-					binding.setName("x1_month");
-					binding.setLiteral(literal);
-					result.getBinding().add(binding);
-					
-					// day
-					binding = new Binding();
-					literal = new Literal();
-					literal.setContent(day + "");
-					binding.setName("x1_day");
-					binding.setLiteral(literal);
-					result.getBinding().add(binding);
-					
-					// value
-					binding = new Binding();
-					literal = new Literal();
-					literal.setContent((Math.random() * 50.0) + "");
-					binding.setName("y1");
-					binding.setLiteral(literal);
-					result.getBinding().add(binding);					
-				}
-			}
-			
+		try {
+			SdumServiceResultSet resultSet = SDUMAPIWrapper.pollForReport(serviceId);
 			context.getServiceIdToWidgetMap().get(serviceId).processData(resultSet);
-//		} catch (APIException ex) {
-//			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, messages.getString("GROWL_ERROR_HEADER"), FaceletLocalization.getLocalisedMessage(messages, "ERROR_CONNECTING_TO_SDUM_SERVICE")));
-//		}
+		} catch (APIException ex) {
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, messages.getString("GROWL_ERROR_HEADER"), FaceletLocalization.getLocalisedMessage(messages, "ERROR_CONNECTING_TO_SDUM_SERVICE")));
+		}
 	}
 
 	// ------------------------------------
@@ -256,11 +206,9 @@ public class RequestPresentationPageController implements Serializable {
 			OSMO osmo = oamo.getOSMO().get(index);
 			List<PresentationAttr> presentationAttributes = osmo.getRequestPresentation().getWidget().get(0).getPresentationAttr();
 
-			System.out.println("Process osmo @ " + index);
 			// Discover widget class
 			String widgetClass = null;
 			for (PresentationAttr attr : presentationAttributes) {
-				System.out.println("- process attr: " + attr.getName());
 				if ("widgetClass".equals(attr.getName())) {
 					widgetClass = attr.getValue().substring(attr.getValue().lastIndexOf('.') + 1);
 					break;
@@ -281,8 +229,7 @@ public class RequestPresentationPageController implements Serializable {
 				context.getServiceIdToWidgetMap().put(serviceId, visualizationWidget);
 
 				// Instanciate renderer widget
-				Panel widgetView = visualizationWidget.createWidget(presentationAttributes);
-				widgetView.setStyleClass(widgetView.getStyleClass() + " service_" + serviceId);
+				Panel widgetView = visualizationWidget.createWidget(serviceId, presentationAttributes);
 
 				dashboard.getChildren().add(widgetView);
 				DashboardColumn column = dashboard.getModel().getColumn(nextColumn % columnCount);

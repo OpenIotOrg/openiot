@@ -49,7 +49,7 @@ public class Passthrough implements VisualizationWidget {
 	private String[] attributeValues;
 
 	@Override
-	public Panel createWidget(List<PresentationAttr> presentationAttributes) {
+	public Panel createWidget(String serviceId, List<PresentationAttr> presentationAttributes) {
 		FacesContext fc = FacesContext.getCurrentInstance();
 		Application application = fc.getApplication();
 
@@ -65,10 +65,10 @@ public class Passthrough implements VisualizationWidget {
 		// Instanciate a panel to host the widget
 		panel = (Panel) application.createComponent(fc, "org.primefaces.component.Panel", "org.primefaces.component.PanelRenderer");
 		panel.setId("widget_panel_" + System.nanoTime());
-		panel.setHeader(title);
+		panel.setHeader(title != null ? title : "");
 		panel.setClosable(false);
 		panel.setToggleable(false);
-		panel.setStyleClass("widget");
+		panel.setStyleClass("widget passthrough-wrapper service_" + serviceId);
 		panel.getChildren().add(widget);
 
 		// Generate clear data link
@@ -115,7 +115,7 @@ public class Passthrough implements VisualizationWidget {
 				for (Binding binding : result.getBinding()) {
 					if (binding.getName().startsWith("attr")) {
 						// attr values start at index 1 (attr1, attr2 e.t.c)
-						Integer seriesIndex = Integer.valueOf(binding.getName().substring(5)) - 1;
+						Integer seriesIndex = Integer.valueOf(binding.getName().substring(4)) - 1;
 						attributeValues[seriesIndex] = binding.getLiteral().getContent();
 					}
 				}
@@ -125,7 +125,7 @@ public class Passthrough implements VisualizationWidget {
 		if (triggerUpdate) {
 
 			// Generate html table
-			String html = "<table>";
+			String html = "<table class=\"table table-striped table-hover\">";
 			for (int i = 0; i < numAttributes; i++) {
 				html += "<tr><th class=\"no-wrap\">attr" + (i + 1) + "</th><td align=\"right\">" + (attributeValues[i] == null ? "" : attributeValues[i]) + "</td></tr>";
 			}
@@ -150,7 +150,8 @@ public class Passthrough implements VisualizationWidget {
 			if ("ATTRIBUTES".equals(attr.getName())) {
 				numAttributes = Integer.valueOf(attr.getValue());
 				attributeValues = new String[numAttributes];
-				break;
+			} else if ("TITLE".equals(attr.getName())) {
+				title = attr.getValue();
 			}
 		}
 	}

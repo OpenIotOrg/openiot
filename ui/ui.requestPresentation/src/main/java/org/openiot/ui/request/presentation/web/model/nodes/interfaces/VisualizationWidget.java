@@ -29,7 +29,7 @@ public interface VisualizationWidget {
 	/**
 	 * Generate a JSF widget to render the widget view
 	 */
-	Panel createWidget(List<PresentationAttr> presentationAttributes);
+	Panel createWidget(String serviceId, List<PresentationAttr> presentationAttributes);
 
 	/**
 	 * Process incoming data
