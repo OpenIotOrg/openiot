@@ -334,7 +334,16 @@ public class ApplicationDesignPageController implements Serializable {
 		}
 
 		context.getAppManager().loadOSDSPec(spec);
-		context.cleanupWorkspace();		
+		context.cleanupWorkspace();	
+		
+		if( context.isPersistSpec() ){
+			try{
+				SchedulerAPIWrapper.registerService(context.getAppManager().exportOSDSpec());
+			} catch (APIException ex) {
+				LoggerService.log(ex);
+				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, messages.getString("GROWL_ERROR_HEADER"), FaceletLocalization.getLocalisedMessage(messages, "ERROR_CONNECTING_TO_REGISTRATION_SERVICE")));
+			}
+		}
 		
 		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, messages.getString("GROWL_INFO_HEADER"), FaceletLocalization.getLocalisedMessage(messages, "INFO_APPLICATION_IMPORT_SUCCESS")));
 		applicationBean.redirect("/pages/applicationDesign.xhtml?faces-redirect=true");
