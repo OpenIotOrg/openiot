@@ -32,7 +32,10 @@ public class Expression extends AbstractSparqlNode implements Serializable{
 
 	@Override
 	public String generate() {
-		return expr;
+		if( expr == null || expr.isEmpty() ){
+			return "";
+		}
+		return generatePad(getDepth()) + expr;
 	}
 	
 	@Override public boolean equals(Object aThat) {

@@ -84,7 +84,11 @@ public abstract class AbstractSparqlNode implements Serializable{
 	public List<String> generateChildren(){
 		List<String> out = new ArrayList<String>(scopedItems.size());
 		for( AbstractSparqlNode child : scopedItems ){
-			out.add( child.generate() );
+			child.setDepth(depth+1);
+			String childBlock = child.generate();
+			if( childBlock != null && !childBlock.isEmpty()){
+				out.add( childBlock );
+			}
 		}		
 		return out;
 	}	

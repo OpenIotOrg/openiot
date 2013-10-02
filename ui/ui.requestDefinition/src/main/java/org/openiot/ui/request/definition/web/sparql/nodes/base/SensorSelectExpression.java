@@ -52,10 +52,15 @@ public class SensorSelectExpression extends AbstractSparqlNode implements Serial
 		// Note lat/lon are flipped!
 		where.appendToScope(new Expression("FILTER (<bif:st_intersects>(?" + nodeId + "_geo, <bif:st_point>( " + lon + ", " + lat + "), " + rad + ")) ."));
 	}
+	
+	@Override
+	public void setDepth( int depth ){
+		// Indentation patch
+		super.setDepth(depth - 1);
+	}
 
 	@Override
 	public String generate() {
-		String pad = generatePad(getDepth());
-		return pad + StringUtils.join(generateChildren(), "\n").replace("\n", "\n" + pad) + "\n";
+		return StringUtils.join(generateChildren(), "\n");
 	}
 }

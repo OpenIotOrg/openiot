@@ -33,8 +33,7 @@ public class Where extends AbstractSparqlNode implements Serializable{
 	@Override
 	public String generate() {
 		String pad = generatePad(getDepth());
-		String childrenPad = generatePad(getDepth() + 1);
-		String out = pad + "WHERE\n" + pad + "{\n" + StringUtils.join(generateChildren(), "\n").replace("\n", "\n" + childrenPad ) + "\n" + pad + "}\n";
+		String out = pad + "WHERE\n" + pad + "{\n" + StringUtils.join(generateChildren(), "\n") + "\n" + pad + "}";
 		return out;
 	}
 

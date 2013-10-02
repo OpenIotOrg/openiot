@@ -34,9 +34,7 @@ public class Scope extends AbstractSparqlNode implements Serializable{
 	@Override
 	public String generate() {
 		String pad = generatePad(getDepth());
-		String childrenPad = generatePad(getDepth() + 1);
-		String out = pad + "{\n" + StringUtils.join(generateChildren(), "\n") + "\n}";
-		return out.replace("\n", "\n" + childrenPad) + "\n";
+		return pad + "{\n" + StringUtils.join(generateChildren(), "\n") + "\n" + pad + "}";
 	}
 
 }

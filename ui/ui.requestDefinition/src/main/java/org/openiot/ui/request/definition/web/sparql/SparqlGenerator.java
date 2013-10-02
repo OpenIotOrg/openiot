@@ -41,6 +41,8 @@ import org.openiot.ui.request.commons.nodes.interfaces.GraphNodeConnection;
 import org.openiot.ui.request.commons.nodes.interfaces.GraphNodeEndpoint;
 import org.openiot.ui.request.commons.nodes.interfaces.GraphNodeProperty;
 import org.openiot.ui.request.definition.web.model.nodes.impl.sinks.LineChart;
+import org.openiot.ui.request.definition.web.model.nodes.impl.sinks.Passthrough;
+import org.openiot.ui.request.definition.web.model.nodes.impl.sinks.Pie;
 import org.openiot.ui.request.definition.web.model.nodes.impl.sources.GenericSource;
 import org.openiot.ui.request.definition.web.sparql.nodes.base.AbstractSparqlNode;
 import org.openiot.ui.request.definition.web.sparql.nodes.base.AggregateExpression;
@@ -85,6 +87,10 @@ public class SparqlGenerator extends AbstractGraphNodeVisitor {
 	// Generated code blocks
 	private List<String> queryBlocks;
 
+	// -------------------------------------------------------------------------
+	// Public API
+	// -------------------------------------------------------------------------
+
 	public SparqlGenerator() {
 		this.visitedConnectionGraphStack = new Stack<GraphNodeConnection>();
 		this.visitedSensorTypes = new LinkedHashSet<String>();
@@ -94,10 +100,11 @@ public class SparqlGenerator extends AbstractGraphNodeVisitor {
 
 	public List<String> generateQueriesForNodeEndpoints(GraphModel model, GraphNode visualizerNode) {
 		this.model = model;
+		this.queryBlocks.clear();
 		reset();
 
 		// Generate code for passed node
-		visitViaReflection(visualizerNode);
+		visitSink(visualizerNode);
 
 		// Return output
 		return this.queryBlocks;
@@ -106,6 +113,10 @@ public class SparqlGenerator extends AbstractGraphNodeVisitor {
 	public Map<GraphNodeProperty, Object> getVariableMap() {
 		return variableMap;
 	}
+
+	// -------------------------------------------------------------------------
+	// Query blocks
+	// -------------------------------------------------------------------------
 
 	private void reset() {
 		this.visitedConnectionGraphStack.clear();
@@ -186,7 +197,7 @@ public class SparqlGenerator extends AbstractGraphNodeVisitor {
 	}
 
 	// -------------------------------------------------------------------------
-	// Visitors
+	// Generic non-sink node visitors
 	// -------------------------------------------------------------------------
 	@Override
 	public void defaultVisit(GraphNode node) {
@@ -195,163 +206,71 @@ public class SparqlGenerator extends AbstractGraphNodeVisitor {
 			return;
 		}
 
-		if (node.getType().equals("SINK")) {
-			this.sinkNodeNeedsGeoCoords = false;
-
-			if (node instanceof LineChart) {
-				visitSink((LineChart) node);
-			} else if (node instanceof org.openiot.ui.request.definition.web.model.nodes.impl.sinks.Map) {
-				visitSink((org.openiot.ui.request.definition.web.model.nodes.impl.sinks.Map) node);
-			} else {
-				visitSink(node);
-			}
-			return;
-		}
-
 		LoggerService.log(Level.SEVERE, "[SparqlGenerator] Default visitor called for node of class: " + node.getClass().getSimpleName());
 	}
 
-	public void visitSink(org.openiot.ui.request.definition.web.model.nodes.impl.sinks.Map node) {
-		this.sinkNodeNeedsGeoCoords = true;
-		beginQueryBlock(node, 1, 1);
+	public void visit(GenericSource node) {
+		visitedSensorTypes.add(node.getLabel());
 
-		// Visit incoming neighbors
+		// Examine the connection endpoint that lead us to the sensor
+		GraphNodeConnection outgoingConnection = visitedConnectionGraphStack.peek();
+		GraphNodeEndpoint sourceEndpoint = outgoingConnection.getSourceEndpoint();
+
+		// Remember the sensor we landed to as well as the target attribute
+		// endpoint
+		targetDataSource = node;
+		targetAttribute = sourceEndpoint;
+
+		// Encode selection query
+		subSelectNode.appendToScope(new Expression("?" + sourceEndpoint.getUID()));
+
+		// Generate nested where clause for selected attribute
+		this.generateAttributeSubQueryWhereCode(targetDataSource, targetAttribute);
+
+		// If sensor node has an incoming filter node connection
+		// visit it and append any additional filters
 		for (GraphNodeEndpoint endpoint : node.getEndpointDefinitions()) {
 			if (endpoint.getType().equals(EndpointType.Output)) {
 				continue;
 			}
 
-			// If this is a LAT or LON connection, skip it because we will
-			// include it
-			// together with the VALUE endpoint
-			if (endpoint.getScope().contains("geo_lat") || endpoint.getScope().contains("geo_lon")) {
-				continue;
-			}
-			
-			LoggerService.log(Level.INFO, "Visit endpoint with scope: " + endpoint.getScope());
-
 			List<GraphNodeConnection> incomingConnections = model.findGraphEndpointConnections(endpoint);
 			for (GraphNodeConnection connection : incomingConnections) {
-
-				// Generate primary select (also include LAT/LON fields)
-				primarySelectNode.appendToScope(new Expression("?" + endpoint.getLabel()));
-				primarySelectNode.appendToScope(new Expression("?LAT"));
-				primarySelectNode.appendToScope(new Expression("?LON"));
-
-				// Generate new scope for assembling the selection queries
-				// *unless* this is a grp_Date scope where
-				// we re use the current
-				Scope subScope = new Scope();
-				primaryWhereNode.appendToScope(subScope);
-
-				// Generate subquery helpers
-				subSelectNode = subSelectOriginalNode = new Select();
-				subWhereNode = new Where();
-				subGroupNode = new Group();
-				subScope.appendToScope(subSelectNode);
-				subScope.appendToScope(subWhereNode);
-				subScope.appendToScope(subGroupNode);
-
-				// Explore graph till we reach a sensor node.
-				targetDataSource = null;
-				targetAttribute = null;
-				this.visitedConnectionGraphStack.push(connection);
-				this.visitViaReflection(connection.getSourceNode());
-
-				// Append the endpoint label to the end of the generated select
-				// statement
-				subSelectNode.appendToScope(new Expression("AS ?" + endpoint.getLabel()));
-				subSelectNode.appendToScope(new Expression("?" + targetDataSource.getUID() + "_lat AS ?LAT"));
-				subSelectNode.appendToScope(new Expression("?" + targetDataSource.getUID() + "_lon AS ?LON"));
-
-				//
-				this.visitedConnectionGraphStack.pop();
-			}
-		}
-
-		endQueryBlock();
-	}
-
-	public void visitSink(LineChart node) {
-		String xAxisType = (String) node.getPropertyValueMap().get("X_AXIS_TYPE");
-
-		// Group queries for xy tuples
-		int seriesCount = Integer.valueOf((String) node.getPropertyValueMap().get("SERIES"));
-		for (int i = 0; i < seriesCount; i++) {
-			// Start a new code block for each series
-			beginQueryBlock(node, i + 1, seriesCount);
-
-			GraphNodeEndpoint xEndpoint = node.getEndpointByLabel("x" + (i + 1));
-			GraphNodeEndpoint yEndpoint = node.getEndpointByLabel("y" + (i + 1));
-
-			// Follow Y axis value
-			for (GraphNodeConnection connection : model.findGraphEndpointConnections(yEndpoint)) {
-
-				Scope subScope = new Scope();
-				primaryWhereNode.appendToScope(subScope);
-
-				// Generate subquery helpers
-				subSelectNode = subSelectOriginalNode = new Select();
-				subWhereNode = new Where();
-				subGroupNode = new Group();
-				subOrderNode = new Order();
-				subScope.appendToScope(subSelectNode);
-				subScope.appendToScope(subWhereNode);
-				subScope.appendToScope(subGroupNode);
-				subScope.appendToScope(subOrderNode);
-
-				// Explore graph till we reach a sensor node.
-				targetDataSource = null;
-				targetAttribute = null;
 				this.visitedConnectionGraphStack.push(connection);
 				this.visitViaReflection(connection.getSourceNode());
 				this.visitedConnectionGraphStack.pop();
-
-				subSelectNode.appendToScope(new Expression("AS ?" + yEndpoint.getLabel()));
-				primarySelectNode.appendToScope(new Expression("?" + yEndpoint.getLabel()));
 			}
-
-			// Process x axis endpoint
-			if (xEndpoint != null) {
-				for (GraphNodeConnection connection : model.findGraphEndpointConnections(xEndpoint)) {
-					if (xAxisType.equals("Date (observation)")) {
-						String timeComponent = connection.getSourceEndpoint().getLabel().replace("grp_recordTime_", "");
-						// Note: We need to apply an aggregation function to timestamp components
-						// for the value grouping to work
-						subSelectNode.appendToScope(new Expression("AVG( fn:" + timeComponent + "-from-dateTime(?" + targetDataSource.getUID() + "_recordTime) ) AS ?" + xEndpoint.getLabel() + "_" + timeComponent));
-						primarySelectNode.appendToScope(new Expression("?" + xEndpoint.getLabel() + "_" + timeComponent));
-					} else {
-						Scope subScope = new Scope();
-						primaryWhereNode.appendToScope(subScope);
-
-						// Generate subquery helpers
-						subSelectNode = subSelectOriginalNode = new Select();
-						subWhereNode = new Where();
-						subGroupNode = new Group();
-						subOrderNode = new Order();
-						subScope.appendToScope(subSelectNode);
-						subScope.appendToScope(subWhereNode);
-						subScope.appendToScope(subGroupNode);
-						subScope.appendToScope(subOrderNode);
-
-						// Explore graph till we reach a sensor node.
-						targetDataSource = null;
-						targetAttribute = null;
-						this.visitedConnectionGraphStack.push(connection);
-						this.visitViaReflection(connection.getSourceNode());
-						this.visitedConnectionGraphStack.pop();
-
-						subSelectNode.appendToScope(new Expression("AS ?" + xEndpoint.getLabel()));
-						primarySelectNode.appendToScope(new Expression("?" + xEndpoint.getLabel()));
-					}
-				}
-			}
-
-			endQueryBlock();
 		}
 	}
+
+	// -------------------------------------------------------------------------
+	// Sink node Visitors
+	// -------------------------------------------------------------------------
 
 	public void visitSink(GraphNode node) {
+		// Only process the viz node that was passed to the
+		// 'generateQueriesForNodeEndpoints' method
+		if (!node.getType().equals("SINK")) {
+			return;
+		}
+
+		this.sinkNodeNeedsGeoCoords = false;
+
+		if (node instanceof LineChart) {
+			visitLineChartSink((LineChart) node);
+		} else if (node instanceof Passthrough) {
+			visitPassthroughSink((Passthrough) node);
+		} else if (node instanceof org.openiot.ui.request.definition.web.model.nodes.impl.sinks.Map) {
+			visitMapSink((org.openiot.ui.request.definition.web.model.nodes.impl.sinks.Map) node);
+		} else if (node instanceof Pie) {
+			visitPieSink((Pie) node);
+		} else {
+			visitGenericSink(node);
+		}
+	}
+
+	public void visitGenericSink(GraphNode node) {
+
 		beginQueryBlock(node, 1, 1);
 
 		// Visit incoming neighbors
@@ -398,45 +317,231 @@ public class SparqlGenerator extends AbstractGraphNodeVisitor {
 		endQueryBlock();
 	}
 
-	private void visitIncomingConnections(GraphNode destinationNode) {
-		for (GraphNodeEndpoint endpoint : destinationNode.getEndpointDefinitions()) {
+	public void visitMapSink(org.openiot.ui.request.definition.web.model.nodes.impl.sinks.Map node) {
+		this.sinkNodeNeedsGeoCoords = true;
+		beginQueryBlock(node, 1, 1);
+
+		// Visit incoming neighbors
+		for (GraphNodeEndpoint endpoint : node.getEndpointDefinitions()) {
 			if (endpoint.getType().equals(EndpointType.Output)) {
 				continue;
 			}
 
+			// If this is a LAT or LON connection, skip it because we will
+			// include it
+			// together with the VALUE endpoint
+			if (endpoint.getScope().contains("geo_lat") || endpoint.getScope().contains("geo_lon")) {
+				continue;
+			}
+
+			LoggerService.log(Level.INFO, "Visit endpoint with scope: " + endpoint.getScope());
+
 			List<GraphNodeConnection> incomingConnections = model.findGraphEndpointConnections(endpoint);
 			for (GraphNodeConnection connection : incomingConnections) {
+
+				// Generate primary select (also include LAT/LON fields)
+				primarySelectNode.appendToScope(new Expression("?" + endpoint.getLabel()));
+				primarySelectNode.appendToScope(new Expression("?LAT"));
+				primarySelectNode.appendToScope(new Expression("?LON"));
+
+				// Generate new scope for assembling the selection queries
+				// *unless* this is a grp_Date scope where
+				// we re use the current
+				Scope subScope = new Scope();
+				primaryWhereNode.appendToScope(subScope);
+
+				// Generate subquery helpers
+				subSelectNode = subSelectOriginalNode = new Select();
+				subWhereNode = new Where();
+				subGroupNode = new Group();
+				subScope.appendToScope(subSelectNode);
+				subScope.appendToScope(subWhereNode);
+				subScope.appendToScope(subGroupNode);
+
+				// Explore graph till we reach a sensor node.
+				targetDataSource = null;
+				targetAttribute = null;
 				this.visitedConnectionGraphStack.push(connection);
 				this.visitViaReflection(connection.getSourceNode());
+
+				// Append the endpoint label to the end of the generated select
+				// statement
+				subSelectNode.appendToScope(new Expression("AS ?" + endpoint.getLabel()));
+				subSelectNode.appendToScope(new Expression("?" + targetDataSource.getUID() + "_lat AS ?LAT"));
+				subSelectNode.appendToScope(new Expression("?" + targetDataSource.getUID() + "_lon AS ?LON"));
+
+				//
 				this.visitedConnectionGraphStack.pop();
 			}
 		}
+
+		endQueryBlock();
 	}
 
-	// -------------------------------------------------------------------------
-	// Node-specific visitors
-	// -------------------------------------------------------------------------
-	public void visit(GenericSource node) {
-		visitedSensorTypes.add(node.getLabel());
+	public void visitLineChartSink(LineChart node) {
+		String xAxisType = (String) node.getPropertyValueMap().get("X_AXIS_TYPE");
 
-		// Examine the connection endpoint that lead us to the sensor
-		GraphNodeConnection outgoingConnection = visitedConnectionGraphStack.peek();
-		GraphNodeEndpoint sourceEndpoint = outgoingConnection.getSourceEndpoint();
+		// Group queries for xy tuples
+		int seriesCount = Integer.valueOf((String) node.getPropertyValueMap().get("SERIES"));
+		for (int i = 0; i < seriesCount; i++) {
+			// Start a new code block for each series
+			beginQueryBlock(node, i + 1, seriesCount);
 
-		// Remember the sensor we landed to as well as the target attribute
-		// endpoint
-		targetDataSource = node;
-		targetAttribute = sourceEndpoint;
+			GraphNodeEndpoint xEndpoint = node.getEndpointByLabel("x" + (i + 1));
+			GraphNodeEndpoint yEndpoint = node.getEndpointByLabel("y" + (i + 1));
 
-		// Encode selection query
-		subSelectNode.appendToScope(new Expression("?" + sourceEndpoint.getUID()));
+			// Follow Y axis value
+			for (GraphNodeConnection connection : model.findGraphEndpointConnections(yEndpoint)) {
 
-		// Generate nested where clause for selected attribute
-		this.generateAttributeSubQueryWhereCode(targetDataSource, targetAttribute);
+				Scope subScope = new Scope();
+				primaryWhereNode.appendToScope(subScope);
 
-		// If sensor node has an incoming filter node connection
-		// visit it and append any additional filters
-		for (GraphNodeEndpoint endpoint : node.getEndpointDefinitions()) {
+				// Generate subquery helpers
+				subSelectNode = subSelectOriginalNode = new Select();
+				subWhereNode = new Where();
+				subGroupNode = new Group();
+				subOrderNode = new Order();
+				subScope.appendToScope(subSelectNode);
+				subScope.appendToScope(subWhereNode);
+				subScope.appendToScope(subGroupNode);
+				subScope.appendToScope(subOrderNode);
+
+				// Explore graph till we reach a sensor node.
+				targetDataSource = null;
+				targetAttribute = null;
+				this.visitedConnectionGraphStack.push(connection);
+				this.visitViaReflection(connection.getSourceNode());
+				this.visitedConnectionGraphStack.pop();
+
+				subSelectNode.appendToScope(new Expression("AS ?" + yEndpoint.getLabel()));
+				primarySelectNode.appendToScope(new Expression("?" + yEndpoint.getLabel()));
+			}
+
+			// Process x axis endpoint
+			if (xEndpoint != null) {
+				for (GraphNodeConnection connection : model.findGraphEndpointConnections(xEndpoint)) {
+					if (xAxisType.equals("Date (observation)")) {
+						String timeComponent = connection.getSourceEndpoint().getLabel().replace("grp_recordTime_", "");
+						// Note: We need to apply an aggregation function to
+						// timestamp components
+						// for the value grouping to work
+						subSelectNode.appendToScope(new Expression("AVG( fn:" + timeComponent + "-from-dateTime(?" + targetDataSource.getUID() + "_recordTime) ) AS ?" + xEndpoint.getLabel() + "_" + timeComponent));
+						primarySelectNode.appendToScope(new Expression("?" + xEndpoint.getLabel() + "_" + timeComponent));
+					} else {
+						Scope subScope = new Scope();
+						primaryWhereNode.appendToScope(subScope);
+
+						// Generate subquery helpers
+						subSelectNode = subSelectOriginalNode = new Select();
+						subWhereNode = new Where();
+						subGroupNode = new Group();
+						subOrderNode = new Order();
+						subScope.appendToScope(subSelectNode);
+						subScope.appendToScope(subWhereNode);
+						subScope.appendToScope(subGroupNode);
+						subScope.appendToScope(subOrderNode);
+
+						// Explore graph till we reach a sensor node.
+						targetDataSource = null;
+						targetAttribute = null;
+						this.visitedConnectionGraphStack.push(connection);
+						this.visitViaReflection(connection.getSourceNode());
+						this.visitedConnectionGraphStack.pop();
+
+						subSelectNode.appendToScope(new Expression("AS ?" + xEndpoint.getLabel()));
+						primarySelectNode.appendToScope(new Expression("?" + xEndpoint.getLabel()));
+					}
+				}
+			}
+
+			endQueryBlock();
+		}
+	}
+
+	public void visitPassthroughSink(Passthrough node) {
+
+		// Generate one query per attribute
+		int attrCount = Integer.valueOf((String) node.getPropertyValueMap().get("ATTRIBUTES"));
+		for (int i = 0; i < attrCount; i++) {
+			// Start a new code block for each attribute
+			beginQueryBlock(node, i + 1, attrCount);
+
+			GraphNodeEndpoint attrEndpoint = node.getEndpointByLabel("attr" + (i + 1));
+
+			// Follow attr value
+			for (GraphNodeConnection connection : model.findGraphEndpointConnections(attrEndpoint)) {
+
+				Scope subScope = new Scope();
+				primaryWhereNode.appendToScope(subScope);
+
+				// Generate subquery helpers
+				subSelectNode = subSelectOriginalNode = new Select();
+				subWhereNode = new Where();
+				subGroupNode = new Group();
+				subOrderNode = new Order();
+				subScope.appendToScope(subSelectNode);
+				subScope.appendToScope(subWhereNode);
+				subScope.appendToScope(subGroupNode);
+				subScope.appendToScope(subOrderNode);
+
+				// Explore graph till we reach a sensor node.
+				targetDataSource = null;
+				targetAttribute = null;
+				this.visitedConnectionGraphStack.push(connection);
+				this.visitViaReflection(connection.getSourceNode());
+				this.visitedConnectionGraphStack.pop();
+
+				subSelectNode.appendToScope(new Expression("AS ?" + attrEndpoint.getLabel()));
+				primarySelectNode.appendToScope(new Expression("?" + attrEndpoint.getLabel()));
+			}
+
+			endQueryBlock();
+		}
+	}
+
+	public void visitPieSink(Pie node) {
+
+		// Generate one query per attribute
+		int seriesCount = Integer.valueOf((String) node.getPropertyValueMap().get("SERIES"));
+		for (int i = 0; i < seriesCount; i++) {
+			// Start a new code block for each series
+			beginQueryBlock(node, i + 1, seriesCount);
+
+			GraphNodeEndpoint attrEndpoint = node.getEndpointByLabel("y" + (i + 1));
+
+			// Follow attr value
+			for (GraphNodeConnection connection : model.findGraphEndpointConnections(attrEndpoint)) {
+
+				Scope subScope = new Scope();
+				primaryWhereNode.appendToScope(subScope);
+
+				// Generate subquery helpers
+				subSelectNode = subSelectOriginalNode = new Select();
+				subWhereNode = new Where();
+				subGroupNode = new Group();
+				subOrderNode = new Order();
+				subScope.appendToScope(subSelectNode);
+				subScope.appendToScope(subWhereNode);
+				subScope.appendToScope(subGroupNode);
+				subScope.appendToScope(subOrderNode);
+
+				// Explore graph till we reach a sensor node.
+				targetDataSource = null;
+				targetAttribute = null;
+				this.visitedConnectionGraphStack.push(connection);
+				this.visitViaReflection(connection.getSourceNode());
+				this.visitedConnectionGraphStack.pop();
+
+				subSelectNode.appendToScope(new Expression("AS ?" + attrEndpoint.getLabel()));
+				primarySelectNode.appendToScope(new Expression("?" + attrEndpoint.getLabel()));
+			}
+
+			endQueryBlock();
+		}
+	}
+	
+	private void visitIncomingConnections(GraphNode destinationNode) {
+		for (GraphNodeEndpoint endpoint : destinationNode.getEndpointDefinitions()) {
 			if (endpoint.getType().equals(EndpointType.Output)) {
 				continue;
 			}
@@ -516,40 +621,6 @@ public class SparqlGenerator extends AbstractGraphNodeVisitor {
 	// -------------------------------------------------------------------------
 	// Comparator node visitors
 	// -------------------------------------------------------------------------
-	/*
-	 * public void
-	 * visit(org.openiot.ui.request.definition.web.model.nodes.impl.comparators
-	 * .Compare node) {
-	 * 
-	 * // Since the filter node cloned the original attribute endpoint, we need
-	 * to // match the incoming endpoint from the last connection on stack to
-	 * the // endpoint with same name from the sensor node (2 connections back)
-	 * ListIterator<GraphNodeConnection> connectionIt =
-	 * visitedConnectionGraphStack
-	 * .listIterator(visitedConnectionGraphStack.size()); GraphNodeEndpoint
-	 * sourceFilterEndpoint = connectionIt.previous().getSourceEndpoint();
-	 * GraphNode sensorNode = connectionIt.previous().getDestinationNode();
-	 * 
-	 * GraphNodeEndpoint match = null; for( GraphNodeEndpoint test :
-	 * sensorNode.getEndpointDefinitions() ){ if(
-	 * test.getLabel().equals(sourceFilterEndpoint.getLabel())){ match = test;
-	 * break; } }
-	 * 
-	 * if( match == null ){ LoggerService.log(Level.SEVERE,
-	 * "[SparqlGenerator] Could not match filter node endpoint '"
-	 * +sourceFilterEndpoint.getLabel()+"' to original sensor endpoint");
-	 * return; }
-	 * 
-	 * // Encode attribute selection queries in where statement
-	 * this.encodePropertySelectionFilters(sensorNode, match);
-	 * 
-	 * // Encode filter query in where statement
-	 * this.generatedWhereCode.add("\tFILTER( ?" + match.getUID() + " " +
-	 * node.getPropertyValueMap().get("OPERATOR") + " " +
-	 * node.getPropertyValueMap().get("CMP_VALUE") + " ).");
-	 * 
-	 * }
-	 */
 
 	public void visit(org.openiot.ui.request.definition.web.model.nodes.impl.comparators.CompareAbsoluteDateTime node) {
 		// Generate date string in appropriate format.
@@ -589,7 +660,7 @@ public class SparqlGenerator extends AbstractGraphNodeVisitor {
 		} else if ("YEAR(S)".equals(unit)) {
 			scaler = 365 * 24 * 60 * 60L;
 		}
-		String cmpValue = "" + ((Number) node.getPropertyValueMap().get("CMP_VALUE")).longValue() * scaler;
+		String cmpValue = "" + Long.valueOf(node.getPropertyValueMap().get("CMP_VALUE").toString()) * scaler;
 
 		GraphNodeProperty prop = node.getPropertyByName("CMP_VALUE");
 		if (prop.isVariable()) {
@@ -628,40 +699,6 @@ public class SparqlGenerator extends AbstractGraphNodeVisitor {
 
 		subWhereNode.appendToScope(new Expression("FILTER (?" + targetDataSource.getUID() + "_recordTime >= \"" + formattedFromDate + "\"^^xsd:date AND ?" + targetDataSource.getUID() + "_recordTime <= \"" + formattedToDate + "\"^^xsd:date )."));
 	}
-
-	/**
-	 * public void visit(org.openiot.ui.request.definition.web.model.nodes.impl.
-	 * comparators .Between node) {
-	 * 
-	 * // Since the filter node cloned the original attribute endpoint, we need
-	 * // to // match the incoming endpoint from the last connection on stack to
-	 * the // endpoint with same name from the sensor node (2 connections back)
-	 * ListIterator<GraphNodeConnection> connectionIt =
-	 * visitedConnectionGraphStack
-	 * .listIterator(visitedConnectionGraphStack.size()); GraphNodeEndpoint
-	 * sourceFilterEndpoint = connectionIt.previous().getSourceEndpoint();
-	 * GraphNode sensorNode = connectionIt.previous().getDestinationNode();
-	 * 
-	 * GraphNodeEndpoint match = null; for (GraphNodeEndpoint test :
-	 * sensorNode.getEndpointDefinitions()) { if
-	 * (test.getLabel().equals(sourceFilterEndpoint.getLabel())) { match = test;
-	 * break; } }
-	 * 
-	 * if (match == null) { LoggerService.log(Level.SEVERE,
-	 * "[SparqlGenerator] Could not match filter node endpoint '" +
-	 * sourceFilterEndpoint.getLabel() + "' to original sensor endpoint");
-	 * return; }
-	 * 
-	 * // Encode attribute selection queries in where statement
-	 * this.encodePropertySelectionFilters(sensorNode, match);
-	 * 
-	 * // Encode filter query in where statement
-	 * this.generatedWhereCode.add("\tFILTER( ?" + match.getUID() + " >= " +
-	 * node.getPropertyValueMap().get("CMP_VALUE1") + " && ?" + match.getUID() +
-	 * " <= " + node.getPropertyValueMap().get("CMP_VALUE2") + " ).");
-	 * 
-	 * }
-	 */
 
 	// -------------------------------------------------------------------------
 	// Aggregator node visitors

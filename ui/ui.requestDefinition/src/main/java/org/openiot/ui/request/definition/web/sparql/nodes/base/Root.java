@@ -33,7 +33,7 @@ public class Root extends AbstractSparqlNode implements Serializable {
 
 	@Override
 	public String generate() {
-		return StringUtils.join(generateChildren(), "\n");
+		return StringUtils.join(generateChildren(), "\n") + "\n";
 	}
 
 }

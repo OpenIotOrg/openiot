@@ -33,6 +33,6 @@ public class From extends AbstractSparqlNode implements Serializable{
 	@Override
 	public String generate() {
 		String pad = generatePad(getDepth());
-		return pad + "FROM " + URI + "\n";
+		return pad + "FROM " + URI;
 	}
 }

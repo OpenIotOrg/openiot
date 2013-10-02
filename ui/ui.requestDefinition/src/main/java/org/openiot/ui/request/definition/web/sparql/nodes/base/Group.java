@@ -37,7 +37,7 @@ public class Group extends AbstractSparqlNode implements Serializable{
 			return "";
 		}
 		String pad = generatePad(getDepth());
-		String out = pad + "GROUP BY " + StringUtils.join(generateChildren(), " ") + "\n";
+		String out = pad + "GROUP BY " + StringUtils.join(generateChildren(), " ");
 		return out;
 	}
 

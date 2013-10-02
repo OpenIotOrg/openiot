@@ -37,6 +37,6 @@ public class TimeFilterExpression extends AbstractSparqlNode implements Serializ
 	@Override
 	public String generate() {
 		String pad = generatePad(getDepth());
-		return pad + StringUtils.join(generateChildren(), "\n").replace("\n", "\n" + pad) + "\n";
+		return pad + StringUtils.join(generateChildren(), "\n");
 	}
 }

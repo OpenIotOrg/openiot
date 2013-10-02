@@ -37,7 +37,7 @@ public class Order extends AbstractSparqlNode implements Serializable{
 			return "";
 		}
 		String pad = generatePad(getDepth());
-		String out = pad + "ORDER BY " + StringUtils.join(generateChildren(), " ") + "\n";
+		String out = pad + "ORDER BY " + StringUtils.join(generateChildren(), " ");
 		return out;
 	}
 

@@ -41,7 +41,7 @@ public class Comment extends AbstractSparqlNode implements Serializable {
 	@Override
 	public String generate() {
 		String pad = generatePad(getDepth()) + "# ";
-		return pad + StringUtils.join(content, "\n" + pad) + "\n";
+		return pad + StringUtils.join(content, "\n" + pad);
 	}
 
 }

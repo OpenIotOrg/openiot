@@ -34,7 +34,7 @@ public class Select extends AbstractSparqlNode implements Serializable{
 	@Override
 	public String generate() {
 		String pad = generatePad(getDepth());
-		String out = pad + "SELECT DISTINCT " + StringUtils.join(generateChildren(), " ") + "\n";
+		String out = pad + "SELECT DISTINCT " + StringUtils.join(generateChildren(), " ").replaceAll("\\s+", " ");
 		return out;
 	}
 

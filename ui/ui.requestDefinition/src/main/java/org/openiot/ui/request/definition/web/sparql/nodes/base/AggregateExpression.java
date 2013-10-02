@@ -35,6 +35,6 @@ public class AggregateExpression extends AbstractSparqlNode implements Serializa
 
 	@Override
 	public String generate() {
-		return expr + "(" + StringUtils.join(generateChildren(), "") + ")";
+		return expr + "(" + StringUtils.join(generateChildren(), "").trim() + ")";
 	}
 }
