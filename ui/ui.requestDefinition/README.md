@@ -87,3 +87,13 @@ If you want to debug the source code or look at the Javadocs of any library in t
         mvn dependency:sources
         mvn dependency:resolve -Dclassifier=javadoc
 
+
+Example widgets to get you started
+------------------------------------
+
+We have included same example widgets that demonstrate how to set up each one of the available visualization sink widgets. To import the samples,
+login to the request definition UI and then click `File -> Import applications`. Select `examples.xml` from the `examples` folder and tick the
+`Persist imported applications` checkbox to automatically register the imported applications with the OpenIoT scheduler.
+
+After importing the examples, you may access them by clicking `File -> Open application` and then selecting one of the available applications. All
+examples are setup to access real data and can be tested using the [request presentation UI](../ui.requestPresentation/README.md)
