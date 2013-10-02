@@ -57,9 +57,9 @@
 		</shiro:guest>
 
 		<% if(request.getAttribute("hasPermission").equals(true))  
-		 	out.println("<h2 style=\"color: #006B00\">You have the permission \"stream:query:s1\" for service [" + request.getAttribute("client_id") + "]!</h2>");
+		 	out.println("<h2 style=\"color: #006B00\">You have the permission \"sensor:query:s1\" for service [" + request.getAttribute("client_id") + "]!</h2>");
 		 else
-			out.println("<h2 style=\"color:#8F0047\">You DON'T have the permission \"stream:query:s1\" for service [" + request.getAttribute("client_id") + "]!</h2>");
+			out.println("<h2 style=\"color:#8F0047\">You DON'T have the permission \"sensor:query:s1\" for service [" + request.getAttribute("client_id") + "]!</h2>");
 		%>
 
 		

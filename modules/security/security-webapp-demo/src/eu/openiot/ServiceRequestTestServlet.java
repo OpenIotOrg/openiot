@@ -35,9 +35,12 @@ public class ServiceRequestTestServlet extends HttpServlet {
 			String clientId = req.getParameter("client_id");
 			
 			AuthorizationManager authorizationManager = accessControlUtil.getAuthorizationManager();
+			
 			OAuthorizationCredentials myCredentials = accessControlUtil.getOAuthorizationCredentials();
+			
 			OAuthorizationCredentials credentials = new OAuthorizationCredentials(accessToken, clientId, myCredentials);
-			boolean hasPermission = authorizationManager.hasPermission("stream:query:s1", credentials);
+			
+			boolean hasPermission = authorizationManager.hasPermission("sensor:query:s1", credentials);
 			
 			req.setAttribute("access_token", myCredentials.getAccessToken());
 			req.setAttribute("client_id", myCredentials.getClientId());

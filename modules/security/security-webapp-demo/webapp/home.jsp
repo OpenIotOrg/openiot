@@ -80,13 +80,13 @@
 		<p style="color: #006B00">
 			<shiro:hasRole name="admin">admin<br />
 			</shiro:hasRole>
-			<shiro:hasRole name="president">president<br />
+			<shiro:hasRole name="service_definer">service_definer<br />
 			</shiro:hasRole>
-			<shiro:hasRole name="darklord">darklord<br />
+			<shiro:hasRole name="visualizer">visualizer<br />
 			</shiro:hasRole>
-			<shiro:hasRole name="goodguy">goodguy<br />
+			<shiro:hasRole name="scheduler">scheduler<br />
 			</shiro:hasRole>
-			<shiro:hasRole name="schwartz">schwartz<br />
+			<shiro:hasRole name="end_user">end_user<br />
 			</shiro:hasRole>
 		</p>
 
@@ -95,13 +95,13 @@
 		<p style="color:#8F0047">
 			<shiro:lacksRole name="admin">admin<br />
 			</shiro:lacksRole>
-			<shiro:lacksRole name="president">president<br />
+			<shiro:lacksRole name="service_definer">service_definer<br />
 			</shiro:lacksRole>
-			<shiro:lacksRole name="darklord">darklord<br />
+			<shiro:lacksRole name="visualizer">visualizer<br />
 			</shiro:lacksRole>
-			<shiro:lacksRole name="goodguy">goodguy<br />
+			<shiro:lacksRole name="scheduler">scheduler<br />
 			</shiro:lacksRole>
-			<shiro:lacksRole name="schwartz">schwartz<br />
+			<shiro:lacksRole name="end_user">end_user<br />
 			</shiro:lacksRole>
 		</p>
 	</div>

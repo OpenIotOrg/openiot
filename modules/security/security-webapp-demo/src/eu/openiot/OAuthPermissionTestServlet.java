@@ -32,11 +32,13 @@ public class OAuthPermissionTestServlet extends HttpServlet {
 		} else {
 			Map<String, String> allPermissions = new HashMap<String, String>();
 
-			String[] permissions = new String[] { "stream:view:s1", "stream:query:s1", "stream:view:s2", "stream:query:s2", 
-					"admin:create_user", "admin:delete_user", "admin:delete_stream:s1", "admin:delete_stream:s2,s3" };
+			String[][] permissions = new String[][] { {"sensor:discover:s1", "Discovery of sensor s1"}, 
+					{"sensor:query:s1", "Querying sensor s1"}, {"sensor:discover:s2", "Discovery of sensor s2"}, {"sensor:query:s2", "Querying sensor s2"}, 
+					{"admin:create_user", "Creating a user"}, {"admin:delete_user", "Deleting a user"}, {"admin:delete_sensor:s1", "Deteling sensor s1"},
+					{"admin:delete_sensor:s2,s3", "Deleting sensors s2 and s3"} };
 
-			for (String permission : permissions)
-				allPermissions.put(permission, "--");
+			for (String[] permission : permissions)
+				allPermissions.put(permission[0], permission[1]);
 
 			OAuthorizationCredentials myCredentials = accessControlUtil.getOAuthorizationCredentials();
 			req.setAttribute("access_token", myCredentials.getAccessToken());

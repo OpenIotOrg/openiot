@@ -64,11 +64,7 @@
 			log back in under different user accounts to see different
 			permissions.</p>
 
-		<%-- 
-		<jsp:scriptlet>String[] permissions = new String[] { "stream:view:s1", "stream:query:s1", "stream:view:s2", "stream:query:s2", "admin:create_user", "admin:delete_user", "admin:delete_stream:s1",
-					"admin:delete_stream:s2,s3" };
-			pageContext.setAttribute("permissions", permissions);</jsp:scriptlet>
-			--%>
+		
 		<h3>Permissions you have</h3>
 
 		<table class="table table-hover table-condensed table-bordered table-striped">
