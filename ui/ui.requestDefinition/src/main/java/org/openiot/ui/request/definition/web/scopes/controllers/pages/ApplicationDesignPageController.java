@@ -275,6 +275,7 @@ public class ApplicationDesignPageController implements Serializable {
 
 		context.setGraphModel(graphModel);
 		context.clearAvailableSensors();
+		applicationBean.redirect("/pages/applicationDesign.xhtml?faces-redirect=true");	
 	}
 
 	public void saveApplication() {
