@@ -20,7 +20,7 @@
  
       Contact: OpenIoT mailto: info@openiot.eu
     -->
-    
+
     <!-- Author: Nikos Kefalakis (nkef@ait.edu.gr) -->
 
 
@@ -49,7 +49,7 @@
         <xs:complexType>
             <xs:sequence>
                 <xs:sequence>
-                    <xs:element ref="sensorInfo"/>
+                    <xs:element ref="sensorUsed" maxOccurs="unbounded"/>
                 </xs:sequence>
                 <xs:element maxOccurs="1" minOccurs="0" ref="dataVolume"/>
             </xs:sequence>
@@ -64,7 +64,7 @@
         </xs:complexType>
     </xs:element>
 
-    <xs:element name="sensorInfo">
+    <xs:element name="sensorUsed">
         <xs:complexType>
             <xs:attribute name="id" type="xs:anyURI"/>
             <xs:attribute name="weight" type="xs:decimal"/>
