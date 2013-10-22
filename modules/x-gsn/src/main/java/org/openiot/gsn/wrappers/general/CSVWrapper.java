@@ -50,6 +50,11 @@ public class CSVWrapper extends AbstractWrapper {
     private CSVHandler handler = new CSVHandler();
 
     private int samplingPeriodInMsc;
+	/**
+	 * The maximum number of samples to read from the file per sampling
+	 * period.
+	 */
+	private int samplingCountPerPeriod;
 
     private String checkPointDir;
 
@@ -74,6 +79,7 @@ public class CSVWrapper extends AbstractWrapper {
         String nullValues = addressBean.getPredicateValueWithDefault("bad-values", "");
         String strUseCounterForCheckPoint = addressBean.getPredicateValueWithDefault("use-counter-for-check-point", "false");
         samplingPeriodInMsc = addressBean.getPredicateValueAsInt("sampling", 10000);
+        samplingCountPerPeriod = addressBean.getPredicateValueAsInt("sampling-count", 250);
 
         /*
         DEBUG_INFO(dataFile);
@@ -157,7 +163,7 @@ public class CSVWrapper extends AbstractWrapper {
                 if (preivousError == null || (preivousError != null && ((lastModified != previousModTime || lastModifiedCheckPoint != previousCheckModTime) || useCounterForCheckPoint))) {
 
                     reader = new FileReader(handler.getDataFile());
-                    output = handler.work(reader, checkPointDir);
+                    output = handler.work(reader, checkPointDir, samplingCountPerPeriod);
                     for (TreeMap<String, Serializable> se : output) {
                         StreamElement streamElement = new StreamElement(se, getOutputFormat());
                         processedLineCounter++;

@@ -127,27 +127,27 @@ public class CSVWrapperTest {
 		"01.01.2009,3,10:12,12,\"Ali Salehi\"\n";
 		CSVHandler wrapper = new CSVHandler();
 		assertEquals(true,wrapper.initialize("test.csv.csv", fields,formats,',','\"',0,"NaN,-1234,4321"));
-		ArrayList<TreeMap<String, Serializable>> parsed = wrapper.parseValues(new StringReader(data), -1);
+		ArrayList<TreeMap<String, Serializable>> parsed = wrapper.parseValues(new StringReader(data), -1, 250);
 		assertEquals(3, parsed.size());
-		assertEquals(wrapper.work(new StringReader(data), CHECK_POINT_DIR).size(), parsed.size());
+		assertEquals(wrapper.work(new StringReader(data), CHECK_POINT_DIR, 250).size(), parsed.size());
 		assertEquals(true,((Long)parsed.get(0).get("timed"))<((Long)parsed.get(1).get("timed")));
 		long recentTimestamp = ((Long)parsed.get(parsed.size()-1).get("timed"));
 		data+="01.01.2009,3,10:12,12,\"Ali Salehi\"\n";
-		assertEquals(0,wrapper.parseValues(new StringReader(data), recentTimestamp).size());
-		assertEquals(0,wrapper.work(new StringReader(data), CHECK_POINT_DIR).size());
+		assertEquals(0,wrapper.parseValues(new StringReader(data), recentTimestamp, 250).size());
+		assertEquals(0,wrapper.work(new StringReader(data), CHECK_POINT_DIR, 250).size());
 		
 		data+="01.01.2009,3,10:12,12,\"Ali Salehi\"\n";
 		data+="01.01.2009,3,10:11,12,\"Ali Salehi\"\n";
 		data+="01.01.2009,3,10:10,12,\"Ali Salehi\"\n";
-		assertEquals(0,wrapper.parseValues(new StringReader(data), recentTimestamp).size());
-		assertEquals(0,wrapper.work(new StringReader(data), CHECK_POINT_DIR).size());
+		assertEquals(0,wrapper.parseValues(new StringReader(data), recentTimestamp, 250).size());
+		assertEquals(0,wrapper.work(new StringReader(data), CHECK_POINT_DIR, 250).size());
 		data+="01.01.2009,3,10:13,13,\"Ali Salehi\"\n";
-		assertEquals(1,wrapper.parseValues(new StringReader(data), recentTimestamp).size());
-		assertEquals(1,wrapper.work(new StringReader(data), CHECK_POINT_DIR).size());
+		assertEquals(1,wrapper.parseValues(new StringReader(data), recentTimestamp, 250).size());
+		assertEquals(1,wrapper.work(new StringReader(data), CHECK_POINT_DIR, 250).size());
 		data="###########################\n\n\n\n,,,,,,,,,\n\n\n"; // Empty File.
 		wrapper.setSkipFirstXLines(1);
-		assertEquals(0,wrapper.parseValues(new StringReader(data), recentTimestamp).size());
-		assertEquals(0,wrapper.work(new StringReader(data), CHECK_POINT_DIR).size());
+		assertEquals(0,wrapper.parseValues(new StringReader(data), recentTimestamp, 250).size());
+		assertEquals(0,wrapper.work(new StringReader(data), CHECK_POINT_DIR, 250).size());
 		
 	}
 	
