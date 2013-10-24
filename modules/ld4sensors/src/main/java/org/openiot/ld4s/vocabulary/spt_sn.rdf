@@ -1,0 +1,97 @@
+@prefix : <http://spitfire-project.eu/ontology/ns/sn/> .
+@prefix spitf: <http://spitfire-project.eu/ontology/ns/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix ssn: <http://purl.oclc.org/NET/ssnx/ssn#> .
+@prefix sweet: <http://sweet.jpl.nasa.gov/2.2/sweetAll.owl#>
+
+
+:Middleware rdfs:subClassOf spitf:DeviceRole;
+.
+
+
+:ClusterHead rdfs:subClassOf spitf:DeviceRole;
+.
+
+
+:Router rdfs:subClassOf spitf:DeviceRole;
+.
+
+
+:Rfid rdfs:subClassOf ssn:SensingDevice;
+.
+
+
+:Gps rdfs:subClassOf ssn:SensingDevice;
+.
+
+
+:Accelerometer rdfs:subClassOf ssn:SensingDevice;
+.
+
+
+:MotionSensor rdfs:subClassOf ssn:SensingDevice;
+.
+
+
+:StatusLogger rdfs:subClassOf ssn:Sensor;
+.
+
+
+:TemperatureSensor rdfs:subClassOf ssn:SensingDevice;
+rdfs:label "Temperature Sensor" .
+
+
+:HumiditySensor rdfs:subClassOf ssn:SensingDevice;
+.
+
+
+:VibrationSensor rdfs:subClassOf ssn:SensingDevice;
+.
+
+
+:WaterCurrentSensor rdfs:subClassOf ssn:SensingDevice;
+.
+
+
+:WS rdfs:subClassOf ssn:SensingDevice;
+rdfs:comment "Wind Sensor"^^xsd:string ;
+rdfs:isDefinedBy <http://spitfire-project.eu/ontology/ns/sn> .
+
+
+
+:PressureSensor rdfs:subClassOf ssn:SensingDevice;
+.
+
+
+:CompassSensor rdfs:subClassOf ssn:SensingDevice;
+.
+
+
+:LightSensor rdfs:subClassOf ssn:SensingDevice;
+. 
+
+
+:ProximitySensor rdfs:subClassOf ssn:SensingDevice;
+.
+
+
+:FingerprintSensor rdfs:subClassOf ssn:SensingDevice;
+.
+
+
+:NoiseSensor rdfs:subClassOf ssn:SensingDevice;
+.
+
+
+:GyroscopeSensor rdfs:subClassOf ssn:SensingDevice;
+.
+
+
+:Camera rdfs:subClassOf ssn:SensingDevice;
+.
+
+
+:RadiationSensor rdfs:subClassOf ssn:SensingDevice;
+.

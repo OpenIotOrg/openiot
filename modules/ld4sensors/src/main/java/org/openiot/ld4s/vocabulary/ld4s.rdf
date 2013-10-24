@@ -1,0 +1,34 @@
+@prefix : <http://spitfire-project.eu/ontology/ns/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix ssn: <http://purl.oclc.org/NET/ssnx/ssn#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix muo: <http://www.w3.org/2001/XMLSchema#> .
+@prefix dul: <http://www.loa-cnr.it/ontologies/DUL.owl#> .
+@prefix ao: <http://purl.org/ontology/ao/associationontology.html#> .
+@prefix qudt: <http://qudt.org/1.1/schema/qudt#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@base <http://spitfire-project.eu/ontology/ns/> .
+
+<http://spitfire-project.eu/ontology/ns> rdf:type owl:Ontology ;
+                                    
+                                    rdfs:comment " Please report any error to myriam.leggieri_at_deri.org"^^xsd:string ;
+                                    
+                                    <http://purl.org/dc/elements/1.1/creator> <http://myr.altervista.org/foaf.rdf#me> ;
+				    <http://purl.org/dc/elements/1.1/creator> "Alexandre Passant"^^xsd:string ;
+				    <http://purl.org/dc/elements/1.1/creator> "Michael Hausenblas"^^xsd:string ;
+                                    
+                                    rdfs:comment "This ontology describes sensors, observations, and related concepts.  It also describes events and their correlations. The final aim is to support a better description  of sensor context."^^xsd:string ,
+                                                 "This ontology is developed by DERI ( http://www.deri.ie ) for the SPITFIRE project ( http://spitfire-project.eu ) . It is based on the alignment among the W3C Semantic Sensor Networks Incubator Group (SSN-XG) ontology, the Dolce-DnS Ultralite ontology and the Event Model F ontology. "^^xsd:string ;
+                                    
+                                    <http://purl.org/dc/elements/1.1/rights> "Copyright 2010 - 2012 SPITFIRE." ;
+                                    
+                                    rdfs:seeAlso "http://spitfire-project.eu" ;
+                                    
+                                    <http://purl.org/dc/elements/1.1/title> "SPITFIRE Ontology"@en ;
+                                    
+                                    <http://purl.org/dc/elements/1.1/identifier> "http://spitfire-project.eu/ontology/ns" ;
+                                    
+                                    <http://www.w3.org/Consortium/Legal/2002/license> <http://www.w3.org/Consortium/Legal/2002/copyright-software-20021231.html> .

@@ -1,0 +1,280 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>eu.spitfire_project</groupId>
+	<artifactId>ld4sensors</artifactId>
+	<version>1.0</version>
+	<packaging>jar</packaging>
+
+    <name>ld4sensors</name>
+	<url>http://maven.apache.org</url>
+
+	<dependencies>
+
+<dependency>
+	<groupId>junit</groupId>
+	<artifactId>junit</artifactId>
+	<version>4.10</version>
+	<scope>system</scope>
+    <systemPath>${project.basedir}/lib/junit-4.10.jar</systemPath>
+</dependency>
+            
+
+<dependency>
+	<groupId>org.slf4j</groupId>
+	<artifactId>slf4j-log4j12</artifactId>
+	<version>1.6.4</version>
+	<scope>system</scope>
+	<systemPath>${project.basedir}/lib/slf4j-log4j12-1.6.4.jar</systemPath>            
+</dependency>
+
+<dependency>
+            <groupId>org.apache.jena</groupId>
+            <artifactId>jena-iri</artifactId>
+            <version>0.9.1</version>
+            <scope>system</scope>
+			<systemPath>${project.basedir}/lib/jena-iri-0.9.1.jar</systemPath>
+</dependency>
+
+<dependency>
+            <groupId>org.apache.jena</groupId>
+            <artifactId>jena-tdb</artifactId>
+            <version>0.9.1</version>
+            <scope>system</scope>
+			<systemPath>${project.basedir}/lib/jena-tdb-0.9.1.jar</systemPath>
+</dependency>
+
+<dependency>
+            <groupId>org.apache.jena</groupId>
+            <artifactId>jena-core</artifactId>
+            <version>2.7.1</version>            
+            <scope>system</scope>
+			<systemPath>${project.basedir}/lib/jena-core-2.7.1.jar</systemPath>
+</dependency>
+
+<dependency>
+            <groupId>org.apache.jena</groupId>
+            <artifactId>jena-arq</artifactId>
+            <version>2.9.1</version>
+            <scope>system</scope>
+			<systemPath>${project.basedir}/lib/jena-arq-2.9.1.jar</systemPath>
+</dependency>
+
+<dependency>
+	<groupId>org.json</groupId>
+	<artifactId>json</artifactId>
+	<version>20090211</version>
+ <!--    <scope>system</scope>
+	<systemPath>${project.basedir}/lib/org.json.jar</systemPath>	
+	- -->
+</dependency>
+
+<dependency>  
+   <groupId>org.restlet.jse</groupId>  
+   <artifactId>org.restlet</artifactId>  
+   <version>2.0.14</version>  
+    <!-- 
+    <scope>system</scope>
+	<systemPath>${project.basedir}/lib/org.restlet.jar</systemPath>	
+	 -->
+</dependency>  
+
+<dependency>  
+   <groupId>org.restlet.jse</groupId>  
+   <artifactId>org.restlet.ext.json</artifactId>  
+   <version>2.0.14</version>  
+    <!-- <scope>system</scope>
+	<systemPath>${project.basedir}/lib/org.restlet.ext.json.jar</systemPath>
+	 -->	   
+</dependency>  
+
+<dependency>  
+   <groupId>org.restlet.jse</groupId>  
+   <artifactId>org.restlet.example.json</artifactId>  
+   <version>2.0.0</version>  
+    <scope>system</scope>
+	<systemPath>${project.basedir}/lib/org.restlet.example.jar</systemPath>	   
+</dependency>  
+
+<dependency>  
+   <groupId>org.apache</groupId>  
+   <artifactId>org.apache.httpcore</artifactId>  
+   <version>2.0.0</version>  
+    <scope>system</scope>
+	<systemPath>${project.basedir}/lib/org.apache.httpcore.jar</systemPath>	   
+</dependency>
+
+<dependency>  
+   <groupId>org.apache</groupId>  
+   <artifactId>org.apache.httpcore</artifactId>  
+   <version>2.0.0</version>  
+    <scope>system</scope>
+	<systemPath>${project.basedir}/lib/org.apache.httpcore.jar</systemPath>	   
+</dependency>  
+
+<dependency>  
+   <groupId>org.log4j</groupId>  
+   <artifactId>org.log4j</artifactId>  
+   <version>1.2.16</version>  
+    <scope>system</scope>
+	<systemPath>${project.basedir}/lib/log4j-1.2.16.jar</systemPath>	   
+</dependency>  
+
+<dependency>  
+   <groupId>com.noelios</groupId>  
+   <artifactId>com.noelios.restlet</artifactId>  
+   <version>2.0.0</version>  
+    <scope>system</scope>
+	<systemPath>${project.basedir}/lib/com.noelios.restlet.jar</systemPath>	   
+</dependency>  
+
+<dependency>  
+   <groupId>apache.common</groupId>  
+   <artifactId>apache.commoncodec</artifactId>  
+   <version>2.0.0</version>  
+    <scope>system</scope>
+	<systemPath>${project.basedir}/lib/commons-codec-1.5.jar</systemPath>	   
+</dependency>  
+
+<dependency>  
+   <groupId>httpclient</groupId>  
+   <artifactId>httpclient</artifactId>  
+   <version>4.1.2</version>  
+    <scope>system</scope>
+	<systemPath>${project.basedir}/lib/httpclient-4.1.2.jar</systemPath>	   
+</dependency>  
+
+<dependency>  
+   <groupId>httpcore</groupId>  
+   <artifactId>httpcore</artifactId>  
+   <version>4.1.3</version>  
+    <scope>system</scope>
+	<systemPath>${project.basedir}/lib/httpcore-4.1.3.jar</systemPath>	   
+</dependency>  
+
+<dependency>  
+   <groupId>slf4j</groupId>  
+   <artifactId>slf4j-api</artifactId>  
+   <version>1.6.4</version>  
+    <scope>system</scope>
+	<systemPath>${project.basedir}/lib/slf4j-api-1.6.4.jar</systemPath>	   
+</dependency>  
+
+<dependency>  
+   <groupId>xercesImpl</groupId>  
+   <artifactId>xercesImpl</artifactId>  
+   <version>2.10.0</version>  
+    <scope>system</scope>
+	<systemPath>${project.basedir}/lib/xercesImpl-2.10.0.jar</systemPath>	   
+</dependency>  
+
+<dependency>  
+   <groupId>xml-apis</groupId>  
+   <artifactId>xml-apis</artifactId>  
+   <version>1.4.01</version>  
+    <scope>system</scope>
+	<systemPath>${project.basedir}/lib/xml-apis-1.4.01.jar</systemPath>	   
+</dependency>  
+
+</dependencies>
+
+<repositories>
+
+<repository>
+		<id>other-repo-0</id>
+        	<name>generic repo-0</name>
+		<url>http://mvnrepository.com/artifact</url>
+	</repository>
+
+<repository>
+		<id>other-repo-1</id>
+        	<name>generic repo</name>
+		<url>http://uk.maven.org/maven2</url>
+	</repository>
+
+	<repository>
+		<id>other-repo-2</id>
+        	<name>generic repo1</name>
+		<url>http://repo2.maven.org/maven2</url>
+	</repository>
+
+<repository>  
+   <id>maven-restlet</id>  
+   <name>Public online Restlet repository</name>  
+   <url>http://maven.restlet.org</url>  
+</repository>  
+
+</repositories>
+<build>
+		<plugins>
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<version>2.2-beta-5</version>
+				<configuration>
+					<descriptorRefs>
+						<descriptorRef>jar-with-dependencies</descriptorRef>
+					</descriptorRefs>
+					<archive>
+						<manifest>
+							<mainClass>eu.spitfire_project.ld4s.server.Server</mainClass>
+						</manifest>
+					</archive>
+				</configuration>
+				<executions>
+					<execution>
+						<id>make-assembly</id>
+						<!-- this is used for inheritance merges -->
+						<phase>package</phase>
+						<!-- append to the packaging phase. -->
+						<goals>
+							<!--suppress MavenModelInspection -->
+							<goal>single</goal>
+							<!-- goals == mojos -->
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>2.4</version>
+				<configuration>
+					<archive>
+						<manifest>
+							<addClasspath>true</addClasspath>
+							<mainClass>eu.spitfire_project.ld4s.server.Server</mainClass>
+						</manifest>
+					</archive>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.0.2</version>
+				<configuration>
+					<source>1.6</source>
+					<target>1.6</target>
+				</configuration>
+		    </plugin>
+
+            <plugin>
+                <groupId>com.mycila.maven-license-plugin</groupId>
+                <artifactId>maven-license-plugin</artifactId>
+		<version>1.9.0</version>
+                <configuration>
+                    <header>${basedir}/license.txt</header>
+                    <includes>
+                        <include>src/**</include>
+                    </includes>
+                    <useDefaultExcludes>true</useDefaultExcludes>
+                </configuration>
+            </plugin>
+
+		</plugins>
+
+	</build>
+
+</project>
+
