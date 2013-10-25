@@ -20,6 +20,13 @@ package org.openiot.scheduler.core.rest;
  *     Contact: OpenIoT mailto: info@openiot.eu
  */
 
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.Properties;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -34,7 +41,7 @@ import org.openiot.commons.osdspec.model.OSMO;
 import org.openiot.commons.sensortypes.model.SensorTypes;
 
 
-//<<<<<<< HEAD
+
 import org.openiot.scheduler.core.api.impl.DiscoverSensors.DiscoverSensorsImpl;
 import org.openiot.scheduler.core.api.impl.GetApplication.GetApplicationImpl;
 import org.openiot.scheduler.core.api.impl.GetAvailableAppIDs.GetAvailableAppIDsImpl;
@@ -44,13 +51,13 @@ import org.openiot.scheduler.core.api.impl.GetService.GetServiceImpl;
 import org.openiot.scheduler.core.api.impl.RegisterService.RegisterServiceImpl;
 import org.openiot.scheduler.core.api.impl.UserLogin.UserLoginImpl;
 import org.openiot.scheduler.core.api.impl.UserRegister.UserRegisterImpl;
-//=======
+
 //import org.openiot.scheduler.core.api.impl.DiscoverSensorsImpl;
 //import org.openiot.scheduler.core.api.impl.RegisterServiceImpl;
 
 
 import org.openiot.commons.descriptiveids.model.DescreptiveIDs;
-//>>>>>>> branch 'ait-develop' of https://github.com/OpenIotOrg/openiot.git
+
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,7 +73,18 @@ import org.slf4j.LoggerFactory;
 public class SchedulerRsControler {
 	
 	final static Logger logger = LoggerFactory.getLogger(SchedulerRsControler.class);
+
 	
+	// =============GLOBAL VARIABLES DEFINITION/INITIALIZATION========================
+    private static final String PROPERTIES_FILE = "openiot.properties";
+	
+	private static final String LSM_META_GRAPH = "scheduler.core.lsm.openiotMetaGraph";
+	private static final String LSM_DATA_GRAPH = "scheduler.core.lsm.openiotDataGraph";
+	private static final String LSM_FUNCTIONAL_GRAPH = "scheduler.core.lsm.openiotFunctionalGraph";
+	private static final String LSM_USER_NAME="scheduler.core.lsm.access.username";
+	private static final String LSM_PASSWORD="scheduler.core.lsm.access.password";
+
+	private Properties props = null;
     
 
 	/**
@@ -94,12 +112,71 @@ public class SchedulerRsControler {
 				+ "getAvailableServices (userID: String): OSDSpec";
 
 		logger.debug(welcomeText);
-
 		
+		
+		// ============READING PROPERIES=========================
+		initializeProperties();
+		
+		// reading proeprty LSM_META_GRAPH
+		String lsmMetaGraph = props.getProperty(LSM_META_GRAPH);
+		logger.debug("lsmMetaGraph: " + lsmMetaGraph);
+		
+		// reading proeprty LSM_DATA_GRAPH
+		String lsmDataGraph = props.getProperty(LSM_DATA_GRAPH);
+		logger.debug("lsmDataGraph: " + lsmDataGraph);
+		
+		// reading proeprty LSM_FUNCTIONAL_GRAPH
+		String lsmFunctionalGraph = props.getProperty(LSM_FUNCTIONAL_GRAPH);
+		logger.debug("lsmFunctionalGraph: " + lsmFunctionalGraph);
+		
+		// reading proeprty LSM_USER_NAME
+		String lsmUserName = props.getProperty(LSM_USER_NAME);
+		logger.debug("lsmUserName: " + lsmUserName);
+		
+		// reading proeprty LSM_PASSWORD
+		String lsmPassword = props.getProperty(LSM_PASSWORD);
+		logger.debug("lsmPassword: " + lsmPassword);
+		
+		
+		
+		
+        
 		return welcomeText;
 	}
 	
 	
+	/**
+	 * Initialize the Properties
+	 */
+	private void initializeProperties() {
+
+		String jbosServerConfigDir = System.getProperty("jboss.server.config.dir");
+		String openIotConfigFile = jbosServerConfigDir + File.separator + PROPERTIES_FILE;
+		props = new Properties();
+
+		logger.debug("jbosServerConfigDir:" + openIotConfigFile);
+
+		FileInputStream fis = null;
+
+		try {
+			fis = new FileInputStream(openIotConfigFile);
+
+		} catch (FileNotFoundException e) {
+			// TODO Handle exception
+
+			logger.error("Unable to find file: " + openIotConfigFile);
+
+		}
+
+		// loading properites from properties file
+		try {
+			props.load(fis);
+		} catch (IOException e) {
+			// TODO Handle exception
+			logger.error("Unable to load properties from file " + openIotConfigFile);
+		}
+
+	}
 	
 	/**
 	 *
