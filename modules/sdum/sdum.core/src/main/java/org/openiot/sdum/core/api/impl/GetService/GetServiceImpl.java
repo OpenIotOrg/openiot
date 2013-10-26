@@ -8,6 +8,7 @@ import org.openiot.commons.osdspec.model.PresentationAttr;
 import org.openiot.commons.osdspec.model.RequestPresentation;
 import org.openiot.commons.osdspec.model.Widget;
 import org.openiot.commons.sparql.protocoltypes.model.QueryRequest;
+import org.openiot.commons.util.PropertyManagement;
 import org.openiot.sdum.core.utils.sparql.SesameSPARQLClient;
 import org.openrdf.query.BindingSet;
 import org.openrdf.query.QueryEvaluationException;
@@ -18,6 +19,8 @@ import org.slf4j.LoggerFactory;
 
 public class GetServiceImpl 
 {
+	private static String openiotFunctionalGraph = "";
+	
 	private static class Queries
 	{
 		public static class OsmoRootData
@@ -120,7 +123,7 @@ public class GetServiceImpl
 			}
 		}
 		
-		private static String openiotFunctionalGraph = "http://lsm.deri.ie/OpenIoT/testSchema#";
+
 		
 		public static OsmoRootData parseOSMORootData(TupleQueryResult qres)
 		{
@@ -379,6 +382,10 @@ public class GetServiceImpl
 	
 	public GetServiceImpl (String osmoID)
 	{
+		PropertyManagement propertyManagement = new PropertyManagement();
+		openiotFunctionalGraph = propertyManagement.getSdumLsmFunctionalGraph();
+		
+		
 		this.osmoID=osmoID;
 		logger.debug("Received Parameters: " +	"osmoID=" + osmoID );
 		findOSMO();
