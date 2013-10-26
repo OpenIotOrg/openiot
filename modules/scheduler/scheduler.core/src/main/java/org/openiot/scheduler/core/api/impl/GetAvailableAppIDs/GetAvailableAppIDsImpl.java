@@ -35,7 +35,7 @@ public class GetAvailableAppIDsImpl {
 	
 	private static String lsmFunctionalGraph = "";	
 	
-	
+	 
 	
 	private static class Queries {
 		public static class OAMOData {

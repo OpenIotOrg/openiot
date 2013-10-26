@@ -100,21 +100,24 @@
        
 		<!-- ======== LogBack Dependencies ========== -->
 
-<!--  
-		<dependency>
-			<groupId>ch.qos.logback</groupId>
-			<artifactId>logback-classic</artifactId>
-			<version>1.0.11</version>
-		</dependency>
- -->
+
+       <dependency>
+         <groupId>ch.qos.logback</groupId>
+         <artifactId>logback-classic</artifactId>
+         <version>1.0.11</version>
+         <scope>provided</scope>
+       </dependency>
+
          <!-- Apache commons-logging Required By Sesame -->
 <!--
 		<dependency>
 			<groupId>commons-logging</groupId>
 			<artifactId>commons-logging</artifactId>
 			<version>1.1.2</version>
+      <scope>provided</scope>
 		</dependency>
  -->
+
     </dependencies>
 
 

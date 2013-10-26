@@ -1,26 +1,30 @@
 package org.openiot.scheduler.core.api.impl.RegisterService;
 
-
 /**
- * Copyright (c) 2011-2014, OpenIoT
+ *    Copyright (c) 2011-2014, OpenIoT
+ *    
+ *    This file is part of OpenIoT.
  *
- * This library is free software; you can redistribute it and/or
- * modify it either under the terms of the GNU Lesser General Public
- * License version 2.1 as published by the Free Software Foundation
- * (the "LGPL"). If you do not alter this
- * notice, a recipient may use your version of this file under the LGPL.
+ *    OpenIoT is free software: you can redistribute it and/or modify
+ *    it under the terms of the GNU Lesser General Public License as published by
+ *    the Free Software Foundation, version 3 of the License.
  *
- * You should have received a copy of the LGPL along with this library
- * in the file COPYING-LGPL-2.1; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ *    OpenIoT is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *    GNU Lesser General Public License for more details.
  *
- * This software is distributed on an "AS IS" basis, WITHOUT WARRANTY
- * OF ANY KIND, either express or implied. See the LGPL  for
- * the specific language governing rights and limitations.
+ *    You should have received a copy of the GNU Lesser General Public License
+ *    along with OpenIoT.  If not, see <http://www.gnu.org/licenses/>.
  *
- * Contact: OpenIoT mailto: info@openiot.eu
+ *     Contact: OpenIoT mailto: info@openiot.eu
  */
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.Properties;
 
 import lsm.beans.User;
 import lsm.schema.LSMSchema;
@@ -45,61 +49,107 @@ import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.ontology.OntModelSpec;
 
-
 /**
- *  @author Stavros Petris (spet) e-mail: spet@ait.edu.gr
- *  @author Nikos Kefalakis (nkef) e-mail: nkef@ait.edu.gr
- *
+ * @author Stavros Petris (spet) e-mail: spet@ait.edu.gr
+ * @author Nikos Kefalakis (nkef) e-mail: nkef@ait.edu.gr
+ * 
  */
 public class RegisterServiceImpl {
-	
-	final static Logger logger = LoggerFactory.getLogger(RegisterServiceImpl.class);
-	
-	private OSDSpec osdSpec;
-	
-	private String replyMessage= "";	
-	
-	//constructor
-	public RegisterServiceImpl (OSDSpec osdSpec){
-		
-		this.osdSpec = osdSpec;
-		
-		logger.debug("Recieved OSDSpec from User with userID: " + osdSpec.getUserID());	
 
-		registerService();				
-	}		
+	private static final String PROPERTIES_FILE = "openiot.properties";
+	private static final String LSM_FUNCTIONAL_GRAPH = "scheduler.core.lsm.openiotFunctionalGraph";
+	private static final String LSM_USER_NAME = "scheduler.core.lsm.access.username";
+	private static final String LSM_PASSWORD = "scheduler.core.lsm.access.password";
+	private Properties props = null;
+
+	private static String lsmFunctionalGraph = "";
+	private static String lsmUserName = "";
+	private static String lsmPassword = "";
+
+	final static Logger logger = LoggerFactory.getLogger(RegisterServiceImpl.class);
+
+	private OSDSpec osdSpec;
+
+	private String replyMessage = "";
+
+	// constructor
+	public RegisterServiceImpl(OSDSpec osdSpec) {
+
+		initializeProperties();
+		lsmFunctionalGraph = props.getProperty(LSM_FUNCTIONAL_GRAPH);
+		lsmUserName = props.getProperty(LSM_USER_NAME);
+		lsmPassword = props.getProperty(LSM_PASSWORD);
+
+		this.osdSpec = osdSpec;
+
+		logger.debug("Recieved OSDSpec from User with userID: " + osdSpec.getUserID());
+
+		registerService();
+	}
+
+	/**
+	 * Initialize the Properties
+	 */
+	private void initializeProperties() {
+
+		String jbosServerConfigDir = System.getProperty("jboss.server.config.dir");
+		String openIotConfigFile = jbosServerConfigDir + File.separator + PROPERTIES_FILE;
+		props = new Properties();
+
+		logger.debug("jbosServerConfigDir:" + openIotConfigFile);
+
+		FileInputStream fis = null;
+
+		try {
+			fis = new FileInputStream(openIotConfigFile);
+
+		} catch (FileNotFoundException e) {
+			// TODO Handle exception
+
+			logger.error("Unable to find file: " + openIotConfigFile);
+
+		}
+
+		// loading properites from properties file
+		try {
+			props.load(fis);
+		} catch (IOException e) {
+			// TODO Handle exception
+			logger.error("Unable to load properties from file " + openIotConfigFile);
+		}
+
+	}
 
 	/**
 	 * @return String
 	 */
-	public String replyMessage()
-	{	
+	public String replyMessage() {
 		return replyMessage;
 	}
-	
-	private void registerService() 
-	{
+
+	private void registerService() {
 		User user = new User();
-		user.setUsername("spet");
-		user.setPass("spetlsm");
-		
+		user.setUsername(lsmUserName);
+		user.setPass(lsmPassword);
+
 		LSMTripleStore lsmStore = new LSMTripleStore();
-		lsmStore.setUser(user);		
-		
-		LSMSchema myOnt  =  new  LSMSchema (OntModelSpec.OWL_DL_MEM);
+		lsmStore.setUser(user);
+
+		LSMSchema myOnt = new LSMSchema(OntModelSpec.OWL_DL_MEM);
 		LSMSchema myOntInstance = new LSMSchema();
-		
-		org.openiot.scheduler.core.utils.lsmpa.entities.User userEnt = new org.openiot.scheduler.core.utils.lsmpa.entities.User(myOnt, myOntInstance,"http://lsm.deri.ie/OpenIoT/testSchema#",lsmStore);
-		userEnt.setId(osdSpec.getUserID());		
-//		//
+
+		org.openiot.scheduler.core.utils.lsmpa.entities.User userEnt = new org.openiot.scheduler.core.utils.lsmpa.entities.User(
+				myOnt, myOntInstance, lsmFunctionalGraph, lsmStore);
+		userEnt.setId(osdSpec.getUserID());
+		// //
 		userEnt.createClassIdv();
-		
-		for (OAMO oamo: osdSpec.getOAMO())
-		{			
-			logger.debug("OAMO Description: {}  ID: {}",oamo.getDescription(), oamo.getId());
-			logger.debug("OAMO Name: {}",oamo.getName());			
-			
-			org.openiot.scheduler.core.utils.lsmpa.entities.OAMO oamoEnt = new org.openiot.scheduler.core.utils.lsmpa.entities.OAMO(myOnt, myOntInstance,"http://lsm.deri.ie/OpenIoT/testSchema#",lsmStore);				
+
+		for (OAMO oamo : osdSpec.getOAMO()) {
+			logger.debug("OAMO Description: {}  ID: {}", oamo.getDescription(), oamo.getId());
+			logger.debug("OAMO Name: {}", oamo.getName());
+
+			org.openiot.scheduler.core.utils.lsmpa.entities.OAMO oamoEnt = new org.openiot.scheduler.core.utils.lsmpa.entities.OAMO(
+					myOnt, myOntInstance, lsmFunctionalGraph, lsmStore);
 			oamoEnt.setId(oamo.getId());
 			oamoEnt.setName(oamo.getName());
 			oamoEnt.setUser(userEnt);
@@ -111,77 +161,73 @@ public class RegisterServiceImpl {
 			oamoEnt.createPoamoUserOf();
 			oamoEnt.createPoamoDescription();
 			oamoEnt.createPoamoGraphMeta();
-			
+
 			userEnt.addService(oamoEnt);
 			//
 			userEnt.createPuserOf();
-			
-			
-			for (OSMO osmo : oamo.getOSMO())
-			{
-				logger.debug("OSMO ID: {}",osmo.getId());
-				logger.debug("OSMO Name: {}",osmo.getName());
-				logger.debug("OSMO Description: {}",osmo.getDescription());				
+
+			for (OSMO osmo : oamo.getOSMO()) {
+				logger.debug("OSMO ID: {}", osmo.getId());
+				logger.debug("OSMO Name: {}", osmo.getName());
+				logger.debug("OSMO Description: {}", osmo.getDescription());
 				for (QueryRequest qr : osmo.getQueryRequest()) {
 					logger.debug("qr.getQuery():" + qr.getQuery());
-				}				
-				
-				Service srvcEnt = new Service(myOnt, myOntInstance,"http://lsm.deri.ie/OpenIoT/testSchema#",lsmStore);	
+				}
+
+				Service srvcEnt = new Service(myOnt, myOntInstance, lsmFunctionalGraph, lsmStore);
 				srvcEnt.setId(osmo.getId());
 				srvcEnt.setName(osmo.getName());
 				srvcEnt.setDescription(osmo.getDescription());
 				//
-				
-				
-				for (QueryRequest qr :osmo.getQueryRequest())
-				{
-					Query qstring = new Query(myOnt, myOntInstance,"http://lsm.deri.ie/OpenIoT/testSchema#",lsmStore);					
+
+				for (QueryRequest qr : osmo.getQueryRequest()) {
+					Query qstring = new Query(myOnt, myOntInstance, lsmFunctionalGraph, lsmStore);
 					qstring.setqString(qr.getQuery());
 					//
 					qstring.createClassIdv();
-					qstring.createPqueryString();					
-					
+					qstring.createPqueryString();
+
 					srvcEnt.addQueryString(qstring);
 				}
-				
+
 				//
 				srvcEnt.createClassIdv();
 				srvcEnt.createPserviceName();
 				srvcEnt.createPserviceDescription();
-				srvcEnt.createPqString();								
-								
-				
-				for (Widget widget : osmo.getRequestPresentation().getWidget())
-				{
-					WidgetPresentation widgetPre  = new WidgetPresentation(myOnt, myOntInstance,"http://lsm.deri.ie/OpenIoT/testSchema#",lsmStore);
+				srvcEnt.createPqString();
+
+				for (Widget widget : osmo.getRequestPresentation().getWidget()) {
+					WidgetPresentation widgetPre = new WidgetPresentation(myOnt, myOntInstance,
+							lsmFunctionalGraph, lsmStore);
 					widgetPre.setService(srvcEnt);
 					//
-					widgetPre.createClassIdv();					
+					widgetPre.createClassIdv();
 					widgetPre.createPwidgetPresOf();
 					//
 					srvcEnt.addWidgetPresentation(widgetPre);
 					srvcEnt.createPwidgetPres();
-					
-					logger.debug("widget available id: {}",widget.getWidgetID());
-					WidgetAvailable wAvail = new WidgetAvailable(myOnt, myOntInstance,"http://lsm.deri.ie/OpenIoT/testSchema#",lsmStore);				
+
+					logger.debug("widget available id: {}", widget.getWidgetID());
+					WidgetAvailable wAvail = new WidgetAvailable(myOnt, myOntInstance, lsmFunctionalGraph,
+							lsmStore);
 					wAvail.setId(widget.getWidgetID());
 					wAvail.setWidgetPre(widgetPre);
-					///
+					// /
 					wAvail.createClassIdv();
 					wAvail.createPWidgetOf();
 					//
 					widgetPre.setWidgetAvailable(wAvail);
 					widgetPre.createPwidget();
-////										
-					for (PresentationAttr pAttr : widget.getPresentationAttr())
-					{
-						logger.debug("pAttr id: {} --- name: {}",pAttr.getName(),pAttr.getValue());
-						
-						WidgetAttributes wAttr = new WidgetAttributes(myOnt, myOntInstance,"http://lsm.deri.ie/OpenIoT/testSchema#",lsmStore);
+					// //
+					for (PresentationAttr pAttr : widget.getPresentationAttr()) {
+						logger.debug("pAttr id: {} --- name: {}", pAttr.getName(), pAttr.getValue());
+
+						WidgetAttributes wAttr = new WidgetAttributes(myOnt, myOntInstance,
+								lsmFunctionalGraph, lsmStore);
 						wAttr.setDescription(pAttr.getValue());
 						wAttr.setName(pAttr.getName());
 						wAttr.setWidgetPre(widgetPre);
-						///
+						// /
 						wAttr.createClassIdv();
 						wAttr.createPdesc();
 						wAttr.createPname();
@@ -189,36 +235,32 @@ public class RegisterServiceImpl {
 						//
 						widgetPre.addWidgetAttr(wAttr);
 						widgetPre.createPwidgetAttr();
-						
-					}//PresentationAttr					
-				}//widget
-				
+
+					}// PresentationAttr
+				}// widget
+
 				srvcEnt.setOAMO(oamoEnt);
-//				//
+				// //
 				srvcEnt.createPOAMO();
-				
+
 				oamoEnt.addService(srvcEnt);
 				//
 				oamoEnt.createPoamoService();
-//				
+				//
 
-				
-			}//osmo			
-		}//oamo
+			}// osmo
+		}// oamo
 
-				
 		logger.debug(myOntInstance.exportToTriples("TURTLE"));
-		boolean ok = lsmStore.pushRDF("http://lsm.deri.ie/OpenIoT/testSchema#",myOntInstance.exportToTriples("N-TRIPLE"));
+		boolean ok = lsmStore.pushRDF(lsmFunctionalGraph, myOntInstance.exportToTriples("N-TRIPLE"));
 
-		if(ok){
-			replyMessage= "regester service successfull";
+		if (ok) {
+			replyMessage = "regester service successfull";
+		} else {
+			replyMessage = "regester service error";
 		}
-		else{
-			replyMessage= "regester service error";
-		}
-		
+
 		logger.debug(replyMessage);
 	}
-	
-	
+
 }

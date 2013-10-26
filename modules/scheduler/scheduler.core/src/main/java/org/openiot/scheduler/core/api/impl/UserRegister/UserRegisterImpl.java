@@ -1,9 +1,30 @@
 package org.openiot.scheduler.core.api.impl.UserRegister;
 
+/**
+ *    Copyright (c) 2011-2014, OpenIoT
+ *    
+ *    This file is part of OpenIoT.
+ *
+ *    OpenIoT is free software: you can redistribute it and/or modify
+ *    it under the terms of the GNU Lesser General Public License as published by
+ *    the Free Software Foundation, version 3 of the License.
+ *
+ *    OpenIoT is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *    GNU Lesser General Public License for more details.
+ *
+ *    You should have received a copy of the GNU Lesser General Public License
+ *    along with OpenIoT.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *     Contact: OpenIoT mailto: info@openiot.eu
+ */
+
 import java.util.ArrayList;
 
 import javax.ws.rs.QueryParam;
 
+import org.openiot.commons.util.PropertyManagement;
 import org.openiot.scheduler.core.api.impl.RegisterService.RegisterServiceImpl;
 import org.openiot.scheduler.core.utils.sparql.SesameSPARQLClient;
 import org.openrdf.query.TupleQueryResult;
@@ -25,6 +46,11 @@ import com.hp.hpl.jena.ontology.OntModelSpec;
 
 public class UserRegisterImpl 
 {	
+	
+	private String SchedulerLsmFunctionalGraph="";
+	private String schedulerLsmUserName="";
+	private String schedulerLsmPassword="";
+	
 	final static Logger logger = LoggerFactory.getLogger(UserRegisterImpl.class);
 			
 	private String name;
@@ -37,6 +63,12 @@ public class UserRegisterImpl
 	//constructor
 	public UserRegisterImpl(String userName,String userMail,String userDesc,String passwd)
 	{
+		
+		PropertyManagement propertyManagement = new PropertyManagement();
+		SchedulerLsmFunctionalGraph = propertyManagement.getSchedulerLsmFunctionalGraph();
+		schedulerLsmUserName = propertyManagement.getSchedulerLsmUserName();
+		schedulerLsmPassword = propertyManagement.getSchedulerLsmPassword();
+		
 		this.name=userName;
 		this.mail=userMail;
 		this.description=userDesc;
@@ -73,8 +105,8 @@ public class UserRegisterImpl
 		if (usrEnt.size()==0)
 		{
 			User user = new User();
-			user.setUsername("spet");
-			user.setPass("spetlsm");
+			user.setUsername(schedulerLsmUserName);
+			user.setPass(schedulerLsmPassword);
 			
 			LSMTripleStore lsmStore = new LSMTripleStore();
 			lsmStore.setUser(user);		
@@ -82,7 +114,7 @@ public class UserRegisterImpl
 			LSMSchema myOnt  =  new  LSMSchema (OntModelSpec.OWL_DL_MEM);
 			LSMSchema myOntInstance = new LSMSchema();
 			
-			org.openiot.scheduler.core.utils.lsmpa.entities.User userEnt = new org.openiot.scheduler.core.utils.lsmpa.entities.User(myOnt, myOntInstance,"http://lsm.deri.ie/OpenIoT/testSchema#",lsmStore);
+			org.openiot.scheduler.core.utils.lsmpa.entities.User userEnt = new org.openiot.scheduler.core.utils.lsmpa.entities.User(myOnt, myOntInstance,SchedulerLsmFunctionalGraph,lsmStore);
 			userEnt.setName(this.name);
 			userEnt.setEmail(this.mail);
 			userEnt.setDescription(this.description);
@@ -95,7 +127,7 @@ public class UserRegisterImpl
 			userEnt.createPpasswd();
 			
 			logger.debug(myOntInstance.exportToTriples("TURTLE"));
-			boolean ok = lsmStore.pushRDF("http://lsm.deri.ie/OpenIoT/testSchema#",myOntInstance.exportToTriples("N-TRIPLE"));
+			boolean ok = lsmStore.pushRDF(SchedulerLsmFunctionalGraph,myOntInstance.exportToTriples("N-TRIPLE"));
 
 			
 			if(ok){
