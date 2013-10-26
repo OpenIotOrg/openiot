@@ -32,6 +32,7 @@ import org.openiot.commons.descriptiveids.model.DescreptiveIDs;
 import org.openiot.commons.osdspec.model.OAMO;
 import org.openiot.commons.osdspec.model.OSMO;
 import org.openiot.commons.sdum.serviceresultset.model.SdumServiceResultSet;
+import org.openiot.commons.util.PropertyManagement;
 import org.openiot.sdum.core.api.impl.GetAvailableServiceIDs.GetAvailableServiceIDsImpl;
 import org.openiot.sdum.core.api.impl.GetAvailableAppIDs.GetAvailableAppIDsImpl;
 import org.openiot.sdum.core.api.impl.GetService.GetServiceImpl;
@@ -80,6 +81,20 @@ public class ServiceDeliveryUtilityManagerRsControler {
 				+ "getAvailableServices (userID: String): OSDSpec";
 
 		logger.debug(welcomeText);
+		
+		
+		
+		// ============READING PROPERIES=========================
+		
+		PropertyManagement propertyManagement = new PropertyManagement();
+		
+		// reading proeprty LSM_FUNCTIONAL_GRAPH
+		logger.debug("lsmFunctionalGraph: " + propertyManagement.getSdumLsmFunctionalGraph());
+		
+		// reading proeprty LSM_SPARQL_END_POINT
+		logger.debug("lsmSparqlEndPoint: " + propertyManagement.getSdumLsmSparqlEndPoint());
+		
+		
 
 		return welcomeText;
 	}

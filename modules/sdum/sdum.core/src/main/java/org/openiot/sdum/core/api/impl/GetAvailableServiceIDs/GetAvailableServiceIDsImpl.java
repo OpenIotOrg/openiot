@@ -5,6 +5,7 @@ import java.util.Set;
 
 import org.openiot.commons.descriptiveids.model.DescreptiveIDs;
 import org.openiot.commons.descriptiveids.model.DescriptiveID;
+import org.openiot.commons.util.PropertyManagement;
 import org.openiot.sdum.core.utils.sparql.SesameSPARQLClient;
 import org.openrdf.query.BindingSet;
 import org.openrdf.query.QueryEvaluationException;
@@ -15,9 +16,11 @@ import org.slf4j.LoggerFactory;
 
 public class GetAvailableServiceIDsImpl 
 {
+	private static String openiotFunctionalGraph = "";
+	
 	private static class Queries
 	{	
-		private static String openiotFunctionalGraph = "http://lsm.deri.ie/OpenIoT/testSchema#";
+
 
 		public static DescreptiveIDs parseAvailableOSMOIDsByOAMO(TupleQueryResult qres)
 		{
@@ -102,6 +105,11 @@ public class GetAvailableServiceIDsImpl
 	//constructor
 	public GetAvailableServiceIDsImpl(String applicationID)
 	{
+		
+		PropertyManagement propertyManagement = new PropertyManagement();
+		openiotFunctionalGraph = propertyManagement.getSdumLsmFunctionalGraph();
+		
+		
 		this.applicationID=applicationID;
 		logger.debug("Received Parameters: " +	"applicationID=" + applicationID );
 		findAvailableServiceIDs();

@@ -208,6 +208,14 @@ Sensap.widget.NodeGraph = PrimeFaces.widget.BaseWidget.extend({
         
         // Add all connections
         jQuery.each( this.cfg.connections, function( index, connectionSpec){
+            if( typeof connectionSpec === 'undefined' || 
+        	typeof connectionSpec.source === 'undefined' || 
+        	typeof connectionSpec.target === 'undefined'||
+        	typeof self.endPoints[connectionSpec.source] === 'undefined' ||
+        	typeof self.endPoints[connectionSpec.target] === 'undefined' ){
+        	return true;
+    	    }
+            
             jsPlumb.connect({
                 source : self.endPoints[connectionSpec.source],
                 target : self.endPoints[connectionSpec.target],
@@ -439,7 +447,9 @@ Sensap.widget.NodeGraph = PrimeFaces.widget.BaseWidget.extend({
         if( this.selectedNodeId ){
             
             if(this.getBehavior("delete") ){
-                jsPlumb.removeAllEndpoints($(this.jqId + ' #' + this.selectedNodeId));
+                try{
+                	jsPlumb.removeAllEndpoints($(this.jqId + ' #' + this.selectedNodeId));
+            	}catch(ex){}
 
                 var params =[];
                 params.push({

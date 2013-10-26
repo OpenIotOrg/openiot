@@ -63,7 +63,7 @@
 
   <xs:element name="OSMO">
     <xs:annotation>
-      <xs:documentation>OpenIoT Sensor Model Object</xs:documentation>
+      <xs:documentation>OpenIoT Service Model Object</xs:documentation>
     </xs:annotation>
     <xs:complexType>
       <xs:sequence>

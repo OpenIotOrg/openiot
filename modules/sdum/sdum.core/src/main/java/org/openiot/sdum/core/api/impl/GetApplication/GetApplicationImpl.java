@@ -9,6 +9,7 @@ import org.openiot.commons.osdspec.model.PresentationAttr;
 import org.openiot.commons.osdspec.model.RequestPresentation;
 import org.openiot.commons.osdspec.model.Widget;
 import org.openiot.commons.sparql.protocoltypes.model.QueryRequest;
+import org.openiot.commons.util.PropertyManagement;
 import org.openiot.sdum.core.api.impl.GetService.GetServiceImpl;
 import org.openiot.sdum.core.utils.sparql.SesameSPARQLClient;
 import org.openrdf.query.BindingSet;
@@ -20,6 +21,9 @@ import org.slf4j.LoggerFactory;
 
 public class GetApplicationImpl 
 {
+	
+	private static String openiotFunctionalGraph = "";
+	
 	private static class Queries
 	{		
 		public static class RootOAMOData
@@ -191,7 +195,7 @@ public class GetApplicationImpl
 			}
 		}
 		
-		private static String openiotFunctionalGraph = "http://lsm.deri.ie/OpenIoT/testSchema#";
+
 		
 		public static RootOAMOData parseOAMORootData(TupleQueryResult qres)
 		{
@@ -596,6 +600,10 @@ public class GetApplicationImpl
 	//cosntructor
 	public GetApplicationImpl(String oamoID)
 	{
+		
+		PropertyManagement propertyManagement = new PropertyManagement();
+		openiotFunctionalGraph = propertyManagement.getSdumLsmFunctionalGraph();
+		
 		this.oamoID = oamoID;		
 		logger.debug("Received Parameters: " +	"oamoID=" + oamoID );
 		findApplication();

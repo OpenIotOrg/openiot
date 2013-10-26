@@ -38,6 +38,7 @@ import org.openiot.commons.sparql.result.model.Result;
 import org.openiot.commons.sparql.result.model.Results;
 import org.openiot.commons.sparql.result.model.Sparql;
 import org.openiot.commons.sparql.result.model.Variable;
+import org.openiot.commons.util.PropertyManagement;
 import org.openiot.sdum.core.utils.sparql.SesameSPARQLClient;
 
 import org.openrdf.query.BindingSet;
@@ -57,6 +58,8 @@ import org.xml.sax.InputSource;
 
 public class PollForReportImpl 
 {	
+	
+	private static String openiotFunctionalGraph = "";
 	private static class Queries
 	{
 		public static class QueryData
@@ -122,7 +125,7 @@ public class PollForReportImpl
 			}
 		}
 				
-		private static String openiotTestGraph = "http://lsm.deri.ie/OpenIoT/testSchema#";
+
 				
 		public static ArrayList<QueryData> parseOSMOQueryData(TupleQueryResult qres)
 		{
@@ -232,7 +235,7 @@ public class PollForReportImpl
 			StringBuilder update = new StringBuilder();			
 			
 			String str=("SELECT ?queryID ?queryString " 
-					+"from <"+openiotTestGraph+"> "
+					+"from <"+openiotFunctionalGraph+"> "
 					+"WHERE "
 					+"{"
 					+"?queryID <http://openiot.eu/ontology/ns/queryString> ?queryString . "
@@ -247,7 +250,7 @@ public class PollForReportImpl
 			StringBuilder update = new StringBuilder();	        
 			
 			String str=("SELECT ?widgetPreID ?widgetID  ?widgetAttrID  ?widgetAttrName ?widgetAttrDesc " 
-					+"from <"+openiotTestGraph+"> "
+					+"from <"+openiotFunctionalGraph+"> "
 					+"WHERE "
 					+"{"
 					+"?widgetAttrID <http://openiot.eu/ontology/ns/widgeAttrDescription> ?widgetAttrDesc . "
@@ -271,6 +274,10 @@ public class PollForReportImpl
 	//cosntructor
 	public PollForReportImpl(String serviceID) 
 	{		
+		
+		PropertyManagement propertyManagement = new PropertyManagement();
+		openiotFunctionalGraph = propertyManagement.getSdumLsmFunctionalGraph();
+		
 		logger.debug("Recieved Parameters: serviceID= {}", serviceID);
 		
 		this.serviceID=serviceID;

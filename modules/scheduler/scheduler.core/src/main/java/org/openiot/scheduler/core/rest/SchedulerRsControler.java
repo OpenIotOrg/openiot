@@ -20,6 +20,9 @@ package org.openiot.scheduler.core.rest;
  *     Contact: OpenIoT mailto: info@openiot.eu
  */
 
+
+
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -32,9 +35,10 @@ import org.openiot.commons.osdspec.model.OAMO;
 import org.openiot.commons.osdspec.model.OSDSpec;
 import org.openiot.commons.osdspec.model.OSMO;
 import org.openiot.commons.sensortypes.model.SensorTypes;
+import org.openiot.commons.util.PropertyManagement;
 
 
-//<<<<<<< HEAD
+
 import org.openiot.scheduler.core.api.impl.DiscoverSensors.DiscoverSensorsImpl;
 import org.openiot.scheduler.core.api.impl.GetApplication.GetApplicationImpl;
 import org.openiot.scheduler.core.api.impl.GetAvailableAppIDs.GetAvailableAppIDsImpl;
@@ -44,13 +48,13 @@ import org.openiot.scheduler.core.api.impl.GetService.GetServiceImpl;
 import org.openiot.scheduler.core.api.impl.RegisterService.RegisterServiceImpl;
 import org.openiot.scheduler.core.api.impl.UserLogin.UserLoginImpl;
 import org.openiot.scheduler.core.api.impl.UserRegister.UserRegisterImpl;
-//=======
+
 //import org.openiot.scheduler.core.api.impl.DiscoverSensorsImpl;
 //import org.openiot.scheduler.core.api.impl.RegisterServiceImpl;
 
 
 import org.openiot.commons.descriptiveids.model.DescreptiveIDs;
-//>>>>>>> branch 'ait-develop' of https://github.com/OpenIotOrg/openiot.git
+
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,6 +70,7 @@ import org.slf4j.LoggerFactory;
 public class SchedulerRsControler {
 	
 	final static Logger logger = LoggerFactory.getLogger(SchedulerRsControler.class);
+
 	
     
 
@@ -94,12 +99,37 @@ public class SchedulerRsControler {
 				+ "getAvailableServices (userID: String): OSDSpec";
 
 		logger.debug(welcomeText);
-
 		
+		
+		// ============READING PROPERIES=========================
+		
+		PropertyManagement propertyManagement = new PropertyManagement();
+		
+		
+		
+		// reading proeprty LSM_META_GRAPH
+		logger.debug("lsmMetaGraph: " + propertyManagement.getSchedulerLsmMetaGraph());
+		
+		// reading proeprty LSM_DATA_GRAPH
+		logger.debug("lsmDataGraph: " + propertyManagement.getSchedulerLsmDataGraph());
+		
+		// reading proeprty LSM_FUNCTIONAL_GRAPH
+		logger.debug("lsmFunctionalGraph: " + propertyManagement.getSchedulerLsmFunctionalGraph());
+		
+		// reading proeprty LSM_USER_NAME
+		logger.debug("lsmUserName: " + propertyManagement.getSchedulerLsmUserName());
+		
+		// reading proeprty LSM_PASSWORD
+		logger.debug("lsmPassword: " + propertyManagement.getSchedulerLsmPassword());
+		
+		
+		
+		
+        
 		return welcomeText;
 	}
 	
-	
+
 	
 	/**
 	 *
