@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import org.openiot.commons.util.PropertyManagement;
 import org.openiot.scheduler.core.utils.sparql.SesameSPARQLClient;
 import org.openrdf.query.BindingSet;
 import org.openrdf.query.QueryEvaluationException;
@@ -40,13 +41,6 @@ import java.io.IOException;
 import java.util.Properties;
 
 public class GetServiceStatus {
-
-	private static final String PROPERTIES_FILE = "openiot.properties";
-	private static final String LSM_FUNCTIONAL_GRAPH = "scheduler.core.lsm.openiotFunctionalGraph";
-	private static String lsmFunctionalGraph = "";	
-	
-	 
-	private Properties props = null;
 
 	private static class Queries {
 		public static class ServiceStatusData {
@@ -134,30 +128,31 @@ public class GetServiceStatus {
 			}
 		}
 
-		public static String getServicesOfOAMO(String oamoID) {
+		public static String getServicesOfOAMO(String lsmFunctionalGraph,String oamoID) {
 			StringBuilder update = new StringBuilder();
 
-			String str = ("SELECT ?serviceID  " + "from <" + lsmFunctionalGraph + "> " + "WHERE " + "{"
-
-			+ "?serviceID <http://openiot.eu/ontology/ns/oamo> <" + oamoID + "> . "
-
-			+ "}");
+			String str = ("SELECT ?serviceID  " 
+					+ "from <" + lsmFunctionalGraph + "> " 
+					+ "WHERE " 
+					+ "{"
+					+ "?serviceID <http://openiot.eu/ontology/ns/oamo> <" + oamoID + "> . "
+					+ "}");
 
 			update.append(str);
 			return update.toString();
 		}
 
-		public static String getServiceStatusOfOSMO(String serviceID) {
+		public static String getServiceStatusOfOSMO(String lsmFunctionalGraph,String serviceID) {
 			StringBuilder update = new StringBuilder();
 
-			String str = ("select ?srvcStatus ?srvcStatusTime " + "from <" + lsmFunctionalGraph + "> "
-					+ "WHERE " + "{"
-
+			String str = ("select ?srvcStatus ?srvcStatusTime " 
+					+ "from <" + lsmFunctionalGraph + "> "
+					+ "WHERE " 
+					+ "{"
 					+ "?srvcStatusID rdf:type ?srvcStatus ."
 					+ "?srvcStatusID <http://openiot.eu/ontology/ns/serviceStatusTime> ?srvcStatusTime ."
 					+ "?srvcStatusID <http://openiot.eu/ontology/ns/serviceStatusOf> <" + serviceID + "> ."
-
-			+ "}");
+					+ "}");
 
 			update.append(str);
 			return update.toString();
@@ -168,13 +163,15 @@ public class GetServiceStatus {
 
 	final static Logger logger = LoggerFactory.getLogger(GetServiceStatus.class);
 
+	private String lsmFunctionalGraph;
+	//
 	private String oamoID;
 
 	// constructor
 	public GetServiceStatus(String oamoID) {
 
-		initializeProperties();
-		lsmFunctionalGraph = props.getProperty(LSM_FUNCTIONAL_GRAPH);
+		PropertyManagement propertyManagement = new PropertyManagement();
+		lsmFunctionalGraph = propertyManagement.getSchedulerLsmFunctionalGraph();
 
 		this.oamoID = oamoID;
 
@@ -188,38 +185,6 @@ public class GetServiceStatus {
 	// return serviceStatusData;
 	// }
 
-	/**
-	 * Initialize the Properties
-	 */
-	private void initializeProperties() {
-
-		String jbosServerConfigDir = System.getProperty("jboss.server.config.dir");
-		String openIotConfigFile = jbosServerConfigDir + File.separator + PROPERTIES_FILE;
-		props = new Properties();
-
-		logger.debug("jbosServerConfigDir:" + openIotConfigFile);
-
-		FileInputStream fis = null;
-
-		try {
-			fis = new FileInputStream(openIotConfigFile);
-
-		} catch (FileNotFoundException e) {
-			// TODO Handle exception
-
-			logger.error("Unable to find file: " + openIotConfigFile);
-
-		}
-
-		// loading properites from properties file
-		try {
-			props.load(fis);
-		} catch (IOException e) {
-			// TODO Handle exception
-			logger.error("Unable to load properties from file " + openIotConfigFile);
-		}
-
-	}
 
 	private void findServiceStatus() {
 		SesameSPARQLClient sparqlCl = null;
@@ -230,10 +195,10 @@ public class GetServiceStatus {
 			return;
 		}
 
-		TupleQueryResult qres = sparqlCl.sparqlToQResult(Queries.getServicesOfOAMO(oamoID));
+		TupleQueryResult qres = sparqlCl.sparqlToQResult(Queries.getServicesOfOAMO(lsmFunctionalGraph,oamoID));
 		ArrayList<String> oamoServicesList = Queries.parseServicesOfOAMO(qres);
 		for (String oamoID : oamoServicesList) {
-			qres = sparqlCl.sparqlToQResult(Queries.getServiceStatusOfOSMO(oamoID));
+			qres = sparqlCl.sparqlToQResult(Queries.getServiceStatusOfOSMO(lsmFunctionalGraph,oamoID));
 			Queries.ServiceStatusData serviceStatusData = Queries.parseServiceStatusOfOSMO(qres);
 
 			// need to populate the ServiceStatus object which is described in

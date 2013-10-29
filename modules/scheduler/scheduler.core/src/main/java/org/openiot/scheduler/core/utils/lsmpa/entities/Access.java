@@ -40,9 +40,6 @@ import lsm.server.LSMTripleStore;
 
 public class Access {
 	
-	private static String SchedulerLsmFunctionalGraph="";
-	
-	
 	public static class Queries {
 		public static ArrayList<Access> parseAccess(TupleQueryResult qres) {
 			ArrayList<Access> accessList = new ArrayList<Access>();
@@ -72,8 +69,6 @@ public class Access {
 			}
 		}
 
-		private static String graph = SchedulerLsmFunctionalGraph;
-
 		private static String getNamespaceDeclarations() {
 			StringBuilder declarations = new StringBuilder();
 			declarations.append("PREFIX : <" + "http://openiot.eu/ontology/ns/" + "> \n");
@@ -97,42 +92,44 @@ public class Access {
 			return declarations.toString();
 		}
 
-		public static String selectAllAccess() {
+		public static String selectAllAccess(String graph) {
 			StringBuilder update = new StringBuilder();
 			update.append(getNamespaceDeclarations());
 
-			String str = ("SELECT ?accessID from <" + graph + "> " + "WHERE " + "{"
-					+ "?accessID rdf:type <http://openiot.eu/ontology/ns/Access> . " + "}");
+			String str = ("SELECT ?accessID from <" + graph + "> " 
+							+ "WHERE " 
+							+ "{"
+							+ "?accessID rdf:type <http://openiot.eu/ontology/ns/Access> . " 
+							+ "}");
 
 			update.append(str);
 			return update.toString();
 		}
 
-		public static String selectAccessByDescription(String desc) {
+		public static String selectAccessByDescription(String graph,String desc) {
 			StringBuilder update = new StringBuilder();
 			update.append(getNamespaceDeclarations());
 
-			String str = ("SELECT ?accessID from <"
-					+ graph
-					+ "> "
+			String str = ("SELECT ?accessID from <"	+ graph	+ "> "
 					+ "WHERE "
 					+ "{"
-					+ "?accessID <http://openiot.eu/ontology/ns/accessDescription> ?desc FILTER regex(?desc, \""
-					+ desc + "\" )  . " + "}");
+					+ "?accessID <http://openiot.eu/ontology/ns/accessDescription> ?desc FILTER regex(?desc, \""+ desc + "\" )  . " 
+					+ "}");
 
 			update.append(str);
 			return update.toString();
 		}
 
-		public static String selectAccessByUser(ArrayList<User> accessOfUserlist) {
+		public static String selectAccessByUser(String graph,ArrayList<User> accessOfUserlist) {
 			StringBuilder update = new StringBuilder();
 			update.append(getNamespaceDeclarations());
 
-			update.append("SELECT ?accessID from <" + graph + "> " + "WHERE " + "{");
-			for (int i = 0; i < accessOfUserlist.size(); i++) {
-				update.append("?userID <http://openiot.eu/ontology/ns/userOf> <"
-						+ accessOfUserlist.get(i).getId() + "> )  . ");
-			}
+			update.append("SELECT ?accessID from <" + graph + "> " + "WHERE " 
+					+ "{");			
+					for (int i = 0; i < accessOfUserlist.size(); i++) 
+					{
+						update.append("?userID <http://openiot.eu/ontology/ns/userOf> <"+ accessOfUserlist.get(i).getId() + "> )  . ");
+					}
 			update.append("}");
 
 			return update.toString();
@@ -157,16 +154,9 @@ public class Access {
 	private ArrayList<User> accessOfUserlist = new ArrayList<User>();
 
 	public Access() {
-		
-		PropertyManagement propertyManagement = new PropertyManagement();
-		SchedulerLsmFunctionalGraph = propertyManagement.getSchedulerLsmFunctionalGraph();
-		
 	}
 
 	public Access(LSMSchema myOnt, LSMSchema ontInstance, String graph, LSMTripleStore lsmStore) {
-		
-		PropertyManagement propertyManagement = new PropertyManagement();
-		SchedulerLsmFunctionalGraph = propertyManagement.getSchedulerLsmFunctionalGraph();
 		
 		this.myOnt = myOnt;
 		this.ontInstance = ontInstance;
@@ -179,10 +169,6 @@ public class Access {
 
 	public Access(String classIdvURL, LSMSchema myOnt, LSMSchema ontInstance, String graph,
 			LSMTripleStore lsmStore) {
-		
-		
-		PropertyManagement propertyManagement = new PropertyManagement();
-		SchedulerLsmFunctionalGraph = propertyManagement.getSchedulerLsmFunctionalGraph();
 		
 		this.myOnt = myOnt;
 		this.ontInstance = ontInstance;

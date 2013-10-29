@@ -46,7 +46,7 @@ import org.slf4j.LoggerFactory;
 
 public class GetServiceImpl {
 
-	private static String openiotFunctionalGraph = "";
+	
 
 	private static class Queries {
 		public static class OsmoRootData {
@@ -78,7 +78,6 @@ public class GetServiceImpl {
 				this.description = description;
 			}
 		}
-
 		public static class QueryData {
 			private String id;
 			private String queryString;
@@ -99,7 +98,6 @@ public class GetServiceImpl {
 				this.queryString = queryString;
 			}
 		}
-
 		public static class WidgetPresentationData {
 			private String id;
 			private String widgetID;
@@ -129,7 +127,6 @@ public class GetServiceImpl {
 				this.widgetAttrID = widgetAttrID;
 			}
 		}
-
 		public static class WidgetAttr {
 			private String id;
 			private String value;
@@ -309,63 +306,76 @@ public class GetServiceImpl {
 			}
 		}
 
-		public static String getOSMORootData(String osmoID) {
+		public static String getOSMORootData(String openiotFunctionalGraph,String osmoID) {
 			StringBuilder update = new StringBuilder();
 
-			String str = ("SELECT ?srvcName ?srvcDesc " + "from <" + openiotFunctionalGraph + "> " + "WHERE "
-					+ "{" + "optional {<" + osmoID
-					+ "> <http://openiot.eu/ontology/ns/serviceName> ?srvcName . }" + "optional {<" + osmoID
-					+ "> <http://openiot.eu/ontology/ns/serviceDescription> ?srvcDesc . }" + "}");
+			String str = ("SELECT ?srvcName ?srvcDesc " 
+					+ "from <" + openiotFunctionalGraph + "> " 
+					+ "WHERE "
+					+ "{" 
+					+ "optional {<" + osmoID + "> <http://openiot.eu/ontology/ns/serviceName> ?srvcName . }" 
+					+ "optional {<" + osmoID + "> <http://openiot.eu/ontology/ns/serviceDescription> ?srvcDesc . }" 
+					+ "}");
 
 			update.append(str);
 			return update.toString();
 		}
 
-		public static String getQueryListOfOSMO(String osmoID) {
+		public static String getQueryListOfOSMO(String openiotFunctionalGraph,String osmoID) {
 			StringBuilder update = new StringBuilder();
 
-			String str = ("SELECT ?queryID ?queryString " + "from <" + openiotFunctionalGraph + "> "
-					+ "WHERE " + "{" + "?queryID <http://openiot.eu/ontology/ns/queryString> ?queryString . "
+			String str = ("SELECT ?queryID ?queryString " 
+					+ "from <" + openiotFunctionalGraph + "> "
+					+ "WHERE " 
+					+ "{" 
+					+ "?queryID <http://openiot.eu/ontology/ns/queryString> ?queryString . "
 					+ "<" + osmoID + "> <http://openiot.eu/ontology/ns/query> ?queryID . "
-			// TODO:check for descirption
-			+ "}");
+					// TODO:check for descirption
+					+ "}");
 
 			update.append(str);
 			return update.toString();
 		}
 
-		public static String getWidgetPreListByOSMO(String osmoID) {
+		public static String getWidgetPreListByOSMO(String openiotFunctionalGraph,String osmoID) {
 			StringBuilder update = new StringBuilder();
 
-			String str = ("SELECT ?widgetPreID ?widgetID ?widgetAttrID " + "from <" + openiotFunctionalGraph
-					+ "> " + "WHERE " + "{"
+			String str = ("SELECT ?widgetPreID ?widgetID ?widgetAttrID " 
+					+ "from <" + openiotFunctionalGraph + "> " 
+					+ "WHERE " 
+					+ "{"
 					+ "?widgetPreID <http://openiot.eu/ontology/ns/widgetAttribute> ?widgetAttrID . "
 					+ "?widgetPreID <http://openiot.eu/ontology/ns/widget> ?widgetID . "
 					+ "?widgetPreID <http://openiot.eu/ontology/ns/widgetPresOf> <" + osmoID + "> . "
-					+ "?widgetPreID rdf:type <http://openiot.eu/ontology/ns/WidgetPresentation> ." + "}");
+					+ "?widgetPreID rdf:type <http://openiot.eu/ontology/ns/WidgetPresentation> ." 
+					+ "}");
 
 			update.append(str);
 			return update.toString();
 		}
 
-		public static String getWidgetAttrByWidgetPre(String widgetPreID) {
+		public static String getWidgetAttrByWidgetPre(String openiotFunctionalGraph,String widgetPreID) {
 			StringBuilder update = new StringBuilder();
 
-			String str = ("SELECT ?widgetAttrID ?widgetAttrName ?widgetAttrDesc " + "from <"
-					+ openiotFunctionalGraph + "> " + "WHERE " + "{"
+			String str = ("SELECT ?widgetAttrID ?widgetAttrName ?widgetAttrDesc "
+					+ "from <" + openiotFunctionalGraph + "> " 
+					+ "WHERE " 
+					+ "{"
 					+ "?widgetAttrID <http://openiot.eu/ontology/ns/widgeAttrDescription> ?widgetAttrDesc . "
 					+ "?widgetAttrID <http://openiot.eu/ontology/ns/widgetAttrName> ?widgetAttrName . "
-					+ "?widgetAttrID <http://openiot.eu/ontology/ns/widgetAttrOf> <" + widgetPreID + "> . " + "}");
+					+ "?widgetAttrID <http://openiot.eu/ontology/ns/widgetAttrOf> <" + widgetPreID + "> . " 
+					+ "}");
 
 			update.append(str);
 			return update.toString();
 		}
-
 	}
 
 	// //
 	final static Logger logger = LoggerFactory.getLogger(GetServiceImpl.class);
 
+	private String openiotFunctionalGraph;
+	//
 	private String osmoID;
 	private OSMO osmo;
 
@@ -395,7 +405,7 @@ public class GetServiceImpl {
 		osmo = new OSMO();
 		osmo.setId(osmoID);
 
-		TupleQueryResult qres = sparqlCl.sparqlToQResult(Queries.getOSMORootData(osmoID));
+		TupleQueryResult qres = sparqlCl.sparqlToQResult(Queries.getOSMORootData(openiotFunctionalGraph,osmoID));
 		Queries.OsmoRootData osmoRoot = Queries.parseOSMORootData(qres);
 
 		if (osmoRoot != null) {
@@ -403,7 +413,7 @@ public class GetServiceImpl {
 			osmo.setName(osmoRoot.getName());
 		}
 
-		qres = sparqlCl.sparqlToQResult(Queries.getQueryListOfOSMO(osmoID));
+		qres = sparqlCl.sparqlToQResult(Queries.getQueryListOfOSMO(openiotFunctionalGraph,osmoID));
 		ArrayList<Queries.QueryData> queryDataList = Queries.parseOSMOQueryData(qres);
 
 		for (Queries.QueryData queryData : queryDataList) {
@@ -412,7 +422,7 @@ public class GetServiceImpl {
 			osmo.getQueryRequest().add(qr);
 		}
 
-		qres = sparqlCl.sparqlToQResult(Queries.getWidgetPreListByOSMO(osmoID));
+		qres = sparqlCl.sparqlToQResult(Queries.getWidgetPreListByOSMO(openiotFunctionalGraph,osmoID));
 		ArrayList<Queries.WidgetPresentationData> widgetPresentationDataList = Queries
 				.parseWidgetPreListByService(qres);
 
@@ -422,7 +432,7 @@ public class GetServiceImpl {
 			Widget w = new Widget();
 			w.setWidgetID(widgetPresentationData.getId());
 
-			qres = sparqlCl.sparqlToQResult(Queries.getWidgetAttrByWidgetPre(widgetPresentationData.getId()));
+			qres = sparqlCl.sparqlToQResult(Queries.getWidgetAttrByWidgetPre(openiotFunctionalGraph,widgetPresentationData.getId()));
 			ArrayList<Queries.WidgetAttr> widgetAttr = Queries.parseWidgetAttributes(qres);
 
 			for (Queries.WidgetAttr wattr : widgetAttr) {

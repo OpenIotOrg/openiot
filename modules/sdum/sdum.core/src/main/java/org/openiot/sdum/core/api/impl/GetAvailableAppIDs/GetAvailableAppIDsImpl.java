@@ -14,146 +14,136 @@ import org.openrdf.repository.RepositoryException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class GetAvailableAppIDsImpl 
-{
-	private static String openiotFunctionalGraph = "";
+
+/**
+ * @author Stavros Petris (spet) e-mail: spet@ait.edu.gr
+ * @author Nikos Kefalakis (nkef) e-mail: nkef@ait.edu.gr
+ * 
+ */
+
+public class GetAvailableAppIDsImpl {
 	
-	private static class Queries
-	{		
-		public static class OAMOData
-		{
-			private String oamoName; 
+	private static class Queries {
+		public static class OAMOData {
+			private String oamoName;
 			private String oamoID;
-			
-			
+
 			public String getOamoName() {
 				return oamoName;
 			}
+
 			public void setOamoName(String oamoName) {
 				this.oamoName = oamoName;
 			}
-			
+
 			public String getOamoID() {
 				return oamoID;
 			}
+
 			public void setOamoID(String oamoID) {
 				this.oamoID = oamoID;
 			}
 		}
 
-
-
-		public static ArrayList<OAMOData> parseAvailableAppIDsOfUser(TupleQueryResult qres)
-		{
+		public static ArrayList<OAMOData> parseAvailableAppIDsOfUser(TupleQueryResult qres) {
 			ArrayList<OAMOData> oamoDataList = new ArrayList<OAMOData>();
-			
-			try
-			{
-				while (qres.hasNext())
-				{
+
+			try {
+				while (qres.hasNext()) {
 					BindingSet b = qres.next();
-					Set names = b.getBindingNames();					
-					
+					Set names = b.getBindingNames();
+
 					OAMOData oamoData = new OAMOData();
-					
-					for (Object n : names)
-					{						
-						if(((String) n).equalsIgnoreCase("oamoID"))
-						{
-							String str = (b.getValue((String) n)==null) ? null : b.getValue((String) n).stringValue();
+
+					for (Object n : names) {
+						if (((String) n).equalsIgnoreCase("oamoID")) {
+							String str = (b.getValue((String) n) == null) ? null : b.getValue((String) n)
+									.stringValue();
 							oamoData.setOamoID(str);
-							System.out.print("oamoID: "+oamoData.getOamoID());	
-						}
-						else if(((String) n).equalsIgnoreCase("oamoName"))
-						{
-							String str = (b.getValue((String) n)==null) ? null : b.getValue((String) n).stringValue();
+							System.out.print("oamoID: " + oamoData.getOamoID());
+						} else if (((String) n).equalsIgnoreCase("oamoName")) {
+							String str = (b.getValue((String) n) == null) ? null : b.getValue((String) n)
+									.stringValue();
 							oamoData.setOamoName(str);
-							System.out.print("oamoName: "+oamoData.getOamoName());	
+							System.out.print("oamoName: " + oamoData.getOamoName());
 						}
 					}
-					oamoDataList.add(oamoData);				
-				}//while
+					oamoDataList.add(oamoData);
+				}// while
 				return oamoDataList;
-			} 
-			catch (QueryEvaluationException e)			
-			{				
+			} catch (QueryEvaluationException e) {
 				e.printStackTrace();
 				return null;
-			}
-			catch (Exception e)			
-			{				
+			} catch (Exception e) {
 				e.printStackTrace();
 				return null;
 			}
 		}
-		
-		public static String getAvailableAppIDsOfUser(String userID)
+
+		public static String getAvailableAppIDsOfUser(String lsmFunctionalGraph,String userID) 
 		{
-			StringBuilder update = new StringBuilder();			
-			
-			String str=("SELECT ?oamoID ?oamoName  " 
-					+"from <"+openiotFunctionalGraph+"> "
-					+"WHERE "
-					+"{"
-					+"?oamoID <http://openiot.eu/ontology/ns/oamoName> ?oamoName . "
-					+"?oamoID <http://openiot.eu/ontology/ns/oamoUserOf> <"+userID+"> . "								
-					+"}");
-			
+			StringBuilder update = new StringBuilder();
+
+			String str = ("SELECT ?oamoID ?oamoName  " 
+					+ "from <" + lsmFunctionalGraph + "> " 
+					+ "WHERE "
+					+ "{" 
+					+ "?oamoID <http://openiot.eu/ontology/ns/oamoName> ?oamoName . "
+					+ "?oamoID <http://openiot.eu/ontology/ns/oamoUserOf> <" + userID + "> . " 
+					+ "}");
+
 			update.append(str);
 			return update.toString();
-		}		
-	}	
-	
-	/////
-	
-	final static Logger logger = LoggerFactory.getLogger(GetAvailableAppIDsImpl.class);	
-	
+		}
+	}
+
+	// ///
+
+	final static Logger logger = LoggerFactory.getLogger(GetAvailableAppIDsImpl.class);
+
+	private String lsmFunctionalGraph = "";
+	//
 	private String userID;
 	private DescreptiveIDs descriptiveIDs;
-	
-	//constructor
-	public GetAvailableAppIDsImpl(String userID)
-	{
+
+	// constructor
+	public GetAvailableAppIDsImpl(String userID) {
 		
-		PropertyManagement propertyManagement = new PropertyManagement();
-		openiotFunctionalGraph = propertyManagement.getSdumLsmFunctionalGraph();
-		
-		
+		PropertyManagement propertyManagement = new PropertyManagement();		
+		lsmFunctionalGraph = propertyManagement.getSchedulerLsmFunctionalGraph();
+				
 		this.userID = userID;
-		
-		logger.debug("Recieved Parameters: " +
-				"userID=" + userID );				
+
+		logger.debug("Recieved Parameters: " + "userID=" + userID);
 
 		findAvailableAppIDs();
 	}
-	
-	public DescreptiveIDs getAvailableAppIDs()
-	{
+
+
+	public DescreptiveIDs getAvailableAppIDs() {
 		return descriptiveIDs;
 	}
-	
-	private void findAvailableAppIDs()
-	{
+
+	private void findAvailableAppIDs() {
 		SesameSPARQLClient sparqlCl = null;
 		try {
 			sparqlCl = new SesameSPARQLClient();
-		} catch (RepositoryException e) {			
-			logger.error("Init sparql repository error. ",e);
+		} catch (RepositoryException e) {
+			logger.error("Init sparql repository error. ", e);
 			return;
 		}
-		
-		TupleQueryResult qres = sparqlCl.sparqlToQResult(Queries.getAvailableAppIDsOfUser(userID));
+
+		TupleQueryResult qres = sparqlCl.sparqlToQResult(Queries.getAvailableAppIDsOfUser(lsmFunctionalGraph,userID));
 		ArrayList<Queries.OAMOData> appDataOfUserList = Queries.parseAvailableAppIDsOfUser(qres);
 
 		descriptiveIDs = new DescreptiveIDs();
-		
-		for (Queries.OAMOData oamoData :appDataOfUserList)
-		{
+
+		for (Queries.OAMOData oamoData : appDataOfUserList) {
 			DescriptiveID dID = new DescriptiveID();
 			dID.setId(oamoData.getOamoID());
 			dID.setName(oamoData.getOamoName());
-			
+
 			descriptiveIDs.getDescriptiveID().add(dID);
-		}	
-	}	
+		}
+	}
 }

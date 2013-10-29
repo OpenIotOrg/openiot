@@ -21,6 +21,7 @@ package org.openiot.scheduler.core.utils.sparql;
  *     Contact: OpenIoT mailto: info@openiot.eu
  */
 
+import org.openiot.commons.util.PropertyManagement;
 import org.openrdf.query.BindingSet;
 import org.openrdf.query.QueryLanguage;
 import org.openrdf.query.TupleQuery;
@@ -45,7 +46,9 @@ public class SesameSPARQLClient
 	
 	public SesameSPARQLClient() throws RepositoryException
 	{					
-		therepository = new SPARQLRepository("http://lsm.deri.ie/sparql");
+		
+		PropertyManagement propertyManagement = new PropertyManagement();
+		therepository = new SPARQLRepository(propertyManagement.getSdumLsmSparqlEndPoint());
 		
 		try {
 			therepository.initialize();

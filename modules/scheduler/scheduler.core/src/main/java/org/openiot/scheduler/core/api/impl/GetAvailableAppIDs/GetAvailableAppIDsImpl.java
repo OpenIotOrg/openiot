@@ -5,6 +5,7 @@ import java.util.Set;
 
 import org.openiot.commons.descriptiveids.model.DescreptiveIDs;
 import org.openiot.commons.descriptiveids.model.DescriptiveID;
+import org.openiot.commons.util.PropertyManagement;
 import org.openiot.scheduler.core.utils.sparql.SesameSPARQLClient;
 import org.openrdf.query.BindingSet;
 import org.openrdf.query.QueryEvaluationException;
@@ -26,16 +27,6 @@ import java.util.Properties;
  */
 
 public class GetAvailableAppIDsImpl {
-
-	
-	
-    private static final String PROPERTIES_FILE = "openiot.properties";
-	private static final String LSM_FUNCTIONAL_GRAPH = "scheduler.core.lsm.openiotFunctionalGraph";
-	private Properties props = null;
-	
-	private static String lsmFunctionalGraph = "";	
-	
-	 
 	
 	private static class Queries {
 		public static class OAMOData {
@@ -58,9 +49,6 @@ public class GetAvailableAppIDsImpl {
 				this.oamoID = oamoID;
 			}
 		}
-
-
-
 
 		public static ArrayList<OAMOData> parseAvailableAppIDsOfUser(TupleQueryResult qres) {
 			ArrayList<OAMOData> oamoDataList = new ArrayList<OAMOData>();
@@ -97,12 +85,17 @@ public class GetAvailableAppIDsImpl {
 			}
 		}
 
-		public static String getAvailableAppIDsOfUser(String userID) {
+		public static String getAvailableAppIDsOfUser(String lsmFunctionalGraph,String userID) 
+		{
 			StringBuilder update = new StringBuilder();
 
-			String str = ("SELECT ?oamoID ?oamoName  " + "from <" + lsmFunctionalGraph + "> " + "WHERE "
-					+ "{" + "?oamoID <http://openiot.eu/ontology/ns/oamoName> ?oamoName . "
-					+ "?oamoID <http://openiot.eu/ontology/ns/oamoUserOf> <" + userID + "> . " + "}");
+			String str = ("SELECT ?oamoID ?oamoName  " 
+					+ "from <" + lsmFunctionalGraph + "> " 
+					+ "WHERE "
+					+ "{" 
+					+ "?oamoID <http://openiot.eu/ontology/ns/oamoName> ?oamoName . "
+					+ "?oamoID <http://openiot.eu/ontology/ns/oamoUserOf> <" + userID + "> . " 
+					+ "}");
 
 			update.append(str);
 			return update.toString();
@@ -113,61 +106,24 @@ public class GetAvailableAppIDsImpl {
 
 	final static Logger logger = LoggerFactory.getLogger(GetAvailableAppIDsImpl.class);
 
+	private String lsmFunctionalGraph = "";
+	//
 	private String userID;
 	private DescreptiveIDs descriptiveIDs;
 
 	// constructor
 	public GetAvailableAppIDsImpl(String userID) {
 		
-		initializeProperties();
-		lsmFunctionalGraph = props.getProperty(LSM_FUNCTIONAL_GRAPH);
-		
-		
+		PropertyManagement propertyManagement = new PropertyManagement();		
+		lsmFunctionalGraph = propertyManagement.getSchedulerLsmFunctionalGraph();
+				
 		this.userID = userID;
 
 		logger.debug("Recieved Parameters: " + "userID=" + userID);
 
 		findAvailableAppIDs();
-		
-		
-		
-		
-		
-		
 	}
 
-	/**
-	 * Initialize the Properties
-	 */
-	private void initializeProperties() {
-
-		String jbosServerConfigDir = System.getProperty("jboss.server.config.dir");
-		String openIotConfigFile = jbosServerConfigDir + File.separator + PROPERTIES_FILE;
-		props = new Properties();
-
-		logger.debug("jbosServerConfigDir:" + openIotConfigFile);
-
-		FileInputStream fis = null;
-
-		try {
-			fis = new FileInputStream(openIotConfigFile);
-
-		} catch (FileNotFoundException e) {
-			// TODO Handle exception
-
-			logger.error("Unable to find file: " + openIotConfigFile);
-
-		}
-
-		// loading properites from properties file
-		try {
-			props.load(fis);
-		} catch (IOException e) {
-			// TODO Handle exception
-			logger.error("Unable to load properties from file " + openIotConfigFile);
-		}
-
-	}
 
 	public DescreptiveIDs getAvailableAppIDs() {
 		return descriptiveIDs;
@@ -182,7 +138,7 @@ public class GetAvailableAppIDsImpl {
 			return;
 		}
 
-		TupleQueryResult qres = sparqlCl.sparqlToQResult(Queries.getAvailableAppIDsOfUser(userID));
+		TupleQueryResult qres = sparqlCl.sparqlToQResult(Queries.getAvailableAppIDsOfUser(lsmFunctionalGraph,userID));
 		ArrayList<Queries.OAMOData> appDataOfUserList = Queries.parseAvailableAppIDsOfUser(qres);
 
 		descriptiveIDs = new DescreptiveIDs();

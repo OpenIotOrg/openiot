@@ -44,10 +44,8 @@ import com.hp.hpl.jena.vocabulary.XSD;
 
 public class User {
 	
-	private static String SchedulerLsmFunctionalGraph="";
-
-	
 	public static class Queries {
+		
 		public static ArrayList<User> parseUserData(TupleQueryResult qres) {
 			ArrayList<User> userList = new ArrayList<User>();
 			try {
@@ -96,8 +94,6 @@ public class User {
 			}
 		}
 
-		private static String graph = SchedulerLsmFunctionalGraph;
-
 		private static String getNamespaceDeclarations() {
 			StringBuilder declarations = new StringBuilder();
 			declarations.append("PREFIX : <" + "http://openiot.eu/ontology/ns/" + "> \n");
@@ -121,16 +117,19 @@ public class User {
 			return declarations.toString();
 		}
 
-		public static String selectAllUsers() {
+		public static String selectAllUsers(String graph) {
 			StringBuilder update = new StringBuilder();
 			update.append(getNamespaceDeclarations());
 
 			String str = ("SELECT ?userID ?userName ?userDesc ?userMail ?userPasw from <" + graph + "> "
-					+ "WHERE " + "{" + "?userID rdf:type <http://openiot.eu/ontology/ns/User> . "
+					+ "WHERE " 
+					+ "{" 
+					+ "?userID rdf:type <http://openiot.eu/ontology/ns/User> . "
 					+ "?userID <http://openiot.eu/ontology/ns/userMail> ?userMail."
 					+ "?userID <http://openiot.eu/ontology/ns/userDescription> ?userDesc."
 					+ "?userID <http://openiot.eu/ontology/ns/userName> ?userName."
-					+ "optional { ?userID <http://openiot.eu/ontology/ns/userPassword> ?userPasw. } " + "}");
+					+ "optional { ?userID <http://openiot.eu/ontology/ns/userPassword> ?userPasw. } " 
+					+ "}");
 
 			update.append(str);
 			return update.toString();
@@ -166,17 +165,19 @@ public class User {
 		// update.append(str);
 		// return update.toString();
 		// }
-		public static String selectUserByEmail(String email) {
+		public static String selectUserByEmail(String graph,String email) {
 			StringBuilder update = new StringBuilder();
 			update.append(getNamespaceDeclarations());
 
-			String str = ("SELECT ?userID ?userName ?userDesc ?userPasw from <" + graph + "> " + "WHERE "
-					+ "{" + "?userID rdf:type <http://openiot.eu/ontology/ns/User> . "
+			String str = ("SELECT ?userID ?userName ?userDesc ?userPasw from <" + graph + "> " 
+					+ "WHERE "
+					+ "{" 
+					+ "?userID rdf:type <http://openiot.eu/ontology/ns/User> . "
 					+ "?userID <http://openiot.eu/ontology/ns/userDescription> ?userDesc."
 					+ "?userID <http://openiot.eu/ontology/ns/userName> ?userName."
 					+ "optional { ?userID <http://openiot.eu/ontology/ns/userPassword> ?userPasw. } "
-					+ "?userID <http://openiot.eu/ontology/ns/userMail> \"" + email
-					+ "\"^^<http://www.w3.org/2001/XMLSchema#string> ." + "}");
+					+ "?userID <http://openiot.eu/ontology/ns/userMail> \"" + email + "\"^^<http://www.w3.org/2001/XMLSchema#string> ." 
+					+ "}");
 
 			update.append(str);
 			return update.toString();
@@ -260,16 +261,9 @@ public class User {
 	private ArrayList<OAMO> oamoList = new ArrayList<OAMO>();
 
 	public User() {
-		
-		PropertyManagement propertyManagement = new PropertyManagement();
-		SchedulerLsmFunctionalGraph = propertyManagement.getSchedulerLsmFunctionalGraph();
-		
 	}
 
 	public User(LSMSchema myOnt, LSMSchema ontInstance, String graph, LSMTripleStore lsmStore) {
-		
-		PropertyManagement propertyManagement = new PropertyManagement();
-		SchedulerLsmFunctionalGraph = propertyManagement.getSchedulerLsmFunctionalGraph();
 		
 		this.myOnt = myOnt;
 		this.ontInstance = ontInstance;
@@ -282,9 +276,6 @@ public class User {
 
 	public User(String classIdvURL, LSMSchema myOnt, LSMSchema ontInstance, String graph,
 			LSMTripleStore lsmStore) {
-		
-		PropertyManagement propertyManagement = new PropertyManagement();
-		SchedulerLsmFunctionalGraph = propertyManagement.getSchedulerLsmFunctionalGraph();
 		
 		this.myOnt = myOnt;
 		this.ontInstance = ontInstance;

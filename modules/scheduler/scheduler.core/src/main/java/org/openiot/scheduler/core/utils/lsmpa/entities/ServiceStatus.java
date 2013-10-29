@@ -43,9 +43,6 @@ import com.hp.hpl.jena.vocabulary.XSD;
 
 public class ServiceStatus {
 	
-	private static String SchedulerLsmFunctionalGraph="";
-	
-
 	public static class Queries {
 		public static ArrayList<ServiceStatus> parseService(TupleQueryResult qres) {
 			ArrayList<ServiceStatus> serviceStatusList = new ArrayList<ServiceStatus>();
@@ -92,8 +89,6 @@ public class ServiceStatus {
 			}
 		}
 
-		private static String graph = SchedulerLsmFunctionalGraph;
-
 		private static String getNamespaceDeclarations() {
 			StringBuilder declarations = new StringBuilder();
 			declarations.append("PREFIX : <" + "http://openiot.eu/ontology/ns/" + "> \n");
@@ -135,7 +130,7 @@ public class ServiceStatus {
 		// update.append(str);
 		// return update.toString();
 		// }
-		public static String selectAllSrvcStatusByStatus(ServiceStatus.State status) {
+		public static String selectAllSrvcStatusByStatus(String graph,ServiceStatus.State status) {
 			StringBuilder update = new StringBuilder();
 			update.append(getNamespaceDeclarations());
 
@@ -147,7 +142,7 @@ public class ServiceStatus {
 			return update.toString();
 		}
 
-		public static String selectSrvcStatusByStatuses(List<ServiceStatus.State> statusList) {
+		public static String selectSrvcStatusByStatuses(String graph,List<ServiceStatus.State> statusList) {
 			StringBuilder update = new StringBuilder();
 			update.append(getNamespaceDeclarations());
 
@@ -161,7 +156,7 @@ public class ServiceStatus {
 			return update.toString();
 		}
 
-		public static String selectSrvcStatusByTime(String time)// check it
+		public static String selectSrvcStatusByTime(String graph,String time)// check it
 		{
 			StringBuilder update = new StringBuilder();
 			update.append(getNamespaceDeclarations());
@@ -178,7 +173,7 @@ public class ServiceStatus {
 			return update.toString();
 		}
 
-		public static String selectSrvcStatusByService(Service service) {
+		public static String selectSrvcStatusByService(String graph,Service service) {
 			StringBuilder update = new StringBuilder();
 			update.append(getNamespaceDeclarations());
 
@@ -213,21 +208,11 @@ public class ServiceStatus {
 	private Service service;
 
 	public ServiceStatus() {
-		
-
-		
-		PropertyManagement propertyManagement = new PropertyManagement();
-		SchedulerLsmFunctionalGraph = propertyManagement.getSchedulerLsmFunctionalGraph();
-
 	}
 
 	public ServiceStatus(LSMSchema myOnt, LSMSchema ontInstance, String graph, LSMTripleStore lsmStore,
 			State status)// String id,State status)
 	{
-		
-		PropertyManagement propertyManagement = new PropertyManagement();
-		SchedulerLsmFunctionalGraph = propertyManagement.getSchedulerLsmFunctionalGraph();
-		
 		this.myOnt = myOnt;
 		this.ontInstance = ontInstance;
 		this.graph = graph;
@@ -242,10 +227,6 @@ public class ServiceStatus {
 	public ServiceStatus(String classIdvURL, LSMSchema myOnt, LSMSchema ontInstance, String graph,
 			LSMTripleStore lsmStore, State status)// String id,State status)
 	{
-		
-		PropertyManagement propertyManagement = new PropertyManagement();
-		SchedulerLsmFunctionalGraph = propertyManagement.getSchedulerLsmFunctionalGraph();
-		
 		this.myOnt = myOnt;
 		this.ontInstance = ontInstance;
 		this.graph = graph;

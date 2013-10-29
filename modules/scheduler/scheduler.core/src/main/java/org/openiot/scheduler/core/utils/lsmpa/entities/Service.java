@@ -42,10 +42,6 @@ import com.hp.hpl.jena.vocabulary.XSD;
 
 public class Service {
 	
-	private static String SchedulerLsmFunctionalGraph="";
-	
-
-	
 	public static class Queries {
 		public static ArrayList<Service> parseService(TupleQueryResult qres) {
 			ArrayList<Service> serviceList = new ArrayList<Service>();
@@ -99,7 +95,6 @@ public class Service {
 			}
 		}
 
-		private static String graph = SchedulerLsmFunctionalGraph;
 
 		private static String getNamespaceDeclarations() {
 			StringBuilder declarations = new StringBuilder();
@@ -184,7 +179,7 @@ public class Service {
 		// update.append(str);
 		// return update.toString();
 		// }
-		public static String selectSrvcByUser(OAMO oamo) {
+		public static String selectSrvcByUser(String graph,OAMO oamo) {
 			StringBuilder update = new StringBuilder();
 			update.append(getNamespaceDeclarations());
 
@@ -243,17 +238,9 @@ public class Service {
 	private List<WidgetPresentation> widgetPresList = new ArrayList<WidgetPresentation>();
 
 	public Service() {
-		
-		PropertyManagement propertyManagement = new PropertyManagement();
-		SchedulerLsmFunctionalGraph = propertyManagement.getSchedulerLsmFunctionalGraph();
-		
-		
 	}
 
 	public Service(LSMSchema myOnt, LSMSchema ontInstance, String graph, LSMTripleStore lsmStore) {
-		
-		PropertyManagement propertyManagement = new PropertyManagement();
-		SchedulerLsmFunctionalGraph = propertyManagement.getSchedulerLsmFunctionalGraph();
 		
 		this.myOnt = myOnt;
 		this.ontInstance = ontInstance;
@@ -266,9 +253,6 @@ public class Service {
 
 	public Service(String classIdvURL, LSMSchema myOnt, LSMSchema ontInstance, String graph,
 			LSMTripleStore lsmStore) {
-		
-		PropertyManagement propertyManagement = new PropertyManagement();
-		SchedulerLsmFunctionalGraph = propertyManagement.getSchedulerLsmFunctionalGraph();
 		
 		this.myOnt = myOnt;
 		this.ontInstance = ontInstance;

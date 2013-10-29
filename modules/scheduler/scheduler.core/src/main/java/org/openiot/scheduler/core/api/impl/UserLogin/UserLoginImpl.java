@@ -2,6 +2,7 @@ package org.openiot.scheduler.core.api.impl.UserLogin;
 
 import java.util.ArrayList;
 
+import org.openiot.commons.util.PropertyManagement;
 import org.openiot.scheduler.core.api.impl.UserRegister.UserRegisterImpl;
 import org.openiot.scheduler.core.utils.sparql.SesameSPARQLClient;
 import org.openrdf.query.TupleQueryResult;
@@ -13,6 +14,8 @@ public class UserLoginImpl
 {
 	final static Logger logger = LoggerFactory.getLogger(UserLoginImpl.class);
 	
+	private String schedulerLsmFunctionalGraph;
+	//
 	private String userMail;
 	private String userPasw;
 	
@@ -20,6 +23,9 @@ public class UserLoginImpl
 	
 	public UserLoginImpl(String userMail,String pasw)
 	{
+		PropertyManagement propertyManagement = new PropertyManagement();
+		schedulerLsmFunctionalGraph = propertyManagement.getSchedulerLsmFunctionalGraph();
+		
 		this.userMail = userMail;
 		this.userPasw = pasw;
 				
@@ -44,9 +50,11 @@ public class UserLoginImpl
 			return;
 		}
 		
+		
+		
 		//check that user entered correct email
 		TupleQueryResult qres = sparqlCl.sparqlToQResult(
-				org.openiot.scheduler.core.utils.lsmpa.entities.User.Queries.selectUserByEmail(this.userMail));
+				org.openiot.scheduler.core.utils.lsmpa.entities.User.Queries.selectUserByEmail(schedulerLsmFunctionalGraph,this.userMail));
 		ArrayList<org.openiot.scheduler.core.utils.lsmpa.entities.User> usrEnt =  
 				org.openiot.scheduler.core.utils.lsmpa.entities.User.Queries.parseUserData(qres);
 		

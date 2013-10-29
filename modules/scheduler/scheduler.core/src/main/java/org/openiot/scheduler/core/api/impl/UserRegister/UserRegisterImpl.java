@@ -46,13 +46,12 @@ import com.hp.hpl.jena.ontology.OntModelSpec;
 
 public class UserRegisterImpl 
 {	
-	
-	private String SchedulerLsmFunctionalGraph="";
-	private String schedulerLsmUserName="";
-	private String schedulerLsmPassword="";
-	
 	final static Logger logger = LoggerFactory.getLogger(UserRegisterImpl.class);
-			
+	
+	private String SchedulerLsmFunctionalGraph;
+	private String schedulerLsmUserName;
+	private String schedulerLsmPassword;
+	//
 	private String name;
 	private String mail;
 	private String description;
@@ -62,8 +61,7 @@ public class UserRegisterImpl
 
 	//constructor
 	public UserRegisterImpl(String userName,String userMail,String userDesc,String passwd)
-	{
-		
+	{		
 		PropertyManagement propertyManagement = new PropertyManagement();
 		SchedulerLsmFunctionalGraph = propertyManagement.getSchedulerLsmFunctionalGraph();
 		schedulerLsmUserName = propertyManagement.getSchedulerLsmUserName();
@@ -96,9 +94,11 @@ public class UserRegisterImpl
 			return;
 		}
 		
+		
+		
 		//check if user with same mail exists
 		TupleQueryResult qres = sparqlCl.sparqlToQResult(
-				org.openiot.scheduler.core.utils.lsmpa.entities.User.Queries.selectUserByEmail(this.mail));
+				org.openiot.scheduler.core.utils.lsmpa.entities.User.Queries.selectUserByEmail(SchedulerLsmFunctionalGraph,this.mail));
 		ArrayList<org.openiot.scheduler.core.utils.lsmpa.entities.User> usrEnt =  
 				org.openiot.scheduler.core.utils.lsmpa.entities.User.Queries.parseUserData(qres);
 		
@@ -132,7 +132,7 @@ public class UserRegisterImpl
 			
 			if(ok){
 				qres = sparqlCl.sparqlToQResult(
-						org.openiot.scheduler.core.utils.lsmpa.entities.User.Queries.selectUserByEmail(this.mail));
+						org.openiot.scheduler.core.utils.lsmpa.entities.User.Queries.selectUserByEmail(SchedulerLsmFunctionalGraph,this.mail));
 				//parse userdata list should always contain one element
 				org.openiot.scheduler.core.utils.lsmpa.entities.User usrEntity =  
 						org.openiot.scheduler.core.utils.lsmpa.entities.User.Queries.parseUserData(qres).get(0);

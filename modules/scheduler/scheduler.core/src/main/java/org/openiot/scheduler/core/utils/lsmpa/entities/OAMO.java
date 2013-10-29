@@ -21,9 +21,6 @@ import lsm.server.LSMTripleStore;
 
 public class OAMO {
 	
-	private static String SchedulerLsmFunctionalGraph="";
-	
-	
 	public static class Queries {
 		public static ArrayList<OAMO> parseOAMO(TupleQueryResult qres) {
 			ArrayList<OAMO> oamoList = new ArrayList<OAMO>();
@@ -85,8 +82,6 @@ public class OAMO {
 			}
 		}
 
-		private static String graph = SchedulerLsmFunctionalGraph;
-
 		private static String getNamespaceDeclarations() {
 			StringBuilder declarations = new StringBuilder();
 			declarations.append("PREFIX : <" + "http://openiot.eu/ontology/ns/" + "> \n");
@@ -110,13 +105,12 @@ public class OAMO {
 			return declarations.toString();
 		}
 
-		public static String selectOAMOByUser(User usr) {
+		public static String selectOAMOByUser(String graph,User usr) {
 			StringBuilder update = new StringBuilder();
 			update.append(getNamespaceDeclarations());
 
-			String str = ("SELECT ?oamoID ?oamoName ?userID ?oamoDesc ?oamoGraphMeta " + "from <"
-					+ graph
-					+ "> "
+			String str = ("SELECT ?oamoID ?oamoName ?userID ?oamoDesc ?oamoGraphMeta " 
+					+ "from <"+ graph+ "> "
 					+ "WHERE "
 					+ "{"
 					// +"?oamoID <http://openiot.eu/ontology/ns/oamoService> ?srvcID . "
@@ -124,7 +118,8 @@ public class OAMO {
 					+ "?oamoID <http://openiot.eu/ontology/ns/oamoGraphMeta> ?oamoGraphMeta . "
 					+ "?oamoID <http://openiot.eu/ontology/ns/oamoUserOf> ?userID . "
 					+ "?oamoID <http://openiot.eu/ontology/ns/oamoName> ?oamoName . "
-					+ "?oamoID <http://openiot.eu/ontology/ns/oamoUserOf> <" + usr.getId() + "> . " + "}");
+					+ "?oamoID <http://openiot.eu/ontology/ns/oamoUserOf> <" + usr.getId() + "> . " 
+					+ "}");
 
 			update.append(str);
 			return update.toString();
@@ -153,17 +148,9 @@ public class OAMO {
 	private String graphMeta;
 
 	public OAMO() {
-		
-		PropertyManagement propertyManagement = new PropertyManagement();
-		SchedulerLsmFunctionalGraph = propertyManagement.getSchedulerLsmFunctionalGraph();
-		
 	}
 
 	public OAMO(LSMSchema myOnt, LSMSchema ontInstance, String graph, LSMTripleStore lsmStore) {
-		
-		PropertyManagement propertyManagement = new PropertyManagement();
-		SchedulerLsmFunctionalGraph = propertyManagement.getSchedulerLsmFunctionalGraph();
-		
 		this.myOnt = myOnt;
 		this.ontInstance = ontInstance;
 		this.graph = graph;
@@ -174,9 +161,6 @@ public class OAMO {
 
 	public OAMO(String classIdvURL, LSMSchema myOnt, LSMSchema ontInstance, String graph,
 			LSMTripleStore lsmStore) {
-		
-		PropertyManagement propertyManagement = new PropertyManagement();
-		SchedulerLsmFunctionalGraph = propertyManagement.getSchedulerLsmFunctionalGraph();
 		
 		this.myOnt = myOnt;
 		this.ontInstance = ontInstance;

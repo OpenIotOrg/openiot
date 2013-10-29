@@ -40,9 +40,6 @@ import lsm.server.LSMTripleStore;
 
 public class WidgetPresentation {
 	
-	private static String SchedulerLsmFunctionalGraph="";
-	
-	
 	public static class Queries {
 		public static ArrayList<WidgetPresentation> parseService(TupleQueryResult qres) {
 			ArrayList<WidgetPresentation> widgetPreList = new ArrayList<WidgetPresentation>();
@@ -104,8 +101,6 @@ public class WidgetPresentation {
 			}
 		}
 
-		private static String graph = SchedulerLsmFunctionalGraph;
-
 		private static String getNamespaceDeclarations() {
 			StringBuilder declarations = new StringBuilder();
 			declarations.append("PREFIX : <" + "http://openiot.eu/ontology/ns/" + "> \n");
@@ -129,7 +124,7 @@ public class WidgetPresentation {
 			return declarations.toString();
 		}
 
-		public static String selectWidgetPreAll() {
+		public static String selectWidgetPreAll(String graph) {
 			StringBuilder update = new StringBuilder();
 			update.append(getNamespaceDeclarations());
 
@@ -145,7 +140,7 @@ public class WidgetPresentation {
 			return update.toString();
 		}
 
-		public static String selectWidgetPreByService(Service srvc) {
+		public static String selectWidgetPreByService(String graph,Service srvc) {
 			StringBuilder update = new StringBuilder();
 			update.append(getNamespaceDeclarations());
 
@@ -186,15 +181,9 @@ public class WidgetPresentation {
 	private ArrayList<WidgetAttributes> widgetAttrList = new ArrayList<WidgetAttributes>();
 
 	public WidgetPresentation() {
-		
-		PropertyManagement propertyManagement = new PropertyManagement();
-		SchedulerLsmFunctionalGraph = propertyManagement.getSchedulerLsmFunctionalGraph();
 	}
 
 	public WidgetPresentation(LSMSchema myOnt, LSMSchema ontInstance, String graph, LSMTripleStore lsmStore) {
-		
-		PropertyManagement propertyManagement = new PropertyManagement();
-		SchedulerLsmFunctionalGraph = propertyManagement.getSchedulerLsmFunctionalGraph();
 		
 		this.myOnt = myOnt;
 		this.ontInstance = ontInstance;
@@ -207,9 +196,6 @@ public class WidgetPresentation {
 	public WidgetPresentation(String classIdvURL, LSMSchema myOnt, LSMSchema ontInstance, String graph,
 			LSMTripleStore lsmStore)// ,String type)//Type type)
 	{
-		
-		PropertyManagement propertyManagement = new PropertyManagement();
-		SchedulerLsmFunctionalGraph = propertyManagement.getSchedulerLsmFunctionalGraph();
 		
 		this.myOnt = myOnt;
 		this.ontInstance = ontInstance;
