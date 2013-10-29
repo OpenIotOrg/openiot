@@ -35,6 +35,7 @@ import org.openiot.commons.osdspec.model.PresentationAttr;
 import org.openiot.commons.osdspec.model.RequestPresentation;
 import org.openiot.commons.osdspec.model.Widget;
 import org.openiot.commons.sparql.protocoltypes.model.QueryRequest;
+import org.openiot.commons.util.PropertyManagement;
 import org.openiot.scheduler.core.api.impl.GetService.GetServiceImpl;
 import org.openiot.scheduler.core.utils.sparql.SesameSPARQLClient;
 import org.openrdf.query.BindingSet;
@@ -52,14 +53,6 @@ import org.slf4j.LoggerFactory;
  
 
 public class GetApplicationImpl {
-	
-    private static final String PROPERTIES_FILE = "openiot.properties";
-	private static final String LSM_FUNCTIONAL_GRAPH = "scheduler.core.lsm.openiotFunctionalGraph";
-	private Properties props = null;
-	
-	private static String lsmFunctionalGraph = "";	
-	
-	
 	
 	private static class Queries {
 		public static class RootOAMOData {
@@ -493,153 +486,124 @@ public class GetApplicationImpl {
 			}
 		}
 
-		public static String getRootOAMOData(String oamoID) {
+		public static String getRootOAMOData(String lsmFunctionalGraph,String oamoID) {
 			StringBuilder update = new StringBuilder();
 
-			String str = ("SELECT ?oamoName ?userID ?oamoGraphMeta ?oamoDesc "// ?serviceID
-																				// "
-					+ "from <" + lsmFunctionalGraph + "> " + "WHERE " + "{" + "<"
-					+ oamoID
-					+ "> <http://openiot.eu/ontology/ns/oamoDescription> ?oamoDesc . " + "<"
-					+ oamoID
-					+ "> <http://openiot.eu/ontology/ns/oamoGraphMeta> ?oamoGraphMeta . "
+			String str = ("SELECT ?oamoName ?userID ?oamoGraphMeta ?oamoDesc "// ?serviceID																				// "
+					+ "from <" + lsmFunctionalGraph + "> " 
+					+ "WHERE " 
+					+ "{" 
+					+ "<"+ oamoID + "> <http://openiot.eu/ontology/ns/oamoDescription> ?oamoDesc . " 
+					+ "<"+ oamoID + "> <http://openiot.eu/ontology/ns/oamoGraphMeta> ?oamoGraphMeta . "
 					// +"<"+oamoID+"> <http://openiot.eu/ontology/ns/oamoService> ?serviceID . "
-					+ "<" + oamoID + "> <http://openiot.eu/ontology/ns/oamoUserOf> ?userID . " + "<"
-					+ oamoID
-					+ ">  <http://openiot.eu/ontology/ns/oamoName> ?oamoName . " + "}");
+					+ "<" + oamoID + "> <http://openiot.eu/ontology/ns/oamoUserOf> ?userID . " 
+					+ "<"+ oamoID + ">  <http://openiot.eu/ontology/ns/oamoName> ?oamoName . " 
+					+ "}");
 
 			update.append(str);
 			return update.toString();
 		}
 
-		public static String getOSMOListOfOAMO(String oamoID) {
+		public static String getOSMOListOfOAMO(String lsmFunctionalGraph,String oamoID) {
 			StringBuilder update = new StringBuilder();
 
 			String str = ("SELECT ?serviceID ?srvcName ?srvcDesc "
-					+ "from <"
-					+ lsmFunctionalGraph
-					+ "> "
+					+ "from <" + lsmFunctionalGraph + "> "
 					+ "WHERE "
 					+ "{"
-					+ " ?serviceID <http://openiot.eu/ontology/ns/oamo> <"
-					+ oamoID
-					+ "> . "
+					+ " ?serviceID <http://openiot.eu/ontology/ns/oamo> <" + oamoID + "> . "
 					+ " optional { ?serviceID <http://openiot.eu/ontology/ns/serviceName> ?srvcName . }"
-					+ " optional { ?serviceID <http://openiot.eu/ontology/ns/serviceDescription> ?srvcDesc . }" + "}");
+					+ " optional { ?serviceID <http://openiot.eu/ontology/ns/serviceDescription> ?srvcDesc . }" 
+					+ "}");
 
 			update.append(str);
 			return update.toString();
 		}
 
-		public static String getQueryListOfOSMO(String osmoID) {
+		public static String getQueryListOfOSMO(String lsmFunctionalGraph,String osmoID) {
 			StringBuilder update = new StringBuilder();
 
 			String str = ("SELECT ?queryID ?queryString" + "from <" + lsmFunctionalGraph + "> "
-					+ "WHERE " + "{" + "?queryID <http://openiot.eu/ontology/ns/queryString> ?queryString . "
-					+ "<" + osmoID + "> <http://openiot.eu/ontology/ns/query> ?queryID . " + "}");
+					+ "WHERE " 
+					+ "{" 
+					+ "?queryID <http://openiot.eu/ontology/ns/queryString> ?queryString . "
+					+ "<" + osmoID + "> <http://openiot.eu/ontology/ns/query> ?queryID . " 
+					+ "}");
 
 			update.append(str);
 			return update.toString();
 		}
 
-		public static String getServiceStatusOfOSMO(String osmoID) {
+		public static String getServiceStatusOfOSMO(String lsmFunctionalGraph,String osmoID) {
 			StringBuilder update = new StringBuilder();
 
-			String str = ("select ?srvcStatusID ?srvcStatus ?srvcStatusTime " + "from <"
-					+ lsmFunctionalGraph + "> " + "WHERE " + "{"
-
+			String str = ("select ?srvcStatusID ?srvcStatus ?srvcStatusTime " 
+					+ "from <" + lsmFunctionalGraph + "> " 
+					+ "WHERE " 
+					+ "{"
 					+ "?srvcStatusID rdf:type ?srvcStatus ."
 					+ "?srvcStatusID <http://openiot.eu/ontology/ns/serviceStatusTime> ?srvcStatusTime ."
-					+ "?srvcStatusID <http://openiot.eu/ontology/ns/serviceStatusOf> <" + osmoID + "> ." + "}");
+					+ "?srvcStatusID <http://openiot.eu/ontology/ns/serviceStatusOf> <" + osmoID + "> ." 
+					+ "}");
 
 			update.append(str);
 			return update.toString();
 		}
 
-		public static String getWidgetPreListByService(String srvcID) {
+		public static String getWidgetPreListByService(String lsmFunctionalGraph,String srvcID) {
 			StringBuilder update = new StringBuilder();
 
-			String str = ("SELECT ?widgetPreID ?widgetID ?widgetAttrID " + "from <" + lsmFunctionalGraph
-					+ "> " + "WHERE " + "{"
+			String str = ("SELECT ?widgetPreID ?widgetID ?widgetAttrID " 
+					+ "from <" + lsmFunctionalGraph	+ "> " 
+					+ "WHERE " 
+					+ "{"
 					+ "?widgetPreID <http://openiot.eu/ontology/ns/widgetAttribute> ?widgetAttrID . "
 					+ "?widgetPreID <http://openiot.eu/ontology/ns/widget> ?widgetID . "
 					+ "?widgetPreID <http://openiot.eu/ontology/ns/widgetPresOf> <" + srvcID + "> . "
-					+ "?widgetPreID rdf:type <http://openiot.eu/ontology/ns/WidgetPresentation> ." + "}");
+					+ "?widgetPreID rdf:type <http://openiot.eu/ontology/ns/WidgetPresentation> ." 
+					+ "}");
 
 			update.append(str);
 			return update.toString();
 		}
 
-		public static String getWidgetAttrByWidgetPre(String widgetPreID) {
+		public static String getWidgetAttrByWidgetPre(String lsmFunctionalGraph,String widgetPreID) {
 			StringBuilder update = new StringBuilder();
 
-			String str = ("SELECT ?widgetAttrID ?widgetAttrName ?widgetAttrDesc " + "from <"
-					+ lsmFunctionalGraph + "> " + "WHERE " + "{"
+			String str = ("SELECT ?widgetAttrID ?widgetAttrName ?widgetAttrDesc " 
+					+ "from <" + lsmFunctionalGraph + "> " 
+					+ "WHERE " 
+					+ "{"
 					+ "?widgetAttrID <http://openiot.eu/ontology/ns/widgeAttrDescription> ?widgetAttrDesc . "
 					+ "?widgetAttrID <http://openiot.eu/ontology/ns/widgetAttrName> ?widgetAttrName . "
-					+ "?widgetAttrID <http://openiot.eu/ontology/ns/widgetAttrOf> <" + widgetPreID + "> . " + "}");
+					+ "?widgetAttrID <http://openiot.eu/ontology/ns/widgetAttrOf> <" + widgetPreID + "> . "
+					+ "}");
 
 			update.append(str);
 			return update.toString();
 		}
-
 	}
 
 	// ///
 
 	final static Logger logger = LoggerFactory.getLogger(GetApplicationImpl.class);
-
+	
+	private String lsmFunctionalGraph = "";
+	//
 	private String oamoID;
 	private OAMO oamo;
 
 	// cosntructor
-	public GetApplicationImpl(String oamoID) {
-		
-		initializeProperties();
-		lsmFunctionalGraph = props.getProperty(LSM_FUNCTIONAL_GRAPH);
+	public GetApplicationImpl(String oamoID) 
+	{		
+		PropertyManagement propertyManagement = new PropertyManagement();		
+		lsmFunctionalGraph = propertyManagement.getSchedulerLsmFunctionalGraph();
 		
 		this.oamoID = oamoID;
 		logger.debug("Received Parameters: " + "oamoID=" + oamoID);
 		findApplication();
 	}
 	
-	
-	
-	/**
-	 * Initialize the Properties
-	 */
-	private void initializeProperties() {
-
-		String jbosServerConfigDir = System.getProperty("jboss.server.config.dir");
-		String openIotConfigFile = jbosServerConfigDir + File.separator + PROPERTIES_FILE;
-		props = new Properties();
-
-		logger.debug("jbosServerConfigDir:" + openIotConfigFile);
-
-		FileInputStream fis = null;
-
-		try {
-			fis = new FileInputStream(openIotConfigFile);
-
-		} catch (FileNotFoundException e) {
-			// TODO Handle exception
-
-			logger.error("Unable to find file: " + openIotConfigFile);
-
-		}
-
-		// loading properites from properties file
-		try {
-			props.load(fis);
-		} catch (IOException e) {
-			// TODO Handle exception
-			logger.error("Unable to load properties from file " + openIotConfigFile);
-		}
-
-	}
-	
-	
-
 	public OAMO getOAMO() {
 		return oamo;
 	}
@@ -655,7 +619,7 @@ public class GetApplicationImpl {
 
 		oamo = new OAMO();
 
-		TupleQueryResult qres = sparqlCl.sparqlToQResult(Queries.getRootOAMOData(oamoID));
+		TupleQueryResult qres = sparqlCl.sparqlToQResult(Queries.getRootOAMOData(lsmFunctionalGraph,oamoID));
 		Queries.RootOAMOData rootOAMODATA = Queries.parseOAMORootData(qres);
 
 		oamo.setName(rootOAMODATA.getOamoName());
@@ -663,7 +627,7 @@ public class GetApplicationImpl {
 		oamo.setDescription(rootOAMODATA.getOamoDesc());
 		oamo.setGraphMeta(rootOAMODATA.getOamoGraphMeta());
 
-		qres = sparqlCl.sparqlToQResult(Queries.getOSMOListOfOAMO(oamoID));
+		qres = sparqlCl.sparqlToQResult(Queries.getOSMOListOfOAMO(lsmFunctionalGraph,oamoID));
 		ArrayList<Queries.RootOsmoData> OSMODataList = Queries.parseOSMOListOfOAMO(qres);
 
 		for (Queries.RootOsmoData osmodata : OSMODataList) {

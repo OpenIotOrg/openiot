@@ -43,8 +43,6 @@ import lsm.server.LSMTripleStore;
 
 public class WidgetAvailable {
 	
-	private static String SchedulerLsmFunctionalGraph="";
-
 	public static class Queries {
 		public static ArrayList<WidgetAvailable> parseService(TupleQueryResult qres) {
 			ArrayList<WidgetAvailable> widgetList = new ArrayList<WidgetAvailable>();
@@ -94,8 +92,6 @@ public class WidgetAvailable {
 			}
 		}
 
-		private static String graph = SchedulerLsmFunctionalGraph;
-
 		private static String getNamespaceDeclarations() {
 			StringBuilder declarations = new StringBuilder();
 			declarations.append("PREFIX : <" + "http://openiot.eu/ontology/ns/" + "> \n");
@@ -119,7 +115,7 @@ public class WidgetAvailable {
 			return declarations.toString();
 		}
 
-		public static String selectWidgetAvailAll() {
+		public static String selectWidgetAvailAll(String graph) {
 			StringBuilder update = new StringBuilder();
 			update.append(getNamespaceDeclarations());
 
@@ -135,7 +131,7 @@ public class WidgetAvailable {
 			return update.toString();
 		}
 
-		public static String selectWidgetByName(String widgetName) {
+		public static String selectWidgetByName(String graph,String widgetName) {
 			StringBuilder update = new StringBuilder();
 			update.append(getNamespaceDeclarations());
 
@@ -147,7 +143,7 @@ public class WidgetAvailable {
 			return update.toString();
 		}
 
-		public static String selectWidgetByDescription(String desc) {
+		public static String selectWidgetByDescription(String graph,String desc) {
 			StringBuilder update = new StringBuilder();
 			update.append(getNamespaceDeclarations());
 
@@ -163,7 +159,7 @@ public class WidgetAvailable {
 			return update.toString();
 		}
 
-		public static String selectWidgetByLocation(String url) {
+		public static String selectWidgetByLocation(String graph,String url) {
 			StringBuilder update = new StringBuilder();
 			update.append(getNamespaceDeclarations());
 
@@ -215,20 +211,12 @@ public class WidgetAvailable {
 	private WidgetPresentation widgetPre;
 
 	public WidgetAvailable() {
-		
-		PropertyManagement propertyManagement = new PropertyManagement();
-		SchedulerLsmFunctionalGraph = propertyManagement.getSchedulerLsmFunctionalGraph();
-		
 	}
 
 	public WidgetAvailable(LSMSchema myOnt, LSMSchema ontInstance, String graph, LSMTripleStore lsmStore)// ,String
 																											// type)//Type
 																											// type)
 	{
-		
-		PropertyManagement propertyManagement = new PropertyManagement();
-		SchedulerLsmFunctionalGraph = propertyManagement.getSchedulerLsmFunctionalGraph();
-		
 		this.myOnt = myOnt;
 		this.ontInstance = ontInstance;
 		this.graph = graph;
@@ -242,10 +230,6 @@ public class WidgetAvailable {
 	public WidgetAvailable(String classIdvURL, LSMSchema myOnt, LSMSchema ontInstance, String graph,
 			LSMTripleStore lsmStore)// ,String type)//Type type)
 	{
-		
-		PropertyManagement propertyManagement = new PropertyManagement();
-		SchedulerLsmFunctionalGraph = propertyManagement.getSchedulerLsmFunctionalGraph();
-		
 		this.myOnt = myOnt;
 		this.ontInstance = ontInstance;
 		this.graph = graph;

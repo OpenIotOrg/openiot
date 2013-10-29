@@ -34,6 +34,7 @@ import org.openiot.commons.sensortypes.model.MeasurementCapability;
 import org.openiot.commons.sensortypes.model.SensorType;
 import org.openiot.commons.sensortypes.model.SensorTypes;
 import org.openiot.commons.sensortypes.model.Unit;
+import org.openiot.commons.util.PropertyManagement;
 import org.openiot.scheduler.core.api.impl.DiscoverSensors.SensorTypeMetaData;
 import org.openiot.scheduler.core.test.SensorTypesPopulation;
 import org.openiot.scheduler.core.utils.lsmpa.entities.Service;
@@ -57,16 +58,6 @@ import com.hp.hpl.jena.vocabulary.XSD;
  */
 
 public class DiscoverSensorsImpl {
-	
-	
-    private static final String PROPERTIES_FILE = "openiot.properties";
-	private static final String LSM_META_GRAPH = "scheduler.core.lsm.openiotMetaGraph";
-//	private static final String LSM_DATA_GRAPH = "scheduler.core.lsm.openiotDataGraph";
-	private Properties props = null;
-	
-	private static String lsmMetaGraph = "";
-//	private static String lsmDataGraph = "";
-	
 	
 	private static class Queries {
 
@@ -165,87 +156,79 @@ public class DiscoverSensorsImpl {
 			}
 		}
 
-		public static String getSensTypeInArea(double longitude, double latitude, float radius) {
+		public static String getSensTypeInArea(String lsmMetaGraph,double longitude, double latitude, float radius) {
 			StringBuilder update = new StringBuilder();
 
 			String str = ("select distinct(?sensLabelType) ?type " + "from <" + lsmMetaGraph + "> "
-					+ "WHERE " + "{"
-
+					+ "WHERE " 
+					+ "{"
 					+ "?type <http://www.w3.org/2000/01/rdf-schema#label> ?sensLabelType."
 					+ "?sensorId <http://lsm.deri.ie/ont/lsm.owl#hasSensorType> ?type."
 					+ "?sensorId <http://www.loa-cnr.it/ontologies/DUL.owl#hasLocation> ?p."
-
-					+ "?p geo:geometry ?geo." + "filter (<bif:st_intersects>(?geo,<bif:st_point>("
-					+ longitude + "," + latitude + ")," + radius + "))."
-
-			+ "}");
+					+ "?p geo:geometry ?geo." 
+					+ "filter (<bif:st_intersects>(?geo,<bif:st_point>("+ longitude + "," + latitude + ")," + radius + "))."
+					+ "}");
 
 			update.append(str);
 			return update.toString();
 		}
 
-		public static String getMeasumerementAndUnitOfSensorTypeInArea(double longitude, double latitude,
-				float radius, String sensorType) {
+		public static String getMeasumerementAndUnitOfSensorTypeInArea(String lsmMetaGraph,double longitude, double latitude,float radius, String sensorType) 
+		{
 			StringBuilder update = new StringBuilder();
 
-			String str = ("SELECT ?measurement ?unit  " + "WHERE " + "{"
-
-			+ "?prob <http://www.w3.org/2000/01/rdf-schema#label> ?measurement. "
+			String str = ("SELECT ?measurement ?unit  " 
+					+ "WHERE " 
+					+ "{"
+					+ "?prob <http://www.w3.org/2000/01/rdf-schema#label> ?measurement. "
 					+ "?prob <http://lsm.deri.ie/ont/lsm.owl#unit> ?unit."
 					+ "?prob <http://lsm.deri.ie/ont/lsm.owl#isObservedPropertyOf> ?obs."
 					+ "?obs <http://purl.oclc.org/NET/ssnx/ssn#observedBy> ?sensorId."
-
-					+ "{" + "select ?sensorId " + "from <" + lsmMetaGraph + "> " + "WHERE " + "{"
-
-					+ "?type <http://www.w3.org/2000/01/rdf-schema#label> '" + sensorType + "' ."
-					+ "?sensorId <http://lsm.deri.ie/ont/lsm.owl#hasSensorType> ?type. "
-
-					+ "FILTER EXISTS {?sensorId <http://www.loa-cnr.it/ontologies/DUL.owl#hasLocation> ?p. }"
-					+ "?p geo:geometry ?geo. " + "filter (<bif:st_intersects>(?geo,<bif:st_point>("
-					+ longitude + "," + latitude + ")," + radius + ")). " + "}" + "}"
-
-			+ "}group by (?measurement) ");
+		
+						+ "{" 
+						+ "select ?sensorId " + "from <" + lsmMetaGraph + "> " 
+						+ "WHERE " 
+							+ "{"
+							+ "?type <http://www.w3.org/2000/01/rdf-schema#label> '" + sensorType + "' ."
+							+ "?sensorId <http://lsm.deri.ie/ont/lsm.owl#hasSensorType> ?type. "
+							+ "FILTER EXISTS {?sensorId <http://www.loa-cnr.it/ontologies/DUL.owl#hasLocation> ?p. }"
+							+ "?p geo:geometry ?geo. " + "filter (<bif:st_intersects>(?geo,<bif:st_point>("+ longitude + "," + latitude + ")," + radius + ")). " 
+							+ "}" 
+						+ "}"
+							
+					+ "}group by (?measurement) ");
 
 			update.append(str);
 			return update.toString();
 		}
 
-		public static String getMeasumerementDataTypeOfSensorTypeInArea(double longitude, double latitude,
-				float radius, String sensorType, String measurement, String unit) {
+		public static String getMeasumerementDataTypeOfSensorTypeInArea(String lsmMetaGraph,double longitude, double latitude,
+				float radius, String sensorType, String measurement, String unit) 
+		{
 			StringBuilder update = new StringBuilder();
 
-			String str = ("SELECT ?value  " + "WHERE " + "{"
-
-			+ "?prob <http://lsm.deri.ie/ont/lsm.owl#value> ?value . "
-					+ "?prob <http://www.w3.org/2000/01/rdf-schema#label> '"
-					+ measurement
-					+ "' . "
-					+ "?prob <http://lsm.deri.ie/ont/lsm.owl#unit> '"
-					+ unit
-					+ "' ."
-
+			String str = ("SELECT ?value  " 
+					+ "WHERE " 
+					+ "{"
+					+ "?prob <http://lsm.deri.ie/ont/lsm.owl#value> ?value . "
+					+ "?prob <http://www.w3.org/2000/01/rdf-schema#label> '" + measurement + "' . "
+					+ "?prob <http://lsm.deri.ie/ont/lsm.owl#unit> '"+ unit	+ "' ."
 					+ "?prob <http://lsm.deri.ie/ont/lsm.owl#isObservedPropertyOf> ?obs."
 					+ "?obs <http://purl.oclc.org/NET/ssnx/ssn#observedBy> ?sensorId."
 
 					+ "{"
-					+ "select ?sensorId "
-					+ "from <"
-					+ lsmMetaGraph
-					+ "> "
-					+ "WHERE "
-					+ "{"
-
-					+ "?type <http://www.w3.org/2000/01/rdf-schema#label> '"
-					+ sensorType
-					+ "' ."
-					+ "?sensorId <http://lsm.deri.ie/ont/lsm.owl#hasSensorType> ?type. "
-
-					+ "FILTER EXISTS {?sensorId <http://www.loa-cnr.it/ontologies/DUL.owl#hasLocation> ?p. }"
-					+ "?p geo:geometry ?geo. "
-					+ "filter (<bif:st_intersects>(?geo,<bif:st_point>("
-					+ longitude + "," + latitude + ")," + radius + ")). " + "}" + "}"
-
-			+ "}limit 1 ");
+					+ "select ?sensorId " 
+					+ "from <" + lsmMetaGraph + "> "
+						+ "WHERE "
+						+ "{"
+						+ "?type <http://www.w3.org/2000/01/rdf-schema#label> '" + sensorType + "' ."
+						+ "?sensorId <http://lsm.deri.ie/ont/lsm.owl#hasSensorType> ?type. "
+						+ "FILTER EXISTS {?sensorId <http://www.loa-cnr.it/ontologies/DUL.owl#hasLocation> ?p. }"
+						+ "?p geo:geometry ?geo. "
+						+ "filter (<bif:st_intersects>(?geo,<bif:st_point>("+ longitude + "," + latitude + ")," + radius + ")). " 
+						+ "}" 
+					+ "}"
+					+ "}limit 1 ");
 
 			update.append(str);
 			return update.toString();
@@ -254,6 +237,8 @@ public class DiscoverSensorsImpl {
 
 	final static Logger logger = LoggerFactory.getLogger(DiscoverSensorsImpl.class);
 
+	private String lsmMetaGraph = "";
+	//
 	private String userID;
 	private double longitude;
 	private double latitude;
@@ -263,9 +248,8 @@ public class DiscoverSensorsImpl {
 
 	public DiscoverSensorsImpl(String userID, double longitude, double latitude, float radius) {
 		
-		initializeProperties();
-		lsmMetaGraph = props.getProperty(LSM_META_GRAPH);
-//		lsmDataGraph = props.getProperty(LSM_DATA_GRAPH);
+		PropertyManagement propertyManagement = new PropertyManagement();		
+		lsmMetaGraph = propertyManagement.getSchedulerLsmMetaGraph();
 
 		this.userID = userID;
 		this.longitude = longitude;
@@ -278,38 +262,6 @@ public class DiscoverSensorsImpl {
 		discoversensors();
 	}
 	
-	/**
-	 * Initialize the Properties
-	 */
-	private void initializeProperties() {
-
-		String jbosServerConfigDir = System.getProperty("jboss.server.config.dir");
-		String openIotConfigFile = jbosServerConfigDir + File.separator + PROPERTIES_FILE;
-		props = new Properties();
-
-		logger.debug("jbosServerConfigDir:" + openIotConfigFile);
-
-		FileInputStream fis = null;
-
-		try {
-			fis = new FileInputStream(openIotConfigFile);
-
-		} catch (FileNotFoundException e) {
-			// TODO Handle exception
-
-			logger.error("Unable to find file: " + openIotConfigFile);
-
-		}
-
-		// loading properites from properties file
-		try {
-			props.load(fis);
-		} catch (IOException e) {
-			// TODO Handle exception
-			logger.error("Unable to load properties from file " + openIotConfigFile);
-		}
-
-	}
 
 	/**
 	 * @return Returns the SensorTypes, within the given area defined by the
@@ -331,8 +283,7 @@ public class DiscoverSensorsImpl {
 			return;
 		}
 
-		TupleQueryResult qres = sparqlCl.sparqlToQResult(Queries.getSensTypeInArea(longitude, latitude,
-				radius));
+		TupleQueryResult qres = sparqlCl.sparqlToQResult(Queries.getSensTypeInArea(lsmMetaGraph,longitude, latitude,radius));
 		List<SensorTypeData> sensorTypesList = Queries.parseSensorTypeInArea(qres);
 
 		for (int i = 0; i < sensorTypesList.size(); i++) {
@@ -340,8 +291,7 @@ public class DiscoverSensorsImpl {
 			sensorType.setId(sensorTypesList.get(i).getID());
 			sensorType.setName(sensorTypesList.get(i).getLabel());
 
-			qres = sparqlCl.sparqlToQResult(Queries.getMeasumerementAndUnitOfSensorTypeInArea(longitude,
-					latitude, radius, sensorTypesList.get(i).getLabel()));
+			qres = sparqlCl.sparqlToQResult(Queries.getMeasumerementAndUnitOfSensorTypeInArea(lsmMetaGraph,longitude,latitude, radius, sensorTypesList.get(i).getLabel()));
 			List<SensorTypeMetaData> sensorTypeMetaDataList = Queries.parseSensorMetaData(qres);
 
 			for (int j = 0; j < sensorTypeMetaDataList.size(); j++) {
@@ -351,8 +301,8 @@ public class DiscoverSensorsImpl {
 				Unit unit = new Unit();
 				unit.setName(sensorTypeMetaDataList.get(j).getUnit());
 
-				qres = sparqlCl.sparqlToQResult(Queries.getMeasumerementDataTypeOfSensorTypeInArea(longitude,
-						latitude, radius, sensorTypesList.get(i).getLabel(), mc.getType(), unit.getName()));
+				qres = sparqlCl.sparqlToQResult(Queries.getMeasumerementDataTypeOfSensorTypeInArea(lsmMetaGraph,longitude,latitude, radius,
+						sensorTypesList.get(i).getLabel(), mc.getType(), unit.getName()));
 				String dataType = Queries.parseSensorTypeMeasurementDataType(qres);
 
 				unit.setType(dataType);

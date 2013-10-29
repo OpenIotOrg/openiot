@@ -36,6 +36,7 @@ import org.openiot.commons.osdspec.model.OSMO;
 import org.openiot.commons.osdspec.model.PresentationAttr;
 import org.openiot.commons.osdspec.model.Widget;
 import org.openiot.commons.sparql.protocoltypes.model.QueryRequest;
+import org.openiot.commons.util.PropertyManagement;
 import org.openiot.scheduler.core.utils.lsmpa.entities.Query;
 import org.openiot.scheduler.core.utils.lsmpa.entities.Service;
 import org.openiot.scheduler.core.utils.lsmpa.entities.WidgetAttributes;
@@ -56,18 +57,12 @@ import com.hp.hpl.jena.ontology.OntModelSpec;
  */
 public class RegisterServiceImpl {
 
-	private static final String PROPERTIES_FILE = "openiot.properties";
-	private static final String LSM_FUNCTIONAL_GRAPH = "scheduler.core.lsm.openiotFunctionalGraph";
-	private static final String LSM_USER_NAME = "scheduler.core.lsm.access.username";
-	private static final String LSM_PASSWORD = "scheduler.core.lsm.access.password";
-	private Properties props = null;
-
-	private static String lsmFunctionalGraph = "";
-	private static String lsmUserName = "";
-	private static String lsmPassword = "";
-
 	final static Logger logger = LoggerFactory.getLogger(RegisterServiceImpl.class);
 
+	private String lsmFunctionalGraph;
+	private String lsmUserName;
+	private String lsmPassword;
+	//
 	private OSDSpec osdSpec;
 
 	private String replyMessage = "";
@@ -75,11 +70,11 @@ public class RegisterServiceImpl {
 	// constructor
 	public RegisterServiceImpl(OSDSpec osdSpec) {
 
-		initializeProperties();
-		lsmFunctionalGraph = props.getProperty(LSM_FUNCTIONAL_GRAPH);
-		lsmUserName = props.getProperty(LSM_USER_NAME);
-		lsmPassword = props.getProperty(LSM_PASSWORD);
-
+		PropertyManagement propertyManagement = new PropertyManagement();
+		lsmFunctionalGraph = propertyManagement.getSchedulerLsmFunctionalGraph();
+		lsmUserName = propertyManagement.getSchedulerLsmUserName();
+		lsmPassword = propertyManagement.getSchedulerLsmPassword();
+				
 		this.osdSpec = osdSpec;
 
 		logger.debug("Recieved OSDSpec from User with userID: " + osdSpec.getUserID());
@@ -87,38 +82,6 @@ public class RegisterServiceImpl {
 		registerService();
 	}
 
-	/**
-	 * Initialize the Properties
-	 */
-	private void initializeProperties() {
-
-		String jbosServerConfigDir = System.getProperty("jboss.server.config.dir");
-		String openIotConfigFile = jbosServerConfigDir + File.separator + PROPERTIES_FILE;
-		props = new Properties();
-
-		logger.debug("jbosServerConfigDir:" + openIotConfigFile);
-
-		FileInputStream fis = null;
-
-		try {
-			fis = new FileInputStream(openIotConfigFile);
-
-		} catch (FileNotFoundException e) {
-			// TODO Handle exception
-
-			logger.error("Unable to find file: " + openIotConfigFile);
-
-		}
-
-		// loading properites from properties file
-		try {
-			props.load(fis);
-		} catch (IOException e) {
-			// TODO Handle exception
-			logger.error("Unable to load properties from file " + openIotConfigFile);
-		}
-
-	}
 
 	/**
 	 * @return String
@@ -197,8 +160,7 @@ public class RegisterServiceImpl {
 				srvcEnt.createPqString();
 
 				for (Widget widget : osmo.getRequestPresentation().getWidget()) {
-					WidgetPresentation widgetPre = new WidgetPresentation(myOnt, myOntInstance,
-							lsmFunctionalGraph, lsmStore);
+					WidgetPresentation widgetPre = new WidgetPresentation(myOnt, myOntInstance,	lsmFunctionalGraph, lsmStore);
 					widgetPre.setService(srvcEnt);
 					//
 					widgetPre.createClassIdv();
@@ -208,8 +170,7 @@ public class RegisterServiceImpl {
 					srvcEnt.createPwidgetPres();
 
 					logger.debug("widget available id: {}", widget.getWidgetID());
-					WidgetAvailable wAvail = new WidgetAvailable(myOnt, myOntInstance, lsmFunctionalGraph,
-							lsmStore);
+					WidgetAvailable wAvail = new WidgetAvailable(myOnt, myOntInstance, lsmFunctionalGraph,lsmStore);
 					wAvail.setId(widget.getWidgetID());
 					wAvail.setWidgetPre(widgetPre);
 					// /
@@ -222,8 +183,7 @@ public class RegisterServiceImpl {
 					for (PresentationAttr pAttr : widget.getPresentationAttr()) {
 						logger.debug("pAttr id: {} --- name: {}", pAttr.getName(), pAttr.getValue());
 
-						WidgetAttributes wAttr = new WidgetAttributes(myOnt, myOntInstance,
-								lsmFunctionalGraph, lsmStore);
+						WidgetAttributes wAttr = new WidgetAttributes(myOnt, myOntInstance,lsmFunctionalGraph, lsmStore);
 						wAttr.setDescription(pAttr.getValue());
 						wAttr.setName(pAttr.getName());
 						wAttr.setWidgetPre(widgetPre);
@@ -262,5 +222,4 @@ public class RegisterServiceImpl {
 
 		logger.debug(replyMessage);
 	}
-
 }

@@ -41,11 +41,7 @@ import org.slf4j.LoggerFactory;
 
 public class GetAvailableServiceIDsImpl {
 	
-	
-	private static String openiotFunctionalGraph = "";
-	
 	private static class Queries {
-
 
 		public static DescreptiveIDs parseAvailableOSMOIDsByOAMO(TupleQueryResult qres) {
 			DescreptiveIDs dids = new DescreptiveIDs();
@@ -86,27 +82,24 @@ public class GetAvailableServiceIDsImpl {
 			}
 		}
 
-		public static String getAvailableOSMOIDsByOAMO(String oamoID) {
+		public static String getAvailableOSMOIDsByOAMO(String openiotFunctionalGraph,String oamoID) {
 			StringBuilder update = new StringBuilder();
 
 			String str = ("SELECT ?serviceID ?srvcName ?srvcDesc "
-					+ "from <"
-					+ openiotFunctionalGraph
-					+ "> "
+					+ "from <" 	+ openiotFunctionalGraph + "> "
 					+ "WHERE "
 					+ "{"
-					+ "{"
-					+ "SELECT ?serviceID "
-					+ "WHERE "
-					+ "{"
-					+ "?serviceID <http://openiot.eu/ontology/ns/oamo> <"
-					+ oamoID
-					+ "> . "
-					+ "}"
-					+ "}"
-
+						+ "{"
+						+ "SELECT ?serviceID "
+						+ "WHERE "
+						+ "{"
+						+ "?serviceID <http://openiot.eu/ontology/ns/oamo> <" + oamoID+ "> . "
+						+ "}"					
+						+ "}"
+						
 					+ "optional { ?serviceID <http://openiot.eu/ontology/ns/serviceName> ?srvcName  . }"
-					+ "optional { ?serviceID <http://openiot.eu/ontology/ns/serviceDescription> ?srvcDesc  . }" + "}");
+					+ "optional { ?serviceID <http://openiot.eu/ontology/ns/serviceDescription> ?srvcDesc  . }" 
+					+ "}");
 
 			update.append(str);
 			return update.toString();
@@ -116,16 +109,16 @@ public class GetAvailableServiceIDsImpl {
 	// ///
 	final static Logger logger = LoggerFactory.getLogger(GetAvailableServiceIDsImpl.class);
 
+	private String openiotFunctionalGraph;
+	//
 	private String applicationID;
 	private DescreptiveIDs descriptiveIDs;
 
 	// constructor
 	public GetAvailableServiceIDsImpl(String applicationID) {
 		
-		PropertyManagement propertyManagement = new PropertyManagement();
-		
+		PropertyManagement propertyManagement = new PropertyManagement();		
 		openiotFunctionalGraph = propertyManagement.getSchedulerLsmFunctionalGraph();
-		
 		
 		this.applicationID = applicationID;
 		logger.debug("Received Parameters: " + "applicationID=" + applicationID);
@@ -145,9 +138,7 @@ public class GetAvailableServiceIDsImpl {
 			return;
 		}
 
-		TupleQueryResult qres = sparqlCl.sparqlToQResult(Queries.getAvailableOSMOIDsByOAMO(applicationID));
+		TupleQueryResult qres = sparqlCl.sparqlToQResult(Queries.getAvailableOSMOIDsByOAMO(openiotFunctionalGraph,applicationID));
 		descriptiveIDs = Queries.parseAvailableOSMOIDsByOAMO(qres);
-
 	}
-
 }
