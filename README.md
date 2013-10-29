@@ -1,11 +1,7 @@
 # OpenIoT - The Open Source Internet of Things
 
 
-<p align="center">
-[<img src="http://cultzine.files.wordpress.com/2012/10/under-constructions.gif" width="250">](images/openiotlogo_centre.jpg)
-
-
-The OpenIoT project is preparing it's core platform for open source develoment here. It will be announced here when the first version of the OpenIoT core platform is available. If you wish to be notified at that time, please send an email to info@openiot.eu.
+email to info@openiot.eu.
 
 Read more at http://www.openiot.eu
 
@@ -23,6 +19,7 @@ OpenIoT is pertinent to a wide range of interrelated scientific and technologica
 
 ### Links:
 
+* [Contact OpenIoT](mailto:info@openiot.eu)
 * [Wiki](https://github.com/OpenIotOrg/openiot/wiki)
 * [Documentation](https://github.com/OpenIotOrg/openiot/wiki/Documentation)
 * [Downloads](https://github.com/OpenIotOrg/openiot/wiki/Downloads)
