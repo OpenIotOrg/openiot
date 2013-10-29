@@ -59,7 +59,6 @@ import org.xml.sax.InputSource;
 public class PollForReportImpl 
 {	
 	
-	private static String openiotFunctionalGraph = "";
 	private static class Queries
 	{
 		public static class QueryData
@@ -124,8 +123,6 @@ public class PollForReportImpl
 				this.widgetAttrDesc = widgetAttrDesc;
 			}
 		}
-				
-
 				
 		public static ArrayList<QueryData> parseOSMOQueryData(TupleQueryResult qres)
 		{
@@ -230,7 +227,7 @@ public class PollForReportImpl
 		}
 		
 		
-		public static String getQueryListOfOSMO(String osmoID)
+		public static String getQueryListOfOSMO(String openiotFunctionalGraph,String osmoID)
 		{
 			StringBuilder update = new StringBuilder();			
 			
@@ -245,7 +242,7 @@ public class PollForReportImpl
 			update.append(str);
 			return update.toString();
 		}
-		public static String getWPresentationFromOSMO(String serviceID)
+		public static String getWPresentationFromOSMO(String openiotFunctionalGraph,String serviceID)
 		{
 			StringBuilder update = new StringBuilder();	        
 			
@@ -255,7 +252,6 @@ public class PollForReportImpl
 					+"{"
 					+"?widgetAttrID <http://openiot.eu/ontology/ns/widgeAttrDescription> ?widgetAttrDesc . "
 					+"?widgetAttrID <http://openiot.eu/ontology/ns/widgetAttrName> ?widgetAttrName . "
-					
 					+"?widgetPreID <http://openiot.eu/ontology/ns/widgetAttribute> ?widgetAttrID . "
 					+"?widgetPreID <http://openiot.eu/ontology/ns/widget> ?widgetID . "
 					+"?widgetPreID <http://openiot.eu/ontology/ns/widgetPresOf> <"+serviceID+"> ."
@@ -268,13 +264,14 @@ public class PollForReportImpl
 	
 	final static Logger logger = LoggerFactory.getLogger(PollForReportImpl.class);
 	
+	private String openiotFunctionalGraph;
+	//
 	private String serviceID;
 	private SdumServiceResultSet sdumServiceResultSet=null;
 	
 	//cosntructor
 	public PollForReportImpl(String serviceID) 
 	{		
-		
 		PropertyManagement propertyManagement = new PropertyManagement();
 		openiotFunctionalGraph = propertyManagement.getSdumLsmFunctionalGraph();
 		
@@ -304,7 +301,7 @@ public class PollForReportImpl
 			return;
 		}
 		
-		TupleQueryResult qres = sparqlCl.sparqlToQResult(Queries.getQueryListOfOSMO(serviceID));
+		TupleQueryResult qres = sparqlCl.sparqlToQResult(Queries.getQueryListOfOSMO(openiotFunctionalGraph,serviceID));
 		ArrayList<Queries.QueryData> queryDataList = Queries.parseOSMOQueryData(qres);
 		
 		SdumServiceResultSet sdumServiceResultSet = new SdumServiceResultSet();
@@ -371,7 +368,7 @@ public class PollForReportImpl
 		
 		///////////////////////////////////
 		
-		TupleQueryResult qres3 = sparqlCl.sparqlToQResult(Queries.getWPresentationFromOSMO(this.serviceID));				
+		TupleQueryResult qres3 = sparqlCl.sparqlToQResult(Queries.getWPresentationFromOSMO(openiotFunctionalGraph,this.serviceID));				
 		ArrayList<Queries.ServicePresentationData> srvcPreDatas = Queries.parseWPresentationFromService(qres3);
 		
 		ArrayList<String> distinctWidgetP = new ArrayList<String>();
