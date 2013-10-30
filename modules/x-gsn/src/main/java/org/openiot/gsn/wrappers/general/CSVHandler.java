@@ -157,14 +157,14 @@ public class CSVHandler {
         return toReturn;
     }
 
-    public ArrayList<TreeMap<String, Serializable>> work(Reader dataFile, String checkpointDir) throws IOException {
+    public ArrayList<TreeMap<String, Serializable>> work(Reader dataFile, String checkpointDir, int samplingCountPerPeriod) throws IOException {
         ArrayList<TreeMap<String, Serializable>> items = null;
         setupCheckPointFileIfNeeded();
         String val = FileUtils.readFileToString(new File(checkPointFile), "UTF-8");
         long lastItem = 0;
         if (val != null && val.trim().length() > 0)
             lastItem = Long.parseLong(val.trim());
-        items = parseValues(dataFile, lastItem);
+        items = parseValues(dataFile, lastItem, samplingCountPerPeriod);
 
         return items;
     }
@@ -175,18 +175,21 @@ public class CSVHandler {
 
     private boolean loggedNoChange = false; // to avoid duplicate logging messages when there is no change
 
-    public ArrayList<TreeMap<String, Serializable>> parseValues(Reader datainput, long previousCheckPoint) throws IOException {
+    public ArrayList<TreeMap<String, Serializable>> parseValues(Reader datainput, long previousCheckPoint, int samplingCountPerPeriod) throws IOException {
         ArrayList<TreeMap<String, Serializable>> toReturn = new ArrayList<TreeMap<String, Serializable>>();
         CSVReader reader = new CSVReader(datainput, getSeparator(), getStringSeparator(), getSkipFirstXLines());
-        String[] values = null;
+        String[] values;
         long currentLine = 0;
+		Serializable currentTimeStamp=null;
+		boolean quit = false;
         while ((values = reader.readNext()) != null) {
             TreeMap<String, Serializable> se = convertTo(formats, fields, getNulls(), values, getSeparator());
             if (isEmpty(se))
                 continue;
             if (se.containsKey(TIMESTAMP)) {
-                if (((Long) se.get(TIMESTAMP)) <= previousCheckPoint)
+                if (((Long) se.get(TIMESTAMP)) <= previousCheckPoint) {
                     continue;
+				}
             } else {// assuming useCounterForCheckPoint = true
 
                 if (logger.isDebugEnabled()) {
@@ -199,15 +202,34 @@ public class CSVHandler {
                     currentLine++;
                     continue;
                 }
-
+            }
+			if (quit) {
+				if (se.containsKey(TIMESTAMP)) {
+					if (currentTimeStamp == null || !currentTimeStamp.equals(se.get(TIMESTAMP))) {
+						break;
+					}
+				} else {
+					break;
+				}
             }
             toReturn.add(se);
             currentLine++;
             loggedNoChange = false;
-            if (toReturn.size() > 250)
-                break; // Move outside the loop as in each call we only read 250 values;
+            if (toReturn.size() >= samplingCountPerPeriod) {
+				// Move outside the loop as in each call we only read 250 values;
+				// But if we use timeStampMode, still check the next value, since
+				// if the timestamp is the same we have to return it, or data
+				// would be lost.
+				logger.trace("Time to quit.");
+                quit=true;
+				if (se.containsKey(TIMESTAMP)) {
+					currentTimeStamp = se.get(TIMESTAMP);
+				} else {
+					break;
         }
-        if (logger.isDebugEnabled() && toReturn.size() == 0 && loggedNoChange == false) {
+			}
+        }
+        if (logger.isDebugEnabled() && toReturn.isEmpty() && loggedNoChange == false) {
             logger.debug("There is no new item after most recent checkpoint(previousCheckPoint:" + new DateTime(previousCheckPoint) + ").");
             loggedNoChange = true;
         }
