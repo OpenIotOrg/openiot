@@ -261,12 +261,12 @@ public class GetApplicationImpl {
 						String str = (b.getValue((String) n) == null) ? null : b.getValue((String) n)
 								.stringValue();
 						rootOAMOData.setOamoName(str);
-						System.out.print("oamoName: " + rootOAMOData.getOamoName());
+						logger.debug("oamoName: " + rootOAMOData.getOamoName());
 					} else if (((String) n).equalsIgnoreCase("userID")) {
 						String str = (b.getValue((String) n) == null) ? null : b.getValue((String) n)
 								.stringValue();
 						rootOAMOData.setUserID(str);
-						System.out.print("userID: " + rootOAMOData.getUserID());
+						logger.debug("userID: " + rootOAMOData.getUserID());
 					}
 					// else if(((String) n).equalsIgnoreCase("serviceID"))
 					// {
@@ -279,12 +279,12 @@ public class GetApplicationImpl {
 						String str = (b.getValue((String) n) == null) ? null : b.getValue((String) n)
 								.stringValue();
 						rootOAMOData.setOamoDesc(str);
-						System.out.println("oamoDesc : " + rootOAMOData.getOamoDesc() + " ");
+						logger.debug("oamoDesc : " + rootOAMOData.getOamoDesc() + " ");
 					} else if (((String) n).equalsIgnoreCase("oamoGraphMeta")) {
 						String str = (b.getValue((String) n) == null) ? null : b.getValue((String) n)
 								.stringValue();
 						rootOAMOData.setOamoGraphMeta(str);
-						System.out.println("oamoGraphMeta : " + rootOAMOData.getOamoGraphMeta() + " ");
+						logger.debug("oamoGraphMeta : " + rootOAMOData.getOamoGraphMeta() + " ");
 					}
 				}
 				// }//while
@@ -313,17 +313,17 @@ public class GetApplicationImpl {
 							String str = (b.getValue((String) n) == null) ? null : b.getValue((String) n)
 									.stringValue();
 							osmoData.setId(str);
-							System.out.print("serviceID: " + osmoData.getId() + " ");
+							logger.debug("serviceID: " + osmoData.getId() + " ");
 						} else if (((String) n).equalsIgnoreCase("srvcName")) {
 							String str = (b.getValue((String) n) == null) ? null : b.getValue((String) n)
 									.stringValue();
 							osmoData.setName(str);
-							System.out.print("srvcName : " + osmoData.getName() + " ");
+							logger.debug("srvcName : " + osmoData.getName() + " ");
 						} else if (((String) n).equalsIgnoreCase("srvcDesc")) {
 							String str = (b.getValue((String) n) == null) ? null : b.getValue((String) n)
 									.stringValue();
 							osmoData.setDesc(str);
-							System.out.print("srvcDesc : " + osmoData.getDesc() + " ");
+							logger.debug("srvcDesc : " + osmoData.getDesc() + " ");
 						}
 					}
 					osmoDataList.add(osmoData);
