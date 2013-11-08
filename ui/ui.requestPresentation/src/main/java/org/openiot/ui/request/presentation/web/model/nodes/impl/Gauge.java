@@ -1,10 +1,27 @@
+/**
+ *    Copyright (c) 2011-2014, OpenIoT
+ *   
+ *    This file is part of OpenIoT.
+ *
+ *    OpenIoT is free software: you can redistribute it and/or modify
+ *    it under the terms of the GNU Lesser General Public License as published by
+ *    the Free Software Foundation, version 3 of the License.
+ *
+ *    OpenIoT is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *    GNU Lesser General Public License for more details.
+ *
+ *    You should have received a copy of the GNU Lesser General Public License
+ *    along with OpenIoT.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *     Contact: OpenIoT mailto: info@openiot.eu
+ */
 package org.openiot.ui.request.presentation.web.model.nodes.impl;
 
 import java.util.List;
 
 import javax.faces.application.Application;
-import javax.faces.component.UIComponent;
-import javax.faces.component.html.HtmlCommandLink;
 import javax.faces.component.html.HtmlOutputText;
 import javax.faces.context.FacesContext;
 import javax.faces.event.AbortProcessingException;
@@ -13,6 +30,7 @@ import javax.faces.event.ActionListener;
 
 import org.openiot.commons.osdspec.model.PresentationAttr;
 import org.openiot.commons.sdum.serviceresultset.model.SdumServiceResultSet;
+import org.openiot.commons.sparql.protocoltypes.model.QueryResult;
 import org.openiot.commons.sparql.result.model.Binding;
 import org.openiot.commons.sparql.result.model.Result;
 import org.openiot.ui.request.presentation.web.model.nodes.interfaces.VisualizationWidget;
@@ -34,7 +52,7 @@ public class Gauge implements VisualizationWidget {
 	private Number max;
 
 	@Override
-	public UIComponent createWidget(List<PresentationAttr> presentationAttributes) {
+	public Panel createWidget(String serviceId, List<PresentationAttr> presentationAttributes) {
 		FacesContext fc = FacesContext.getCurrentInstance();
 		Application application = fc.getApplication();
 
@@ -52,10 +70,10 @@ public class Gauge implements VisualizationWidget {
 		// Instanciate a panel to host the widget
 		panel = (Panel) application.createComponent(fc, "org.primefaces.component.Panel", "org.primefaces.component.PanelRenderer");
 		panel.setId("widget_panel_" + System.nanoTime());
-		panel.setHeader(title);
+		panel.setHeader(title != null ? title : "");
 		panel.setClosable(false);
 		panel.setToggleable(false);
-		panel.setStyleClass("widget");
+		panel.setStyleClass("widget service_" + serviceId);
 		panel.getChildren().add(widget);
 
 		// Generate clear data link
@@ -96,29 +114,31 @@ public class Gauge implements VisualizationWidget {
 	public void processData(SdumServiceResultSet resultSet) {
 		boolean triggerUpdate = false;
 
-		for (Result result : resultSet.getQueryResult().getSparql().getResults().getResult()) {
-			// Parse data
-			Double value = null;
+		for (QueryResult resultBlock : resultSet.getQueryResult()) {
+			for (Result result : resultBlock.getSparql().getResults().getResult()) {
+				// Parse data
+				Double value = null;
 
-			for (Binding binding : result.getBinding()) {
-				if ("VALUE".equals(binding.getName())) {
-					value = Double.valueOf(binding.getLiteral().getContent());
+				for (Binding binding : result.getBinding()) {
+					if ("VALUE".equals(binding.getName())) {
+						value = Double.valueOf(binding.getLiteral().getContent());
+					}
+				}
+
+				// Update series
+				if (value != null) {
+					model.setValue(value);
+					triggerUpdate = true;
 				}
 			}
 
-			// Update series
-			if (value != null) {
-				model.setValue(value);
-				triggerUpdate = true;
-			}
-		}
-
-		if (triggerUpdate) {
-			widget.setRendered(true);
-			emptyMessage.setRendered(false);
-			RequestContext requestContext = RequestContext.getCurrentInstance();
-			if (requestContext != null) {
-				requestContext.update(panel.getClientId());
+			if (triggerUpdate) {
+				widget.setRendered(true);
+				emptyMessage.setRendered(false);
+				RequestContext requestContext = RequestContext.getCurrentInstance();
+				if (requestContext != null) {
+					requestContext.update(panel.getClientId());
+				}
 			}
 		}
 	}

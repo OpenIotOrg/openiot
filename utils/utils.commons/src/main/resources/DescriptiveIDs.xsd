@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- 
+     Copyright (c) 2011-2014, OpenIoT
+     
+     This file is part of OpenIoT.
+ 
+     OpenIoT is free software: you can redistribute it and/or modify
+     it under the terms of the GNU Lesser General Public License as published by
+     the Free Software Foundation, version 3 of the License.
+
+     OpenIoT is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU Lesser General Public License for more details.
+ 
+     You should have received a copy of the GNU Lesser General Public License
+     along with OpenIoT.  If not, see <http://www.gnu.org/licenses/>.
+ 
+      Contact: OpenIoT mailto: info@openiot.eu
+/ -->
+
+<!-- Author: Nikos Kefalakis (nkef@ait.edu.gr) -->
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  elementFormDefault="qualified">
+  
+  <xs:element name="DescreptiveIDs">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="DescriptiveID" maxOccurs="unbounded" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  
+  <xs:element name="DescriptiveID">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" maxOccurs="1" name="description"
+          type="xs:string" />
+        <xs:element minOccurs="0" maxOccurs="1" name="name"
+          type="xs:NCName" />
+      </xs:sequence>
+      <xs:attribute name="id" type="xs:anyURI" />
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

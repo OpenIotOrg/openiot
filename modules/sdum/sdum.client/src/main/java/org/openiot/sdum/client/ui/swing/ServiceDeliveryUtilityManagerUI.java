@@ -1,5 +1,25 @@
 package org.openiot.sdum.client.ui.swing;
 
+/**
+ *    Copyright (c) 2011-2014, OpenIoT
+ *    
+ *    This file is part of OpenIoT.
+ *
+ *    OpenIoT is free software: you can redistribute it and/or modify
+ *    it under the terms of the GNU Lesser General Public License as published by
+ *    the Free Software Foundation, version 3 of the License.
+ *
+ *    OpenIoT is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *    GNU Lesser General Public License for more details.
+ *
+ *    You should have received a copy of the GNU Lesser General Public License
+ *    along with OpenIoT.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *     Contact: OpenIoT mailto: info@openiot.eu
+ */
+
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
@@ -20,53 +40,29 @@ import javax.swing.JLabel;
 
 
 /**
- * @author Stavros Petris (spet) e-mail: spet@ait.edu.gr
  * @author Nikos Kefalakis (nkef) e-mail: nkef@ait.edu.gr 
+ * @author Stavros Petris (spet) e-mail: spet@ait.edu.gr
  */
 public class ServiceDeliveryUtilityManagerUI {
 
 	private JFrame frmSdumClient;
 	
-	private static ServiceDeliveryUtilityManagerClient serviceDeliveryUtilityManagerClient;
+	private static ServiceDeliveryUtilityManagerClient sdumClient;
 	private JTextField textFieldServiceID;
 	
-
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
+	
+	public ServiceDeliveryUtilityManagerUI() 
+	{
+		sdumClient = new ServiceDeliveryUtilityManagerClient("http://localhost:8080/sdum.core");
 		
-		serviceDeliveryUtilityManagerClient = new ServiceDeliveryUtilityManagerClient("http://localhost:8080/sdum.core");
-		
-		
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					
-					// Set System L&F
-					UIManager.setLookAndFeel(
-				            UIManager.getSystemLookAndFeelClassName());
-					
-					ServiceDeliveryUtilityManagerUI window = new ServiceDeliveryUtilityManagerUI();
-					window.frmSdumClient.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
-
-	/**
-	 * Create the application.
-	 */
-	public ServiceDeliveryUtilityManagerUI() {
 		initialize();
 	}
 
 	/**
 	 * Initialize the contents of the frame.
 	 */
-	private void initialize() {
+	private void initialize() 
+	{
 		frmSdumClient = new JFrame();
 		frmSdumClient.setTitle("SD&UM Client");
 		frmSdumClient.setBounds(100, 100, 450, 152);
@@ -133,20 +129,37 @@ public class ServiceDeliveryUtilityManagerUI {
 		panel_1.setLayout(gl_panel_1);
 		btnWelcome.addActionListener(new BtnWelcomeActionListener());
 	}
-	private class BtnWelcomeActionListener implements ActionListener {
-		public void actionPerformed(ActionEvent e) {
-			
-			serviceDeliveryUtilityManagerClient.welcomeMessage();
-			
-			
+	private class BtnWelcomeActionListener implements ActionListener 
+	{
+		public void actionPerformed(ActionEvent e) 
+		{			
+			sdumClient.welcomeMessage();
 		}
 	}
-	private class BtnPollForReportActionListener implements ActionListener {
-		public void actionPerformed(ActionEvent e) {
-			
-			
-			serviceDeliveryUtilityManagerClient.pollForReport(textFieldServiceID.getText());
-			
+	private class BtnPollForReportActionListener implements ActionListener 
+	{
+		public void actionPerformed(ActionEvent e) 
+		{			
+			sdumClient.pollForReport(textFieldServiceID.getText());
 		}
+	}
+	
+	
+	public static void main(String[] args) 
+	{		
+		EventQueue.invokeLater(new Runnable() 
+		{
+			public void run() {
+				try {					
+					// Set System L&F
+					UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+					
+					ServiceDeliveryUtilityManagerUI window = new ServiceDeliveryUtilityManagerUI();
+					window.frmSdumClient.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
 	}
 }

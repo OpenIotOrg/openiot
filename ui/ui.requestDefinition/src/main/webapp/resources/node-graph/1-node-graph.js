@@ -161,14 +161,61 @@ Sensap.widget.NodeGraph = PrimeFaces.widget.BaseWidget.extend({
         // Add all endpoints
         self.endPoints = {};
         jQuery.each( this.cfg.endpoints, function( index, endPointSpec){
+        	 var scopes = endPointSpec.scope.split(/\s+/);
+             
+             endPointSpec.dragOptions = {
+                 start : function(){
+                     var list = $(self.jqId +' .ui-droppable._jsPlumb_endpoint').filter(function(){
+                    	 
+                    	 var el = $(this);
+                    	
+                    	 //
+                         var elScopes = el.data('scope');
+                         if( !elScopes ){
+                        	 return true;
+                         }
+                         // wildcard scope
+                         if(elScopes.indexOf('*') != -1 ){
+                        	 return false; // allow connection
+                         }
+                         elScopes = elScopes.split(/\s+/);
+                         for(var i=0;i<scopes.length;i++){
+                        	 
+                        	 for( var j=0;j<elScopes.length;j++){
+	                             if( elScopes[j] == scopes[i]){
+	                                 return false; // allow connection
+	                             }
+                        	 }
+                         }
+                         return true; // prevent connection
+                     });
+                     list.droppable('disable');
+                 },
+                 stop : function(){
+                     $(self.jqId +' .ui-droppable._jsPlumb_endpoint').droppable('enable');
+                 }
+             };
+             
+             
+            var origScope = endPointSpec.scope;
+            endPointSpec.scope = 'endpoint';
             var ep = jsPlumb.addEndpoint( endPointSpec.nodeId, endPointSpec);
             ep.setParameter('nodeId', endPointSpec.nodeId);
             ep.setParameter('endPointId', endPointSpec.id);            
+            $(ep.canvas).data('scope', origScope);
             self.endPoints[endPointSpec.id] = ep;
         });
         
         // Add all connections
         jQuery.each( this.cfg.connections, function( index, connectionSpec){
+            if( typeof connectionSpec === 'undefined' || 
+        	typeof connectionSpec.source === 'undefined' || 
+        	typeof connectionSpec.target === 'undefined'||
+        	typeof self.endPoints[connectionSpec.source] === 'undefined' ||
+        	typeof self.endPoints[connectionSpec.target] === 'undefined' ){
+        	return true;
+    	    }
+            
             jsPlumb.connect({
                 source : self.endPoints[connectionSpec.source],
                 target : self.endPoints[connectionSpec.target],
@@ -400,7 +447,9 @@ Sensap.widget.NodeGraph = PrimeFaces.widget.BaseWidget.extend({
         if( this.selectedNodeId ){
             
             if(this.getBehavior("delete") ){
-                jsPlumb.removeAllEndpoints($(this.jqId + ' #' + this.selectedNodeId));
+                try{
+                	jsPlumb.removeAllEndpoints($(this.jqId + ' #' + this.selectedNodeId));
+            	}catch(ex){}
 
                 var params =[];
                 params.push({
