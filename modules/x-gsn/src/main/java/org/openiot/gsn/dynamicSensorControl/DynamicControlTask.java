@@ -13,6 +13,8 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.RegexFileFilter;
+import org.apache.log4j.Logger;
+import org.openrdf.repository.RepositoryException;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
@@ -24,26 +26,46 @@ import org.xml.sax.SAXException;
  */
 public class DynamicControlTask extends TimerTask {
 
+	private static final Logger logger = Logger
+			.getLogger(DynamicControlTask.class);
+
 	public static final String VIRTUAL_SENSORS_DIR = "/virtual-sensors";
 	public static final String AVAILABLE_SENSORS_DIR = "/virtual-sensors/LSM";
 	public static final String VIRTUAL_SENSORS_TAG = "virtual-sensor";
 	public static final String VIRTUAL_SENSORS_TAG_NAME_ATTRIBUTE = "name";
 	public static final String REGEX_ALL_XML = "^(.*?)\\.xml$";
 	public static final String PROJECT_DIR = System.getProperty("user.dir");
+	// Update the following query with the one used to associate Sensors with
+	// Services
+	public static final String SENSOR_QUERY = "select distinct(?sensorid) from <url> where {...}";
+	// Following query used for testing purposes
+	public static final String TEST_QUERY = "select ?sensorId  from <http://lsm.deri.ie/OpenIoT/demo/sensormeta#> "
+			+ "WHERE {?sensorId <http://lsm.deri.ie/ont/lsm.owl#hasSensorType> ?type. "
+			+ "?type <http://www.w3.org/2000/01/rdf-schema#label> 'gsn'. "
+			+ "FILTER EXISTS {?sensorId <http://www.loa-cnr.it/ontologies/DUL.owl#hasLocation> ?p. } "
+			+ "?p geo:geometry ?geo.filter (<bif:st_intersects>(?geo,<bif:st_point>(6.631622,46.520131),15)).}";
+	// Update the following constant with the query to be used
+	public static final String QUERY = TEST_QUERY;
+
+	private SparqlClient sparqlClient;
 
 	@Override
 	public void run() {
 
-		// TODO Query active sensors
-		ArrayList<String> sensorDefinitions = getSensorDefinitions();
-		HashMap<String, File> activeGSNSensors = getGSNSensors(VIRTUAL_SENSORS_DIR);
+		sparqlClient = loadSparqlClient();
 
-		HashMap<String, File> availableGSNSensors = getGSNSensors(AVAILABLE_SENSORS_DIR);
+		if (sparqlClient != null) {
 
-		updateActiveSensors(sensorDefinitions, activeGSNSensors,
-				availableGSNSensors);
-		// TODO Compare and load/delete
+			ArrayList<String> sensorDefinitions = getSensorDefinitions();
+			HashMap<String, File> activeGSNSensors = getGSNSensors(VIRTUAL_SENSORS_DIR);
 
+			HashMap<String, File> availableGSNSensors = getGSNSensors(AVAILABLE_SENSORS_DIR);
+
+			// Compare sensors and perform update
+			updateActiveSensors(sensorDefinitions, activeGSNSensors,
+					availableGSNSensors);
+
+		}
 	}
 
 	/**
@@ -72,8 +94,9 @@ public class DynamicControlTask extends TimerTask {
 			if (file != null) {
 				activateSensor(file);
 			} else {
-				System.out
-						.println("Sensor file not available in LSM directory");
+				System.out.println(sensorName
+						+ " not available in LSM directory");
+				logger.error(sensorName + " not available in LSM directory");
 			}
 		}
 	}
@@ -91,7 +114,9 @@ public class DynamicControlTask extends TimerTask {
 		File f = new File(path);
 
 		if (!f.exists()) {
-			System.out.println("No such File/Dir");
+			System.out.println("no such File/Dir");
+			logger.error(f.getName() + "no such File/Dir");
+
 		} else {
 
 			Collection<File> files = FileUtils.listFiles(f,
@@ -142,8 +167,12 @@ public class DynamicControlTask extends TimerTask {
 	 * @return
 	 */
 	private ArrayList<String> getSensorDefinitions() {
-		return null;
 
+		Collection<String> col = sparqlClient.getQueryResults(QUERY,
+				ParserFactory.SENSOR_PARSER);
+
+		ArrayList<String> list = new ArrayList<String>(col);
+		return list;
 	}
 
 	/**
@@ -153,9 +182,12 @@ public class DynamicControlTask extends TimerTask {
 	 */
 	private void deactivateSensor(File file) {
 		if (file.delete()) {
+			logger.info(file.getName()
+					+ " successfully deleted from virtual-sensors directory");
 			System.out.println(file.getName() + " successfully deleted!");
 		} else {
 			System.out.println("Delete operation failed for " + file.getName());
+			logger.info("Delete operation failed for " + file.getName());
 		}
 	}
 
@@ -175,18 +207,15 @@ public class DynamicControlTask extends TimerTask {
 
 	}
 
-	public static void main(String[] args) {
-		DynamicControlTask c = new DynamicControlTask();
-
-		HashMap<String, File> availableGSNSensors = c
-				.getGSNSensors(DynamicControlTask.AVAILABLE_SENSORS_DIR);
-
-		HashMap<String, File> activeGSNSensors = c
-				.getGSNSensors(DynamicControlTask.VIRTUAL_SENSORS_DIR);
-
-		ArrayList<String> sensorDefinitions = new ArrayList<String>();
-		sensorDefinitions.add("opensense_1");
-		c.updateActiveSensors(sensorDefinitions, activeGSNSensors,
-				availableGSNSensors);
+	/** Initializes SPARQL Connection */
+	private SparqlClient loadSparqlClient() {
+		SparqlClient sc = null;
+		try {
+			sc = new SparqlClient();
+			logger.info("Sparql Repository loaded");
+		} catch (RepositoryException e) {
+			logger.error("Sparql Repository not reached", e);
+		}
+		return sc;
 	}
 }

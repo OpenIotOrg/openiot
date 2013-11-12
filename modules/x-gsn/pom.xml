@@ -348,6 +348,26 @@
             <scope>system</scope>
             <systemPath>${basedir}/lib/mylar-layout.jar</systemPath>
         </dependency>
+        <dependency>
+        	<groupId>org.openrdf.sesame</groupId>
+        	<artifactId>sesame-query</artifactId>
+        	<version>2.7.7</version>
+        </dependency>
+        <dependency>
+        	<groupId>org.openrdf.sesame</groupId>
+        	<artifactId>sesame-queryresultio-sparqlxml</artifactId>
+        	<version>2.7.7</version>
+        </dependency>
+        <dependency>
+        	<groupId>org.openrdf.sesame</groupId>
+        	<artifactId>sesame-repository-sparql</artifactId>
+        	<version>2.7.7</version>
+        </dependency>
+        <dependency>
+        	<groupId>org.slf4j</groupId>
+        	<artifactId>slf4j-api</artifactId>
+        	<version>1.7.5</version>
+        </dependency>
     </dependencies>
 
 </project>
