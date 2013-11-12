@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.TimerTask;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -29,23 +31,24 @@ public class DynamicControlTask extends TimerTask {
 	private static final Logger logger = Logger
 			.getLogger(DynamicControlTask.class);
 
-	public static final String VIRTUAL_SENSORS_DIR = "/virtual-sensors";
-	public static final String AVAILABLE_SENSORS_DIR = "/virtual-sensors/LSM";
-	public static final String VIRTUAL_SENSORS_TAG = "virtual-sensor";
-	public static final String VIRTUAL_SENSORS_TAG_NAME_ATTRIBUTE = "name";
-	public static final String REGEX_ALL_XML = "^(.*?)\\.xml$";
-	public static final String PROJECT_DIR = System.getProperty("user.dir");
+	private static final String VIRTUAL_SENSORS_DIR = "/virtual-sensors";
+	private static final String AVAILABLE_SENSORS_DIR = "/virtual-sensors/LSM";
+	private static final String VIRTUAL_SENSORS_TAG = "virtual-sensor";
+	private static final String VIRTUAL_SENSORS_TAG_NAME_ATTR = "name";
+	private static final String REGEX_ALL_XML = "^(.*?)\\.xml$";
+	private static final String PROJECT_DIR = System.getProperty("user.dir");
 	// Update the following query with the one used to associate Sensors with
 	// Services
-	public static final String SENSOR_QUERY = "select distinct(?sensorid) from <url> where {...}";
+	@SuppressWarnings("unused")
+	private static final String SENSOR_QUERY = "select distinct(?sensorid) from <url> where {...}";
 	// Following query used for testing purposes
-	public static final String TEST_QUERY = "select ?sensorId  from <http://lsm.deri.ie/OpenIoT/demo/sensormeta#> "
+	private static final String TEST_QUERY = "select ?sensorId  from <http://lsm.deri.ie/OpenIoT/demo/sensormeta#> "
 			+ "WHERE {?sensorId <http://lsm.deri.ie/ont/lsm.owl#hasSensorType> ?type. "
 			+ "?type <http://www.w3.org/2000/01/rdf-schema#label> 'gsn'. "
 			+ "FILTER EXISTS {?sensorId <http://www.loa-cnr.it/ontologies/DUL.owl#hasLocation> ?p. } "
 			+ "?p geo:geometry ?geo.filter (<bif:st_intersects>(?geo,<bif:st_point>(6.631622,46.520131),15)).}";
 	// Update the following constant with the query to be used
-	public static final String QUERY = TEST_QUERY;
+	private static final String QUERY = TEST_QUERY;
 
 	private SparqlClient sparqlClient;
 
@@ -75,9 +78,9 @@ public class DynamicControlTask extends TimerTask {
 	 * @param activeGSNSensors
 	 * @param availableGSNSensors
 	 */
-	private void updateActiveSensors(ArrayList<String> sensorDefinitions,
-			HashMap<String, File> activeGSNSensors,
-			HashMap<String, File> availableGSNSensors) {
+	private void updateActiveSensors(List<String> sensorDefinitions,
+			Map<String, File> activeGSNSensors,
+			Map<String, File> availableGSNSensors) {
 
 		for (String sensorName : activeGSNSensors.keySet()) {
 			if (!sensorDefinitions.contains(sensorName))
@@ -148,7 +151,7 @@ public class DynamicControlTask extends TimerTask {
 
 			NodeList n = doc.getElementsByTagName(VIRTUAL_SENSORS_TAG);
 			sensorName = n.item(0).getAttributes()
-					.getNamedItem(VIRTUAL_SENSORS_TAG_NAME_ATTRIBUTE)
+					.getNamedItem(VIRTUAL_SENSORS_TAG_NAME_ATTR)
 					.getTextContent();
 		} catch (ParserConfigurationException e) {
 			e.printStackTrace();
