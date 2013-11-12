@@ -23,8 +23,8 @@ import org.xml.sax.SAXException;
 
 /**
  * 
- * @author Christos Georgoulis
- * 
+ * @author Christos Georgoulis (cgeo) e-mail: cgeo@ait.edu.gr
+ *
  */
 public class DynamicControlTask extends TimerTask {
 
