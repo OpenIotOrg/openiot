@@ -3,6 +3,8 @@ package org.openiot.gsn.dynamicSensorControl;
 import java.util.Collection;
 
 import org.apache.log4j.Logger;
+import org.openiot.gsn.metadata.LSM.LSMRepository;
+import org.openiot.gsn.utils.PropertiesReader;
 import org.openrdf.query.TupleQuery;
 import org.openrdf.query.TupleQueryResult;
 import org.openrdf.repository.RepositoryConnection;
@@ -18,14 +20,14 @@ public class SparqlClient {
 
 	private static final Logger logger = Logger.getLogger(SparqlClient.class);
 
-	private static final String LSM_ENDPOINT = "http://lsm.deri.ie/sparql";
-
 	private SPARQLRepository therepository = null;
 
 	/** Default constructor connectos to predefined LSM Repository */
 	public SparqlClient() throws RepositoryException {
 
-		therepository = new SPARQLRepository(LSM_ENDPOINT);
+		String lsmEndPoint = PropertiesReader.readProperty(
+				LSMRepository.LSM_CONFIG_PROPERTIES_FILE, "endPoint");
+		therepository = new SPARQLRepository(lsmEndPoint);
 
 		try {
 			therepository.initialize();

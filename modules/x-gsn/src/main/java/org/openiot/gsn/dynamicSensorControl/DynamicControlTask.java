@@ -6,41 +6,30 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.TimerTask;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.RegexFileFilter;
 import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
+import org.openiot.gsn.Main;
+import org.openiot.gsn.metadata.LSM.LSMRepository;
+import org.openiot.gsn.utils.PropertiesReader;
 import org.openrdf.repository.RepositoryException;
-import org.w3c.dom.Document;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
 /**
  * 
  * @author Christos Georgoulis (cgeo) e-mail: cgeo@ait.edu.gr
- *
+ * 
  */
 public class DynamicControlTask extends TimerTask {
 
+	// Variable Initialization
 	private static final Logger logger = Logger
 			.getLogger(DynamicControlTask.class);
 
-	private static final String VIRTUAL_SENSORS_DIR = "/virtual-sensors";
-	private static final String AVAILABLE_SENSORS_DIR = "/virtual-sensors/LSM";
-	private static final String VIRTUAL_SENSORS_TAG = "virtual-sensor";
-	private static final String VIRTUAL_SENSORS_TAG_NAME_ATTR = "name";
 	private static final String REGEX_ALL_XML = "^(.*?)\\.xml$";
-	private static final String PROJECT_DIR = System.getProperty("user.dir");
-	// Update the following query with the one used to associate Sensors with
-	// Services
-	@SuppressWarnings("unused")
-	private static final String SENSOR_QUERY = "select distinct(?sensorid) from <url> where {...}";
+	private static final String METADATA_FILE_SUFFIX = ".metadata";
 	// Following query used for testing purposes
 	private static final String TEST_QUERY = "select ?sensorId  from <http://lsm.deri.ie/OpenIoT/demo/sensormeta#> "
 			+ "WHERE {?sensorId <http://lsm.deri.ie/ont/lsm.owl#hasSensorType> ?type. "
@@ -52,22 +41,40 @@ public class DynamicControlTask extends TimerTask {
 
 	private SparqlClient sparqlClient;
 
+	// Singleton Setup
+	private DynamicControlTask() {
+
+	}
+
+	private static class Holder {
+		private static final DynamicControlTask INSTANCE = new DynamicControlTask();
+	}
+
+	public static DynamicControlTask getInstance() {
+		return Holder.INSTANCE;
+	}
+
+	// Class Methods
 	@Override
 	public void run() {
+		PropertyConfigurator.configure(Main.DEFAULT_GSN_LOG4J_PROPERTIES);
 
 		sparqlClient = loadSparqlClient();
 
 		if (sparqlClient != null) {
 
 			ArrayList<String> sensorDefinitions = getSensorDefinitions();
-			HashMap<String, File> activeGSNSensors = getGSNSensors(VIRTUAL_SENSORS_DIR);
+			HashMap<String, File> activeGSNSensors = getGSNSensors(PropertiesReader
+					.readProperty(LSMRepository.LSM_CONFIG_PROPERTIES_FILE,
+							"virtualSensorsDir"));
 
-			HashMap<String, File> availableGSNSensors = getGSNSensors(AVAILABLE_SENSORS_DIR);
+			HashMap<String, File> availableGSNSensors = getGSNSensors(PropertiesReader
+					.readProperty(LSMRepository.LSM_CONFIG_PROPERTIES_FILE,
+							"availableSensorsDir"));
 
 			// Compare sensors and perform update
 			updateActiveSensors(sensorDefinitions, activeGSNSensors,
 					availableGSNSensors);
-
 		}
 	}
 
@@ -79,12 +86,12 @@ public class DynamicControlTask extends TimerTask {
 	 * @param availableGSNSensors
 	 */
 	private void updateActiveSensors(List<String> sensorDefinitions,
-			Map<String, File> activeGSNSensors,
-			Map<String, File> availableGSNSensors) {
+			HashMap<String, File> activeGSNSensors,
+			HashMap<String, File> availableGSNSensors) {
 
-		for (String sensorName : activeGSNSensors.keySet()) {
-			if (!sensorDefinitions.contains(sensorName))
-				deactivateSensor(activeGSNSensors.get(sensorName));
+		for (String sensorID : activeGSNSensors.keySet()) {
+			if (!sensorDefinitions.contains(sensorID))
+				deactivateSensor(activeGSNSensors.get(sensorID));
 		}
 
 		ArrayList<String> sensorsToActivate = new ArrayList<String>(
@@ -113,10 +120,9 @@ public class DynamicControlTask extends TimerTask {
 
 		HashMap<String, File> sensorsMap = new HashMap<String, File>();
 
-		String path = PROJECT_DIR + dir;
-		File f = new File(path);
+		File f = new File(dir);
 
-		if (!f.exists()) {
+		if (!f.getAbsoluteFile().exists()) {
 			System.out.println("no such File/Dir");
 			logger.error(f.getName() + "no such File/Dir");
 
@@ -126,41 +132,14 @@ public class DynamicControlTask extends TimerTask {
 					new RegexFileFilter(REGEX_ALL_XML), null);
 
 			for (File file : files) {
-				String sensorName = getSensorNameFromFile(file);
-				sensorsMap.put(sensorName, file);
+				String path = file.getAbsolutePath() + METADATA_FILE_SUFFIX;
+				String sensorID = PropertiesReader.readProperty(path,
+						"sensorID");
+
+				sensorsMap.put(sensorID, file);
 			}
 		}
 		return sensorsMap;
-	}
-
-	/**
-	 * Parses an .xml file and retrieves sensor name
-	 * 
-	 * @param file
-	 * @return
-	 */
-	private String getSensorNameFromFile(File file) {
-		DocumentBuilderFactory domFactory = DocumentBuilderFactory
-				.newInstance();
-		domFactory.setNamespaceAware(true);
-		DocumentBuilder builder;
-		String sensorName = null;
-		try {
-			builder = domFactory.newDocumentBuilder();
-			Document doc = builder.parse(file);
-
-			NodeList n = doc.getElementsByTagName(VIRTUAL_SENSORS_TAG);
-			sensorName = n.item(0).getAttributes()
-					.getNamedItem(VIRTUAL_SENSORS_TAG_NAME_ATTR)
-					.getTextContent();
-		} catch (ParserConfigurationException e) {
-			e.printStackTrace();
-		} catch (SAXException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return sensorName;
 	}
 
 	/**
@@ -184,7 +163,9 @@ public class DynamicControlTask extends TimerTask {
 	 * @param file
 	 */
 	private void deactivateSensor(File file) {
-		if (file.delete()) {
+		File metadata = new File(file.getAbsolutePath() + METADATA_FILE_SUFFIX);
+
+		if (file.delete() && metadata.delete()) {
 			logger.info(file.getName()
 					+ " successfully deleted from virtual-sensors directory");
 			System.out.println(file.getName() + " successfully deleted!");
@@ -197,13 +178,26 @@ public class DynamicControlTask extends TimerTask {
 	/**
 	 * copies file from LSM directory to virtual-sensors directory
 	 * 
-	 * @param file
+	 * @param xmlSource
 	 */
-	private void activateSensor(File file) {
-		File dest = new File(PROJECT_DIR + VIRTUAL_SENSORS_DIR + File.separator
-				+ file.getName());
+	private void activateSensor(File xmlSource) {
+
+		// metadata file destination
+		String virtualSensorsDir = PropertiesReader.readProperty(
+				LSMRepository.LSM_CONFIG_PROPERTIES_FILE, "virtualSensorsDir");
+
+		File xmlDest = new File(virtualSensorsDir + File.separator
+				+ xmlSource.getName());
+
+		// xmlFile destination
+		File metaDataSource = new File(xmlSource.getAbsolutePath()
+				+ METADATA_FILE_SUFFIX);
+		File metaDataDest = new File(virtualSensorsDir + File.separator
+				+ metaDataSource.getName());
+
 		try {
-			FileUtils.copyFile(file, dest);
+			FileUtils.copyFile(xmlSource, xmlDest);
+			FileUtils.copyFile(metaDataSource, metaDataDest);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -221,4 +215,12 @@ public class DynamicControlTask extends TimerTask {
 		}
 		return sc;
 	}
+
+	// TODO Complete
+	// private String createQuery() {
+	// String query = "select distinct(?sensorid) from "
+	// + Resources.LSM_FUNCTIONAL_GRAPH + "where {...}";
+	//
+	// return query;
+	// }
 }

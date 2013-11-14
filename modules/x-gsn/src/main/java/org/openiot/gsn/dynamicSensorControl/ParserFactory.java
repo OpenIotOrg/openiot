@@ -19,7 +19,12 @@ public final class ParserFactory {
 	private ParserFactory() {
 	}
 
+	/**
+	 * Sensor Parser Singleton
+	 */
 	public static final Parser<String> SENSOR_PARSER = new SensorParser();
+
+	// private classes
 
 	private static class SensorParser implements Parser<String> {
 
