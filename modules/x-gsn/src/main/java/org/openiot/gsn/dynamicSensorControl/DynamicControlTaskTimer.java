@@ -6,15 +6,15 @@ import java.util.concurrent.TimeUnit;
 import org.openiot.gsn.metadata.LSM.LSMRepository;
 import org.openiot.gsn.utils.PropertiesReader;
 
-public class TaskTimer extends Timer {
+public class DynamicControlTaskTimer extends Timer {
 
-	private static volatile TaskTimer instance = new TaskTimer();
+	private static volatile DynamicControlTaskTimer instance = new DynamicControlTaskTimer();
 
-	private TaskTimer() {
+	private DynamicControlTaskTimer() {
 
 	}
 
-	public static TaskTimer getInstance() {
+	public static DynamicControlTaskTimer getInstance() {
 		return instance;
 	}
 

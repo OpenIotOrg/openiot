@@ -26,13 +26,13 @@ import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
 
-import org.openiot.gsn.dynamicSensorControl.TaskTimer;
+import org.openiot.gsn.dynamicSensorControl.DynamicControlTaskTimer;
 
 public class GSNStop {
 
 	public static void main(String[] args) {
 		stopGSN(Integer.parseInt(args[0]));
-		TaskTimer.getInstance().cancel();
+		DynamicControlTaskTimer.getInstance().cancel();
 
 	}
 

@@ -68,7 +68,7 @@ import org.jibx.runtime.JiBXException;
 import org.openiot.gsn.beans.ContainerConfig;
 import org.openiot.gsn.beans.StorageConfig;
 import org.openiot.gsn.beans.VSensorConfig;
-import org.openiot.gsn.dynamicSensorControl.TaskTimer;
+import org.openiot.gsn.dynamicSensorControl.DynamicControlTaskTimer;
 import org.openiot.gsn.http.ac.ConnectToDB;
 import org.openiot.gsn.http.rest.LocalDeliveryWrapper;
 import org.openiot.gsn.http.rest.PushDelivery;
@@ -306,7 +306,7 @@ public final class Main {
 							LSMRepository.LSM_CONFIG_PROPERTIES_FILE,
 							"dynamicControl").trim());
 			if (isTrueDynamicControl)
-				TaskTimer.getInstance().startTimer();
+				DynamicControlTaskTimer.getInstance().startTimer();
 
 		} catch (Exception e) {
 			updateSplashIfNeeded(new String[] { "Starting GSN failed! Look at logs/gsn.log for more information." });
