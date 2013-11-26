@@ -96,6 +96,7 @@ public class UDPWrapper extends AbstractWrapper {
    }
    
    public void dispose (  ) {
+      socket.close();
       threadCounter--;
    }
    public String getWrapperName() {
