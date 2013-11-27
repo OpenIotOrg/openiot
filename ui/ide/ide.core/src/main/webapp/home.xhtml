@@ -9,11 +9,11 @@
 	xmlns:pe="http://primefaces.org/ui/extensions">
 
 <h:head>
-	<h:outputStylesheet library="css" name="style.css" target="body" />
+	<h:outputStylesheet library="css" name="style.css" />
 	<title>OpenIOT IDE</title>
 </h:head>
 
-<h:body>
+<h:body>  
 	<pe:layout id="page" fullPage="true">
 
 		<!-- North -->
@@ -28,9 +28,9 @@
 		</pe:layoutPane>
 
 		<!-- West -->
-		<pe:layoutPane id="westPane" position="west" size="220"
-			collapsible="true" effect="slide" resizable="false" spacingClosed="6"
-			spacingOpen="6" styleClassHeader="menuBar">
+		<pe:layoutPane id="westPane" position="west" size="220" effect="slide"
+			resizable="false" spacingClosed="6" spacingOpen="6"
+			styleClassHeader="menuBar">
 			<f:facet name="header">Menu</f:facet>
 			<h:form id="form1" prependId="false">
 				<p:panelMenu
@@ -47,8 +47,8 @@
 
 						<!-- Request Presentation Tool -->
 						<ui:param name="rqPresTool" value="#{nav.requestPresentation}" />
-						<p:menuitem value="Request Presentation Tool" update=":centerPanel"
-							icon="ui-icon-triangle-1-e"
+						<p:menuitem value="Request Presentation Tool"
+							update=":centerPanel" icon="ui-icon-triangle-1-e"
 							actionListener="#{layout.setNavigation(rqPresTool)}"
 							rendered="#{layout.isLoaded(rqPresTool)}" />
 					</p:submenu>
