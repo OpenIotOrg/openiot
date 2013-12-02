@@ -1,6 +1,7 @@
-@echo off
-setlocal ENABLEDELAYEDEXPANSION
+REM @echo off
+REM setlocal ENABLEDELAYEDEXPANSION
 
-SET CLASSPATH=$JAVA_HOME\lib\rt.jar
-FOR /R ./target %%c in (*.jar) DO SET CLASSPATH=!CLASSPATH!;%%c
-java -classpath "%CLASSPATH%"  -Dorg.apache.commons.logging.Log=org.apache.commons.logging.impl.Log4JLogger -Dorg.mortbay.log.LogFactory.noDiscovery=false org.openiot.gsn.GSNStop 22232
+REM SET CLASSPATH=$JAVA_HOME\lib\rt.jar
+REM FOR /R ./target %%c in (*.jar) DO SET CLASSPATH=!CLASSPATH!;%%c
+
+java -classpath "./target/*;./target/dependencies/*"  -Dorg.apache.commons.logging.Log=org.apache.commons.logging.impl.Log4JLogger -Dorg.mortbay.log.LogFactory.noDiscovery=false org.openiot.gsn.GSNStop 22232
