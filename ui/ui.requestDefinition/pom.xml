@@ -81,8 +81,14 @@
 			<version>0.0.1</version>
 		</dependency>
 
+		<!-- To Solve JAXB Dependency. Need Moxy persistence API which is not part of eclipse -->
+		<dependency>
+		    <groupId>org.eclipse.persistence</groupId>
+    		<artifactId>org.eclipse.persistence.moxy</artifactId>
+    		<version>2.5.1</version>
+		</dependency>
+		
 		<!-- MISC -->
-
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
