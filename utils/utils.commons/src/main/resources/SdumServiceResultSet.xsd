@@ -1,41 +1,67 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
+<!-- 
+     Copyright (c) 2011-2014, OpenIoT
+     
+     This file is part of OpenIoT.
+ 
+     OpenIoT is free software: you can redistribute it and/or modify
+     it under the terms of the GNU Lesser General Public License as published by
+     the Free Software Foundation, version 3 of the License.
+
+     OpenIoT is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU Lesser General Public License for more details.
+ 
+     You should have received a copy of the GNU Lesser General Public License
+     along with OpenIoT.  If not, see <http://www.gnu.org/licenses/>.
+ 
+      Contact: OpenIoT mailto: info@openiot.eu
+/ -->
+
+<!-- Author: Nikos Kefalakis (nkef@ait.edu.gr) -->
+
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
-    targetNamespace="urn:openiot:sdum:serviceresultset:xsd:1"
-    xmlns:prt="http://www.w3.org/2007/SPARQL/protocol-types#"
-    xmlns:srs="urn:openiot:sdum:serviceresultset:xsd:1">
-    
-    <xs:import namespace="http://www.w3.org/2007/SPARQL/protocol-types#" schemaLocation="sparql/protocol-types.xsd"/>
+  targetNamespace="urn:openiot:sdum:serviceresultset:xsd:1"
+  xmlns:prt="http://www.w3.org/2007/SPARQL/protocol-types#"
+  xmlns:srs="urn:openiot:sdum:serviceresultset:xsd:1">
 
-    <xs:element name="SdumServiceResultSet">
-        <xs:complexType>
+  <xs:import namespace="http://www.w3.org/2007/SPARQL/protocol-types#"
+    schemaLocation="sparql/protocol-types.xsd"/>
+
+  <xs:element name="SdumServiceResultSet">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="srs:requestPresentation" maxOccurs="1"/>
         <xs:sequence>
-            <xs:element ref="srs:requestPresentation" maxOccurs="1"/>
-            <xs:element ref="prt:query-result"/>
+          <xs:element ref="prt:query-result" maxOccurs="unbounded"/>
         </xs:sequence>
+      </xs:sequence>
     </xs:complexType>
-    </xs:element>	
+  </xs:element>
 
-    <xs:element name="requestPresentation">
-        <xs:complexType>
-            <xs:sequence>
-                <xs:element maxOccurs="unbounded" ref="srs:widget"/>
-            </xs:sequence>
-        </xs:complexType>
-    </xs:element>
+  <xs:element name="requestPresentation">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="srs:widget"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
 
-    <xs:element name="widget">
-        <xs:complexType>
-            <xs:sequence>
-                <xs:element maxOccurs="unbounded" ref="srs:presentationAttr"/>
-            </xs:sequence>
-            <xs:attribute name="widgetID" use="required" type="xs:anyURI"/>
-        </xs:complexType>
-    </xs:element>
+  <xs:element name="widget">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="srs:presentationAttr"/>
+      </xs:sequence>
+      <xs:attribute name="widgetID" use="required" type="xs:anyURI"/>
+    </xs:complexType>
+  </xs:element>
 
-    <xs:element name="presentationAttr">
-        <xs:complexType>
-            <xs:attribute name="name" use="required" type="xs:string"/>
-            <xs:attribute name="value" use="required" type="xs:string"/>
-        </xs:complexType>
-    </xs:element>
+  <xs:element name="presentationAttr">
+    <xs:complexType>
+      <xs:attribute name="name" use="required" type="xs:string"/>
+      <xs:attribute name="value" use="required" type="xs:string"/>
+    </xs:complexType>
+  </xs:element>
 </xs:schema>
