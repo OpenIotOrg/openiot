@@ -20,7 +20,6 @@
 
 package org.openiot.security.oauth.lsm;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -40,6 +39,9 @@ import org.jasig.cas.support.oauth.OAuthConstants;
 import org.jasig.cas.support.oauth.profile.CasWrapperProfile;
 import org.jasig.cas.ticket.TicketGrantingTicket;
 import org.jasig.cas.ticket.registry.TicketRegistry;
+import org.openiot.lsm.security.oauth.mgmt.Permission;
+import org.openiot.lsm.security.oauth.mgmt.Role;
+import org.openiot.lsm.security.oauth.mgmt.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.ModelAndView;
@@ -65,6 +67,8 @@ public final class LSMOAuth20PermissionController extends AbstractController {
 	private final ServicesManager servicesManager;
 
 	private final TicketRegistry ticketRegistry;
+
+	private LSMOAuthManager manager = LSMOAuthManager.getInstance();
 
 	public LSMOAuth20PermissionController(final ServicesManager servicesManager, final TicketRegistry ticketRegistry, DataSource dataSource) {
 		this.servicesManager = servicesManager;
@@ -256,31 +260,23 @@ public final class LSMOAuth20PermissionController extends AbstractController {
 	}
 
 	private Map<String, Set<String>> extractPermissions(Long serviceId, String username) {
-		String sqlQuery = "SELECT ur.role_name AS role_name, rp.permission_name AS permission_name FROM "
-				+ "USERS_ROLES ur NATURAL LEFT JOIN ROLES_PERMISSIONS rp WHERE ur.username = :username AND (rp.service_id is null OR rp.service_id=:serviceId)";
+		// String sqlQuery =
+		// "SELECT ur.role_name AS role_name, rp.permission_name AS permission_name FROM "
+		// +
+		// "USERS_ROLES ur NATURAL LEFT JOIN ROLES_PERMISSIONS rp WHERE ur.username = :username AND (rp.service_id is null OR rp.service_id=:serviceId)";
 
-		Map<String, Object> paramMap = new HashMap<String, Object>();
-		paramMap.put("username", username);
-		paramMap.put("serviceId", serviceId);
+		// Map<String, Object> paramMap = new HashMap<String, Object>();
+		// paramMap.put("username", username);
+		// paramMap.put("serviceId", serviceId);
 
-		/********************************
-		 * To be retrieved from LSM *
-		 ********************************/
-		// To be populated from the results of the query sqlQuery
-		List<Map<String, String>> queryResults = new ArrayList<Map<String, String>>();
 		Map<String, Set<String>> rolePermissions = new HashMap<String, Set<String>>();
-
-		for (Map<String, String> rowResult : queryResults) {
-			String roleName = rowResult.get("role_name");
-			String permissionName = rowResult.get("permission_name");
-			if (rolePermissions.containsKey(roleName) && permissionName != null)
-				rolePermissions.get(roleName).add(permissionName);
-			else {
-				Set<String> set = new HashSet<String>();
-				if (permissionName != null)
-					set.add(permissionName);
-				rolePermissions.put(roleName, set);
-			}
+		final User user = manager.getUserByUsername(username);
+		final List<Role> roles = user.getRoles();
+		for (Role role : roles) {
+			Set<String> set = new HashSet<String>();
+			for (Permission perm : role.getPermissionsPerService().get(serviceId))
+				set.add(perm.getName());
+			rolePermissions.put(role.getName(), set);
 		}
 
 		return rolePermissions;

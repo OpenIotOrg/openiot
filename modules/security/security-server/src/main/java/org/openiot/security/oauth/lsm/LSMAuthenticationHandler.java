@@ -23,6 +23,7 @@ package org.openiot.security.oauth.lsm;
 import org.jasig.cas.authentication.handler.AuthenticationException;
 import org.jasig.cas.authentication.handler.support.AbstractUsernamePasswordAuthenticationHandler;
 import org.jasig.cas.authentication.principal.UsernamePasswordCredentials;
+import org.openiot.lsm.security.oauth.mgmt.User;
 
 /**
  * 
@@ -31,16 +32,18 @@ import org.jasig.cas.authentication.principal.UsernamePasswordCredentials;
  */
 public class LSMAuthenticationHandler extends AbstractUsernamePasswordAuthenticationHandler {
 
+	private LSMOAuthManager manager = LSMOAuthManager.getInstance();
+	
 	@Override
 	protected boolean authenticateUsernamePasswordInternal(UsernamePasswordCredentials credentials) throws AuthenticationException {
 		final String username = getPrincipalNameTransformer().transform(credentials.getUsername());
 		final String password = credentials.getPassword();
 		final String encryptedPassword = this.getPasswordEncoder().encode(password);
 
-		/********************************
-		 * To be retrieved from LSM     *
-		 ********************************/
-		final String dbPassword = "To be fetched from LSM given username";
+		User user = manager.getUserByUsername(username);
+		if(user == null)
+			return false;
+		final String dbPassword = user.getPassword();
 		return dbPassword.equals(encryptedPassword);
 	}
 

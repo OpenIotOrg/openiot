@@ -22,6 +22,10 @@ package org.openiot.security.oauth.lsm.mgmt;
 
 import java.util.List;
 
+import org.openiot.lsm.security.oauth.mgmt.Permission;
+import org.openiot.lsm.security.oauth.mgmt.Role;
+import org.openiot.lsm.security.oauth.mgmt.User;
+
 /**
  * This class is responsible for retrieving and persisting OpenIoT
  * authentication and access control management objects.

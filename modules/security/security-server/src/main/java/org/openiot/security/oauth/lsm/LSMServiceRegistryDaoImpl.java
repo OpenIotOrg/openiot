@@ -24,51 +24,54 @@ import java.util.List;
 
 import org.jasig.cas.services.RegisteredService;
 import org.jasig.cas.services.ServiceRegistryDao;
+import org.openiot.lsm.security.oauth.LSMRegisteredServiceImpl;
 
 public class LSMServiceRegistryDaoImpl implements ServiceRegistryDao {
 
+	private LSMOAuthManager manager = LSMOAuthManager.getInstance();
+
 	public RegisteredService save(RegisteredService registeredService) {
 		final boolean isNew = registeredService.getId() == -1;
-		if (isNew) {
-			/********************************
-			 * To be retrieved from LSM *
-			 ********************************/
-			// "Insert into RegisteredServiceImpl (id, ...) values (...) "
-		} else {
-			/********************************
-			 * To be retrieved from LSM *
-			 ********************************/
-			// "update RegisteredServiceImpl where id=:registeredService.getId() set ...=..., ... "
+		if (registeredService instanceof LSMRegisteredServiceImpl) {
+			LSMRegisteredServiceImpl lsmRegisteredServiceImpl = (LSMRegisteredServiceImpl) registeredService;
+			if (isNew) {
+				/********************************
+				 * To be retrieved from LSM *
+				 ********************************/
+				// "Insert into RegisteredServiceImpl (id, ...) values (...) "
+				final List<RegisteredService> allRegisteredServices = manager.getAllRegisteredServices();
+				long id = 1;
+				if (allRegisteredServices != null)
+					for (RegisteredService service : allRegisteredServices)
+						if (service.getId() >= id)
+							id = service.getId() + 1;
+				lsmRegisteredServiceImpl.setId(1);
+
+				manager.addRegisteredService(lsmRegisteredServiceImpl);
+			} else {
+				/********************************
+				 * To be retrieved from LSM *
+				 ********************************/
+				// "update RegisteredServiceImpl where id=:registeredService.getId() set ...=..., ... "
+				manager.deleteRegisteredService(lsmRegisteredServiceImpl.getId());
+				manager.addRegisteredService(lsmRegisteredServiceImpl);
+			}
+			return manager.getRegisteredService(lsmRegisteredServiceImpl.getId());
 		}
-		// return the saved registeredService
 		return null;
 	}
 
 	public boolean delete(RegisteredService registeredService) {
-		/********************************
-		 * To be retrieved from LSM *
-		 ********************************/
-		// "delete from RegisteredServiceImpl where id=:registeredService.getId()"
-		// return true if the deletion was successful
-		return false;
+		manager.deleteRegisteredService(registeredService.getId());
+		return manager.getRegisteredService(registeredService.getId()) == null;
 	}
 
 	public List<RegisteredService> load() {
-		/********************************
-		 * To be retrieved from LSM *
-		 ********************************/
-		// "Select * from RegisteredServiceImpl"
-		// return all registered services
-		return null;
+		return manager.getAllRegisteredServices();
 	}
 
 	public RegisteredService findServiceById(long id) {
-		/********************************
-		 * To be retrieved from LSM *
-		 ********************************/
-		// "Select * from RegisteredServiceImpl where id=:id"
-		// return the found registered service
-		return null;
+		return manager.getRegisteredService(id);
 	}
 
 }

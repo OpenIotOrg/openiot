@@ -5,46 +5,52 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
-import javax.persistence.LockModeType;
-import javax.validation.constraints.NotNull;
-
 import org.jasig.cas.ticket.ServiceTicket;
-import org.jasig.cas.ticket.ServiceTicketImpl;
 import org.jasig.cas.ticket.Ticket;
-import org.jasig.cas.ticket.TicketGrantingTicketImpl;
 import org.jasig.cas.ticket.registry.AbstractDistributedTicketRegistry;
-import org.springframework.transaction.annotation.Transactional;
+import org.openiot.lsm.security.oauth.LSMServiceTicketImpl;
+import org.openiot.lsm.security.oauth.LSMTicketGrantingTicketImpl;
 
 public class LSMTicketRegistry extends AbstractDistributedTicketRegistry {
 
 	private String ticketGrantingTicketPrefix = "TGT";
+	private LSMOAuthManager manager = LSMOAuthManager.getInstance();
 
 	protected void updateTicket(final Ticket ticket) {
-		/********************************
-		 * To be retrieved from LSM *
-		 ********************************/
-
 		if (ticket instanceof LSMTicketGrantingTicketImpl) {
-			// TODO: Update the ticket instance
+			LSMTicketGrantingTicketImpl tgt = (LSMTicketGrantingTicketImpl) ticket;
+			manager.deleteTicketGranting(tgt.getId());
+			manager.addTicketGrangtingTicket(tgt);
 		} else {
-			// TODO: Update the ticket instance
+			LSMServiceTicketImpl serviceTicket = (LSMServiceTicketImpl) ticket;
+			manager.deleteServiceTicketImpl(serviceTicket.getId());
+			manager.addServiceTicketImpl(serviceTicket);
 		}
 
 		log.debug("Updated ticket [{}].", ticket);
 	}
 
 	public void addTicket(final Ticket ticket) {
-		/********************************
-		 * To be retrieved from LSM *
-		 ********************************/
-
+		boolean added = true;
 		if (ticket instanceof LSMTicketGrantingTicketImpl) {
-			// TODO: Save the ticket instance
+			LSMTicketGrantingTicketImpl tgt = (LSMTicketGrantingTicketImpl) ticket;
+			if (manager.getTicketGranting(tgt.getId()) == null)
+				manager.addTicketGrangtingTicket(tgt);
+			else
+				added = false;
+
 		} else {
-			// TODO: Save the ticket instance
+			LSMServiceTicketImpl serviceTicket = (LSMServiceTicketImpl) ticket;
+			if (manager.getServiceTicketImpl(serviceTicket.getId()) == null)
+				manager.addServiceTicketImpl(serviceTicket);
+			else
+				added = false;
 		}
 
-		log.debug("Added ticket [{}] to registry.", ticket);
+		if (added)
+			log.debug("Added ticket [{}] to registry.", ticket);
+		else
+			log.debug("Ticket [{}] cannot be added to the registery. It already exists.", ticket);
 	}
 
 	public boolean deleteTicket(final String ticketId) {
@@ -66,35 +72,15 @@ public class LSMTicketRegistry extends AbstractDistributedTicketRegistry {
 	}
 
 	private void deleteTicketAndChildren(final Ticket ticket) {
-		/********************************
-		 * To be retrieved from LSM *
-		 ********************************/
-		final List<TicketGrantingTicketImpl> ticketGrantingTicketImpls = null;
-		// TODO: Retrieve the tickets similarly to the following query
+		final List<LSMTicketGrantingTicketImpl> ticketGrantingTicketImpls = manager.getAllTicketsOfTicketGrantingTicket(ticket.getId());
 
-		// final List<TicketGrantingTicketImpl> ticketGrantingTicketImpls =
-		// entityManager
-		// .createQuery("select t from TicketGrantingTicketImpl t where t.ticketGrantingTicket.id = :id",
-		// TicketGrantingTicketImpl.class)
-		// .setLockMode(LockModeType.PESSIMISTIC_WRITE).setParameter("id",
-		// ticket.getId()).getResultList();
+		final List<LSMServiceTicketImpl> serviceTicketImpls = manager.getAllServiceTicketsOfTicketGrantingTicket(ticket.getId());
 
-		/********************************
-		 * To be retrieved from LSM *
-		 ********************************/
-		final List<ServiceTicketImpl> serviceTicketImpls = null;
-		// TODO: Retrieve the tickets similarly to the following query
-
-		// final List<ServiceTicketImpl> serviceTicketImpls = entityManager
-		// .createQuery("select s from ServiceTicketImpl s where s.ticketGrantingTicket.id = :id",
-		// ServiceTicketImpl.class)
-		// .setParameter("id", ticket.getId()).getResultList();
-
-		for (final ServiceTicketImpl s : serviceTicketImpls) {
+		for (final LSMServiceTicketImpl s : serviceTicketImpls) {
 			removeTicket(s);
 		}
 
-		for (final TicketGrantingTicketImpl t : ticketGrantingTicketImpls) {
+		for (final LSMTicketGrantingTicketImpl t : ticketGrantingTicketImpls) {
 			deleteTicketAndChildren(t);
 		}
 
@@ -107,10 +93,11 @@ public class LSMTicketRegistry extends AbstractDistributedTicketRegistry {
 				final Date creationDate = new Date(ticket.getCreationTime());
 				log.debug("Removing Ticket [{}] created: {}", ticket, creationDate.toString());
 			}
-			/********************************
-			 * To be retrieved from LSM *
-			 ********************************/
-			// TODO: Remove the ticket
+
+			if (ticket instanceof LSMTicketGrantingTicketImpl)
+				manager.deleteTicketGranting(ticket.getId());
+			else
+				manager.deleteServiceTicketImpl(ticket.getId());
 
 		} catch (final Exception e) {
 			log.error("Error removing {} from registry.", ticket, e);
@@ -123,24 +110,10 @@ public class LSMTicketRegistry extends AbstractDistributedTicketRegistry {
 
 	private Ticket getRawTicket(final String ticketId) {
 		try {
-			if (ticketId.startsWith(this.ticketGrantingTicketPrefix)) {
-				/********************************
-				 * To be retrieved from LSM *
-				 ********************************/
-				// TODO: Retrieve TicketGrantingTicket similarly to the
-				// following
-
-//				return entityManager.find(TicketGrantingTicketImpl.class, ticketId, LockModeType.PESSIMISTIC_WRITE);
-				return null;
-			}
-
-			/********************************
-			 * To be retrieved from LSM *
-			 ********************************/
-			// TODO: Retrieve ServiceTicket similarly to the following
-			// return entityManager.find(ServiceTicketImpl.class, ticketId);
-
-			return null;
+			if (ticketId.startsWith(this.ticketGrantingTicketPrefix))
+				return manager.getTicketGranting(ticketId);
+			else
+				return manager.getServiceTicketImpl(ticketId);
 		} catch (final Exception e) {
 			log.error("Error getting ticket {} from registry.", ticketId, e);
 		}
@@ -148,22 +121,9 @@ public class LSMTicketRegistry extends AbstractDistributedTicketRegistry {
 	}
 
 	public Collection<Ticket> getTickets() {
-		final List<TicketGrantingTicketImpl> tgts = null;
-		/********************************
-		 * To be retrieved from LSM *
-		 ********************************/
-		// TODO: Retrieve TicketGrantingTickets similarly to the following
-		
-//		final List<TicketGrantingTicketImpl> tgts = entityManager.createQuery("select t from TicketGrantingTicketImpl t", TicketGrantingTicketImpl.class)
-//				.getResultList();
-		
-		final List<ServiceTicketImpl> sts = null;
-		/********************************
-		 * To be retrieved from LSM *
-		 ********************************/
-		// TODO: Retrieve ServiceTickets similarly to the following
-		
-//		final List<ServiceTicketImpl> sts = entityManager.createQuery("select s from ServiceTicketImpl s", ServiceTicketImpl.class).getResultList();
+		final List<LSMTicketGrantingTicketImpl> tgts = manager.getAllTicketGrantingTickets();
+
+		final List<LSMServiceTicketImpl> sts = manager.getAllServiceTickets();
 
 		final List<Ticket> tickets = new ArrayList<Ticket>();
 		tickets.addAll(tgts);
@@ -182,36 +142,12 @@ public class LSMTicketRegistry extends AbstractDistributedTicketRegistry {
 	}
 
 	public int sessionCount() {
-		/********************************
-		 * To be retrieved from LSM *
-		 ********************************/
-		// TODO: Perform the corresponding query
-//		return countToInt(entityManager.createQuery("select count(t) from TicketGrantingTicketImpl t").getSingleResult());
-		
-		return -1;
+
+		return manager.getTicketGrantingTicketsCount();
 	}
 
 	public int serviceTicketCount() {
-		/********************************
-		 * To be retrieved from LSM *
-		 ********************************/
-		// TODO: Perform the corresponding query
-//		return countToInt(entityManager.createQuery("select count(t) from ServiceTicketImpl t").getSingleResult());
-		
-		return -1;
-	}
-
-	private int countToInt(final Object result) {
-		final int intval;
-		if (result instanceof Long) {
-			intval = ((Long) result).intValue();
-		} else if (result instanceof Integer) {
-			intval = (Integer) result;
-		} else {
-			// Must be a Number of some kind
-			intval = ((Number) result).intValue();
-		}
-		return intval;
+		return manager.getServiceTicketsCount();
 	}
 
 }

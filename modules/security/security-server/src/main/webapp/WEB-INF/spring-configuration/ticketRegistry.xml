@@ -15,7 +15,8 @@
 	</description>
 
 	<!-- Ticket Registry -->
-	<bean id="ticketRegistry" class="org.jasig.cas.ticket.registry.JpaTicketRegistry" />
+	<!-- <bean id="ticketRegistry" class="org.jasig.cas.ticket.registry.JpaTicketRegistry" />  -->
+	<bean id="ticketRegistry" class="org.openiot.security.oauth.lsm.LSMTicketRegistry" />
 
 	<!-- Injects EntityManager/Factory instances into beans with @PersistenceUnit and @PersistenceContext -->
 	<bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor" />

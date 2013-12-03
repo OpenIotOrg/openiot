@@ -32,9 +32,13 @@ import org.jasig.services.persondir.IPersonAttributes;
 import org.jasig.services.persondir.support.AbstractDefaultAttributePersonAttributeDao;
 import org.jasig.services.persondir.support.CaseInsensitiveNamedPersonImpl;
 import org.jasig.services.persondir.support.IUsernameAttributeProvider;
+import org.openiot.lsm.security.oauth.mgmt.Role;
+import org.openiot.lsm.security.oauth.mgmt.User;
 import org.springframework.beans.factory.annotation.Required;
 
 public class LSMNamedParameterPersonAttributeDao extends AbstractDefaultAttributePersonAttributeDao {
+
+	private LSMOAuthManager manager = LSMOAuthManager.getInstance();
 
 	private IUsernameAttributeProvider usernameAttributeProvider;
 	private Set<String> availableQueryAttributes = null; // default
@@ -49,11 +53,16 @@ public class LSMNamedParameterPersonAttributeDao extends AbstractDefaultAttribut
 	public Set<IPersonAttributes> getPeopleWithMultivaluedAttributes(Map<String, List<Object>> query) {
 		String username = usernameAttributeProvider.getUsernameFromQuery(query);
 		final ArrayList<Object> roleNames = new ArrayList<Object>();
-		
+
 		/********************************
-		 * To be retrieved from LSM     *
+		 * To be retrieved from LSM *
 		 ********************************/
-		//roleNames should be populated from LSM. The SQL query was "SELECT role_name FROM USERS_ROLES WHERE username=:username"
+		// roleNames should be populated from LSM. The SQL query was
+		// "SELECT role_name FROM USERS_ROLES WHERE username=:username"
+		final User user = manager.getUserByUsername(username);
+		final List<Role> roles = user.getRoles();
+		for (Role role : roles)
+			roleNames.add(role.getName());
 
 		Map<String, List<Object>> mapOfLists = new HashMap<String, List<Object>>();
 		mapOfLists.put(userAttributeNames.iterator().next(), roleNames);
