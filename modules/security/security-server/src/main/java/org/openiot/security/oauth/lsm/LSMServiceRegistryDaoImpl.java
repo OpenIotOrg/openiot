@@ -25,48 +25,50 @@ import java.util.List;
 import org.jasig.cas.services.RegisteredService;
 import org.jasig.cas.services.ServiceRegistryDao;
 import org.openiot.lsm.security.oauth.LSMRegisteredServiceImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class LSMServiceRegistryDaoImpl implements ServiceRegistryDao {
 
+	private static Logger log = LoggerFactory.getLogger(LSMServiceRegistryDaoImpl.class);
 	private LSMOAuthManager manager = LSMOAuthManager.getInstance();
 
 	public RegisteredService save(RegisteredService registeredService) {
 		final boolean isNew = registeredService.getId() == -1;
-		if (registeredService instanceof LSMRegisteredServiceImpl) {
-			LSMRegisteredServiceImpl lsmRegisteredServiceImpl = (LSMRegisteredServiceImpl) registeredService;
-			if (isNew) {
-				/********************************
-				 * To be retrieved from LSM *
-				 ********************************/
-				// "Insert into RegisteredServiceImpl (id, ...) values (...) "
-				final List<RegisteredService> allRegisteredServices = manager.getAllRegisteredServices();
-				long id = 1;
-				if (allRegisteredServices != null)
-					for (RegisteredService service : allRegisteredServices)
-						if (service.getId() >= id)
-							id = service.getId() + 1;
-				lsmRegisteredServiceImpl.setId(1);
-
-				manager.addRegisteredService(lsmRegisteredServiceImpl);
-			} else {
-				/********************************
-				 * To be retrieved from LSM *
-				 ********************************/
-				// "update RegisteredServiceImpl where id=:registeredService.getId() set ...=..., ... "
-				manager.deleteRegisteredService(lsmRegisteredServiceImpl.getId());
-				manager.addRegisteredService(lsmRegisteredServiceImpl);
-			}
-			return manager.getRegisteredService(lsmRegisteredServiceImpl.getId());
+		LSMRegisteredServiceImpl lsmRegisteredServiceImpl;
+		if (registeredService instanceof LSMRegisteredServiceImpl)
+			lsmRegisteredServiceImpl = (LSMRegisteredServiceImpl) registeredService;
+		else {
+			lsmRegisteredServiceImpl = new LSMRegisteredServiceImpl();
+			lsmRegisteredServiceImpl.copyFrom(registeredService);
 		}
-		return null;
+
+		if (isNew) {
+			final List<RegisteredService> allRegisteredServices = manager.getAllRegisteredServices();
+			long id = 1;
+			if (allRegisteredServices != null)
+				for (RegisteredService service : allRegisteredServices)
+					if (service.getId() >= id)
+						id = service.getId() + 1;
+			lsmRegisteredServiceImpl.setId(id);
+
+			manager.addRegisteredService(lsmRegisteredServiceImpl);
+		} else {
+			manager.deleteRegisteredService(lsmRegisteredServiceImpl.getId());
+			manager.addRegisteredService(lsmRegisteredServiceImpl);
+		}
+		return manager.getRegisteredService(lsmRegisteredServiceImpl.getId());
+
 	}
 
 	public boolean delete(RegisteredService registeredService) {
+		log.info("Deleting registered service with id {} ", registeredService.getId());
 		manager.deleteRegisteredService(registeredService.getId());
 		return manager.getRegisteredService(registeredService.getId()) == null;
 	}
 
 	public List<RegisteredService> load() {
+		log.info("Reloading registered services ...");
 		return manager.getAllRegisteredServices();
 	}
 

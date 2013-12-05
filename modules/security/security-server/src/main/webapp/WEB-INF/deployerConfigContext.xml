@@ -72,9 +72,14 @@
 					or you might use one of the handlers provided in the adaptors modules. + -->
 				<!-- <bean class="org.jasig.cas.authentication.handler.support.SimpleTestUsernamePasswordAuthenticationHandler" /> -->
 
+				<!-- 
 				<bean class="org.jasig.cas.adaptors.jdbc.QueryDatabaseAuthenticationHandler">
 					<property name="sql" value="SELECT password FROM USERS WHERE username=?" />
 					<property name="dataSource" ref="dataSource" />
+					<property name="passwordEncoder" ref="passwordEncoder" />
+				</bean>
+				 -->
+				<bean class="org.openiot.security.oauth.lsm.LSMAuthenticationHandler">
 					<property name="passwordEncoder" ref="passwordEncoder" />
 				</bean>
 			</list>
@@ -106,6 +111,7 @@
 	-->
 	
 	<!-- Bean that returns authorization of the user as the profile attributes. -->
+	<!-- 
 	<bean id="attributeRepository" class="org.jasig.services.persondir.support.jdbc.NamedParameterJdbcPersonAttributeDao" p:dataSource-ref="dataSource">
 		<property name="sql">
 			<value>
@@ -119,6 +125,14 @@
 			<set>
 				<value>role_name</value>
 			</set>
+		</property>
+	</bean>
+	-->
+	
+	<!-- Bean that returns authorization of the user as the profile attributes. -->
+	<bean id="attributeRepository" class="org.openiot.security.oauth.lsm.LSMNamedParameterPersonAttributeDao">
+		<property name="usernameAttributeProvider"> 
+			<bean class="org.jasig.services.persondir.support.SimpleUsernameAttributeProvider"/>
 		</property>
 	</bean>
 	
@@ -164,7 +178,10 @@
 	</bean> -->
 
 	<!-- Configuring the JPA service registry -->
-	<bean id="serviceRegistryDao" class="org.jasig.cas.services.JpaServiceRegistryDaoImpl" p:entityManagerFactory-ref="entityManagerFactory" />
+	<!--  <bean id="serviceRegistryDao" class="org.jasig.cas.services.JpaServiceRegistryDaoImpl" p:entityManagerFactory-ref="entityManagerFactory" /> -->
+	
+	<!-- Configuring the LSM service registry -->
+	<bean id="serviceRegistryDao" class="org.openiot.security.oauth.lsm.LSMServiceRegistryDaoImpl"/>
 
 	<!-- This is the EntityManagerFactory configuration for Hibernate -->
 	<bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">

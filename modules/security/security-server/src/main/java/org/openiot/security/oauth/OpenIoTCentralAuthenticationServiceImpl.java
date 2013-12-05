@@ -354,8 +354,9 @@ public final class OpenIoTCentralAuthenticationServiceImpl implements CentralAut
             final List<Authentication> chainedAuthenticationsList = serviceTicket.getGrantingTicket().getChainedAuthentications();
             final Authentication authentication = chainedAuthenticationsList.get(chainedAuthenticationsList.size() - 1);
             final Principal principal = authentication.getPrincipal();
-           
+            
             final String principalId = determinePrincipalIdForRegisteredService(principal, registeredService, serviceTicket);
+            
             final Authentication authToUse;
 
             if (!registeredService.isIgnoreAttributes()) {

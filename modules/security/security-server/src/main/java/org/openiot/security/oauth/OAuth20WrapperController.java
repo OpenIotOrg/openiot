@@ -31,6 +31,7 @@ import org.jasig.cas.support.oauth.web.BaseOAuthWrapperController;
 import org.jasig.cas.support.oauth.web.OAuth20AccessTokenController;
 import org.jasig.cas.support.oauth.web.OAuth20AuthorizeController;
 import org.jasig.cas.support.oauth.web.OAuth20CallbackAuthorizeController;
+import org.openiot.security.oauth.lsm.LSMOAuth20PermissionController;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
@@ -65,7 +66,7 @@ public final class OAuth20WrapperController extends BaseOAuthWrapperController i
 		callbackAuthorizeController = new OAuth20CallbackAuthorizeController();
 		accessTokenController = new OAuth20AccessTokenController(servicesManager, ticketRegistry, timeout);
 		profileController = new OAuth20ProfileController(ticketRegistry);
-		permissionsController = new OAuth20PermissionController(servicesManager, ticketRegistry, dataSource);
+		permissionsController = new LSMOAuth20PermissionController(servicesManager, ticketRegistry, dataSource);
 	}
 
 	@Override

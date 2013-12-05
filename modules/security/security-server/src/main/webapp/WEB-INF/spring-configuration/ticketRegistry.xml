@@ -25,14 +25,16 @@
 
 
 	<!-- TICKET REGISTRY CLEANER -->
+	<!-- <bean id="ticketRegistryCleaner" class="org.jasig.cas.ticket.registry.support.DefaultTicketRegistryCleaner"
+		p:ticketRegistry-ref="ticketRegistry" p:lock-ref="cleanerLock" />   -->
 	<bean id="ticketRegistryCleaner" class="org.jasig.cas.ticket.registry.support.DefaultTicketRegistryCleaner"
-		p:ticketRegistry-ref="ticketRegistry" p:lock-ref="cleanerLock" />
+		p:ticketRegistry-ref="ticketRegistry" />
 
 	<!-- Use JpaLockingStrategy for 3.4.11 and later. This bean is only needed for HA setups where multiple nodes are attempting 
 		cleanup on a shared database, but it doesn't substantially impact performance and is easy to setup and is therefore recommended 
 		for all JpaTicketRegistry deployments. This component automatically creates the LOCKS table so no further configuration is required. -->
-	<bean id="cleanerLock" class="org.jasig.cas.ticket.registry.support.JpaLockingStrategy" p:uniqueId="${host.name}"
-		p:applicationId="cas-ticket-registry-cleaner" />
+	<!-- <bean id="cleanerLock" class="org.jasig.cas.ticket.registry.support.JpaLockingStrategy" p:uniqueId="${host.name}"
+		p:applicationId="cas-ticket-registry-cleaner" /> -->
 
 	<bean id="ticketRegistryCleanerJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean"
 		p:targetObject-ref="ticketRegistryCleaner" p:targetMethod="clean" />

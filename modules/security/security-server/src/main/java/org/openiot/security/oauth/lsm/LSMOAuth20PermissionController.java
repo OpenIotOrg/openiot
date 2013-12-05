@@ -51,8 +51,8 @@ import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 
 /**
- * This controller returns the roles and permissions associated with the roles
- * for the requesting client
+ * This controller returns the roles and permissions associated with the roles for the requesting
+ * client
  * 
  * @author Mehdi Riahi
  */
@@ -274,8 +274,11 @@ public final class LSMOAuth20PermissionController extends AbstractController {
 		final List<Role> roles = user.getRoles();
 		for (Role role : roles) {
 			Set<String> set = new HashSet<String>();
-			for (Permission perm : role.getPermissionsPerService().get(serviceId))
-				set.add(perm.getName());
+			final Set<Permission> permissionForService = role.getPermissionsPerService().get(serviceId);
+			if (permissionForService != null) {
+				for (Permission perm : permissionForService)
+					set.add(perm.getName());
+			}
 			rolePermissions.put(role.getName(), set);
 		}
 
