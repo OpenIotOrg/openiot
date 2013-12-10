@@ -24,6 +24,13 @@ All you need to build this project is Java 7.0 (Java SDK 1.7) or better, Maven 3
 The application this project produces is designed to be run on JBoss Enterprise Application Platform 6 or JBoss AS 7.1. 
 
  
+Properties
+----------
+
+The property file can be found here: [properties](https://github.com/OpenIotOrg/openiot/tree/develop/utils/utils.commons/src/main/resources/properties)
+copy the `openiot.properties` file to the folowing path: `\JBoss_HOME\standalone\configuration`
+ 
+ 
 Configure Maven
 ---------------
 

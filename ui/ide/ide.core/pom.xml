@@ -76,13 +76,6 @@
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
-			<dependency>
-				<groupId>org.jboss.bom</groupId>
-				<artifactId>jboss-javaee-6.0-with-hibernate</artifactId>
-				<version>${version.jboss.bom}</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
@@ -208,6 +201,12 @@
 				<artifactId>jboss-as-maven-plugin</artifactId>
 				<version>${version.jboss.maven.plugin}</version>
 			</plugin>
+			<!--Plugin for JRebel - Remove upon release -->
+			<plugin>
+				<groupId>org.zeroturnaround</groupId>
+				<artifactId>jrebel-maven-plugin</artifactId>
+				<version>1.1.5</version>
+			</plugin>
 		</plugins>
 	</build>
 
@@ -292,8 +291,6 @@
   <!-- =========================================================== -->
   <!-- Repositories -->
   <!-- =========================================================== -->
-
-
 	<repositories>
 		<repository>
 			<id>prime-repo</id>

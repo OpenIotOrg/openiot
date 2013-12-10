@@ -27,6 +27,8 @@ import org.openiot.commons.util.PropertyManagement;
 import org.openrdf.query.BindingSet;
 import org.openrdf.query.QueryEvaluationException;
 import org.openrdf.query.TupleQueryResult;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntClass;
@@ -54,7 +56,7 @@ public class WidgetPresentation {
 							String str = (b.getValue((String) n) == null) ? null : b.getValue((String) n)
 									.stringValue();
 							widgetPre.setId(str);
-							System.out.print("widget attr id: " + widgetPre.getId() + " ");
+							logger.debug("widget attr id: " + widgetPre.getId() + " ");
 						}
 						// else if(((String)
 						// n).equalsIgnoreCase("widgetPreDesc"))
@@ -70,7 +72,7 @@ public class WidgetPresentation {
 							Service srvc = new Service();
 							srvc.setId(str);
 							widgetPre.setService(srvc);
-							System.out.print("widgetPreOf: " + widgetPre.getService().getId() + " ");
+							logger.debug("widgetPreOf: " + widgetPre.getService().getId() + " ");
 						} else if (((String) n).equalsIgnoreCase("widget")) {
 							String str = (b.getValue((String) n) == null) ? null : b.getValue((String) n)
 									.stringValue();
@@ -78,15 +80,14 @@ public class WidgetPresentation {
 							widget.setId(str);
 
 							widgetPre.setWidgetAvailable(widget);
-							System.out.print("widget: " + widgetPre.getWidgetAvailable().getId() + " ");
+							logger.debug("widget: " + widgetPre.getWidgetAvailable().getId() + " ");
 						} else if (((String) n).equalsIgnoreCase("widgetAttr")) {
 							String str = (b.getValue((String) n) == null) ? null : b.getValue((String) n)
 									.stringValue();
 							WidgetAttributes wAttr = new WidgetAttributes();
 							wAttr.setId(str);
 							widgetPre.addWidgetAttr(wAttr);
-							System.out.print("widgetAttr: " + widgetPre.getWidgetAttrList().get(0).getId()
-									+ " ");
+							logger.debug("widgetAttr: " + widgetPre.getWidgetAttrList().get(0).getId() + " ");
 						}
 					}
 					widgetPreList.add(widgetPre);
@@ -158,6 +159,8 @@ public class WidgetPresentation {
 		}
 	}// class
 
+	final static Logger logger = LoggerFactory.getLogger(WidgetPresentation.class);
+	
 	private LSMSchema myOnt;
 	private LSMSchema ontInstance;
 	private String graph;
