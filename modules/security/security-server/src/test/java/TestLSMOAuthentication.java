@@ -131,6 +131,60 @@ public class TestLSMOAuthentication {
 			oM.addUser(user);
 
 	}
+	
+	public static List<LSMRegisteredServiceImpl> createDefaultServices(){
+		LSMRegisteredServiceImpl defaultService = new LSMRegisteredServiceImpl();
+		defaultService.setId(1L);
+		defaultService.setAllowedToProxy(true);
+		defaultService.setAnonymousAccess(false);
+		defaultService.setDescription("Service Manager");
+		defaultService.setEnabled(true);
+		defaultService.setEvaluationOrder(0);
+		defaultService.setIgnoreAttributes(true);
+		defaultService.setName("Service Manager");
+		defaultService.setServiceId("https://localhost:8443/openiot-cas/services/j_acegi_cas_security_check");
+		defaultService.setSsoEnabled(true);
+		
+		LSMRegisteredServiceImpl httpService = new LSMRegisteredServiceImpl();
+		httpService.setId(2L);
+		httpService.setAllowedToProxy(true);
+		httpService.setAnonymousAccess(false);
+		httpService.setDescription("OAuth wrapper callback url");
+		httpService.setEnabled(true);
+		httpService.setEvaluationOrder(0);
+		httpService.setIgnoreAttributes(true);
+		httpService.setName("HTTP");
+		httpService.setServiceId("https://localhost:8443/openiot-cas/oauth2.0/callbackAuthorize");
+		httpService.setSsoEnabled(true);
+		
+		LSMRegisteredServiceImpl oauthTestService1 = new LSMRegisteredServiceImpl();
+		oauthTestService1.setId(3L);
+		oauthTestService1.setAllowedToProxy(true);
+		oauthTestService1.setAnonymousAccess(false);
+		oauthTestService1.setDescription("testsecret1");
+		oauthTestService1.setEnabled(true);
+		oauthTestService1.setEvaluationOrder(0);
+		oauthTestService1.setIgnoreAttributes(false);
+		oauthTestService1.setName("testservice1");
+		oauthTestService1.setServiceId("http://localhost:9080/callback?client_name=CasOAuthWrapperClient");
+		oauthTestService1.setTheme("Service1");
+		oauthTestService1.setSsoEnabled(true);
+		
+		LSMRegisteredServiceImpl oauthTestService2 = new LSMRegisteredServiceImpl();
+		oauthTestService2.setId(4L);
+		oauthTestService2.setAllowedToProxy(true);
+		oauthTestService2.setAnonymousAccess(false);
+		oauthTestService2.setDescription("testsecret2");
+		oauthTestService2.setEnabled(true);
+		oauthTestService2.setEvaluationOrder(0);
+		oauthTestService2.setIgnoreAttributes(false);
+		oauthTestService2.setName("testservice2");
+		oauthTestService2.setServiceId("http://localhost:7080/callback?client_name=CasOAuthWrapperClient");
+		oauthTestService2.setTheme("Service2");
+		oauthTestService2.setSsoEnabled(true);
+		
+		return Arrays.asList(new LSMRegisteredServiceImpl[]{defaultService, httpService, oauthTestService1, oauthTestService2});
+	}
 
 	public static User generateOAuthUser() {
 		Role role = generateRole();
@@ -254,13 +308,24 @@ public class TestLSMOAuthentication {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		generateAuthorizationData();
+		LSMOAuthHttpManager oM = new LSMOAuthHttpManager(OAuthGraphURL);
+		
+//		for(LSMRegisteredServiceImpl rs : createDefaultServices())
+//			oM.addRegisteredService(rs);
+//		
+//		generateAuthorizationData();		
+		
+//		final LSMRegisteredServiceImpl registeredService = oM.getRegisteredService(100L);
+//		System.out.println("getUsernameAttribute() is null: " +  registeredService.getUsernameAttribute() == null);
+//		System.out.println("getTheme(): " + registeredService.getTheme());
+//		System.out.println("getTheme() is null: " +  registeredService.getTheme() == null);
+//		System.out.println("getTheme().equals(\"null\"): " +  "null".equals(registeredService.getTheme()));
+//		System.out.println("isAnonymousAccess(): " +  registeredService.isAnonymousAccess());
+		
 		
 		if (true)
 			return;
 		
-		LSMOAuthHttpManager oM = new LSMOAuthHttpManager(OAuthGraphURL);
-
 		LSMTicketGrantingTicketImpl realTicket = oM.getTicketGranting("TGT-5-9ynOlGGcYiJxaQZxZpZceNgsmKLF5pXOUQadLhV7otqeQaUM9P-openiot.eu");
 		if (realTicket != null) {
 			System.out.println("LastTimeUsed: " + realTicket.getCreationTime() + " | " + new Date(realTicket.getCreationTime()));

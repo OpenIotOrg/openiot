@@ -106,14 +106,6 @@ public class LSMOAuthManager {
 
 	public LSMRegisteredServiceImpl getRegisteredService(long serviceId) {
 		final LSMRegisteredServiceImpl registeredService = lsmOAuthHttpManager.getRegisteredService(serviceId);
-		//working around the existing bugs
-		if (registeredService != null) {
-			if ("null".equals(registeredService.getUsernameAttribute()))
-				registeredService.setUsernameAttribute(null);
-			if ("null".equals(registeredService.getTheme()))
-				registeredService.setTheme(null);
-			registeredService.setAnonymousAccess(false);
-		}
 		return registeredService;
 	}
 
