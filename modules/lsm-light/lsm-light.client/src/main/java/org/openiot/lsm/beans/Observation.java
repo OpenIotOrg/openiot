@@ -21,7 +21,11 @@ package org.openiot.lsm.beans;
 import java.util.ArrayList;
 import java.util.Date;
 
-
+/**
+ * 
+ * @author Hoan Nguyen Mau Quoc
+ * 
+ */
 public class Observation implements java.io.Serializable {
 	private String id;	
 	private Date times;	

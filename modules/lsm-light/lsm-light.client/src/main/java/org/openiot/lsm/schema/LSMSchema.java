@@ -26,22 +26,19 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import org.openiot.lsm.beans.User;
 import org.openiot.lsm.server.LSMTripleStore;
-
 
 import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntClass;
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.ontology.OntModelSpec;
 import com.hp.hpl.jena.ontology.OntProperty;
-import com.hp.hpl.jena.rdf.model.Literal;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 
-
 /**
- * @author hoan
- *
+ * 
+ * @author Hoan Nguyen Mau Quoc
+ * 
  */
 public class LSMSchema {
 	private OntModel base;
@@ -225,13 +222,9 @@ public class LSMSchema {
 //		idv.addLiteral(op,"hoan");
 //		idv.setPropertyValue(op, li);
 //		System.out.println(data.exportToTriples("N-TRIPLE"));	
-		
-		User user = new User();
-        user.setUsername("admin");
-        user.setPass("admin");        
+     
         
         LSMTripleStore lsmStore = new LSMTripleStore();
-        lsmStore.setUser(user);
 //        lsmStore.pushRDF("http://lsm.deri.ie/OpenIoT/sensordata", schema.exportToTriples("N-TRIPLE"));
         lsmStore.uploadSchema(schema, "example.owl");
 	}

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+
+    <!-- 
+     Copyright (c) 2011-2014, OpenIoT
+     
+     This file is part of OpenIoT.
+ 
+     OpenIoT is free software: you can redistribute it and/or modify
+     it under the terms of the GNU Lesser General Public License as published by
+     the Free Software Foundation, version 3 of the License.
+     
+     OpenIoT is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU Lesser General Public License for more details.
+ 
+     You should have received a copy of the GNU Lesser General Public License
+     along with OpenIoT.  If not, see <http://www.gnu.org/licenses/>.
+ 
+      Contact: OpenIoT mailto: info@openiot.eu
+    -->
+
+    <!-- Author: Nikos Kefalakis (nkef@ait.edu.gr) -->
+
+
+    <xs:element name="AppUsageReport">
+        <xs:annotation>
+            <xs:documentation>OpenIoT Application Usage Report</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element maxOccurs="unbounded" ref="applicationUsage"/>
+            </xs:sequence>
+            <xs:attribute name="userID" type="xs:anyURI"/>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="applicationUsage">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element maxOccurs="unbounded" ref="ServiceUsage"/>
+            </xs:sequence>
+            <xs:attribute name="id" type="xs:anyURI"/>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="ServiceUsage">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:sequence>
+                    <xs:element ref="sensorUsed" maxOccurs="unbounded"/>
+                </xs:sequence>
+                <xs:element maxOccurs="1" minOccurs="0" ref="dataVolume"/>
+            </xs:sequence>
+            <xs:attribute name="id" type="xs:anyURI"/>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="dataVolume">
+        <xs:complexType>
+            <xs:attribute name="dataType" type="xs:string"/>
+            <xs:attribute name="value" type="xs:float"/>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="sensorUsed">
+        <xs:complexType>
+            <xs:attribute name="id" type="xs:anyURI"/>
+            <xs:attribute name="weight" type="xs:decimal"/>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>
