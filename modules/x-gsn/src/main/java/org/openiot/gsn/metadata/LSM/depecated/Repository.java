@@ -28,8 +28,10 @@ package org.openiot.gsn.metadata.LSM.depecated;
 import org.openiot.gsn.beans.VSensorConfig;
 import org.openiot.gsn.utils.PropertiesReader;
 import org.openiot.gsn.utils.TestLSM;
-import lsm.beans.*;
-import lsm.server.LSMTripleStore;
+//import lsm.beans.*;
+//import lsm.server.LSMTripleStore;
+import org.openiot.lsm.beans.*;
+import org.openiot.lsm.server.LSMTripleStore;
 import org.apache.log4j.Logger;
 
 import java.util.Date;
@@ -90,8 +92,10 @@ public class Repository {
                 s.getSensorType(),
                 s.getInformation(),
                 s.getSource(),
-                0,
-                0
+                "","",
+                new String[]{},
+                0d,
+                0d
         );
 
         System.out.println("SENSOR ID published to LSM => " + id);
@@ -223,14 +227,15 @@ public class Repository {
 
         logger.warn(sensorMetaData.getSensorID());
         // set SensorURL of observation
-        Sensor sensor2 = lsmStore.getSensorById(sensorMetaData.getSensorID());
+        Sensor sensor2 = lsmStore.getSensorById(sensorMetaData.getSensorID(),"");
         obs.setSensor(sensor2.getId());
         //set time when the observation was observed. In this example, the time is current local time.
         obs.setTimes(observation.getTime());
 
         ObservedProperty obvTem = new ObservedProperty();
         obvTem.setObservationId(obs.getId());
-        obvTem.setPropertyName(observation.getPropertyName());
+        //obvTem.setPropertyName(observation.getPropertyName());
+        obvTem.setPropertyType(observation.getPropertyName());
         obvTem.setValue(observation.getValue());
         obvTem.setUnit(observation.getUnit());
         obs.addReading(obvTem);

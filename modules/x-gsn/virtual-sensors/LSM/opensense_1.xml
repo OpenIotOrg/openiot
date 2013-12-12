@@ -26,7 +26,7 @@
                     <predicate key="formats">timestamp(d/M/y H:m), numeric, numeric,numeric,numeric,numeric,numeric</predicate>
                     <predicate key="bad-values">NaN,6999,-6999,null</predicate>
                     <predicate key="timezone">Etc/GMT-2</predicate>
-                    <predicate key="sampling">200</predicate>
+                    <predicate key="sampling">5000</predicate>
                     <predicate key="check-point-directory">csv-check-points</predicate>
                 </address>
                 <query>select * from wrapper

@@ -24,7 +24,7 @@ package org.openiot.gsn.vsensor;
 import org.openiot.gsn.beans.StreamElement;
 import org.openiot.gsn.beans.VSensorConfig;
 import org.openiot.gsn.metadata.LSM.LSMRepository;
-import org.openiot.gsn.metadata.LSM.LSMSensorMetaData;
+//import org.openiot.gsn.metadata.LSM.LSMSensorMetaData;
 
 import org.apache.log4j.Logger;
 
@@ -35,7 +35,7 @@ public class LSMExporter extends AbstractVirtualSensor {
 
     private List<String> fields = new Vector<String>();
 
-    private LSMSensorMetaData lsmSensorMetaData;
+    //private LSMSensorMetaData lsmSensorMetaData;
 
     private String sensorName;
 
@@ -84,13 +84,13 @@ public class LSMExporter extends AbstractVirtualSensor {
             Double v = (Double) data.getData(field);
             Date d = new Date(t);
             String fieldName = data.getFieldNames()[i];
-            logger.info(fieldName + " : t=" + d + " v=" + v);
+            logger.debug(fieldName + " : t=" + d + " v=" + v);
 
             if (!allow_nulls && v == null)
                 return; // skipping null values if allow_nulls flag is not st to true
 
             if (debug_mode) {
-                logger.info(fieldName + " : t=" + d + " v=" + v);
+                logger.debug(fieldName + " : t=" + d + " v=" + v);
             } else {
                 LSMRepository.getInstance().publishSensorDataToLSM(sensorName, fieldName, v, d);
             }
