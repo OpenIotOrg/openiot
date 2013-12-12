@@ -81,7 +81,15 @@ public class PropertyManagement {
 	private static final String SDUM_LSM_FUNCTIONAL_GRAPH = "scheduler.core.lsm.openiotFunctionalGraph";
 	private static final String SDUM_LSM_SPARQL_END_POINT = "sdum.core.lsm.sparql.endpoint";
 	
-	
+
+	//==============LSM-LIGHT====================
+	private static final String LSM_CONNECTION_DRIVER = "lsm-light.server.connection.driver_class";
+	private static final String LSM_CONNECTION_URL = "lsm-light.server.connection.url";
+	private static final String LSM_CONNECTION_USERNAME = "lsm-light.server.connection.username";
+	private static final String LSM_CONNECTION_PASS= "lsm-light.server.connection.password";
+	private static final String LSM_MIN_CONNECTION = "lsm-light.server.minConnection";
+	private static final String LSM_MAX_CONNECTION = "lsm-light.server.maxConnection";
+	private static final String LSM_RETRY_ATTEMPTS = "lsm-light.server.acquireRetryAttempts";
 	
 	private Properties props = null;
 	
@@ -152,6 +160,46 @@ public class PropertyManagement {
 		return props.getProperty(SDUM_LSM_SPARQL_END_POINT);
 	}
 
+	public String getLsmServerConnectionDriver(){
+		return props.getProperty(LSM_CONNECTION_DRIVER);
+	}
 
+	public String getLsmServerConnectionURL(){
+		return props.getProperty(LSM_CONNECTION_URL);
+	}
+	
+	public String getLsmServerUserName(){
+		return props.getProperty(LSM_CONNECTION_USERNAME);
+	}
 
+	public String getLsmServerPass(){
+		return props.getProperty(LSM_CONNECTION_PASS);
+	}
+	
+	public int getLsmMinConnection(){
+		try{
+			return Integer.parseInt(props.getProperty(LSM_MIN_CONNECTION));
+		}catch(Exception e){
+			logger.error("Invalid input value",e);
+		}
+		return -99;
+	}
+	
+	public int getLsmMaxConnection(){
+		try{
+			return Integer.parseInt(props.getProperty(LSM_MAX_CONNECTION));
+		}catch(Exception e){
+			logger.error("Invalid input value",e);
+		}
+		return -99;
+	}
+	
+	public int getLsmRetryAttempts(){
+		try{
+			return Integer.parseInt(props.getProperty(LSM_RETRY_ATTEMPTS));
+		}catch(Exception e){
+			logger.error("Invalid input value",e);
+		}
+		return -99;
+	}
 }

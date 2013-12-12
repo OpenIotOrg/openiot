@@ -9,51 +9,47 @@
     <welcome-file>default.htm</welcome-file>
     <welcome-file>default.jsp</welcome-file>
   </welcome-file-list>
-  
-  <!-- *******************************************************************************     
-      LSM's Main Servlets, Must be enabled for any kind of HTTP based access
-     ******************************************************************************* -->
-     
-     <!-- LSM START -->
+  <listener>
+    <listener-class>org.openiot.lsm.http.ContextListener</listener-class>
+  </listener>
   <servlet>
     <servlet-name>TriplesServlet</servlet-name>
     <servlet-class>org.openiot.lsm.http.TriplesServlet</servlet-class>
   </servlet>
-  
   <servlet>
     <servlet-name>ObjectServlet</servlet-name>
     <servlet-class>org.openiot.lsm.http.ObjectServlet</servlet-class>
   </servlet>
-  
   <servlet>
     <servlet-name>UploadFileServlet</servlet-name>
     <servlet-class>org.openiot.lsm.http.UploadFileServlet</servlet-class>
   </servlet>
-  
   <servlet>
     <servlet-name>DownloadFileServlet</servlet-name>
     <servlet-class>org.openiot.lsm.http.DownloadFileServlet</servlet-class>
   </servlet>
-  
-    				<!-- mapping for LSM -->
+  <servlet>
+    <servlet-name>OauthServlet</servlet-name>
+    <servlet-class>org.openiot.lsm.http.OauthServlet</servlet-class>
+  </servlet>
   <servlet-mapping>
     <servlet-name>TriplesServlet</servlet-name>
     <url-pattern>/rdfservlet</url-pattern>
   </servlet-mapping>
-  
   <servlet-mapping>
     <servlet-name>ObjectServlet</servlet-name>
     <url-pattern>/objservlet</url-pattern>
   </servlet-mapping>
-  
-  
   <servlet-mapping>
     <servlet-name>UploadFileServlet</servlet-name>
     <url-pattern>/upload</url-pattern>
   </servlet-mapping>
-  
   <servlet-mapping>
     <servlet-name>DownloadFileServlet</servlet-name>
     <url-pattern>/download</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>OauthServlet</servlet-name>
+    <url-pattern>/oauth</url-pattern>
   </servlet-mapping>
 </web-app>
