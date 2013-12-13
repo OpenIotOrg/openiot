@@ -180,7 +180,7 @@ public class TestLSM {
 
     public static void main(String[] args) {
 
-    	register();
+    	register();    	
     	//pushdata();
     	/*
     	  LSMTripleStore lsmStore = new LSMTripleStore();
