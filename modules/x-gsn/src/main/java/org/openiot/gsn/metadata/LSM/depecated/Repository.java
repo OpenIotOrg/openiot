@@ -42,7 +42,7 @@ public class Repository {
     public static final String LSM_CONFIG_PROPERTIES_FILE = "conf/lsm_config.properties";
     public static final String METADATA_FILE_SUFFIX = ".metadata";
     LSMTripleStore lsmStore = null;
-    User user;
+    //User user;
 
     private static Repository singleton;
 
@@ -51,9 +51,9 @@ public class Repository {
         * Set sensor's author
         * If you don't have LSM account, please visit LSM Home page (http://lsm.deri.ie) to sign up
         */
-        User user = new User();
-        user.setUsername(PropertiesReader.readProperty(LSM_CONFIG_PROPERTIES_FILE, "username"));
-        user.setPass(PropertiesReader.readProperty(LSM_CONFIG_PROPERTIES_FILE, "password"));
+        //User user = new User();
+        //user.setUsername(PropertiesReader.readProperty(LSM_CONFIG_PROPERTIES_FILE, "username"));
+        //user.setPass(PropertiesReader.readProperty(LSM_CONFIG_PROPERTIES_FILE, "password"));
 
         logger.warn("username : " + PropertiesReader.readProperty(LSM_CONFIG_PROPERTIES_FILE, "username"));
         logger.warn("password : " + PropertiesReader.readProperty(LSM_CONFIG_PROPERTIES_FILE, "password"));
@@ -130,13 +130,13 @@ public class Repository {
             place.setLng(vs.getLongitude());
             sensor.setPlace(place);
 
-            sensor.setUser(user);
+            //sensor.setUser(user);
 
             // create LSMTripleStore instance
             lsmStore = new LSMTripleStore();
 
             //set user information for authentication
-            lsmStore.setUser(user);
+            //lsmStore.setUser(user);
 
 
             System.out.printf(sensor.getId());

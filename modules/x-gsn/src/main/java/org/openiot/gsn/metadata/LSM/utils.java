@@ -78,16 +78,16 @@ public class utils {
             * Set sensor's author
             * If you don't have LSM account, please visit LSM Home page (http://lsm.deri.ie) to sign up
             */
-            User user = new User();
-            user.setUsername(username);
-            user.setPass(password);
-            sensor.setUser(user);
+            //User user = new User();
+            //user.setUsername(username);
+            //user.setPass(password);
+            //sensor.setUser(user);
 
             // create LSMTripleStore instance
             LSMTripleStore lsmStore = new LSMTripleStore();
 
             //set user information for authentication
-            lsmStore.setUser(user);
+            //lsmStore.setUser(user);
 
             //call sensorAdd method
             sensorID=lsmStore.sensorAdd(sensor);           
@@ -121,22 +121,22 @@ public class utils {
             * Set sensor's author
             * If you don't have LSM account, please visit LSM Home page (http://lsm.deri.ie) to sign up
             */
-            User user = new User();
-            user.setUsername(username);
-            user.setPass(password);
+            //User user = new User();
+            //user.setUsername(username);
+            //user.setPass(password);
 
             Sensor sensor = new Sensor();
 
             sensor.setId(sensorID);
 
 
-            sensor.setUser(user);
+            //sensor.setUser(user);
 
             // create LSMTripleStore instance
             LSMTripleStore lsmStore = new LSMTripleStore();
 
             //set user information for authentication
-            lsmStore.setUser(user);
+            //lsmStore.setUser(user);
 
             /*
             * An Observation is a Situation in which a Sensing method has been used to estimate or
@@ -237,7 +237,7 @@ public class utils {
                 .append("\nsourcetyp : ").append(s.getSourceType())
                 .append("\nplace     : ").append(s.getPlace())
                 .append("\ntimes     : ").append(s.getTimes())
-                .append("\nuser      : ").append(s.getUser())
+                //.append("\nuser      : ").append(s.getUser())
                 .append("\nstring    : ").append(s.toString())
                 .append("\nlatitude  : ").append(s.getPlace().getLat())
                 .append("\nlongitude : ").append(s.getPlace().getLng())

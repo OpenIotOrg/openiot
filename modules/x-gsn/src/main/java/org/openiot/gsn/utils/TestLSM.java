@@ -35,10 +35,9 @@ import org.openiot.gsn.metadata.LSM.utils;
 //import lsm.beans.ObservedProperty;
 import org.openiot.lsm.beans.Place;
 import org.openiot.lsm.beans.Sensor;
-import org.openiot.lsm.beans.User;
+//import org.openiot.lsm.beans.User;
 //import org.openiot.lsm.beans.User;
 import org.openiot.lsm.server.LSMTripleStore;
-import org.openiot.lsm.utils.ObsConstant;
 import org.openiot.lsm.beans.Observation;
 import org.openiot.lsm.beans.ObservedProperty;
 
@@ -56,9 +55,9 @@ public class TestLSM {
             * Set sensor's author
             * If you don't have LSM account, please visit LSM Home page (http://lsm.deri.ie) to sign up
             */
-            User user = new User();
-            user.setUsername(username);
-            user.setPass(password);
+            //User user = new User();
+            //user.setUsername(username);
+            //user.setPass(password);
 
             Sensor sensor = new Sensor();
             //sensor.setId(sensorID);
@@ -66,13 +65,13 @@ public class TestLSM {
 
 
 
-            sensor.setUser(user);
+            //sensor.setUser(user);
 
             // create LSMTripleStore instance
             LSMTripleStore lsmStore = new LSMTripleStore();
 
             //set user information for authentication
-            lsmStore.setUser(user);
+            //lsmStore.setUser(user);
 
             /*
             * An Observation is a Situation in which a Sensing method has been used to estimate or
@@ -150,16 +149,16 @@ public class TestLSM {
             * Set sensor's author
             * If you don't have LSM account, please visit LSM Home page (http://lsm.deri.ie) to sign up
             */
-            User user = new User();
-            user.setUsername(username);
-            user.setPass(password);
-            sensor.setUser(user);
+            //User user = new User();
+            //user.setUsername(username);
+            //user.setPass(password);
+            //sensor.setUser(user);
 
             // create LSMTripleStore instance
             LSMTripleStore lsmStore = new LSMTripleStore();
 
             //set user information for authentication
-            lsmStore.setUser(user);
+            //lsmStore.setUser(user);
 
             //call sensorAdd method
             lsmStore.sensorAdd(sensor);
@@ -307,7 +306,7 @@ public class TestLSM {
         System.out.println("sourcetyp : " + s.getSourceType());
         System.out.println("place : " + s.getPlace());
         System.out.println("times : " + s.getTimes());
-        System.out.println("user : " + s.getUser());
+        //System.out.println("user : " + s.getUser());
         System.out.println("string : " + s.toString());
         System.out.println("------------");
     }
