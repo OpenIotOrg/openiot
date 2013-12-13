@@ -19,14 +19,10 @@ package org.openiot.lsm.http;
 *
 *     Contact: OpenIoT mailto: info@openiot.eu
 */
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.PrintWriter;
 import java.util.HashMap;
-import java.util.Properties;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -35,13 +31,13 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.openiot.commons.util.PropertyManagement;
 import org.openiot.lsm.beans.Observation;
 import org.openiot.lsm.beans.ObservedProperty;
 import org.openiot.lsm.beans.RDFTuple;
 import org.openiot.lsm.beans.Sensor;
 import org.openiot.lsm.manager.SensorManager;
 import org.openiot.lsm.manager.TriplesDataRetriever;
-import org.openiot.lsm.pooling.ConnectionManager;
 import org.openiot.lsm.utils.ConstantsUtil;
 import org.openiot.lsm.utils.NumberUtil;
 import org.openiot.lsm.utils.VirtuosoConstantUtil;
@@ -62,8 +58,7 @@ public class ObjectServlet extends HttpServlet {
 //	private static final long serialVersionUID = 2L;
        
 	final static Logger logger = LoggerFactory.getLogger(ObjectServlet.class);
-    Properties prop = new Properties();
-    
+    static private PropertyManagement propertyManagement = null;
     /**
      * @see HttpServlet#HttpServlet()
      */
@@ -75,19 +70,7 @@ public class ObjectServlet extends HttpServlet {
 	public void init(ServletConfig config) throws ServletException {
 	    super.init(config);
 	    ConstantsUtil.realPath = this.getServletContext().getRealPath("WEB-INF");	   
-	    InputStream in = ConnectionManager.class.getResourceAsStream("/lsm_DBConnector_config.properties");
-	    try {
-	    	if(in == null)			
-				prop.load(new FileInputStream(ConstantsUtil.realPath+"/classes/lsm_DBConnector_config.properties"));			
-			else
-	    		prop.load(in);
-	    } catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	    propertyManagement = new PropertyManagement();
 	}
 	  
 	/**
@@ -150,7 +133,7 @@ public class ObjectServlet extends HttpServlet {
 	        		String triples = TriplesDataRetriever.getSensorTripleMetadata(sensor,sensorTypeId);
 //	        		System.out.println(triples);
 	        		if((sensor.getMetaGraph()==null)||(sensor.getMetaGraph()==""))
-	        			sensor.setMetaGraph(prop.getProperty("openiot.metaGraph"));
+	        			sensor.setMetaGraph(propertyManagement.getSchedulerLsmMetaGraph());
 	        		sensorManager.setDataGraph(sensor.getDataGraph());
 	        		sensorManager.setMetaGraph(sensor.getMetaGraph());
 	        		sensorManager.insertTriplesToGraph(sensor.getMetaGraph(), triples);
@@ -167,7 +150,7 @@ public class ObjectServlet extends HttpServlet {
 	        		triples = "";
      		
 	        		if((observation.getMetaGraph()==null)||(observation.getMetaGraph()==""))
-	        			observation.setMetaGraph(prop.getProperty("openiot.metaGraph"));
+	        			observation.setMetaGraph(propertyManagement.getLSMLocalMetaGraph());
 
 	        		sensorManager.setDataGraph(observation.getDataGraph());
 	        		sensorManager.setMetaGraph(observation.getMetaGraph());
