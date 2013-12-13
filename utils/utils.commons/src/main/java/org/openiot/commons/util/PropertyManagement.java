@@ -90,6 +90,8 @@ public class PropertyManagement {
 	private static final String LSM_MIN_CONNECTION = "lsm-light.server.minConnection";
 	private static final String LSM_MAX_CONNECTION = "lsm-light.server.maxConnection";
 	private static final String LSM_RETRY_ATTEMPTS = "lsm-light.server.acquireRetryAttempts";
+	private static final String LSM_LOCAL_METAGRAPH = "lsm-light.server.localMetaGraph";
+	private static final String LSM_LOCAL_DATAGRAPH = "lsm-light.server.localDataGraph";
 	
 	private Properties props = null;
 	
@@ -201,5 +203,13 @@ public class PropertyManagement {
 			logger.error("Invalid input value",e);
 		}
 		return -99;
+	}
+	
+	public String getLSMLocalMetaGraph(){
+		return props.getProperty(LSM_LOCAL_METAGRAPH);
+	}
+	
+	public String getLSMLocalDataGraph(){
+		return props.getProperty(LSM_LOCAL_DATAGRAPH);
 	}
 }

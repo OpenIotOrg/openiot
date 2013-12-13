@@ -24,7 +24,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
-import java.io.PrintWriter;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -33,7 +32,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.openiot.lsm.beans.RDFTuple;
 import org.openiot.lsm.beans.Sensor;
 import org.openiot.lsm.manager.SensorManager;
 import org.openiot.lsm.utils.ConstantsUtil;
