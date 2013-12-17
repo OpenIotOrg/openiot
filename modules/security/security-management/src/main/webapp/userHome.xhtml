@@ -1,0 +1,67 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+
+<h:head>
+	<!--link type="text/css" rel="stylesheet" href="bluesky/theme.css" /-->
+</h:head>
+
+<h:body>
+	<h:form id="form" prependId="false">
+
+
+		<p:dataTable var="user" value="#{userTable.users}"
+			rowKey="#{user.name}" selection="#{userTable.selectedUser}"
+			selectionMode="single" id="userTable" dynamic="true"
+			scrollable="true" scrollHeight="350" style="width: 600">
+
+			<!--p:ajax event="rowSelect" update=":form:display"
+				oncomplete="carDialog.show()" /-->
+
+			<f:facet name="header">  
+            List of Active User
+        </f:facet>
+
+			<p:column headerText="UserId" id="userId">  
+            #{user.id}  
+        </p:column>
+
+			<p:column headerText="UserName" id="username">  
+            #{user.username}  
+        </p:column>
+
+			<p:column headerText="E-Mail" id="email">  
+            #{user.email} 
+        </p:column>
+
+			<p:column headerText="name" id="name">  
+            #{user.name}
+        </p:column>
+
+		</p:dataTable>
+
+		<h:commandButton type="submit" value="  Add  "
+			action="#{userTable.addColumn}"></h:commandButton>
+
+		<h:commandButton type="submit" value="  Remove  " updates="msgs"
+			action="#{userTable.removeColumn}"></h:commandButton>
+
+		<h:commandButton type="submit" value="  Edit  "
+			action="#{userTable.editColumn}"></h:commandButton>
+
+
+
+	</h:form>
+
+
+
+
+
+</h:body>
+
+</html>
