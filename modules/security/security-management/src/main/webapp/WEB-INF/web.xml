@@ -13,10 +13,20 @@
 	</context-param>
 
 	<context-param>
+		<param-name>facelets.DEVELOPMENT</param-name>
+		<param-value>true</param-value>
+	</context-param>
+
+	<context-param>
+		<param-name>facelets.SKIP_COMMENTS</param-name>
+		<param-value>true</param-value>
+	</context-param>
+
+	<context-param>
 		<param-name>primefaces.PRIVATE_CAPTCHA_KEY</param-name>
 		<param-value>6Lds7-sSAAAAAN6ukhPB_t4iZkbb6rWt8cDgyF8M</param-value>
 	</context-param>
-	
+
 	<context-param>
 		<param-name>primefaces.PUBLIC_CAPTCHA_KEY</param-name>
 		<param-value>6Lds7-sSAAAAABZ_jH5MMvZK6f_pAjxAP-lU5u8B</param-value>

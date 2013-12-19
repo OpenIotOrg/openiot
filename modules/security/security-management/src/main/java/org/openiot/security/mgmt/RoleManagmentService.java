@@ -6,6 +6,8 @@ import java.util.List;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 
+import org.openiot.lsm.security.oauth.mgmt.Role;
+
 
 @SessionScoped
 @ManagedBean(name =  "roleTable")
@@ -17,8 +19,8 @@ public class RoleManagmentService {
 	
 	public RoleManagmentService() {
 		roles = new ArrayList<Role>();
-		roles.add(new Role("role1", "myRole"));
-		roles.add(new Role("role2", "myRole"));
+//		roles.add(new Role("role1", "myRole"));
+//		roles.add(new Role("role2", "myRole"));
 	}
 	
 	public RoleManagmentService(List<Role> roles) {

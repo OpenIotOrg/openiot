@@ -1,0 +1,129 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html" xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+<head />
+<body>
+	<ui:composition template="/WEB-INF/templates/main.xhtml">
+		<ui:define name="title">
+		Manage Roles
+	</ui:define>
+		<ui:define name="content">
+			<p:layout fullPage="false">
+				<h:form id="rolesForm">
+
+					<p:messages id="messages" showDetail="false" autoUpdate="true" closable="true" />
+					<p:layoutUnit position="west">
+
+						<h:panelGroup layout="block" style="width:100%">
+							<p:dataTable var="role" value="#{rolesController.roleDataModel}" id="rolesTable" resizableColumns="true" editable="true" selectionMode="single"
+								selection="#{rolesController.selectedRole}">
+
+								<p:ajax event="rowEdit" listener="#{rolesController.onEditRole}" update=":rolesForm:messages" />
+								<p:ajax event="rowEditCancel" listener="#{rolesController.onCancelEditRole}" update=":rolesForm:messages" />
+								<p:ajax event="rowSelect" update=":rolesForm:permissionsPanel :rolesForm:usersPanel :rolesForm:rolesTable:removeRoleBtn" />
+								<p:ajax event="rowUnselect" update=":rolesForm:permissionsPanel :rolesForm:usersPanel :rolesForm:rolesTable:removeRoleBtn" />
+
+
+								<f:facet name="header">
+									<h:outputText value="Available Roles" />
+								</f:facet>
+
+								<p:column headerText="Name">
+									<p:cellEditor>
+										<f:facet name="output">
+											<h:outputText value="#{role.name}" />
+										</f:facet>
+										<f:facet name="input">
+											<p:inputText value="#{role.name}" style="width:100%" required="true" label="Role Name" />
+										</f:facet>
+									</p:cellEditor>
+								</p:column>
+
+								<p:column headerText="Description">
+									<p:cellEditor>
+										<f:facet name="output">
+											<h:outputText value="#{role.description}" />
+										</f:facet>
+										<f:facet name="input">
+											<p:inputText value="#{role.description}" style="width:100%" required="true" label="Role Description" />
+										</f:facet>
+									</p:cellEditor>
+								</p:column>
+
+								<p:column headerText="Options">
+									<p:rowEditor />
+								</p:column>
+
+								<f:facet name="footer">
+									<p:commandButton id="removeRoleBtn" icon="ui-icon-close" title="Delete" actionListener="#{rolesController.removeRole(rolesController.selectedRole)}"
+										update="rolesTable :rolesForm:permissionsPanel :rolesForm:usersPanel" disabled="#{rolesController.selectedRole == null}">
+										<p:confirm header="Confirmation" message="Are you sure you want to delete Role?" icon="ui-icon-alert" />
+									</p:commandButton>
+								</f:facet>
+
+							</p:dataTable>
+						</h:panelGroup>
+					</p:layoutUnit>
+
+					<p:layoutUnit position="center">
+						<h:panelGroup layout="block" style="width:100%">
+							<p:panelGrid id="permissionsPanel" columns="1" style="width:100%">
+								<f:facet name="header">
+							Permissions
+						</f:facet>
+								<p:accordionPanel value="#{rolesController.selectedRolePermissions}" var="servicePerms" multiple="true" style="width:100%">
+									<p:tab title="#{servicePerms.key}">
+										<p:dataTable var="perm" value="#{servicePerms.value}" tableStyle="width:100%">
+											<f:facet name="header">
+												<h:outputText value="Permissions" />
+											</f:facet>
+
+											<p:column headerText="Name" width="50%">
+												<h:outputText value="#{perm.name}" />
+											</p:column>
+
+											<p:column headerText="Description" width="50%">
+												<h:outputText value="#{perm.description}" />
+											</p:column>
+
+										</p:dataTable>
+									</p:tab>
+								</p:accordionPanel>
+							</p:panelGrid>
+						</h:panelGroup>
+					</p:layoutUnit>
+
+					<p:layoutUnit position="east" size="500">
+						<p:panelGrid columns="1" id="usersPanel" style="width:100%">
+							<f:facet name="header">
+								<h:outputText value="Users" />
+							</f:facet>
+								<p:dataTable var="user" value="#{rolesController.selectedRoleUsers}" id="usersTable" tableStyle="width:100%">
+
+									<p:column headerText="Full name" width="35%">
+										<h:outputText value="#{user.name}" />
+									</p:column>
+
+									<p:column headerText="Username" width="30%">
+										<h:outputText value="#{user.username}" />
+									</p:column>
+
+									<p:column headerText="Email" width="35%">
+										<h:outputText value="#{user.email}" />
+									</p:column>
+								</p:dataTable>
+						</p:panelGrid>
+					</p:layoutUnit>
+
+					<p:confirmDialog global="true" showEffect="fade" hideEffect="explode">
+						<p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+						<p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+					</p:confirmDialog>
+				</h:form>
+			</p:layout>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>
