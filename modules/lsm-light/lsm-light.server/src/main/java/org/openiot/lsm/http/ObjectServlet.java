@@ -19,14 +19,13 @@ package org.openiot.lsm.http;
 *
 *     Contact: OpenIoT mailto: info@openiot.eu
 */
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.PrintWriter;
-import java.util.HashMap;
-import java.util.Properties;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Scanner;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -35,35 +34,26 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.dom4j.Document;
+import org.dom4j.Element;
 import org.openiot.lsm.beans.Observation;
 import org.openiot.lsm.beans.ObservedProperty;
 import org.openiot.lsm.beans.RDFTuple;
 import org.openiot.lsm.beans.Sensor;
+import org.openiot.lsm.beans.User;
 import org.openiot.lsm.manager.SensorManager;
 import org.openiot.lsm.manager.TriplesDataRetriever;
-import org.openiot.lsm.pooling.ConnectionManager;
+import org.openiot.lsm.manager.UserActiveManager;
 import org.openiot.lsm.utils.ConstantsUtil;
 import org.openiot.lsm.utils.NumberUtil;
 import org.openiot.lsm.utils.VirtuosoConstantUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.openiot.lsm.utils.XMLUtil;
 
-import com.hp.hpl.jena.ontology.OntClass;
-import com.hp.hpl.jena.ontology.OntModel;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-/**
- * 
- * @author Hoan Nguyen Mau Quoc
- * 
- */
 
 @WebServlet("/ObjectServlet")
 public class ObjectServlet extends HttpServlet {
 //	private static final long serialVersionUID = 2L;
        
-	final static Logger logger = LoggerFactory.getLogger(ObjectServlet.class);
-    Properties prop = new Properties();
-    
     /**
      * @see HttpServlet#HttpServlet()
      */
@@ -75,19 +65,6 @@ public class ObjectServlet extends HttpServlet {
 	public void init(ServletConfig config) throws ServletException {
 	    super.init(config);
 	    ConstantsUtil.realPath = this.getServletContext().getRealPath("WEB-INF");	   
-	    InputStream in = ConnectionManager.class.getResourceAsStream("/lsm_DBConnector_config.properties");
-	    try {
-	    	if(in == null)			
-				prop.load(new FileInputStream(ConstantsUtil.realPath+"/classes/lsm_DBConnector_config.properties"));			
-			else
-	    		prop.load(in);
-	    } catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 	}
 	  
 	/**
@@ -110,64 +87,93 @@ public class ObjectServlet extends HttpServlet {
 			ObjectInputStream inputFromClient = new ObjectInputStream(request.getInputStream());
 			// deserialize the object, note the cast
 			Object object = inputFromClient.readObject();			
-			String graphURL = request.getHeader("graphURL");
-	        String api = request.getHeader("api");	      
-	        String apiType = request.getHeader("apiType");
-//	        System.out.println(api);        
-	        logger.info("API function:"+api);
-	       
-	        if(NumberUtil.isInteger(api)){        
-		      	sb = processRequestImpl(api,object);
-		    }	
+	        String api = request.getParameter("api");
+	        System.out.println(api);        
+	        String username = request.getParameter("username");
+	        String pass = request.getParameter("pass");
+	        
+	        System.out.println(username+","+pass);
+	        
+	        UserActiveManager userManager = new UserActiveManager();
+			User user = userManager.userAuthentication(username, pass);
+	        if(user==null){
+//	        	Document feedDoc = XMLUtil.createDocument();
+//	        	Element root = feedDoc.addElement("lsm");
+//				Element login = XMLUtil.addElementToElement(root, "login", null, "false");	
+//		        sb = feedDoc.asXML();
+	        	user = new User();
+		        user.setId("http://lsm.deri.ie/resource/1802198512041990");
+		        user.setUsername(username);
+		        user.setPass(pass);
+			}
+//	        else{	     
+		        if(NumberUtil.isInteger(api)){        
+		        	sb = returnXMLFunction(api,object,user);
+		        }	
+//			}
         	response.setContentType("text/xml");
             response.setHeader("Pragma", "no-cache"); // HTTP 1.0
             response.setHeader("Cache-Control", "no-cache"); // HTTP 1.1
 	        out.println(sb);  
 	        out.close();  
-	        logger.info(sb);
+	        System.out.println(sb);
         } catch (Exception ex) {  
+        	System.out.println(ex);
             out.println(sb);  
-//            ex.printStackTrace();
+            ex.printStackTrace();
             out.close();  
-            logger.error("Server returns error",ex);
         } 
 	}
 
 
-	private String processRequestImpl(String api, Object object) {
+	private String returnXMLFunction(String api, Object object,User user) {
 		// TODO Auto-generated method stub
-		String result="Your request processed successfully";		
+		Document feedDoc = XMLUtil.createDocument();				
 		try {
 			 SensorManager sensorManager = new SensorManager();
 			 Sensor sensor = null;			 
+			 Element root = feedDoc.addElement("lsm");
+			 Element login = XMLUtil.addElementToElement(root, "login", null, "true");
 			 switch(api){
 	        	case "21":	        		
 					if(object instanceof Sensor)
 						sensor = (Sensor) object;
 					else break;						
-					logger.info("add new sensor with id = "+sensor.getId()); 
+//				    System.out.println(sensor.getId()); 
+			        sensor.setUser(user);
 			        String sensorTypeId = sensorManager.getSensorTypeId(sensor.getSensorType().toLowerCase());
 	        		String triples = TriplesDataRetriever.getSensorTripleMetadata(sensor,sensorTypeId);
-//	        		System.out.println(triples);
+	        		System.out.println(triples);
 	        		if((sensor.getMetaGraph()==null)||(sensor.getMetaGraph()==""))
-	        			sensor.setMetaGraph(prop.getProperty("openiot.metaGraph"));
+	        			sensor.setMetaGraph(VirtuosoConstantUtil.sensormasherMetadataGraphURI);
 	        		sensorManager.setDataGraph(sensor.getDataGraph());
 	        		sensorManager.setMetaGraph(sensor.getMetaGraph());
 	        		sensorManager.insertTriplesToGraph(sensor.getMetaGraph(), triples);
 	        		sensorManager.runSpatialIndex();
-	        		logger.info("Add new sensor");
-	        		logger.debug("Add new sensor");
+	        		
+	        		 Element feed = XMLUtil.addElementToElement(root, "feed", null, "true");
+	        		 Element sensorId = XMLUtil.addElementToElement(root, "sensorId", null, sensor.getId());
+		   			 Element observes = root.addElement("observes");			 
+		   			 Iterator it = sensor.getProperties().entrySet().iterator();
+		   			 while (it.hasNext()) {
+		   			     Map.Entry pairs = (Map.Entry)it.next();
+		   			     Element pro = observes.addElement("property");
+		   				 Element url = pro.addElement("classURL");
+		   				 url.addText(pairs.getKey().toString());
+		   				 Element instance = pro.addElement("instanceId");
+		   				 instance.addText(pairs.getValue().toString());
+		   			 }
 	        		break;
 	        	case "22":
 	        		Observation observation = null;
 					if(object instanceof Observation)
 						observation = (Observation) object;
 					else break;						
-				    logger.info("add Observation object with id = "+observation.getId());
+//				    System.out.println(observation.getId());
 	        		triples = "";
      		
 	        		if((observation.getMetaGraph()==null)||(observation.getMetaGraph()==""))
-	        			observation.setMetaGraph(prop.getProperty("openiot.metaGraph"));
+	        			observation.setMetaGraph(VirtuosoConstantUtil.sensormasherMetadataGraphURI);
 
 	        		sensorManager.setDataGraph(observation.getDataGraph());
 	        		sensorManager.setMetaGraph(observation.getMetaGraph());
@@ -177,19 +183,16 @@ public class ObjectServlet extends HttpServlet {
 							Double.toString(sensor.getPlace().getLat()).replace(".", "").replace("-", "")+
 							Double.toString(sensor.getPlace().getLng()).replace(".", "").replace("-", "");					
 	        		triples+=TriplesDataRetriever.getObservationTripleData(observation.getId(), observation.getSensor(), foi, observation.getTimes());
-	        		
-	        		OntModel model = ModelFactory.createOntologyModel();	        		        		
 	        		for(ObservedProperty obv : observation.getReadings()){
-	        			OntClass cl = model.createClass(obv.getPropertyType());	
 	        			if(obv.getUnit().equals(""))
-	        				triples+=TriplesDataRetriever.getTripleDataHasNoUnit("http://purl.oclc.org/NET/ssnx/ssn#ObservationValue",cl.getLocalName(),obv.getValue(), 
+	        				triples+=TriplesDataRetriever.getTripleDataHasNoUnit("http://purl.oclc.org/NET/ssnx/ssn#ObservationValue",obv.getPropertyType(),obv.getValue(), 
 	        						observation.getId(),sensor.getProperties().get(obv.getPropertyType()), observation.getTimes());
-	        			else triples+=TriplesDataRetriever.getTripleDataHasUnit("http://purl.oclc.org/NET/ssnx/ssn#ObservationValue",cl.getLocalName(),obv.getValue(),obv.getUnit(),
+	        			else triples+=TriplesDataRetriever.getTripleDataHasUnit("http://purl.oclc.org/NET/ssnx/ssn#ObservationValue",obv.getPropertyType(),obv.getValue(),obv.getUnit(),
 	        						observation.getId(),sensor.getProperties().get(obv.getPropertyType()), observation.getTimes());
 	        		}
-//	        		System.out.println(triples);	 
+	        		System.out.println(triples);	        		
+//	        		sensorManager.insertTriplesToGraph(VirtuosoConstantUtil.sensormasherDataGraphURI, triples);
 	        		sensorManager.insertTriplesToGraph(observation.getDataGraph(), triples);
-	        		logger.info("Add new sensor data successfully");
 	        		break;
 	        	case "23":	        		
 	        		RDFTuple tuple = null;
@@ -198,7 +201,6 @@ public class ObjectServlet extends HttpServlet {
 					else break;						
 //				    System.out.println(tuple.getNtriple()); 
 	        		sensorManager.insertTriplesToGraph(tuple.getGraphURL(), tuple.getNtriple());
-	        		logger.info("Add triples to graph "+tuple.getGraphURL());
 	        		break;
 	        	case "24":	        		
 	        		tuple = null;
@@ -206,28 +208,22 @@ public class ObjectServlet extends HttpServlet {
 						tuple = (RDFTuple) object;
 					else break;						
 //				    System.out.println(tuple.getNtriple()); 
-					if(tuple.getNtriple().equals("all")){
+					if(tuple.getNtriple().equals("all"))
 						sensorManager.clearGraph(tuple.getGraphURL());
-						logger.info("Delete all triples of graph "+tuple.getGraphURL());
-					}else{
+					else
 						sensorManager.deleteTriples(tuple.getGraphURL(), tuple.getNtriple());
-						logger.info("Delete triples patterns of graph "+tuple.getGraphURL());
-					}
 	        		break;
-	        	case "25":
-	        		HashMap<String, String> patterns = null;
-	        		if(object instanceof HashMap<?,?>)
-	        			patterns = (HashMap<String, String>) object;
-	        		sensorManager.updateGraph(patterns.get("graph"),patterns.get("update"),patterns.get("delete"));
 	        	default:
 	        		break;
 			 }		    			 
 			 			  
 		} catch (Exception e) {
-//			e.printStackTrace();	
-			logger.error("Server returns error",e);
-			result = e.toString();
+			e.printStackTrace();
+			Element root = feedDoc.addElement("lsm");
+			Element login = XMLUtil.addElementToElement(root, "login", null, "true");
+			Element feed = XMLUtil.addElementToElement(root, "feed", null, "false");
+			Element error = XMLUtil.addElementToElement(root, "error", null, e.toString()); 
 		}
-		return result;
+		return feedDoc.asXML();
 	}
 }

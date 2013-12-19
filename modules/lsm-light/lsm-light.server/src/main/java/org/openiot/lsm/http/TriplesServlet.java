@@ -21,10 +21,10 @@ package org.openiot.lsm.http;
 */
 
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.util.Scanner;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -33,15 +33,20 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.openiot.lsm.beans.RDFTuple;
+import org.dom4j.Document;
+import org.dom4j.Element;
+import org.openiot.lsm.beans.Observation;
+import org.openiot.lsm.beans.ObservedProperty;
 import org.openiot.lsm.beans.Sensor;
+import org.openiot.lsm.beans.User;
 import org.openiot.lsm.manager.SensorManager;
+import org.openiot.lsm.manager.TriplesDataRetriever;
+import org.openiot.lsm.manager.UserActiveManager;
 import org.openiot.lsm.utils.ConstantsUtil;
-/**
- * 
- * @author Hoan Nguyen Mau Quoc
- * 
- */
+import org.openiot.lsm.utils.NumberUtil;
+import org.openiot.lsm.utils.VirtuosoConstantUtil;
+import org.openiot.lsm.utils.XMLUtil;
+
 
 
 /**
@@ -77,23 +82,55 @@ public class TriplesServlet extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		ObjectInputStream inputFromClient = new ObjectInputStream(request.getInputStream());
-		// deserialize the object, note the cast
-		Object object;
-		try {
-			object = inputFromClient.readObject();			    
-		    String graphURL = request.getHeader("graphURL");
-	        String api = request.getHeader("api");	      
-	        String apiType = request.getHeader("apiType");	
-	        if(!apiType.equals("get")){
-	        	String infos = (String) object;
-	        	String result = returnXMLFunction(api,infos,graphURL);      
+        String sb = "";  
+        StringBuilder stringBuilder = new StringBuilder();
+	     Scanner scanner;		
+		 scanner = new Scanner(request.getInputStream());		
+		// TODO Auto-generated catch block
+	     while (scanner.hasNextLine()) {
+	         stringBuilder.append(scanner.nextLine());
+	     }
+	     String triples = stringBuilder.toString();
+	     String graphURL = request.getHeader("graphURL");
+//	     System.out.println(triples);  
+	     
+        String api = request.getParameter("api");
+        String username = request.getParameter("username");
+        String pass = request.getParameter("pass");
+        String responseType = request.getParameter("responsetype");
+        System.out.println(username+","+pass+","+responseType);
+        
+        response.setHeader("Pragma", "no-cache"); // HTTP 1.0
+        response.setHeader("Cache-Control", "no-cache"); // HTTP 1.1
+        
+        User user = new User();
+        user.setUsername(username);
+        user.setPass(pass);
+        
+//        UserActiveManager userManager = new UserActiveManager();
+//		User user = userManager.userAuthentication(username, pass);			
+//		if(user==null){
+//        	Document feedDoc = XMLUtil.createDocument();
+//        	Element root = feedDoc.addElement("lsm");
+//			Element login = XMLUtil.addElementToElement(root, "login", null, "false");				
+//			sb = feedDoc.asXML();
+//		}else{ 					
+	        System.out.println(api);
+	        if(responseType.equals("xml")){
+	        	PrintWriter out= response.getWriter();  
+	        	sb = returnXMLFunction(api,triples);
 	        	response.setContentType("text/xml");
-	            response.setHeader("Pragma", "no-cache"); // HTTP 1.0
-	            response.setHeader("Cache-Control", "no-cache"); // HTTP 1.1
-	            response.getWriter().print(result);
-	        }else{
-	        	Sensor sensor = returnObjectFunction(api,(String)object,graphURL);
+	        	try { 	        		
+		        	out.println(sb);
+		        	System.out.println(sb);  
+		 	        out.close();  
+	        	}catch (Exception ex) {  
+	            	ex.printStackTrace();
+	                System.out.println(sb);
+	                out.close();
+	        	}
+	        }else if(responseType.equals("object")){
+	        	Sensor sensor = returnObjectFunction(api,triples,graphURL);
 	        	response.setContentType("application/x-java-serialized-object");
 	        	OutputStream outputStream = response.getOutputStream();
 	        	ObjectOutputStream objOutStr = new ObjectOutputStream(outputStream);
@@ -101,17 +138,12 @@ public class TriplesServlet extends HttpServlet {
 		        	objOutStr.writeObject(sensor);
 		        	objOutStr.flush();
 		        	objOutStr.close();
-//		        	response.getWriter().print("Your request processed successfully");
 	        	}catch (Exception ex) {  
 	            	ex.printStackTrace();
 	                objOutStr.close();
-	                response.getWriter().print(ex.toString());
 	        	}
 	        }
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//	    }
 	}
 	
 
@@ -121,7 +153,7 @@ public class TriplesServlet extends HttpServlet {
 		try {
 			 SensorManager sensorManager = new SensorManager();			
 			 sensorManager.setMetaGraph(graphURL);
-			 switch(api){			 	
+			 switch(api){
 	        	case "5":
 	        		sensor = sensorManager.getSpecifiedSensorWithSensorId(sensorInfo);
 	        		System.out.println(sensor.getId());
@@ -139,31 +171,37 @@ public class TriplesServlet extends HttpServlet {
 		return sensor;
 	}
 
-	private String returnXMLFunction(String api,String infos,String graphURL){  
-		String result="Your request processed successfully";
+	private String returnXMLFunction(String api,String triples) {  
+		Document feedDoc = XMLUtil.createDocument();
 		try {
-			 SensorManager sensorManager = new SensorManager();				
+			 SensorManager sensorManager = new SensorManager();				 
 			 switch(api){
 	        	case "1":
-	        		sensorManager.insertTriplesToGraph(graphURL, infos);
+	        		sensorManager.insertTriplesToGraph(VirtuosoConstantUtil.sensormasherMetadataGraphURI, triples);
 	        		sensorManager.runSpatialIndex();
 	        		break;
 	        	case "2":
-	        		sensorManager.insertTriplesToGraph(graphURL, infos);
+	        		sensorManager.insertTriplesToGraph(VirtuosoConstantUtil.sensormasherDataGraphURI, triples);
 	        		break;
 	        	case "3":
-	        		sensorManager.sensorDelete(graphURL,infos);
+	        		sensorManager.sensorDelete(triples);
 	        		break;
-			 	case "4":
-	        		sensorManager.deleteAllReadings(graphURL,infos);
-	        		break;
+	        	case "4":
+	        		sensorManager.deleteAllReadings(triples);
+	        		break;   	
 	        	default:
 	        		break;
 			 }		     
+			 Element root = feedDoc.addElement("lsm");
+			 Element login = XMLUtil.addElementToElement(root, "login", null, "true");
+			 Element feed = XMLUtil.addElementToElement(root, "feed", null, "true");		     
 		} catch (Exception e) {
 			e.printStackTrace();
-			result = e.toString(); 
+			Element root = feedDoc.addElement("lsm");
+			Element login = XMLUtil.addElementToElement(root, "login", null, "true");
+			Element feed = XMLUtil.addElementToElement(root, "feed", null, "false");
+			Element error = XMLUtil.addElementToElement(root, "error", null, e.toString()); 
 		}
-		return result;
+		return feedDoc.asXML();
 	}
 }

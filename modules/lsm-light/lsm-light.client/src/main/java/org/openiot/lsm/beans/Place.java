@@ -24,9 +24,8 @@ import java.util.Date;
 
 
 /**
- * 
- * @author Hoan Nguyen Mau Quoc
- * 
+ * @author yuahan
+ *
  */
 public class Place implements java.io.Serializable {
 	private String id;

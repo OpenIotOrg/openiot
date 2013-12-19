@@ -18,11 +18,6 @@ package org.openiot.lsm.utils;
 *
 *     Contact: OpenIoT mailto: info@openiot.eu
 */
-/**
- * 
- * @author Hoan Nguyen Mau Quoc
- * 
- */
 public class StringUtil {
 	
   	/**

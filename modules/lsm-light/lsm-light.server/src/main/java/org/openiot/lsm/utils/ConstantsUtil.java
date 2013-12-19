@@ -19,12 +19,11 @@ package org.openiot.lsm.utils;
 *     Contact: OpenIoT mailto: info@openiot.eu
 */
 
-/**
- * 
- * @author Hoan Nguyen Mau Quoc
- * 
- */
-public class ConstantsUtil {	
+
+public class ConstantsUtil {
+	public static final String databaseName = "DERI.DBA.";
+	public static final String urlHost = "jdbc:virtuoso://140.203.155.176:1111/DERI.DBA/log_enable=2";
+//	public static final String urlHost = "jdbc:virtuoso://localhost:1111";
 	public static String realPath = "";
 	
 	/*---------------------------------- components' constraints constants ----------------------------------*/
@@ -35,6 +34,26 @@ public class ConstantsUtil {
 	
 	
 	/*---------------------------------- regex constants ----------------------------------*/
+	public static final String httpRegex = "(http|www){1}.+";
+	public static final String httpjsonRegex = "(http|www){1}.+\\.json";
+	public static final String double_regex = "([-\\+]?\\d+(\\.\\d*)?)";
+	public static final String lat_comma_lng_Regex = "^( *)"+double_regex+"{1}( *)(,){1}( *)"+double_regex+"{1}( *)$";
+	public static final String place_string_regex = "^(.*)(lat:)( *)"+double_regex+"( *)(,){1}(.*)(lng:)( *)"+double_regex+"( *)(,){1}(.*)$";
+	public static final String int_regex = "[+-]?\\d+";
+	
+	
+	/*---------------------------------- stands for useful data line in WeatherGrid. ----------------------------------*/
+	public static final String useful_data_sign = "_:_";
 
+
+	/*---------------------------------- bean default values ----------------------------------*/
+	public static final int weather_defalut_value = -101;
+	public static final int traffic_severity_default_value = 0;
+	public static final String link_default_value = "";
+	public static final String comment_default_value = "";
+	public static final int agree_default_value = 0;
+	public static final int disagree_default_value = 0;
+	public static final int sealevel_default_value = -99999;
+	public static final int xmlParser_length_default_value = 1000;
 		
 }

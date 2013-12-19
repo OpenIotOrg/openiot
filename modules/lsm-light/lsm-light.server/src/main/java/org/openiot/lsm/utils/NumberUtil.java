@@ -19,11 +19,7 @@ package org.openiot.lsm.utils;
 *     Contact: OpenIoT mailto: info@openiot.eu
 */
 import java.text.DecimalFormat;
-/**
- * 
- * @author Hoan Nguyen Mau Quoc
- * 
- */
+
 public class NumberUtil {
 	
 	public static boolean isDouble(String input){

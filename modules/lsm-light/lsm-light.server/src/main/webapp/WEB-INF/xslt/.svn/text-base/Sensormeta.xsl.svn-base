@@ -58,7 +58,15 @@
            			" separator="&#10;"/>
 	</xsl:template>
 			
-	<xsl:template name="featureOfInterest">		
+	<xsl:template name="featureOfInterest">
+		<xsl:for-each select="document('../xslt/observedproperty.xml')/Root/sensors/sensor[type=$sensortype]/observes">
+		<xsl:variable name="observes" select="."/>
+		<xsl:variable name="observesId" select="document('../xslt/observedproperty.xml')/Root/items/item[name=$observes]/url"/>
+		<xsl:value-of select="concat('&#10;','&#60;',$observesId,'&#62; ',
+	    			'&#60;','http://purl.oclc.org/NET/ssnx/ssn#isPropertyOf','&#62; ',
+	    			'&#60;',$foi,'&#62;. ')						    			
+           			" separator="&#10;"/>
+         </xsl:for-each>
          <xsl:value-of select="concat('&#10;','&#60;',$foi,'&#62; ',
 	    			'&#60;','http://www.w3.org/1999/02/22-rdf-syntax-ns#type','&#62; ',
 	    			'&#60;','http://purl.oclc.org/NET/ssnx/ssn#FeatureOfInterest','&#62;.'),

@@ -19,20 +19,18 @@ package org.openiot.lsm.beans;
 *
 *     Contact: OpenIoT mailto: info@openiot.eu
 */
-/**
- * 
- * @author Hoan Nguyen Mau Quoc
- *
- */
+
 import java.util.Date;
 
 import org.openiot.lsm.utils.ConstantsUtil;
 import org.openiot.lsm.utils.DateUtil;
 
+
+
+
 /**
- * 
- * @author Hoan Nguyen Mau Quoc
- * 
+ * @author yuahan
+ *
  */
 public class Place implements java.io.Serializable{
 	private String id;

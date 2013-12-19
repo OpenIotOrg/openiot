@@ -19,11 +19,7 @@ package org.openiot.lsm.beans;
 *
 *     Contact: OpenIoT mailto: info@openiot.eu
 */
-/**
- * 
- * @author Hoan Nguyen Mau Quoc
- *
- */
+
 public class RDFTuple implements java.io.Serializable{
 	private String ntriple;
 	private String graphURL;

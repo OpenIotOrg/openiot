@@ -23,13 +23,13 @@ import org.openiot.lsm.beans.Observation;
 import org.openiot.lsm.beans.ObservedProperty;
 import org.openiot.lsm.beans.Place;
 import org.openiot.lsm.beans.Sensor;
+import org.openiot.lsm.beans.User;
 import org.openiot.lsm.server.LSMTripleStore;
 import org.openiot.lsm.utils.ObsConstant;
-/**
- * 
- * @author Hoan Nguyen Mau Quoc
- * 
- */
+
+
+
+
 
 public class TestServer {
 	public static LSMTripleStore lsmStore = new LSMTripleStore();
@@ -64,8 +64,8 @@ public class TestServer {
 	obvCO.setValue(0.0366300366300366);
 	obvCO.setUnit("C");
 	obs.addReading(obvCO);
-	obs.setDataGraph("http://test/sensordata#");
-	obs.setMetaGraph("http://test/sensormeta#");
+	obs.setDataGraph("http://lsm.deri.ie/OpenIoT/new/sensordata#");
+	obs.setMetaGraph("http://lsm.deri.ie/OpenIoT/new/sensormeta#");
 	
 //	LSMTripleStore lsmStore = new LSMTripleStore();
 //	lsmStore.sensorDataUpdate(obs);
@@ -80,14 +80,14 @@ public class TestServer {
 	     sensor.setName("lab_temp_hp");
 	     sensor.setAuthor("admin");
 		 sensor.setSourceType("peania");
-		 sensor.setSensorType("myweather");
+		 sensor.setSensorType("weather");
 		 sensor.setInfor("Temperature sensor inside lab");
 		 sensor.setSource("http://www.ait.gr/sensor/test1");
 		 sensor.addProperty(ObsConstant.TEMPERATURE);
 		 sensor.addProperty(ObsConstant.HUMIDITY);
 		 sensor.setTimes(new Date());
-		 sensor.setDataGraph("http://test/sensordata#");
-		 sensor.setMetaGraph("http://test/sensormeta#");
+		 sensor.setDataGraph("http://lsm.deri.ie/OpenIoT/new/sensordata#");
+		 sensor.setMetaGraph("http://lsm.deri.ie/OpenIoT/new/sensormeta#");
 		 
 		// set sensor location information (latitude, longitude, city,
 		// country, continent...)
@@ -95,6 +95,13 @@ public class TestServer {
 		 place.setLat(37.943267); 
 		 place.setLng(23.870287);
 		 sensor.setPlace(place);
+      
+		 User user = new User();
+		 user.setUsername("admin");
+		 user.setPass("admin");
+		 sensor.setUser(user);		       
+         
+         lsmStore.setUser(user);
          lsmStore.sensorAdd(sensor);		
          return sensor;
 	}
@@ -102,22 +109,18 @@ public class TestServer {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub		        
         try{  
-        	String triples = "<http://lsm.deri.ie/resource/1382370140521530000>	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://purl.oclc.org/NET/ssnx/ssn#Property>.";
-//        	lsmStore.deleteTriples("http://test/sensormeta#");
-        	lsmStore.pushRDF("http://test/sensormeta#", triples);
-//        	lsmStore.sensorDelete("http://lsm.deri.ie/resource/1382370140521530000", "http://test/sensormeta#");
-        	Sensor sensor = addNewSensor();         
-//           
-            Observation obs = TestServer.updateData();
-	        obs.setSensor(sensor.getId());
-	        lsmStore.sensorDataUpdate(obs);
+//        	Sensor sensor = addNewSensor();         
+        	User user = new User();
+   		 	user.setUsername("admin");
+   		 	user.setPass("admin");    
+            lsmStore.setUser(user);
+            
+//            Observation obs = TestServer.updateData();
+//	        obs.setSensor(sensor.getId());
+//	        System.out.println(lsmStore.sensorDataUpdate(obs));
 	        
-//	        Sensor s = lsmStore.getSensorById("http://lsm.deri.ie/resource/1386253085149029000","http://test/sensormeta#");
-//	        System.out.println(s.getId());
-//	        s = lsmStore.getSensorBySource("http://www.ait.gr/sensor/test1", "http://test/sensormeta#");
-//	        System.out.println(s.getId());
-        	
-//        	lsmStore.pushRDF("http://test/sensormeta#", triples);
+	        Sensor s = lsmStore.getSensorById("http://lsm.deri.ie/resource/1379003367317467000","http://lsm.deri.ie/OpenIoT/new/sensormeta#");
+	        System.out.println(s.getId());
         }catch (Exception ex) {  
         	ex.printStackTrace();
             System.out.println("cannot send the string to servlet");                                            }  

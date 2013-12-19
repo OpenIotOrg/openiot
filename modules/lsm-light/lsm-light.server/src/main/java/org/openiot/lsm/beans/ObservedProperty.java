@@ -18,17 +18,9 @@ package org.openiot.lsm.beans;
 *
 *     Contact: OpenIoT mailto: info@openiot.eu
 */
-/**
- * 
- * @author Hoan Nguyen Mau Quoc
- *
- */
+
 import java.util.Date;
-/**
- * 
- * @author Hoan Nguyen Mau Quoc
- * 
- */
+
 public class ObservedProperty implements java.io.Serializable{
 	private String value;
 	private Date times;
