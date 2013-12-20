@@ -10,15 +10,16 @@
 		Manage Roles
 	</ui:define>
 		<ui:define name="content">
-			<p:layout fullPage="false">
+			<p:layout fullPage="false" id="layout" style="min-height:800px;">
 				<h:form id="rolesForm">
-
-					<p:messages id="messages" showDetail="false" autoUpdate="true" closable="true" />
-					<p:layoutUnit position="west">
+					<p:layoutUnit position="north" size="100">
+						<p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" />
+					</p:layoutUnit>
+					<p:layoutUnit position="west" minSize="100" size="300">
 
 						<h:panelGroup layout="block" style="width:100%">
 							<p:dataTable var="role" value="#{rolesController.roleDataModel}" id="rolesTable" resizableColumns="true" editable="true" selectionMode="single"
-								selection="#{rolesController.selectedRole}">
+								selection="#{rolesController.selectedRole}" style="table-layout: fixed">
 
 								<p:ajax event="rowEdit" listener="#{rolesController.onEditRole}" update=":rolesForm:messages" />
 								<p:ajax event="rowEditCancel" listener="#{rolesController.onCancelEditRole}" update=":rolesForm:messages" />
@@ -52,27 +53,30 @@
 									</p:cellEditor>
 								</p:column>
 
-								<p:column headerText="Options">
+								<p:column headerText="Options" width="50">
 									<p:rowEditor />
 								</p:column>
 
 								<f:facet name="footer">
-									<p:commandButton id="removeRoleBtn" icon="ui-icon-close" title="Delete" actionListener="#{rolesController.removeRole(rolesController.selectedRole)}"
-										update="rolesTable :rolesForm:permissionsPanel :rolesForm:usersPanel" disabled="#{rolesController.selectedRole == null}">
+									<p:commandButton id="removeRoleBtn" icon="ui-icon-closethick" title="Delete"
+										actionListener="#{rolesController.removeRole(rolesController.selectedRole)}" update="rolesTable :rolesForm:permissionsPanel :rolesForm:usersPanel"
+										disabled="#{empty rolesController.selectedRole}">
 										<p:confirm header="Confirmation" message="Are you sure you want to delete Role?" icon="ui-icon-alert" />
 									</p:commandButton>
+									<p:commandButton id="addRoleBtn" icon="ui-icon-plusthick" title="Add Role" onclick="PF('addRoleDlg').show();" disabled="false" />
 								</f:facet>
 
 							</p:dataTable>
 						</h:panelGroup>
 					</p:layoutUnit>
 
-					<p:layoutUnit position="center">
+					<p:layoutUnit position="center" size="300" minSize="100">
 						<h:panelGroup layout="block" style="width:100%">
 							<p:panelGrid id="permissionsPanel" columns="1" style="width:100%">
 								<f:facet name="header">
 							Permissions
 						</f:facet>
+								<h:outputText value="No permission is available." rendered="#{empty rolesController.selectedRolePermissions}" />
 								<p:accordionPanel value="#{rolesController.selectedRolePermissions}" var="servicePerms" multiple="true" style="width:100%">
 									<p:tab title="#{servicePerms.key}">
 										<p:dataTable var="perm" value="#{servicePerms.value}" tableStyle="width:100%">
@@ -95,34 +99,104 @@
 						</h:panelGroup>
 					</p:layoutUnit>
 
-					<p:layoutUnit position="east" size="500">
+					<p:layoutUnit position="east" size="500" minSize="100">
 						<p:panelGrid columns="1" id="usersPanel" style="width:100%">
 							<f:facet name="header">
 								<h:outputText value="Users" />
 							</f:facet>
-								<p:dataTable var="user" value="#{rolesController.selectedRoleUsers}" id="usersTable" tableStyle="width:100%">
+							<p:dataTable var="user" value="#{rolesController.selectedRoleUsers}" id="usersTable" tableStyle="width:100%; font-size:smaller;" selectionMode="single"
+								selection="#{rolesController.selectedUser}" rowKey="#{user.username}" emptyMessage="User list is empty.">
 
-									<p:column headerText="Full name" width="35%">
-										<h:outputText value="#{user.name}" />
-									</p:column>
+								<p:ajax event="rowSelect" update=":rolesForm:usersTable:removeUserBtn" />
+								<p:ajax event="rowUnselect" update=":rolesForm:usersTable:removeUserBtn" />
 
-									<p:column headerText="Username" width="30%">
-										<h:outputText value="#{user.username}" />
-									</p:column>
+								<p:column headerText="Full name" width="35%">
+									<h:outputText value="#{user.name}" />
+								</p:column>
 
-									<p:column headerText="Email" width="35%">
-										<h:outputText value="#{user.email}" />
-									</p:column>
-								</p:dataTable>
+								<p:column headerText="Username" width="30%">
+									<h:outputText value="#{user.username}" />
+								</p:column>
+
+								<p:column headerText="Email" width="35%">
+									<h:outputText value="#{user.email}" />
+								</p:column>
+
+								<f:facet name="footer">
+									<p:commandButton id="addUserBtn" update=":rolesForm:addUserDlg" icon="ui-icon-plusthick" title="Add User" oncomplete="PF('addUserDlg').show();"
+										disabled="#{empty rolesController.selectedRoleOtherUsers}" />
+									<p:commandButton id="removeUserBtn" icon="ui-icon-closethick" title="Delete"
+										actionListener="#{rolesController.removeUser(rolesController.selectedUser)}" update=":rolesForm:usersPanel"
+										disabled="#{empty rolesController.selectedUser}">
+										<p:confirm header="Confirmation" message="Are you sure you want to delete User?" icon="ui-icon-alert" />
+									</p:commandButton>
+								</f:facet>
+							</p:dataTable>
 						</p:panelGrid>
 					</p:layoutUnit>
+
+					<p:dialog id="addRoleDlg" header="New Role" widgetVar="addRoleDlg" modal="true" dynamic="true">
+						<h:form id="addRoleDlgForm">
+							<h:panelGrid columns="2" style="margin-bottom:10px" cellpadding="5">
+								<!-- <p:messages for="addRoleDlg" id="addRoleDlg_messages" showDetail="true" autoUpdate="true" closable="true" />  -->
+								<h:outputLabel for="name" value="Name:" />
+								<p:inputText id="name" value="#{rolesController.newRole.name}" required="true" validatorMessage="Role name must not be empty." />
+								<h:outputLabel for="description" value="Description:" />
+								<p:inputText id="description" value="#{rolesController.newRole.description}" required="true" validatorMessage="Role description must not be empty." />
+								<f:facet name="footer">
+									<p:commandButton id="addButton" value="Add" actionListener="#{rolesController.addRole}" oncomplete="handleAddRoleRequest(xhr, status, args)"
+										update=":rolesForm:rolesTable :rolesForm:permissionsPanel :rolesForm:usersPanel" />
+									<p:commandButton id="cancelButton" value="Cancel" actionListener="#{rolesController.cancelAddRole}" oncomplete="PF('addRoleDlg').hide();" />
+								</f:facet>
+							</h:panelGrid>
+						</h:form>
+					</p:dialog>
+
+					<p:dialog id="addUserDlg" header="Add User" widgetVar="addUserDlg" modal="true" dynamic="true">
+						<h:panelGrid columns="1" cellpadding="5">
+							<p:dataTable var="otherUser" value="#{rolesController.selectedRoleOtherUsers}" id="otherUsersTable" tableStyle="width:100%; font-size:smaller;"
+								selectionMode="single" selection="#{rolesController.selectedOtherUser}" rowKey="#{otherUser.username}" emptyMessage="User list is empty.">
+
+								<p:ajax event="rowSelect" update=":rolesForm:addUserDlg_addButton" />
+
+								<p:column headerText="Full name" width="35%">
+									<h:outputText value="#{otherUser.name}" />
+								</p:column>
+
+								<p:column headerText="Username" width="30%">
+									<h:outputText value="#{otherUser.username}" />
+								</p:column>
+
+								<p:column headerText="Email" width="35%">
+									<h:outputText value="#{otherUser.email}" />
+								</p:column>
+
+							</p:dataTable>
+							<f:facet name="footer">
+								<p:commandButton id="addUserDlg_addButton" value="Add" actionListener="#{rolesController.addUser}" update="usersTable"
+									disabled="#{empty rolesController.selectedOtherUser}" oncomplete="PF('addUserDlg').hide()" />
+								<p:commandButton id="addUserDlg_cancelButton" value="Cancel" onclick="PF('addUserDlg').hide()" />
+							</f:facet>
+						</h:panelGrid>
+					</p:dialog>
 
 					<p:confirmDialog global="true" showEffect="fade" hideEffect="explode">
 						<p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
 						<p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
 					</p:confirmDialog>
 				</h:form>
+
 			</p:layout>
+			<script type="text/javascript">  
+    function handleAddRoleRequest(xhr, status, args) {  
+        if(args.validationFailed || !args.roleAdded) {  
+            PF('addRoleDlg').jq.effect("shake", { times:5 }, 100);  
+        }   
+        else {  
+            PF('addRoleDlg').hide();  
+        }  
+    }  
+</script>
 		</ui:define>
 	</ui:composition>
 </body>

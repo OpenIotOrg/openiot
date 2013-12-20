@@ -6,6 +6,7 @@ import java.io.ObjectInputStream;
 import java.io.Serializable;
 
 import javax.faces.application.FacesMessage;
+import javax.faces.application.FacesMessage.Severity;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.context.FacesContext;
 
@@ -36,6 +37,24 @@ public abstract class AbstractController implements Serializable {
 		FacesMessage msg = new FacesMessage(summary);
 		msg.setSeverity(FacesMessage.SEVERITY_ERROR);
 		FacesContext.getCurrentInstance().addMessage(null, msg);
+	}
+	
+	private void addMessage(Severity severity, String message, String details) {
+		FacesMessage msg = new FacesMessage(severity, message, details);
+		FacesContext.getCurrentInstance().addMessage(null, msg);
+	}
+
+	
+	protected void addInfoMessage(String message, String details) {
+		addMessage(FacesMessage.SEVERITY_INFO, message, details);
+	}
+	
+	protected void addErrorMessage(String message, String details) {
+		addMessage(FacesMessage.SEVERITY_ERROR, message, details);
+	}
+	
+	protected void addWarnMessage(String message, String details) {
+		addMessage(FacesMessage.SEVERITY_WARN, message, details);
 	}
 
 	/**

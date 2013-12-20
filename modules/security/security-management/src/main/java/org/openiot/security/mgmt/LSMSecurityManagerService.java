@@ -195,7 +195,7 @@ public class LSMSecurityManagerService implements Serializable {
 	}
 
 	public List<User> getRoleUsers(Role role) {
-		List<User> roleList = null;
+		List<User> userList = null;
 		String roleId = "http://lsm.deri.ie/resource/role/" + role.getName();
 		String sparql = " select ?userId" + " from <" + lSMOauthGraphURL + "> \n" + "where{ "
 				+ " ?userId <http://openiot.eu/ontology/ns/role> <"+ roleId +"> " + "}";
@@ -203,19 +203,42 @@ public class LSMSecurityManagerService implements Serializable {
 			String service = "http://lsm.deri.ie/sparql";
 			QueryExecution vqe = new QueryEngineHTTP(service, sparql);
 			ResultSet results = vqe.execSelect();
-			roleList = new ArrayList<User>();
+			userList = new ArrayList<User>();
 			while (results.hasNext()) {
 				QuerySolution soln = results.nextSolution();
 				String userId = soln.get("?userId").toString();
 				User user = getUser(userId);
-				roleList.add(user);
+				userList.add(user);
 			}
 			vqe.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
 		}
-		return roleList;
+		return userList;
+	}
+	
+	public List<User> getAllUsers() {
+		List<User> userList = null;
+		String sparql = " select ?userId" + " from <" + lSMOauthGraphURL + "> \n" + "where{ "
+				+ " ?userId <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://openiot.eu/ontology/ns/User> }";
+		try {
+			String service = "http://lsm.deri.ie/sparql";
+			QueryExecution vqe = new QueryEngineHTTP(service, sparql);
+			ResultSet results = vqe.execSelect();
+			userList = new ArrayList<User>();
+			while (results.hasNext()) {
+				QuerySolution soln = results.nextSolution();
+				String userId = soln.get("?userId").toString();
+				User user = getUser(userId);
+				userList.add(user);
+			}
+			vqe.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+		return userList;
 	}
 
 	// /********************************
