@@ -1,0 +1,151 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html" xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+<head />
+<body>
+	<ui:composition template="/WEB-INF/templates/main.xhtml">
+		<ui:define name="title">Manage Permissions</ui:define>
+		<ui:define name="nav-links">
+			<li><a href="home.jsf">Home</a></li>
+			<li><a href="roles.jsf">Manage roles</a></li>
+			<li><a href="users.jsf">Manage users</a></li>
+			<li class="active"><a href="perms.jsf">Manage permissions</a></li>
+		</ui:define>
+		<ui:define name="content">
+			<p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" />
+			<p:layout fullPage="false" id="layout" style="min-height:800px;">
+				<p:layoutUnit position="west" minSize="200" size="400" resizable="true">
+					<h:form id="rolesForm">
+						<!-- Form must be inside layoutUnit otherwise strange behavior -->
+						<h:panelGrid columns="1" style="width:100%" cellpadding="5">
+							<h:panelGroup id="permissionsPanel" layout="block" style="width:100%">
+								<p:dataTable var="perm" value="#{permissionsController.permissions}" id="permissionsTable" tableStyle="width:100%;" selectionMode="single"
+									selection="#{permissionsController.selectedPermission}" rowKey="#{perm.name}" emptyMessage="Permission list is empty." resizableColumns="true">
+
+									<p:ajax event="rowSelect" update=":rolesForm:permissionsTable:removePermBtn :rolesForm:usersTable :permForm:permRolesPanel" />
+									<p:ajax event="rowUnselect" update=":rolesForm:permissionsTable:removePermBtn :rolesForm:usersTable :permForm:permRolesPanel" />
+
+									<f:facet name="header">
+										<h:outputText value="Available Permissions" />
+									</f:facet>
+
+									<p:column headerText="Name" width="50%">
+										<h:outputText value="#{perm.name}" />
+									</p:column>
+
+									<p:column headerText="Description" width="50%">
+										<h:outputText value="#{perm.description}" />
+									</p:column>
+
+									<f:facet name="footer">
+										<p:commandButton id="addPermBtn" update=":dlgForm:addPermissionDlg" icon="ui-icon-plusthick" title="Add Permission"
+											onclick="PF('addPermissionDlgVar').show(); return false;" disabled="false" />
+										<p:commandButton id="removePermBtn" icon="ui-icon-closethick" title="Delete"
+											actionListener="#{permissionsController.removePermission(permissionsController.selectedPermission)}"
+											update=":rolesForm:permissionsPanel :rolesForm:usersTable :permForm:permRolesPanel" immediate="true"
+											disabled="#{empty permissionsController.selectedPermission}">
+											<p:confirm header="Confirmation" message="Are you sure you want to delete Permission?" icon="ui-icon-alert" />
+										</p:commandButton>
+									</f:facet>
+								</p:dataTable>
+							</h:panelGroup>
+
+							<h:panelGroup layout="block" style="width:100%">
+								<p:dataTable var="user" value="#{permissionsController.selectedPermissionUsers}" id="usersTable" resizableColumns="true"
+									style="table-layout: fixed; font-size:smaller;" emptyMessage="User list is empty.">
+
+									<f:facet name="header">
+										<h:outputText value="Permission Users" />
+									</f:facet>
+
+									<p:column headerText="Full name" width="35%">
+										<h:outputText value="#{user.name}" />
+									</p:column>
+
+									<p:column headerText="Username" width="30%">
+										<h:outputText value="#{user.username}" />
+									</p:column>
+
+									<p:column headerText="Email" width="35%">
+										<h:outputText value="#{user.email}" />
+									</p:column>
+
+
+									<f:facet name="footer">
+									</f:facet>
+
+								</p:dataTable>
+							</h:panelGroup>
+
+						</h:panelGrid>
+					</h:form>
+				</p:layoutUnit>
+
+				<p:layoutUnit position="center">
+					<h:form id="permForm">
+						<h:panelGroup layout="block" style="width:100%">
+							<p:panelGrid id="permRolesPanel" columns="1" style="width:100%">
+								<f:facet name="header">Permission Roles</f:facet>
+								<h:outputText value="No role is available." rendered="#{empty permissionsController.selectedPermissionRoles}" />
+								<p:accordionPanel value="#{permissionsController.selectedPermissionRoles}" var="servicePerms" multiple="true" style="width:100%">
+									<p:tab title="#{servicePerms.key.name}" titletip="ServiceURL: [#{servicePerms.key.serviceId}]">
+										<p:dataTable var="perm" value="#{permissionsController.flatten(servicePerms)}" rowKey="#{perm.item2.name}" tableStyle="width:100%" emptyMessage="Role list is empty.">
+											<p:column headerText="Role Name" width="45%">
+												<h:outputText value="#{perm.item2.name}" />
+											</p:column>
+
+											<p:column headerText="Role Description" width="45%">
+												<h:outputText value="#{perm.item2.description}" />
+											</p:column>
+
+										</p:dataTable>
+									</p:tab>
+								</p:accordionPanel>
+							</p:panelGrid>
+						</h:panelGroup>
+					</h:form>
+				</p:layoutUnit>
+
+				<p:confirmDialog global="true" showEffect="fade" hideEffect="explode">
+					<p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+					<p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+				</p:confirmDialog>
+
+				<h:form id="dlgForm">
+					<p:dialog id="addPermissionDlg" header="Add Permission" widgetVar="addPermissionDlgVar" modal="true" width="400" dynamic="true">
+						<p:ajax event="close" update=":dlgForm:addPermissionDlg" />
+						<h:panelGrid columns="2" style="margin-bottom:10px" cellpadding="5">
+							<!-- <p:messages for="addPermissionDlg" id="addPermissionDlg_messages" showDetail="true" autoUpdate="true" closable="true" />  -->
+							<h:outputLabel for="name" value="Name:" />
+							<p:inputText id="name" value="#{permissionsController.newPermission.name}" required="true" requiredMessage="Permission name must not be empty." />
+							<h:outputLabel for="description" value="Description:" />
+							<p:inputText id="description" value="#{permissionsController.newPermission.description}" required="true"
+								requiredMessage="Permission description must not be empty." />
+							<f:facet name="footer">
+								<p:commandButton id="addPermissionDlg_addButton" value="Add" actionListener="#{permissionsController.addPermission}"
+									oncomplete="handleAddPermissionRequest(xhr, status, args)" update=":rolesForm:permissionsPanel" />
+								<p:commandButton immediate="true" id="addPermissionDlg_cancelButton" value="Cancel" actionListener="#{permissionsController.cancelAddPermission}"
+									oncomplete="PF('addPermissionDlgVar').hide()" />
+							</f:facet>
+						</h:panelGrid>
+					</p:dialog>
+
+				</h:form>
+
+			</p:layout>
+			<script type="text/javascript">  
+    function handleAddPermissionRequest(xhr, status, args) {  
+        if(args.validationFailed || !args.permissionAdded) {  
+            PF('addPermissionDlgVar').jq.effect("shake", { times:5 }, 100);  
+        }   
+        else {  
+            PF('addPermissionDlgVar').hide();  
+        }  
+    }  
+</script>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

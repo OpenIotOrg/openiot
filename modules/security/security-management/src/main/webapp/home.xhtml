@@ -1,19 +1,29 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui" xmlns:shiro="http://shiro.apache.org/tags">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html" xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core">
 
-<h:head />
-<h:body>
+<head />
+<body>
 	<ui:composition template="/WEB-INF/templates/main.xhtml">
 		<ui:define name="title">Home Page</ui:define>
+		<ui:define name="nav-links">
+			<li class="active"><a href="home.jsf">Home</a></li>
+			<li><a href="roles.jsf">Manage roles</a></li>
+			<li><a href="users.jsf">Manage users</a></li>
+			<li><a href="perms.jsf">Manage permissions</a></li>
+		</ui:define>
 		<ui:define name="content">
-
-			<h1>Welcome to the OpenIoT Authentication &amp; Authorization Manager Webapp!</h1>
-
+			<p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" />
+			<p:layout fullPage="false" id="layout" style="min-height:800px;">
+				<p:layoutUnit position="center">
+					<h1>Welcome to the OpenIoT Authentication &amp; Authorization Manager Webapp!</h1>
+				</p:layoutUnit>
+				
+			</p:layout>
 		</ui:define>
 	</ui:composition>
-</h:body>
+</body>
 
 </html>
 

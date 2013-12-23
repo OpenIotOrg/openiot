@@ -24,8 +24,6 @@ public class UsersController extends AbstractController {
 	// users having this role.
 	private static final long serialVersionUID = 5365682876974798395L;
 
-	private List<Role> roles;
-
 	private Role selectedRole;
 
 	private Role newRole;
@@ -59,13 +57,12 @@ public class UsersController extends AbstractController {
 
 	public List<User> getUsers() {
 		if (allUsers == null) {
-			roles = securityManagerService.getAllRoles();
+			allRoles = securityManagerService.getAllRoles();
 			roleUsers = new HashMap<Role, List<User>>();
-			for (Role role : roles)
+			for (Role role : allRoles)
 				roleUsers.put(role, securityManagerService.getRoleUsers(role));
 
 			allUsers = securityManagerService.getAllUsers();
-			allRoles = securityManagerService.getAllRoles();
 
 			final List<RegisteredService> services = securityManagerService.getAllServices();
 			allServices = new HashMap<Long, RegisteredService>(services.size());

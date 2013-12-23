@@ -39,13 +39,10 @@ body {
 					class="icon-bar"></span>
 				</a>
 				<!-- <a class="brand" href="#">OpenIoT Authorization Management</a>  -->
-				<h:graphicImage library="images" name="openiotlogo_right-small.jpg" class="navbar-logo"/>
+				<h:graphicImage library="images" name="openiotlogo_right-small.jpg" class="navbar-logo" />
 				<div class="nav-collapse">
 					<ul class="nav">
-						<li class="active"><a href="home.jsf">Home</a></li>
-						<li><a href="roles.jsf">Manage roles</a></li>
-						<li><a href="users.jsf">Manage users</a></li>
-						<li><a href="perms.jsf">Manage permissions</a></li>
+						<ui:insert name="nav-links" />
 					</ul>
 					<shiro:user>
 						<p class="navbar-text pull-right">
@@ -55,10 +52,10 @@ body {
 
 					<shiro:guest>
 						<h:form>
-						<p class="navbar-text pull-right">
-							<h:commandLink action="#{loginController.signInWithOpenIoT()}" value="Log In" />
-							&nbsp; &nbsp; <a href="signup.xhtml">Sing Up</a>
-						</p>
+							<p class="navbar-text pull-right">
+								<h:commandLink action="#{loginController.signInWithOpenIoT()}" value="Log In" />
+								&nbsp; &nbsp; <a href="signup.xhtml">Sing Up</a>
+							</p>
 						</h:form>
 
 					</shiro:guest>

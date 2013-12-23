@@ -6,9 +6,13 @@
 <head />
 <body>
 	<ui:composition template="/WEB-INF/templates/main.xhtml">
-		<ui:define name="title">
-		Manage Roles
-	</ui:define>
+		<ui:define name="title">Manage Roles</ui:define>
+		<ui:define name="nav-links">
+			<li><a href="home.jsf">Home</a></li>
+			<li class="active"><a href="roles.jsf">Manage roles</a></li>
+			<li><a href="users.jsf">Manage users</a></li>
+			<li><a href="perms.jsf">Manage permissions</a></li>
+		</ui:define>
 		<ui:define name="content">
 			<p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" />
 			<p:layout fullPage="false" id="layout" style="min-height:800px;">
@@ -115,7 +119,7 @@
 								<h:outputText value="No permission is available." rendered="#{empty rolesController.selectedRolePermissions}" />
 								<p:accordionPanel value="#{rolesController.selectedRolePermissions}" var="servicePerms" multiple="true" style="width:100%" id="permsPanel">
 									<p:tab title="#{servicePerms.key.name}" titletip="ServiceURL: [#{servicePerms.key.serviceId}]">
-										<p:dataTable var="perm" value="#{rolesController.flatten(servicePerms)}" rowKey="#{perm.item2.name}" tableStyle="width:100%">
+										<p:dataTable var="perm" value="#{rolesController.flatten(servicePerms)}" rowKey="#{perm.item2.name}" tableStyle="width:100%" emptyMessage="Permission list is empty.">
 											<p:column headerText="Name" width="45%">
 												<h:outputText value="#{perm.item2.name}" />
 											</p:column>
