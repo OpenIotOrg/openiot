@@ -6,7 +6,7 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<title><ui:insert name="title" /></title>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	<h:outputStylesheet library="css" name="main.css" />
+	<!-- <h:outputStylesheet library="css" name="main.css" /> -->
 	<!-- Le styles -->
 	<h:outputStylesheet name="bootstrap/css/bootstrap.css" />
 
@@ -43,8 +43,9 @@ body {
 				<div class="nav-collapse">
 					<ul class="nav">
 						<li class="active"><a href="home.jsf">Home</a></li>
-						<li><a href="#about">About</a></li>
-						<li><a href="#contact">Contact</a></li>
+						<li><a href="roles.jsf">Manage roles</a></li>
+						<li><a href="users.jsf">Manage users</a></li>
+						<li><a href="perms.jsf">Manage permissions</a></li>
 					</ul>
 					<shiro:user>
 						<p class="navbar-text pull-right">

@@ -22,11 +22,13 @@ package org.openiot.security.mgmt;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
 
+import org.jasig.cas.services.RegisteredService;
 import org.openiot.lsm.security.oauth.LSMOAuthHttpManager;
 import org.openiot.lsm.security.oauth.mgmt.Permission;
 import org.openiot.lsm.security.oauth.mgmt.Role;
@@ -48,7 +50,7 @@ import com.hp.hpl.jena.sparql.engine.http.QueryEngineHTTP;
  */
 @ManagedBean(name = "securityManagerService")
 @ApplicationScoped
-public class LSMSecurityManagerService implements Serializable {
+public class LSMSecurityManagerService implements Serializable, SecurityManagerService {
 
 	private static final long serialVersionUID = -2254514562625584422L;
 
@@ -239,6 +241,38 @@ public class LSMSecurityManagerService implements Serializable {
 			return null;
 		}
 		return userList;
+	}
+	
+	public List<Permission> getAllPermissions() {
+		List<Permission> permissionList = null;
+		String sparql = " select ?permId" + " from <" + lSMOauthGraphURL + "> \n" + "where{ "
+				+ " ?permId <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://openiot.eu/ontology/ns/ClientPermission> }";
+		try {
+			String service = "http://lsm.deri.ie/sparql";
+			QueryExecution vqe = new QueryEngineHTTP(service, sparql);
+			ResultSet results = vqe.execSelect();
+			permissionList = new ArrayList<Permission>();
+			while (results.hasNext()) {
+				QuerySolution soln = results.nextSolution();
+				String userId = soln.get("?permId").toString();
+				Permission perm = getPermission(userId);
+				permissionList.add(perm);
+			}
+			vqe.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+		return permissionList;
+	}
+	
+	@Override
+	public List<RegisteredService> getAllServices() {
+		final List<RegisteredService> allRegisteredServices = lsmOAuthHttpManager.getAllRegisteredServices();
+		List<RegisteredService> filteredList = new ArrayList<RegisteredService>();
+		for(RegisteredService service : allRegisteredServices)
+			filteredList.add(service);
+		return filteredList;
 	}
 
 	// /********************************
