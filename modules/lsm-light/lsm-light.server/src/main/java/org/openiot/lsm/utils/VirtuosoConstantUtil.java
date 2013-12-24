@@ -19,23 +19,26 @@ package org.openiot.lsm.utils;
 *     Contact: OpenIoT mailto: info@openiot.eu
 */
 import java.util.ArrayList;
-import java.util.HashMap;
-
+/**
+ * 
+ * @author Hoan Nguyen Mau Quoc
+ * 
+ */
 public class VirtuosoConstantUtil {
-	public final static String sensormasherMetadataGraphURI = "http://lsm.deri.ie/OpenIoT/sensormeta#";
-	public final static String sensormasherDataGraphURI = "http://lsm.deri.ie/OpenIoT/sensordata#";
-
 	public final static String sensorObjectDataPrefix ="http://lsm.deri.ie/resource/";	
 	public final static String sensorHasPlacePrefix = "http://www.loa-cnr.it/ontologies/DUL.owl#hasLocation";
 	public final static String observationIsObservedBySensorPrefix = "http://purl.oclc.org/NET/ssnx/ssn#observedBy";
 	
 	public static ArrayList<String> authorizedGraphs = new ArrayList<String>();
 	
-	public final static String linkedgeodataGraphURI = "http://lsm.deri.ie/linkedgeodata.com";
-	public final static String lnkedgeodataSameAsPrefix ="http://www.w3.org/2002/07/owl#sameAs";
-	public final static String sensorHasNearestLocation = "http://lsm.deri.ie/ont/lsm.owl#nearest";		
 	public final static String FeatureOfInterest = "http://purl.oclc.org/NET/ssnx/ssn#FeatureOfInterest";
 	
+	/**
+	 * LSM Authentication prefix define
+	 */
+	public final static String CloudServicePrefix = "http://lsm.deri.ie/resource/service/";
+	public final static String RolePrefix = "http://lsm.deri.ie/resource/role/";
+	public final static String OAuthUserPrefix = "http://lsm.deri.ie/resource/user/";		
 	static{
 		initAuthorizedGraph();
 	}

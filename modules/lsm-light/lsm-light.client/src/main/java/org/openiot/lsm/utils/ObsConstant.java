@@ -19,18 +19,17 @@ package org.openiot.lsm.utils;
 *     Contact: OpenIoT mailto: info@openiot.eu
 */
 
+/**
+ * 
+ * @author Hoan Nguyen Mau Quoc
+ * 
+ */
 public class ObsConstant {
 	public final static String sensormasherMetadataGraphURI = "http://lsm.deri.ie/OpenIoT/sensormeta#";
 	public final static String sensormasherDataGraphURI = "http://lsm.deri.ie/OpenIoT/sensordata#";
 	
 	public final static String sensormasherOntologyURI = "http://lsm.deri.ie/ont/lsm.owl#";
 	public final static String SSNOntolotyURI ="http://purl.oclc.org/NET/ssnx/ssn#";
-	public final static String ServerHost = "http://localhost:8080/lsm-light.server/";
-
-	
-//	public static String TEMPERATURE = "http://lsm.deri.ie/resource/5395423154665";
-//	public static String HUMIDITY = "http://lsm.deri.ie/resource/5395341713068";
-	
 	public static String TEMPERATURE = "http://lsm.deri.ie/ont/lsm.owl#AirTemperature";
 	public static String HUMIDITY = "http://lsm.deri.ie/ont/lsm.owl#AtmosphereHumidity";
 	public static String WINDCHILL = "http://lsm.deri.ie/ont/lsm.owl#WindChill";

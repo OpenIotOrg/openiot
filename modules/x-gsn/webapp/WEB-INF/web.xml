@@ -3,19 +3,7 @@
 
 <web-app>
     <display-name>GSN Server</display-name>
-<!-- 
-     *******************************************************************************     
-      WEB SERVICES CALL [ USED FOR INTERACTIONS WITH MICROSOFT SENSOR MAP ] ; there is
-      another part down in this file which has to be uncommented to have the axis working.
-     ******************************************************************************* -->
-<!--
-    <servlet>
-        <servlet-name>AxisServlet</servlet-name>
-        <display-name>Apache-Axis Servlet</display-name>
-        <servlet-class>org.apache.axis2.transport.http.AxisServlet</servlet-class>
-        <load-on-startup>1</load-on-startup>
-    </servlet>
- -->
+
 
 <!-- *******************************************************************************     
       GSN's Main Servlets, Must be enabled for any kind of HTTP based access
@@ -424,54 +412,14 @@
 
 
 	<!-- GSN END -->
-	
-	<!-- 
-     *******************************************************************************     
-      WEB SERVICES CALL MAPPING [ USED FOR INTERACTIONS WITH MICROSOFT SENSOR MAP ] 
-     ******************************************************************************* -->
-<!--     <servlet-mapping>
-        <servlet-name>AxisServlet</servlet-name>
-        <url-pattern>/servlet/AxisServlet</url-pattern>
-    </servlet-mapping>
-
-    <servlet-mapping>
-        <servlet-name>AxisServlet</servlet-name>
-        <url-pattern>*.jws</url-pattern>
-    </servlet-mapping>
-
-    <servlet-mapping>
-        <servlet-name>AxisServlet</servlet-name>
-        <url-pattern>/services/*</url-pattern>
-    </servlet-mapping>
- -->
 
 
 
-    <!--
-    Source IP Filtering for Microsoft SensorMap webservice.
-    Authentication is removed but IP source filter is added.
-    Only the sensormap.org server can access the webservice.
-    sensormap.org IP: 131.107.151.211
-     -->
-    <filter>
-        <display-name>Microsoft SensorMap Webservice IP Source Filter</display-name>
-        <filter-name>MSRIPSourceFilter</filter-name>
-        <filter-class>org.openiot.gsn.http.IPSourceFilter</filter-class>
-        <init-param>
-            <param-name>allowedIps</param-name>
-            <!-- <param-value>127.0.0.1;10.0.2.15</param-value> -->
-            <param-value>131.107.151.211</param-value>
-        </init-param>
-    </filter>
-    <filter-mapping>
-        <filter-name>MSRIPSourceFilter</filter-name>
-        <url-pattern>/services/Service/*</url-pattern>
-    </filter-mapping>
     <!-- The following remove all constraints as no auth-constraint is specified. -->
     <security-constraint >
         <web-resource-collection>
             <web-resource-name>Open Area</web-resource-name>
-            <url-pattern>/services/Service/*</url-pattern>
+            <!-- <url-pattern>/services/Service/*</url-pattern> -->
             <url-pattern>/menu.jsp</url-pattern>
         </web-resource-collection>
     </security-constraint>

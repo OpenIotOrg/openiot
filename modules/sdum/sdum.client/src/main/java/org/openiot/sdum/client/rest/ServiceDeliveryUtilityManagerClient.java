@@ -119,34 +119,34 @@ public class ServiceDeliveryUtilityManagerClient
 			SdumServiceResultSet sdumServiceResultSet = (SdumServiceResultSet) um
 					.unmarshal(new StreamSource(new StringReader(str)));
 
-			System.out.println("---------Service Query result---------");
+			logger.debug("---------Service Query result---------");
 			
 			for (QueryResult queryResult :sdumServiceResultSet.getQueryResult()){
 				
 				for (Variable var : queryResult.getSparql().getHead().getVariable()) {
-					System.out.println("----var:---- " + var.getName());
+					logger.debug("----var:---- " + var.getName());
 				}
 				
 				for (Result result : queryResult.getSparql().getResults().getResult()) {
-					System.out.println("----result:---- ");
+					logger.debug("----result:---- ");
 
 					for (Binding binding : result.getBinding()) {
-						System.out.println("binding name: " + binding.getName());
-						System.out.println("literal: "
+						logger.debug("binding name: " + binding.getName());
+						logger.debug("literal: "
 								+ binding.getLiteral().getContent());
 					}
 				}				
 			}
 
-			System.out.println("---------Service Presentation---------");
+			logger.debug("---------Service Presentation---------");
 
 			for (Widget widget : sdumServiceResultSet.getRequestPresentation()
 					.getWidget()) {
-				System.out.println("WidgetID: " + widget.getWidgetID());
+				logger.debug("WidgetID: " + widget.getWidgetID());
 
 				for (PresentationAttr presentationAttr : widget
 						.getPresentationAttr()) {
-					System.out.println("WidgetAttrName: "
+					logger.debug("WidgetAttrName: "
 							+ presentationAttr.getName() + " WidgetAttrValue: "
 							+ presentationAttr.getValue());
 				}

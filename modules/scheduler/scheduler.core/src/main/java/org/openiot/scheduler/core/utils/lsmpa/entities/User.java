@@ -25,10 +25,13 @@ import java.util.List;
 import java.util.Set;
 
 import org.openiot.commons.util.PropertyManagement;
+import org.openiot.scheduler.core.api.impl.RegisterService.RegisterServiceImpl;
 import org.openrdf.query.Binding;
 import org.openrdf.query.BindingSet;
 import org.openrdf.query.QueryEvaluationException;
 import org.openrdf.query.TupleQueryResult;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import lsm.schema.LSMSchema;
 import lsm.server.LSMTripleStore;
@@ -59,27 +62,27 @@ public class User {
 							String str = (b.getValue((String) n) == null) ? null : b.getValue((String) n)
 									.stringValue();
 							user.setId(str);
-							System.out.println("user id: " + user.getId() + " ");
+							logger.debug("user id: " + user.getId() + " ");
 						} else if (((String) n).equalsIgnoreCase("userName")) {
 							String str = (b.getValue((String) n) == null) ? null : b.getValue((String) n)
 									.stringValue();
 							user.setName(str);
-							System.out.println("userName : " + user.getName() + " ");
+							logger.debug("userName : " + user.getName() + " ");
 						} else if (((String) n).equalsIgnoreCase("userDesc")) {
 							String str = (b.getValue((String) n) == null) ? null : b.getValue((String) n)
 									.stringValue();
 							user.setDescription(str);
-							System.out.println("userDesc : " + user.getDescription() + " ");
+							logger.debug("userDesc : " + user.getDescription() + " ");
 						} else if (((String) n).equalsIgnoreCase("userPasw")) {
 							String str = (b.getValue((String) n) == null) ? null : b.getValue((String) n)
 									.stringValue();
 							user.setPasswd(str);
-							System.out.println("userPasw : " + user.getPasswd() + " ");
+							logger.debug("userPasw : " + user.getPasswd() + " ");
 						} else if (((String) n).equalsIgnoreCase("userMail")) {
 							String str = (b.getValue((String) n) == null) ? null : b.getValue((String) n)
 									.stringValue();
 							user.setEmail(str);
-							System.out.println("userMail : " + user.getEmail() + " ");
+							logger.debug("userMail : " + user.getEmail() + " ");
 						}
 					}
 					userList.add(user);
@@ -236,6 +239,8 @@ public class User {
 		// }
 	}// class
 
+	final static Logger logger = LoggerFactory.getLogger(User.class);
+	
 	private LSMSchema myOnt;
 	private LSMSchema ontInstance;
 	private String graph;

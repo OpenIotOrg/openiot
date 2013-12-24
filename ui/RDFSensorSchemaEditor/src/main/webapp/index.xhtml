@@ -1,0 +1,234 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+xmlns:f="http://java.sun.com/jsf/core"
+xmlns:h="http://java.sun.com/jsf/html"
+xmlns:ui="http://java.sun.com/jsf/facelets"
+xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	<meta name="author" content="Prem Prakash Jayaraman" />
+	<meta name="author-email" content="Prem.Jayaraman@csiro.au" />
+	
+	<title>
+		<ui:insert name="title">#{global.pageTitle}</ui:insert>
+	</title>
+	<!-- <h:outputStylesheet name="styles.css" library="css"/>		
+	 -->
+	 <h:outputScript name="utils.js" library="scripts"/>
+</h:head>
+
+<h:body>
+
+<h:form>
+
+	<p:panel id="pnl-ov" header="Sensor Observation Data Editor">
+		<h:outputLabel value="#{ui.dateformat}" style="color:red"/>
+		<h:panelGrid columns="4">
+
+			<h:outputLabel value="* #{sensorov.id}" style="color:red"/>
+			<p:inputText value="#{sensorObservation.sensorID}" 
+							required="true" 
+							requiredMessage="You must enter a Sensor ID"
+							id="sensorid"
+							size="30">
+			</p:inputText>
+			<p:watermark for="sensorid" value ="demo"/>
+			<h:message id="sensoridMsg" for="sensorid" style="color:red"/>		
+
+
+			<h:outputLabel value="* #{sensorov.starttime}"/>
+			<p:inputText value="#{sensorObservation.start_time}" 
+							required="true" 
+							requiredMessage="You must enter a Start Time"
+							id="starttime"
+							size="30">
+			</p:inputText>
+			<p:watermark for="starttime" value ="#{ui['basetime.example']}"/>
+			<h:message id="starttimeMsg" for="starttime" style="color:red"/>	
+			
+			
+			
+			<h:outputLabel value="* #{sensorov.endtime}"/>
+			<p:inputText value="#{sensorObservation.end_time}" 
+							required="true" 
+							requiredMessage="You must enter a End Time"
+							id="endtime"
+							size="30">
+			</p:inputText>
+			<p:watermark for="endtime" value ="#{ui['basetime.example']}"/>
+			<h:message id="endtimeMsg" for="endtime" style="color:red"/>
+			
+			
+			
+			<h:outputLabel value="#{sensorov.Values}"/>
+			<p:inputText value="#{sensorObservation.values}" 
+							required="true" 
+							requiredMessage="You must enter a Value"
+							id="values"
+							size="30">
+			</p:inputText>
+			<p:watermark for="values" value ="#{sensorov['Values.example']}"/>
+			<h:message id="valuesMsg" for="values" style="color:red"/>
+	</h:panelGrid>
+	
+	</p:panel>  	
+		
+
+	<p:panel id="pnl" header="Sensor Schema Editor">  	
+			<h:outputLabel value="#{ui.dateformat}" style="color:red"/>			
+			<h:panelGrid columns="4">
+			<h:outputLabel value="* #{ui.id}" style="color:red"/>
+			<p:inputText value="#{sensorSchema.id}" 
+							required="true" 
+							requiredMessage="You must enter an ID"
+							id="id"
+							size="30">
+			</p:inputText>
+			<p:watermark for="id" value ="#{ui['id.example']}"/>
+			<h:message id="idMsg" for="id" style="color:red"/>		
+			
+						
+			<h:outputLabel value="* #{ui.basetime}" style="color:red"/>
+			<p:inputText value="#{sensorSchema.baseTime}" 
+							required="true" 
+							requiredMessage="You must enter a Base Time"
+							id="basetime"
+							size="30">
+							
+			</p:inputText>
+			<p:watermark for="basetime" value ="#{ui['basetime.example']}"/>
+			<h:message id="basetimeMsg" for="basetime" style="color:red"/>	
+
+
+			<h:outputLabel value="* #{ui.baseuri}" style="color:red"/>
+			<p:inputText value="#{sensorSchema.baseURI}" 
+							required="true" 
+							requiredMessage="You must enter a Base URI"
+							id="baseuri"
+							size="30">
+			</p:inputText>
+			<p:watermark for="baseuri" value ="#{ui['baseuri.example']}"/>
+			<h:message id="baseuriMsg" for="baseuri" style="color:red"/>	
+
+
+			<h:outputLabel value="#{ui.readingid}"/>
+			<p:inputText value="#{sensorSchema.sensorReadings}" 														
+							id="sensorreading"
+							size="30">
+			</p:inputText>
+			<p:watermark for="sensorreading" value ="#{ui['readingid.example']}"/>
+			<h:message id="sensorreadingMsg" for="sensorreading" style="color:red"/>	
+						
+			
+			<h:outputLabel value="#{ui.readinguri}"/>
+			<p:inputText value="#{sensorSchema.sensorReadingsURI}" 														
+							id="sensorreadinguri"
+							size="30">
+			</p:inputText>
+			<p:watermark for="sensorreadinguri" value ="#{ui['readinguri.example']}"/>
+			<h:message id="sensorreadinguriMsg" for="sensorreadinguri" style="color:red"/>
+			
+			
+			<h:outputLabel value="#{ui.observedproperty}"/>
+			<p:inputText value="#{sensorSchema.observedProperty}" 														
+							id="observedProperty"
+							size="30">
+			</p:inputText>
+			<p:watermark for="observedProperty" value ="#{ui['observedproperty.example']}"/>
+			<h:message id="observedPropertyMsg" for="observedProperty" style="color:red"/>		
+
+
+			<h:outputLabel value="#{ui.uom}"/>
+			<p:inputText value="#{sensorSchema.unitOfMeasurement}" 														
+							id="uom"
+							size="30">
+			</p:inputText>
+			<p:watermark for="uom" value ="#{ui['uom.example']}"/>
+			<h:message id="uomMsg" for="uom" style="color:red"/>	
+			
+
+			<h:outputLabel value="#{ui.sensortemporal}"/>
+			<p:inputText value="#{sensorSchema.sensorTemporalProperty}" 														
+							id="sensortemporal"
+							size="30">
+			</p:inputText>
+			<p:watermark for="sensortemporal" value ="#{ui['sensortemporal.example']}"/>
+			<h:message id="sensortemporalMsg" for="sensortemporal" style="color:red"/>	
+
+
+			<h:outputLabel value="#{ui['locationname']}"/>
+			<p:inputText value="#{sensorSchema.locationName}" 														
+							id="locationName"
+							size="30">
+			</p:inputText>
+			<p:watermark for="locationName" value ="#{ui['locationame.example']}"/>
+			<h:message id="locationNamelMsg" for="locationName" style="color:red"/>	
+			
+						
+			<h:outputLabel value="#{ui['location']}"/>
+			<p:inputText value="#{sensorSchema.location}" 														
+							id="location"
+							size="30">
+			</p:inputText>
+			<p:watermark for="location" value ="#{ui['location.example']}"/>
+			<h:message id="locationlMsg" for="location" style="color:red"/>	
+			
+								
+			
+			<h:outputLabel value="#{ui.devicetype}"/>
+
+			<p:selectOneMenu value="#{sensorSchema.currentDeviceType}" id="devicetype">
+				<f:selectItems value="#{sensorSchema.availableDeviceType}"/>
+			</p:selectOneMenu><br/>			
+			<h:message id="devicetypeMsg" for="devicetype" style="color:red"/>	
+			
+			
+			<h:outputLabel value="#{ui.outputformats}"/>
+
+			<p:selectOneMenu value="#{sensorSchema.currentoutputFormat}" id="outputFormat">
+				<f:selectItems value="#{sensorSchema.availableOutputFormats}"/>
+			</p:selectOneMenu><br/>			
+			<h:message id="outputFormatMsg" for="outputFormat" style="color:red"/>	
+
+			
+			<f:facet name="footer">
+				<p:commandButton value="Submit" id="submit" update="@form" action="#{sensorSchema.submit}"
+						actionListener="#{sensorObservation.submitov}">				
+				</p:commandButton>
+				 
+				 <p:blockUI block="pnl" trigger="submit">  
+	        		LOADING<br />  
+	        		<p:graphicImage value="resources/images/loading.gif"/>  
+	    		</p:blockUI>
+	    		
+				 <p:blockUI block="pnl-ov" trigger="submit">  
+	        		LOADING<br />  
+	        		<p:graphicImage value="resources/images/loading.gif"/>  
+	    		</p:blockUI>
+	    			    		
+			</f:facet>																								
+			</h:panelGrid>
+		</p:panel>
+		
+		
+		<p:panel id="pnl-ovoutput" header="Sensor Observation Data Editor Output" rendered = "#{sensorObservation.editable}">  	
+			<pre>
+			<code>		
+				<h:outputText value="#{sensorObservation.outputMessage}" />
+			</code>
+			</pre>
+		</p:panel>
+	
+		<p:panel id="pnl-output" header="Sensor Schema Editor Output" rendered = "#{sensorSchema.editable}">  			
+			<pre>
+			<code>
+				<h:outputText value="#{sensorSchema.outputMessage}" id="ajaxMessage1" />
+			</code>
+			</pre>
+		</p:panel>
+	</h:form>
+		<h3>Server Time</h3>  
+		<p:clock pattern="HH:mm:ss dd.MM.yyyy" mode="server" />			
+</h:body>
+</html>

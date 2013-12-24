@@ -1,0 +1,90 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+xmlns:f="http://java.sun.com/jsf/core"
+xmlns:h="http://java.sun.com/jsf/html"
+xmlns:ui="http://java.sun.com/jsf/facelets"
+xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	<meta name="author" content="Prem Prakash Jayaraman" />
+	<meta name="author-email" content="Prem.Jayaraman@csiro.au" />
+	<title>
+		<ui:insert name="title">#{global.pageTitle}</ui:insert>
+	</title>
+	<!-- <h:outputStylesheet name="styles.css" library="css"/>		
+	 -->
+	 <h:outputScript name="utils.js" library="scripts"/>
+</h:head>
+
+<h:body>
+
+<h:form>
+	<p:panel id="pnl-ov" header="Sensor Observation Data Editor">
+		<h:outputLabel value="#{ui.dateformat}" style="color:red"/>
+		<h:panelGrid columns="4">
+
+			<h:outputLabel value="* #{sensorov.id}" style="color:red"/>
+			<p:inputText value="#{sensorObservation.sensorID}" 
+							required="true" 
+							requiredMessage="You must enter a Sensor ID"
+							id="sensorid"
+							size="30">
+			</p:inputText>
+			<p:watermark for="sensorid" value ="demo"/>
+			<h:message id="sensoridMsg" for="sensorid" style="color:red"/>		
+
+
+			<h:outputLabel value="* #{sensorov.starttime}"/>
+			<p:inputText value="#{sensorObservation.start_time}" 
+							required="true" 
+							requiredMessage="You must enter a Start Time"
+							id="starttime"
+							size="30">
+			</p:inputText>
+			<p:watermark for="starttime" value ="#{ui['basetime.example']}"/>
+			<h:message id="starttimeMsg" for="starttime" style="color:red"/>	
+			
+			
+			
+			<h:outputLabel value="* #{sensorov.endtime}"/>
+			<p:inputText value="#{sensorObservation.end_time}" 
+							required="true" 
+							requiredMessage="You must enter a End Time"
+							id="endtime"
+							size="30">
+			</p:inputText>
+			<p:watermark for="endtime" value ="#{ui['basetime.example']}"/>
+			<h:message id="endtimeMsg" for="endtime" style="color:red"/>
+			
+			
+			
+			<h:outputLabel value="#{sensorov.Values}"/>
+			<p:inputText value="#{sensorObservation.values}" 
+							required="true" 
+							requiredMessage="You must enter a Value"
+							id="values"
+							size="30">
+			</p:inputText>
+			<p:watermark for="values" value ="#{sensorov['Values.example']}"/>
+			<h:message id="valuesMsg" for="values" style="color:red"/>
+						
+						
+
+	<f:facet name="footer">
+ 		<p:commandButton value="Submit" update="@form"  
+             actionListener="#{sensorObservation.submitov}"/> 
+	</f:facet>	
+																									
+	</h:panelGrid>
+	
+	</p:panel>  	
+		
+	<p:panel id="pnl-ovoutput" header="Sensor Observation Data Editor Output" rendered = "#{sensorObservation.editable}">  			
+		<h:outputText value="#{sensorObservation.outputMessage}" />
+	</p:panel>
+</h:form>
+		<h3>Server Time</h3>  
+		<p:clock pattern="HH:mm:ss dd.MM.yyyy" mode="server" />			
+</h:body>
+</html>

@@ -279,12 +279,12 @@ public class GetApplicationImpl {
 						String str = (b.getValue((String) n) == null) ? null : b.getValue((String) n)
 								.stringValue();
 						rootOAMOData.setOamoDesc(str);
-						System.out.println("oamoDesc : " + rootOAMOData.getOamoDesc() + " ");
+						logger.debug("oamoDesc : " + rootOAMOData.getOamoDesc() + " ");
 					} else if (((String) n).equalsIgnoreCase("oamoGraphMeta")) {
 						String str = (b.getValue((String) n) == null) ? null : b.getValue((String) n)
 								.stringValue();
 						rootOAMOData.setOamoGraphMeta(str);
-						System.out.println("oamoGraphMeta : " + rootOAMOData.getOamoGraphMeta() + " ");
+						logger.debug("oamoGraphMeta : " + rootOAMOData.getOamoGraphMeta() + " ");
 					}
 				}
 				// }//while
@@ -313,17 +313,17 @@ public class GetApplicationImpl {
 							String str = (b.getValue((String) n) == null) ? null : b.getValue((String) n)
 									.stringValue();
 							osmoData.setId(str);
-							System.out.print("serviceID: " + osmoData.getId() + " ");
+							logger.debug("serviceID: " + osmoData.getId() + " ");
 						} else if (((String) n).equalsIgnoreCase("srvcName")) {
 							String str = (b.getValue((String) n) == null) ? null : b.getValue((String) n)
 									.stringValue();
 							osmoData.setName(str);
-							System.out.print("srvcName : " + osmoData.getName() + " ");
+							logger.debug("srvcName : " + osmoData.getName() + " ");
 						} else if (((String) n).equalsIgnoreCase("srvcDesc")) {
 							String str = (b.getValue((String) n) == null) ? null : b.getValue((String) n)
 									.stringValue();
 							osmoData.setDesc(str);
-							System.out.print("srvcDesc : " + osmoData.getDesc() + " ");
+							logger.debug("srvcDesc : " + osmoData.getDesc() + " ");
 						}
 					}
 					osmoDataList.add(osmoData);
@@ -352,12 +352,12 @@ public class GetApplicationImpl {
 							String str = (b.getValue((String) n) == null) ? null : b.getValue((String) n)
 									.stringValue();
 							queryData.setId(str);
-							System.out.print("srvcStatus id: " + queryData.getId() + " ");
+							logger.debug("srvcStatus id: " + queryData.getId() + " ");
 						} else if (((String) n).equalsIgnoreCase("queryString")) {
 							String str = (b.getValue((String) n) == null) ? null : b.getValue((String) n)
 									.stringValue();
 							queryData.setQueryString(str);
-							System.out.print("srvcStatusTime : " + queryData.getQueryString() + " ");
+							logger.debug("srvcStatusTime : " + queryData.getQueryString() + " ");
 						}
 					}
 					queryDataList.add(queryData);
@@ -385,17 +385,17 @@ public class GetApplicationImpl {
 							String str = (b.getValue((String) n) == null) ? null : b.getValue((String) n)
 									.stringValue();
 							srvcStatusData.setSrvcStatusID(str);
-							System.out.print("srvcStatus id: " + srvcStatusData.getSrvcStatusID() + " ");
+							logger.debug("srvcStatus id: " + srvcStatusData.getSrvcStatusID() + " ");
 						} else if (((String) n).equalsIgnoreCase("srvcStatusTime")) {
 							String str = (b.getValue((String) n) == null) ? null : b.getValue((String) n)
 									.stringValue();
 							srvcStatusData.setSrvcStatusTime(str);
-							System.out.print("srvcStatusTime : " + srvcStatusData.getSrvcStatusTime() + " ");
+							logger.debug("srvcStatusTime : " + srvcStatusData.getSrvcStatusTime() + " ");
 						} else if (((String) n).equalsIgnoreCase("srvcStatus")) {
 							String str = (b.getValue((String) n) == null) ? null : b.getValue((String) n)
 									.stringValue();
 							srvcStatusData.setSrvcStatus(str);
-							System.out.print("srvcStatusStatus : " + srvcStatusData.getSrvcStatus() + " ");
+							logger.debug("srvcStatusStatus : " + srvcStatusData.getSrvcStatus() + " ");
 						}
 					}
 					serviceStatusDataList.add(srvcStatusData);
@@ -423,17 +423,17 @@ public class GetApplicationImpl {
 							String str = (b.getValue((String) n) == null) ? null : b.getValue((String) n)
 									.stringValue();
 							widgetPreData.setId(str);
-							System.out.print("widgetPreID: " + widgetPreData.getId() + " ");
+							logger.debug("widgetPreID: " + widgetPreData.getId() + " ");
 						} else if (((String) n).equalsIgnoreCase("widgetID")) {
 							String str = (b.getValue((String) n) == null) ? null : b.getValue((String) n)
 									.stringValue();
 							widgetPreData.setWidgetID(str);
-							System.out.print("widgetID: " + widgetPreData.getWidgetID() + " ");
+							logger.debug("widgetID: " + widgetPreData.getWidgetID() + " ");
 						} else if (((String) n).equalsIgnoreCase("widgetAttrID")) {
 							String str = (b.getValue((String) n) == null) ? null : b.getValue((String) n)
 									.stringValue();
 							widgetPreData.setWidgetAttrID(str);
-							System.out.print("widgetAttr: " + widgetPreData.getWidgetAttrID() + " ");
+							logger.debug("widgetAttr: " + widgetPreData.getWidgetAttrID() + " ");
 						}
 					}
 					widgetPresentationDataList.add(widgetPreData);
@@ -461,17 +461,17 @@ public class GetApplicationImpl {
 							String str = (b.getValue((String) n) == null) ? null : b.getValue((String) n)
 									.stringValue();
 							widgetAttr.setId(str);
-							System.out.print("widgetattr id: " + widgetAttr.getId() + " ");
+							logger.debug("widgetattr id: " + widgetAttr.getId() + " ");
 						} else if (((String) n).equalsIgnoreCase("widgetAttrName")) {
 							String str = (b.getValue((String) n) == null) ? null : b.getValue((String) n)
 									.stringValue();
 							widgetAttr.setName(str);
-							System.out.print("widgetAttrName: " + widgetAttr.getName() + " ");
+							logger.debug("widgetAttrName: " + widgetAttr.getName() + " ");
 						} else if (((String) n).equalsIgnoreCase("widgetAttrDesc")) {
 							String str = (b.getValue((String) n) == null) ? null : b.getValue((String) n)
 									.stringValue();
 							widgetAttr.setValue(str);
-							System.out.print("widgetAttrDesc: " + widgetAttr.getValue() + " ");
+							logger.debug("widgetAttrDesc: " + widgetAttr.getValue() + " ");
 						}
 					}
 					widgetAttrList.add(widgetAttr);

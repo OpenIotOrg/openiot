@@ -28,6 +28,8 @@ import org.openiot.commons.util.PropertyManagement;
 import org.openrdf.query.BindingSet;
 import org.openrdf.query.QueryEvaluationException;
 import org.openrdf.query.TupleQueryResult;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import lsm.schema.LSMSchema;
 import lsm.server.LSMTripleStore;
@@ -56,31 +58,31 @@ public class Service {
 							String str = (b.getValue((String) n) == null) ? null : b.getValue((String) n)
 									.stringValue();
 							srvc.setId(str);
-							System.out.println("srvc id: " + srvc.getId() + " ");
+							logger.debug("srvc id: " + srvc.getId() + " ");
 						} else if (((String) n).equalsIgnoreCase("srvcName")) {
 							String str = (b.getValue((String) n) == null) ? null : b.getValue((String) n)
 									.stringValue();
 							srvc.setName(str);
-							System.out.println("srvcName : " + srvc.getName() + " ");
+							logger.debug("srvcName : " + srvc.getName() + " ");
 						} else if (((String) n).equalsIgnoreCase("srvcDesc")) {
 							String str = (b.getValue((String) n) == null) ? null : b.getValue((String) n)
 									.stringValue();
 							srvc.setDescription(str);
-							System.out.println("srvcDesc : " + srvc.getDescription() + " ");
+							logger.debug("srvcDesc : " + srvc.getDescription() + " ");
 						} else if (((String) n).equalsIgnoreCase("srvcQstring")) {
 							String str = (b.getValue((String) n) == null) ? null : b.getValue((String) n)
 									.stringValue();
 							Query qString = new Query();
 							qString.setqString(str);
 							srvc.addQueryString(qString);
-							System.out.println("srvcQstring : " + srvc.getQueryString() + " ");
+							logger.debug("srvcQstring : " + srvc.getQueryString() + " ");
 						} else if (((String) n).equalsIgnoreCase("oamo")) {
 							String str = (b.getValue((String) n) == null) ? null : b.getValue((String) n)
 									.stringValue();
 							OAMO oamo = new OAMO();
 							oamo.setId(str);
 							srvc.setOAMO(oamo);
-							System.out.println("oamo : " + srvc.getOAMO().getId() + " ");
+							logger.debug("oamo : " + srvc.getOAMO().getId() + " ");
 						}
 					}
 					serviceList.add(srvc);
@@ -212,6 +214,8 @@ public class Service {
 		// }
 	}// class
 
+	final static Logger logger = LoggerFactory.getLogger(Service.class);
+	
 	private LSMSchema myOnt;
 	private LSMSchema ontInstance;
 	private String graph;

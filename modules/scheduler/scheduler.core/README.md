@@ -25,6 +25,13 @@ Configure Maven
 If you have not yet done so, you must [Configure Maven](../README.md#mavenconfiguration) before testing the quickstarts.
 
 
+Properties
+----------
+
+The property file can be found here: [properties](https://github.com/OpenIotOrg/openiot/tree/develop/utils/utils.commons/src/main/resources/properties)
+copy the `openiot.properties` file to the folowing path: `\JBoss_HOME\standalone\configuration`
+
+
 Start JBoss Enterprise Application Platform 6 or JBoss AS 7.1 with the Web Profile
 -------------------------
 

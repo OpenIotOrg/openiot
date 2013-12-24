@@ -37,6 +37,8 @@ import com.hp.hpl.jena.vocabulary.XSD;
 
 import org.openiot.commons.util.PropertyManagement;
 import org.openiot.scheduler.core.utils.lsmpa.entities.ServiceStatus.State;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import lsm.schema.LSMSchema;
 import lsm.server.LSMTripleStore;
@@ -57,27 +59,27 @@ public class WidgetAvailable {
 							String str = (b.getValue((String) n) == null) ? null : b.getValue((String) n)
 									.stringValue();
 							widget.setId(str);
-							System.out.print("widget id: " + widget.getId() + " ");
+							logger.debug("widget id: " + widget.getId() + " ");
 						} else if (((String) n).equalsIgnoreCase("widgetDesc")) {
 							String str = (b.getValue((String) n) == null) ? null : b.getValue((String) n)
 									.stringValue();
 							widget.setDescription(str);
-							System.out.print("widgetDesc: " + widget.getDescription() + " ");
+							logger.debug("widgetDesc: " + widget.getDescription() + " ");
 						} else if (((String) n).equalsIgnoreCase("widgetName")) {
 							String str = (b.getValue((String) n) == null) ? null : b.getValue((String) n)
 									.stringValue();
 							widget.setName(str);
-							System.out.print("widgetName: " + widget.getName() + " ");
+							logger.debug("widgetName: " + widget.getName() + " ");
 						} else if (((String) n).equalsIgnoreCase("widgetLocation")) {
 							String str = (b.getValue((String) n) == null) ? null : b.getValue((String) n)
 									.stringValue();
 							widget.setLocationURL(str);
-							System.out.print("widgetLocation: " + widget.getLocationURL() + " ");
+							logger.debug("widgetLocation: " + widget.getLocationURL() + " ");
 						} else if (((String) n).equalsIgnoreCase("widgetType")) {
 							String str = (b.getValue((String) n) == null) ? null : b.getValue((String) n)
 									.stringValue();
 							widget.setType(str);
-							System.out.print("widgetType: " + widget.getType() + " ");
+							logger.debug("widgetType: " + widget.getType() + " ");
 						}
 					}
 					widgetList.add(widget);
@@ -187,6 +189,8 @@ public class WidgetAvailable {
 		// }
 	}// class
 
+	final static Logger logger = LoggerFactory.getLogger(WidgetAvailable.class);
+	
 	private LSMSchema myOnt;
 	private LSMSchema ontInstance;
 	private String graph;

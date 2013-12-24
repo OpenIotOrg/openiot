@@ -1,4 +1,5 @@
 package org.openiot.ide.core;
+
 /**
  *    Copyright (c) 2011-2014, OpenIoT
  *    
@@ -44,8 +45,8 @@ public class LayoutController implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 6629499890720592580L;
-
 	private HashMap<String, Boolean> map;
+	private String navigation;
 
 	public LayoutController() {
 	}
@@ -56,10 +57,7 @@ public class LayoutController implements Serializable {
 		map = new HashMap<String, Boolean>();
 	}
 
-	private String navigation;
-
 	public String getNavigation() {
-
 		return navigation;
 	}
 
@@ -85,7 +83,8 @@ public class LayoutController implements Serializable {
 				HttpURLConnection huc = (HttpURLConnection) u.openConnection();
 				huc.setRequestMethod("HEAD");
 				huc.connect();
-				b = Boolean.valueOf(huc.getResponseCode() == HttpURLConnection.HTTP_OK);
+				b = Boolean
+						.valueOf(huc.getResponseCode() == HttpURLConnection.HTTP_OK);
 				map.put(url, b);
 			} catch (MalformedURLException e) {
 				// e.printStackTrace();
@@ -95,7 +94,7 @@ public class LayoutController implements Serializable {
 				// e.printStackTrace();
 			}
 		}
-		
+
 		return b.booleanValue();
 	}
 

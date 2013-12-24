@@ -18,7 +18,11 @@ package org.openiot.lsm.utils;
 *
 *     Contact: OpenIoT mailto: info@openiot.eu
 */
-
+/**
+ * 
+ * @author Hoan Nguyen Mau Quoc
+ * 
+ */
 public class XSLTMapFile {
 	public static String sensormeta2xslt = "/xslt/Sensormeta.xsl";	
 }
