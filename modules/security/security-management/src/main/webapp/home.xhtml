@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html" xmlns:p="http://primefaces.org/ui"
-	xmlns:f="http://java.sun.com/jsf/core">
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:openiot="http://openiot.org/tags">
 
 <head />
 <body>
@@ -9,17 +9,29 @@
 		<ui:define name="title">Home Page</ui:define>
 		<ui:define name="nav-links">
 			<li class="active"><a href="home.jsf">Home</a></li>
-			<li><a href="roles.jsf">Manage roles</a></li>
-			<li><a href="users.jsf">Manage users</a></li>
-			<li><a href="perms.jsf">Manage permissions</a></li>
+			<openiot:hasAnyRoles name="admin, user-manager">
+				<li><a href="roles.jsf">Manage roles</a></li>
+				<li><a href="users.jsf">Manage users</a></li>
+				<li><a href="perms.jsf">Manage permissions</a></li>
+			</openiot:hasAnyRoles>
 		</ui:define>
 		<ui:define name="content">
 			<p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" />
-			<p:layout fullPage="false" id="layout" style="min-height:800px;">
+			<p:layout fullPage="false" id="layout" style="min-height:800px; margin-top:10px;">
 				<p:layoutUnit position="center">
-					<h1>Welcome to the OpenIoT Authentication &amp; Authorization Manager Webapp!</h1>
+					<div style="text-align: center;">
+						<h1>Welcome to the OpenIoT Authentication &amp; Authorization Manager Webapp!</h1>
+						<br />
+						<openiot:lacksRole name="user-manager">
+							<openiot:lacksRole name="admin">
+								<span class="label label-warning">
+									<h2>You don't have the required authorization for using this application.</h2>
+								</span>
+							</openiot:lacksRole>
+						</openiot:lacksRole>
+					</div>
 				</p:layoutUnit>
-				
+
 			</p:layout>
 		</ui:define>
 	</ui:composition>

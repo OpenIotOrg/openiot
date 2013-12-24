@@ -13,9 +13,6 @@ import org.openiot.lsm.security.oauth.mgmt.User;
 @ViewScoped
 public class SignupController extends AbstractController {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -246517359642720816L;
 
 	private User user;
@@ -23,7 +20,7 @@ public class SignupController extends AbstractController {
 	private DefaultPasswordEncoder passwordEncoder;
 
 	@ManagedProperty(value = "#{securityManagerService}")
-	private LSMSecurityManagerService securityManagerService;
+	private SecurityManagerService securityManagerService;
 
 	public SignupController() {
 		user = new User();
@@ -94,7 +91,7 @@ public class SignupController extends AbstractController {
 		this.user = user;
 	}
 
-	public void setSecurityManagerService(LSMSecurityManagerService securityManagerService) {
+	public void setSecurityManagerService(SecurityManagerService securityManagerService) {
 		this.securityManagerService = securityManagerService;
 	}
 

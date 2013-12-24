@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -64,7 +63,7 @@ public class RolesController extends AbstractController {
 	@SuppressWarnings("unchecked")
 	private static final List<Permission> EmptyPermissionList = (List<Permission>) emptyList;
 
-	@ManagedProperty(value = "#{securityManagerServiceIM}")
+	@ManagedProperty(value = "#{securityManagerService}")
 	private SecurityManagerService securityManagerService;
 
 	private long selectedServiceId = -1;
@@ -112,34 +111,31 @@ public class RolesController extends AbstractController {
 	}
 
 	public void removeRole(Role role) {
-		// TODO: delete role permanently
-		addInfoMessage("Role Deleted", role.getName());
-		for (Iterator<Role> iterator = roles.iterator(); iterator.hasNext();) {
-			Role r = iterator.next();
-			if (r.equals(role)) {
-				iterator.remove();
-				break;
-			}
-		}
+		// TODO This is extremely dangerous, replace with removeRoleCascade() method
 		if (role.equals(selectedRole)) {
+
+			roles.remove(role);
+			for (User roleUser : roleUsers.get(selectedRole)) {
+				roleUser.getRoles().remove(selectedRole);
+				securityManagerService.deleteUser(roleUser.getUsername());
+				securityManagerService.addUser(roleUser);
+			}
+			securityManagerService.deleteRole(role.getName());
+
 			setSelectedRole(null);
 			setSelectedUser(null);
 			setSelectedOtherUser(null);
 			setSelectedServiceIdStr("-1");
+
+			addInfoMessage("Role Deleted", role.getName());
 		}
 	}
 
 	public void removeUser(User user) {
 		addInfoMessage("User Deleted", user.getUsername());
-		for (Iterator<User> iterator = roleUsers.get(getSelectedRole()).iterator(); iterator.hasNext();) {
-			User u = iterator.next();
-			if (u.equals(user)) {
-				iterator.remove();
-				break;
-			}
-		}
 		if (user.equals(selectedUser)) {
 			// TODO This is extremely dangerous, replace with removeRoleFromUser() method
+			roleUsers.get(getSelectedRole()).remove(user);
 			selectedUser.getRoles().remove(selectedRole);
 
 			securityManagerService.deleteUser(selectedUser.getUsername());
@@ -197,7 +193,7 @@ public class RolesController extends AbstractController {
 			Map<RegisteredService, List<Permission>> map = new HashMap<RegisteredService, List<Permission>>();
 			for (Long key : selectedRole.getPermissionsPerService().keySet())
 				map.put(allServices.get(key), new ArrayList<Permission>(selectedRole.getPermissionsPerService().get(key)));
-			 list = new ArrayList<Map.Entry<RegisteredService, List<Permission>>>(map.entrySet());
+			list = new ArrayList<Map.Entry<RegisteredService, List<Permission>>>(map.entrySet());
 		}
 		return list;
 	}
@@ -324,6 +320,8 @@ public class RolesController extends AbstractController {
 	public void addUser() {
 		if (selectedRole != null && selectedOtherUser != null) {
 			// TODO This is extremely dangerous, replace with addRoleToUser() method
+			if (selectedOtherUser.getRoles() == null)
+				selectedOtherUser.setRoles(new ArrayList<Role>());
 			selectedOtherUser.getRoles().add(selectedRole);
 			roleUsers.get(selectedRole).add(selectedOtherUser);
 
@@ -359,10 +357,10 @@ public class RolesController extends AbstractController {
 	public void clearServiceId() {
 		setSelectedServiceIdStr("-1");
 	}
-	
-	public List<Tuple2<RegisteredService, Permission>> flatten(Map.Entry<RegisteredService, List<Permission>> entry){
-		List<Tuple2<RegisteredService, Permission>> output = new ArrayList<Tuple2<RegisteredService,Permission>>(entry.getValue().size());
-		for(Permission perm : entry.getValue())
+
+	public List<Tuple2<RegisteredService, Permission>> flatten(Map.Entry<RegisteredService, List<Permission>> entry) {
+		List<Tuple2<RegisteredService, Permission>> output = new ArrayList<Tuple2<RegisteredService, Permission>>(entry.getValue().size());
+		for (Permission perm : entry.getValue())
 			output.add(new Tuple2<RegisteredService, Permission>(entry.getKey(), perm));
 		return output;
 	}

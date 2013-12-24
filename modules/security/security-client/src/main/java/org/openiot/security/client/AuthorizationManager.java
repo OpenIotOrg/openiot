@@ -46,9 +46,9 @@ import static org.openiot.security.client.SecurityConstants.*;
 import com.fasterxml.jackson.databind.JsonNode;
 
 /**
- * This class provides authorization information to the clients. TODO: We assume
- * that the utilizing entity is trusted! To be more secure we must also send the
- * calling entitiy's credentials to the OAuth server.
+ * This class provides authorization information to the clients. TODO: We assume that the utilizing
+ * entity is trusted! To be more secure we must also send the calling entitiy's credentials to the
+ * OAuth server.
  * 
  * @author Mehdi Riahi
  * 
@@ -90,6 +90,8 @@ public class AuthorizationManager {
 	}
 
 	public boolean hasPermission(String permStr, OAuthorizationCredentials credentials) {
+		if (credentials == null)
+			return false;
 		Permission perm = permissionResolver.resolvePermission(permStr);
 		Map<String, Set<Permission>> authorizationInfo = getAuthorizationInfo(credentials);
 		boolean hasPerm = false;
@@ -106,6 +108,8 @@ public class AuthorizationManager {
 	}
 
 	public boolean hasRole(String role, OAuthorizationCredentials credentials) {
+		if (credentials == null)
+			return false;
 		Map<String, Set<Permission>> authorizationInfo = getAuthorizationInfo(credentials);
 		return authorizationInfo.containsKey(role);
 	}
@@ -172,6 +176,8 @@ public class AuthorizationManager {
 			request.addQuerystringParameter(CALLER_ACCESS_TOKEN, callerCredentials.getAccessToken());
 		} else {
 			// TODO: ?
+			request.addQuerystringParameter(CALLER_CLIENT_ID, credentials.getClientId());
+			request.addQuerystringParameter(CALLER_ACCESS_TOKEN, credentials.getAccessToken());
 		}
 
 		final Response response = request.send();

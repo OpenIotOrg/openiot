@@ -1,154 +1,167 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html" xmlns:p="http://primefaces.org/ui"
-	xmlns:f="http://java.sun.com/jsf/core">
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:openiot="http://openiot.org/tags">
 
 <head />
 <body>
 	<ui:composition template="/WEB-INF/templates/main.xhtml">
 		<ui:define name="title">Manage Users</ui:define>
-	<ui:define name="nav-links">
+		<ui:define name="nav-links">
 			<li><a href="home.jsf">Home</a></li>
-			<li><a href="roles.jsf">Manage roles</a></li>
-			<li class="active"><a href="users.jsf">Manage users</a></li>
-			<li><a href="perms.jsf">Manage permissions</a></li>
+			<openiot:hasAnyRoles name="admin, user-manager">
+				<li><a href="roles.jsf">Manage roles</a></li>
+				<li class="active"><a href="users.jsf">Manage users</a></li>
+				<li><a href="perms.jsf">Manage permissions</a></li>
+			</openiot:hasAnyRoles>
 		</ui:define>
 		<ui:define name="content">
-			<p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" />
-			<p:layout fullPage="false" id="layout" style="min-height:800px;">
-				<p:layoutUnit position="west" minSize="200" size="400" resizable="true">
-					<h:form id="rolesForm">
-						<!-- Form must be inside layoutUnit otherwise strange behavior -->
-						<h:panelGrid columns="1" style="width:100%" cellpadding="5">
-							<h:panelGroup id="usersPanel" layout="block" style="width:100%">
-								<p:dataTable var="user" value="#{usersController.users}" id="usersTable" tableStyle="width:100%;" selectionMode="single"
-									selection="#{usersController.selectedUser}" rowKey="#{user.username}" emptyMessage="User list is empty." resizableColumns="true">
+			<openiot:hasAnyRoles name="admin, user-manager">
+				<p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" />
+				<p:layout fullPage="false" id="layout" style="min-height:800px;">
+					<p:layoutUnit position="west" minSize="200" size="400" resizable="true">
+						<h:form id="rolesForm">
+							<!-- Form must be inside layoutUnit otherwise strange behavior -->
+							<h:panelGrid columns="1" style="width:100%" cellpadding="5">
+								<h:panelGroup id="usersPanel" layout="block" style="width:100%">
+									<p:dataTable var="user" value="#{usersController.users}" id="usersTable" tableStyle="width:100%;" selectionMode="single"
+										selection="#{usersController.selectedUser}" rowKey="#{user.username}" emptyMessage="User list is empty." resizableColumns="true">
 
-									<p:ajax event="rowSelect" update=":rolesForm:usersTable:removeUserBtn :rolesForm:rolesTable :permForm:permissionsPanel" />
-									<p:ajax event="rowUnselect" update=":rolesForm:usersTable:removeUserBtn :rolesForm:rolesTable :permForm:permissionsPanel" />
+										<openiot:hasPermission name="admin:delete_user">
+											<p:ajax event="rowSelect" update=":rolesForm:usersTable:removeUserBtn :rolesForm:rolesTable :permForm:permissionsPanel" />
+											<p:ajax event="rowUnselect" update=":rolesForm:usersTable:removeUserBtn :rolesForm:rolesTable :permForm:permissionsPanel" />
+										</openiot:hasPermission>
+										<openiot:lacksPermission name="admin:delete_user">
+											<p:ajax event="rowSelect" update=":rolesForm:rolesTable :permForm:permissionsPanel" />
+											<p:ajax event="rowUnselect" update=":rolesForm:rolesTable :permForm:permissionsPanel" />
+										</openiot:lacksPermission>
 
-									<f:facet name="header">
-										<h:outputText value="Available Users" />
-									</f:facet>
+										<f:facet name="header">
+											<h:outputText value="Available Users" />
+										</f:facet>
 
-									<p:column headerText="Full name" width="35%">
-										<h:outputText value="#{user.name}" />
-									</p:column>
+										<p:column headerText="Full name" width="35%">
+											<h:outputText value="#{user.name}" />
+										</p:column>
 
-									<p:column headerText="Username" width="30%">
-										<h:outputText value="#{user.username}" />
-									</p:column>
+										<p:column headerText="Username" width="30%">
+											<h:outputText value="#{user.username}" />
+										</p:column>
 
-									<p:column headerText="Email" width="35%">
-										<h:outputText value="#{user.email}" />
-									</p:column>
+										<p:column headerText="Email" width="35%">
+											<h:outputText value="#{user.email}" />
+										</p:column>
 
-									<f:facet name="footer">
-										<p:commandButton id="removeUserBtn" icon="ui-icon-closethick" title="Delete"
-											actionListener="#{usersController.removeUser(usersController.selectedUser)}"
-											update=":rolesForm:usersPanel :rolesForm:rolesTable :permForm:permissionsPanel" immediate="true" disabled="#{empty usersController.selectedUser}">
-											<p:confirm header="Confirmation" message="Are you sure you want to delete User?" icon="ui-icon-alert" />
-										</p:commandButton>
-									</f:facet>
-								</p:dataTable>
-							</h:panelGroup>
+										<f:facet name="footer">
+											<openiot:hasPermission name="admin:delete_user">
+												<p:commandButton id="removeUserBtn" icon="ui-icon-closethick" title="Delete"
+													actionListener="#{usersController.removeUser(usersController.selectedUser)}"
+													update=":rolesForm:usersPanel :rolesForm:rolesTable :permForm:permissionsPanel" immediate="true" disabled="#{empty usersController.selectedUser}">
+													<p:confirm header="Confirmation" message="Are you sure you want to delete User?" icon="ui-icon-alert" />
+												</p:commandButton>
+											</openiot:hasPermission>
+										</f:facet>
+									</p:dataTable>
+								</h:panelGroup>
 
+								<h:panelGroup layout="block" style="width:100%">
+									<p:dataTable var="role" value="#{usersController.selectedUserRoles}" id="rolesTable" resizableColumns="true" editable="false" selectionMode="single"
+										selection="#{usersController.selectedRole}" rowKey="#{role.name}" style="table-layout: fixed; font-size:smaller;">
+
+										<p:ajax event="rowSelect" update=":permForm:permissionsPanel :rolesForm:rolesTable:removeRoleBtn" />
+										<p:ajax event="rowUnselect" update=":permForm:permissionsPanel :rolesForm:rolesTable:removeRoleBtn" />
+
+
+										<f:facet name="header">
+											<h:outputText value="User Roles" />
+										</f:facet>
+
+										<p:column headerText="Name">
+											<h:outputText value="#{role.name}" />
+										</p:column>
+
+										<p:column headerText="Description">
+											<h:outputText value="#{role.description}" />
+										</p:column>
+
+
+										<f:facet name="footer">
+											<p:commandButton id="addRoleBtn" update=":dlgForm:addRoleDlg" icon="ui-icon-plusthick" title="Add Role"
+												onclick="PF('addRoleDlg').show(); return false;" disabled="#{empty usersController.selectedUser}" />
+											<p:commandButton id="removeRoleBtn" icon="ui-icon-closethick" title="Delete"
+												actionListener="#{usersController.removeRole(usersController.selectedRole)}" update="rolesTable :permForm:permissionsPanel"
+												disabled="#{empty usersController.selectedRole}">
+												<p:confirm header="Confirmation" message="Are you sure you want to delete Role?" icon="ui-icon-alert" />
+											</p:commandButton>
+										</f:facet>
+
+									</p:dataTable>
+								</h:panelGroup>
+
+							</h:panelGrid>
+						</h:form>
+					</p:layoutUnit>
+
+					<p:layoutUnit position="center">
+						<h:form id="permForm">
 							<h:panelGroup layout="block" style="width:100%">
-								<p:dataTable var="role" value="#{usersController.selectedUserRoles}" id="rolesTable" resizableColumns="true" editable="false" selectionMode="single"
-									selection="#{usersController.selectedRole}" rowKey="#{role.name}" style="table-layout: fixed; font-size:smaller;">
+								<p:panelGrid id="permissionsPanel" columns="1" style="width:100%">
+									<f:facet name="header">Role	Permissions</f:facet>
+									<h:outputText value="No permission is available." rendered="#{empty usersController.selectedRolePermissions}" />
+									<p:accordionPanel value="#{usersController.selectedRolePermissions}" var="servicePerms" multiple="true" style="width:100%">
+										<p:tab title="#{servicePerms.key.name}" titletip="ServiceURL: [#{servicePerms.key.serviceId}]">
+											<p:dataTable var="perm" value="#{usersController.flatten(servicePerms)}" rowKey="#{perm.item2.name}" tableStyle="width:100%"
+												emptyMessage="Permission list is empty.">
+												<p:column headerText="Name" width="45%">
+													<h:outputText value="#{perm.item2.name}" />
+												</p:column>
 
-									<p:ajax event="rowSelect" update=":permForm:permissionsPanel :rolesForm:rolesTable:removeRoleBtn" />
-									<p:ajax event="rowUnselect" update=":permForm:permissionsPanel :rolesForm:rolesTable:removeRoleBtn" />
+												<p:column headerText="Description" width="45%">
+													<h:outputText value="#{perm.item2.description}" />
+												</p:column>
 
+											</p:dataTable>
+										</p:tab>
+									</p:accordionPanel>
+								</p:panelGrid>
+							</h:panelGroup>
+						</h:form>
+					</p:layoutUnit>
 
-									<f:facet name="header">
-										<h:outputText value="User Roles" />
-									</f:facet>
+					<p:confirmDialog global="true" showEffect="fade" hideEffect="explode">
+						<p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+						<p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+					</p:confirmDialog>
 
-									<p:column headerText="Name">
-										<h:outputText value="#{role.name}" />
+					<h:form id="dlgForm">
+						<p:dialog id="addRoleDlg" header="Add Role" widgetVar="addRoleDlg" modal="true" width="400" dynamic="true" closable="false">
+							<h:panelGrid columns="1" cellpadding="5" style="width:100%">
+								<p:dataTable var="otherRole" value="#{usersController.selectedUserOtherRoles}" id="otherRolesTable" tableStyle="width:100%; font-size:smaller;"
+									selectionMode="single" selection="#{usersController.selectedOtherRole}" rowKey="#{otherRole.name}" emptyMessage="Role list is empty.">
+
+									<p:ajax event="rowSelect" update=":dlgForm:addRoleDlg_addButton" />
+
+									<p:column headerText="Name" width="50%">
+										<h:outputText value="#{otherRole.name}" />
 									</p:column>
 
-									<p:column headerText="Description">
-										<h:outputText value="#{role.description}" />
+									<p:column headerText="Description" width="50%">
+										<h:outputText value="#{otherRole.description}" />
 									</p:column>
-
-
-									<f:facet name="footer">
-										<p:commandButton id="addRoleBtn" update=":dlgForm:addRoleDlg" icon="ui-icon-plusthick" title="Add Role"
-											onclick="PF('addRoleDlg').show(); return false;" disabled="#{empty usersController.selectedUser}" />
-										<p:commandButton id="removeRoleBtn" icon="ui-icon-closethick" title="Delete"
-											actionListener="#{usersController.removeRole(usersController.selectedRole)}" update="rolesTable :permForm:permissionsPanel"
-											disabled="#{empty usersController.selectedRole}">
-											<p:confirm header="Confirmation" message="Are you sure you want to delete Role?" icon="ui-icon-alert" />
-										</p:commandButton>
-									</f:facet>
 
 								</p:dataTable>
-							</h:panelGroup>
+								<f:facet name="footer">
+									<p:commandButton id="addRoleDlg_addButton" value="Add" actionListener="#{usersController.addRole}" update=":rolesForm:rolesTable :dlgForm:addRoleDlg"
+										disabled="#{empty usersController.selectedOtherRole}" oncomplete="PF('addRoleDlg').hide()" />
+									<p:commandButton id="addRoleDlg_cancelButton" value="Cancel" onclick="PF('addRoleDlg').hide()" update=":dlgForm:addRoleDlg" />
+								</f:facet>
+							</h:panelGrid>
+						</p:dialog>
 
-						</h:panelGrid>
 					</h:form>
-				</p:layoutUnit>
 
-				<p:layoutUnit position="center">
-					<h:form id="permForm">
-						<h:panelGroup layout="block" style="width:100%">
-							<p:panelGrid id="permissionsPanel" columns="1" style="width:100%">
-								<f:facet name="header">Role	Permissions</f:facet>
-								<h:outputText value="No permission is available." rendered="#{empty usersController.selectedRolePermissions}" />
-								<p:accordionPanel value="#{usersController.selectedRolePermissions}" var="servicePerms" multiple="true" style="width:100%">
-									<p:tab title="#{servicePerms.key.name}" titletip="ServiceURL: [#{servicePerms.key.serviceId}]">
-										<p:dataTable var="perm" value="#{usersController.flatten(servicePerms)}" rowKey="#{perm.item2.name}" tableStyle="width:100%" emptyMessage="Permission list is empty.">
-											<p:column headerText="Name" width="45%">
-												<h:outputText value="#{perm.item2.name}" />
-											</p:column>
-
-											<p:column headerText="Description" width="45%">
-												<h:outputText value="#{perm.item2.description}" />
-											</p:column>
-
-										</p:dataTable>
-									</p:tab>
-								</p:accordionPanel>
-							</p:panelGrid>
-						</h:panelGroup>
-					</h:form>
-				</p:layoutUnit>
-
-				<p:confirmDialog global="true" showEffect="fade" hideEffect="explode">
-					<p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
-					<p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
-				</p:confirmDialog>
-
-				<h:form id="dlgForm">
-					<p:dialog id="addRoleDlg" header="Add Role" widgetVar="addRoleDlg" modal="true"  width="400" dynamic="true" closable="false">
-						<h:panelGrid columns="1" cellpadding="5" style="width:100%">
-							<p:dataTable var="otherRole" value="#{usersController.selectedUserOtherRoles}" id="otherRolesTable" tableStyle="width:100%; font-size:smaller;"
-								selectionMode="single" selection="#{usersController.selectedOtherRole}" rowKey="#{otherRole.name}" emptyMessage="Role list is empty.">
-
-								<p:ajax event="rowSelect" update=":dlgForm:addRoleDlg_addButton" />
-
-								<p:column headerText="Name" width="50%">
-									<h:outputText value="#{otherRole.name}" />
-								</p:column>
-
-								<p:column headerText="Description" width="50%">
-									<h:outputText value="#{otherRole.description}" />
-								</p:column>
-
-							</p:dataTable>
-							<f:facet name="footer">
-								<p:commandButton id="addRoleDlg_addButton" value="Add" actionListener="#{usersController.addRole}" update=":rolesForm:rolesTable :dlgForm:addRoleDlg"
-									disabled="#{empty usersController.selectedOtherRole}" oncomplete="PF('addRoleDlg').hide()" />
-								<p:commandButton id="addRoleDlg_cancelButton" value="Cancel" onclick="PF('addRoleDlg').hide()" update=":dlgForm:addRoleDlg" />
-							</f:facet>
-						</h:panelGrid>
-					</p:dialog>
-
-				</h:form>
-
-			</p:layout>
+				</p:layout>
+			</openiot:hasAnyRoles>
 		</ui:define>
 	</ui:composition>
 </body>

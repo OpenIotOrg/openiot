@@ -22,8 +22,8 @@ public class LoginController extends AbstractController {
 	public String signInWithOpenIoT() {
 		logger.debug("Debut de la methode");
 		Subject subject = SecurityUtils.getSubject();
-		AccessControlUtil accessControlUtil = AccessControlUtil.getInstance();
 		if (!subject.isAuthenticated()) {
+			AccessControlUtil accessControlUtil = AccessControlUtil.getInstance();
 			final ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
 			final HttpServletRequest req = (HttpServletRequest) externalContext.getRequest();
 			final HttpServletResponse resp = (HttpServletResponse) externalContext.getResponse();

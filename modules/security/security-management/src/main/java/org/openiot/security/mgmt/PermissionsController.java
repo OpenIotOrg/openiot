@@ -47,7 +47,7 @@ public class PermissionsController extends AbstractController {
 	@SuppressWarnings("unchecked")
 	private static final List<Map.Entry<RegisteredService, List<Role>>> EmptyRolesPerServiceList = (List<Entry<RegisteredService, List<Role>>>) emptyList;
 
-	@ManagedProperty(value = "#{securityManagerServiceIM}")
+	@ManagedProperty(value = "#{securityManagerService}")
 	private SecurityManagerService securityManagerService;
 
 	public PermissionsController() {
@@ -100,6 +100,8 @@ public class PermissionsController extends AbstractController {
 		Set<User> permUsers = new HashSet<User>();
 		if (selectedPermission != null) {
 			for (User user : allUsers) {
+				if(user.getRoles() == null)
+					user.setRoles(new ArrayList<Role>());
 				for (Role role : user.getRoles()) {
 					for (Set<Permission> permissionSet : role.getPermissionsPerService().values())
 						if (permissionSet.contains(selectedPermission))

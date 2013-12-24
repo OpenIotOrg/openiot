@@ -217,6 +217,8 @@ public class InMemorySecurityManagerService implements SecurityManagerService {
 
 	@Override
 	public void addUser(User user) {
+		if(user.getRoles() == null)
+			user.setRoles(new ArrayList<Role>());
 		users.put(user.getUsername(), user);
 	}
 

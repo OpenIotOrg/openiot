@@ -49,7 +49,7 @@ public class UsersController extends AbstractController {
 	@SuppressWarnings("unchecked")
 	private static final List<Map.Entry<RegisteredService, List<Permission>>> EmptyPermissionsPerServiceList = (List<Entry<RegisteredService, List<Permission>>>) emptyList;
 
-	@ManagedProperty(value = "#{securityManagerServiceIM}")
+	@ManagedProperty(value = "#{securityManagerService}")
 	private SecurityManagerService securityManagerService;
 
 	public UsersController() {
@@ -110,7 +110,10 @@ public class UsersController extends AbstractController {
 	public List<Role> getSelectedUserRoles() {
 		List<Role> userRoles = EmptyRoleList;
 		if (selectedUser != null) {
-			userRoles = selectedUser.getRoles();
+			if (selectedUser.getRoles() == null)
+				selectedUser.setRoles(new ArrayList<Role>());
+			else
+				userRoles = selectedUser.getRoles();
 		}
 		return userRoles;
 	}
@@ -121,7 +124,7 @@ public class UsersController extends AbstractController {
 			List<Role> roles = new ArrayList<Role>();
 
 			for (Role role : allRoles)
-				if (!currentRoles.contains(role))
+				if (currentRoles == null || !currentRoles.contains(role))
 					roles.add(role);
 			return roles;
 		}
