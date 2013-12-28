@@ -70,6 +70,14 @@
 			<version>3.8.1</version>
 			<scope>test</scope>
 		</dependency>
+		
+		<!--======== OpenIoT dependencies ============-->
+        <dependency>
+	        <groupId>org.openiot</groupId>
+	        <artifactId>utils.commons</artifactId>
+	        <version>0.0.1</version>
+        </dependency>
+        
 		<dependency>
 			<groupId>org.openiot</groupId>
 			<artifactId>lsm-light.client</artifactId>

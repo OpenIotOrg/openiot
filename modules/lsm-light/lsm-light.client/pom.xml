@@ -70,13 +70,6 @@
 <!--             <version>1.0.13</version> -->
 <!--         </dependency> -->
 <!-- ======== Privacy and Security API Dependencies ========== -->  
-		<dependency>
-			<groupId>org.jasig.cas</groupId>
-			<artifactId>cas-server-webapp</artifactId>
-			<version>${cas.version}</version>
-			<type>war</type>
-			<scope>runtime</scope>
-		</dependency>
 
 		<dependency>
 			<groupId>org.jasig.cas</groupId>
@@ -103,5 +96,10 @@
 			<version>3.8.1</version>
 			<scope>test</scope>
 		</dependency>
-    </dependencies>   
+		<dependency>
+			<groupId>org.openiot</groupId>
+			<artifactId>utils.commons</artifactId>
+			<version>0.0.1</version>
+		</dependency>
+ </dependencies>   
 </project>

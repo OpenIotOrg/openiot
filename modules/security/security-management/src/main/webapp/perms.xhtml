@@ -9,17 +9,28 @@
 		<ui:define name="title">Manage Permissions</ui:define>
 		<ui:define name="nav-links">
 			<li><a href="home.jsf">Home</a></li>
-			<openiot:hasAnyRoles name="admin, user-manager">
+			<openiot:hasPermission name="admin:user_mgmt_general">
 				<li><a href="roles.jsf">Manage roles</a></li>
 				<li><a href="users.jsf">Manage users</a></li>
 				<li class="active"><a href="perms.jsf">Manage permissions</a></li>
-			</openiot:hasAnyRoles>
+			</openiot:hasPermission>
 		</ui:define>
 		<ui:define name="content">
-			<openiot:hasAnyRoles name="admin, user-manager">
+			<openiot:hasPermission name="admin:user_mgmt_general">
 				<p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" />
 				<p:layout fullPage="false" id="layout" style="min-height:800px;">
-					<p:layoutUnit position="west" minSize="200" size="400" resizable="true">
+
+					<p:layoutUnit position="north">
+						<h:form id="serviceForm">
+							<p:selectOneMenu value="#{permissionsController.selectedServiceIdStr}" id="serviceSelector">
+								<f:selectItem itemLabel="Select Service" itemValue="#{null}" />
+								<f:selectItems value="#{permissionsController.allServicesAsList}" var="service" itemValue="#{service.id}" itemLabel="#{service.name}" />
+								<p:ajax update=":rolesForm:permissionsPanel :rolesForm:usersTable :permForm:permRolesPanel" immediate="true" />
+							</p:selectOneMenu>
+						</h:form>
+					</p:layoutUnit>
+
+					<p:layoutUnit position="west" minSize="200" size="500" resizable="true">
 						<h:form id="rolesForm">
 							<!-- Form must be inside layoutUnit otherwise strange behavior -->
 							<h:panelGrid columns="1" style="width:100%" cellpadding="5">
@@ -27,14 +38,8 @@
 									<p:dataTable var="perm" value="#{permissionsController.permissions}" id="permissionsTable" tableStyle="width:100%;" selectionMode="single"
 										selection="#{permissionsController.selectedPermission}" rowKey="#{perm.name}" emptyMessage="Permission list is empty." resizableColumns="true">
 
-										<openiot:hasPermission name="admin:delete_permission">
-											<p:ajax event="rowSelect" update=":rolesForm:permissionsTable:removePermBtn :rolesForm:usersTable :permForm:permRolesPanel" />
-											<p:ajax event="rowUnselect" update=":rolesForm:permissionsTable:removePermBtn :rolesForm:usersTable :permForm:permRolesPanel" />
-										</openiot:hasPermission>
-										<openiot:lacksPermission name="admin:delete_permission">
-											<p:ajax event="rowSelect" update=":rolesForm:usersTable :permForm:permRolesPanel" />
-											<p:ajax event="rowUnselect" update=":rolesForm:usersTable :permForm:permRolesPanel" />
-										</openiot:lacksPermission>
+										<p:ajax event="rowSelect" update=":rolesForm:permissionsTable:removePermBtn :rolesForm:usersTable :permForm:permRolesPanel" />
+										<p:ajax event="rowUnselect" update=":rolesForm:permissionsTable:removePermBtn :rolesForm:usersTable :permForm:permRolesPanel" />
 
 										<f:facet name="header">
 											<h:outputText value="Available Permissions" />
@@ -49,18 +54,17 @@
 										</p:column>
 
 										<f:facet name="footer">
-											<openiot:hasPermission name="admin:create_permission">
+											<openiot:hasPermission name="admin:create_permission:#{permissionsController.selectedServiceName}">
 												<p:commandButton id="addPermBtn" update=":dlgForm:addPermissionDlg" icon="ui-icon-plusthick" title="Add Permission"
-													onclick="PF('addPermissionDlgVar').show(); return false;" disabled="false" />
+													onclick="PF('addPermissionDlgVar').show(); return false;" disabled="#{empty permissionsController.selectedServiceIdStr}" />
 											</openiot:hasPermission>
-											<openiot:hasPermission name="admin:delete_permission">
 												<p:commandButton id="removePermBtn" icon="ui-icon-closethick" title="Delete"
 													actionListener="#{permissionsController.removePermission(permissionsController.selectedPermission)}"
 													update=":rolesForm:permissionsPanel :rolesForm:usersTable :permForm:permRolesPanel" immediate="true"
-													disabled="#{empty permissionsController.selectedPermission}">
+													disabled="#{not permissionsController.hasPermissionDeletionPermission() or empty permissionsController.selectedPermission}">
 													<p:confirm header="Confirmation" message="Are you sure you want to delete Permission?" icon="ui-icon-alert" />
 												</p:commandButton>
-											</openiot:hasPermission>
+
 										</f:facet>
 									</p:dataTable>
 								</h:panelGroup>
@@ -101,22 +105,17 @@
 							<h:panelGroup layout="block" style="width:100%">
 								<p:panelGrid id="permRolesPanel" columns="1" style="width:100%">
 									<f:facet name="header">Permission Roles</f:facet>
-									<h:outputText value="No role is available." rendered="#{empty permissionsController.selectedPermissionRoles}" />
-									<p:accordionPanel value="#{permissionsController.selectedPermissionRoles}" var="servicePerms" multiple="true" style="width:100%">
-										<p:tab title="#{servicePerms.key.name}" titletip="ServiceURL: [#{servicePerms.key.serviceId}]">
-											<p:dataTable var="perm" value="#{permissionsController.flatten(servicePerms)}" rowKey="#{perm.item2.name}" tableStyle="width:100%"
-												emptyMessage="Role list is empty.">
-												<p:column headerText="Role Name" width="45%">
-													<h:outputText value="#{perm.item2.name}" />
-												</p:column>
+									<p:dataTable var="role" value="#{permissionsController.selectedPermissionRoles}" rowKey="#{role.name}" tableStyle="width:100%"
+										emptyMessage="Role list is empty.">
+										<p:column headerText="Role Name" width="45%">
+											<h:outputText value="#{role.name}" />
+										</p:column>
 
-												<p:column headerText="Role Description" width="45%">
-													<h:outputText value="#{perm.item2.description}" />
-												</p:column>
+										<p:column headerText="Role Description" width="45%">
+											<h:outputText value="#{role.description}" />
+										</p:column>
 
-											</p:dataTable>
-										</p:tab>
-									</p:accordionPanel>
+									</p:dataTable>
 								</p:panelGrid>
 							</h:panelGroup>
 						</h:form>
@@ -159,7 +158,7 @@
         }  
     }  
 </script>
-			</openiot:hasAnyRoles>
+			</openiot:hasPermission>
 		</ui:define>
 	</ui:composition>
 </body>

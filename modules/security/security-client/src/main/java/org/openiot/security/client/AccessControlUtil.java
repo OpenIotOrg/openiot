@@ -94,6 +94,7 @@ public class AccessControlUtil {
 			authorizationManager = new AuthorizationManager();
 			authorizationManager.setClient((CasOAuthWrapperClient) getClient());
 			authorizationManager.setPermissionsURL(getCasOAuthClientRealm().getPermissionsURL());
+			getCasOAuthClientRealm().addClearCacheListener(authorizationManager);
 		}
 		return authorizationManager;
 	}

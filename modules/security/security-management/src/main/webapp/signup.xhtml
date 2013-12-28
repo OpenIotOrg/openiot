@@ -32,9 +32,10 @@
 							<p:outputLabel value="Confirm" for="password2" />
 							<p:password id="password2" label="Password" value="#{signupController.user.password}" feedback="false" required="true" />
 
+							<!-- 
 							<p:outputLabel for="captcha" value="Secret Word" />
 							<p:captcha required="true" id="captcha" publicKey="6Lds7-sSAAAAABZ_jH5MMvZK6f_pAjxAP-lU5u8B" />
-
+ 							-->
 						</h:panelGrid>
 						<p:commandButton value="Sign Up" action="#{signupController.signup}" style="display:block; margin:0 auto;" ajax="false" />
 					</p:panel>

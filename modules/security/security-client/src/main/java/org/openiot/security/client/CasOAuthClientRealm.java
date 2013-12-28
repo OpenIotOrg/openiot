@@ -22,7 +22,9 @@ package org.openiot.security.client;
 
 import io.buji.pac4j.ClientRealm;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map.Entry;
 
 import org.apache.shiro.authz.AuthorizationInfo;
@@ -47,6 +49,8 @@ public class CasOAuthClientRealm extends ClientRealm {
 	private static Logger log = LoggerFactory.getLogger(CasOAuthClientRealm.class);
 
 	private String permissionsURL;
+
+	private List<ClearCacheListener> clearCacheListeners = new ArrayList<>();
 
 	@Override
 	protected AuthorizationInfo doGetAuthorizationInfo(final PrincipalCollection principals) {
@@ -135,6 +139,16 @@ public class CasOAuthClientRealm extends ClientRealm {
 
 	public void setPermissionsURL(String permissionsURL) {
 		this.permissionsURL = permissionsURL;
+	}
+
+	public void addClearCacheListener(ClearCacheListener listener) {
+		clearCacheListeners.add(listener);
+	}
+
+	@Override
+	protected void doClearCache(PrincipalCollection principals) {
+		for (ClearCacheListener listener : clearCacheListeners)
+			listener.clearCache(principals);
 	}
 
 }

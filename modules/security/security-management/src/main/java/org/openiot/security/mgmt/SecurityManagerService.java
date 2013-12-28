@@ -9,17 +9,17 @@ import org.openiot.lsm.security.oauth.mgmt.User;
 
 public interface SecurityManagerService {
 
-	public abstract Permission getPermission(String perId);
-
-	public abstract void deletePermission(String perId);
-
 	public abstract void addPermission(Permission permission);
 
-	public abstract Role getRole(String roleId);
-
-	public abstract void deleteRole(String roleId);
-
 	public abstract void addRole(Role role);
+
+	public abstract Permission getPermission(Long serviceId, String permName);
+
+	public abstract void deletePermission(Long serviceId, String permName);
+
+	public abstract Role getRole(Long serviceId, String roleName);
+
+	public abstract void deleteRole(Long serviceId, String roleName);
 
 	public abstract User getUser(String userId);
 
@@ -52,5 +52,7 @@ public interface SecurityManagerService {
 	public abstract List<Permission> getAllPermissions();
 
 	public abstract List<RegisteredService> getAllServices();
+
+	public abstract void removePermissionFromRole(Role role, Permission permission);
 
 }

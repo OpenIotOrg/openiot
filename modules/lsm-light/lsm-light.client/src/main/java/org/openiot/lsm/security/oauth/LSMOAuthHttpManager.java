@@ -1,3 +1,23 @@
+/**
+ * Copyright (c) 2011-2014, OpenIoT
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it either under the terms of the GNU Lesser General Public
+ * License version 2.1 as published by the Free Software Foundation
+ * (the "LGPL"). If you do not alter this
+ * notice, a recipient may use your version of this file under the LGPL.
+ *
+ * You should have received a copy of the LGPL along with this library
+ * in the file COPYING-LGPL-2.1; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ *
+ * This software is distributed on an "AS IS" basis, WITHOUT WARRANTY
+ * OF ANY KIND, either express or implied. See the LGPL  for
+ * the specific language governing rights and limitations.
+ *
+ * Contact: OpenIoT mailto: info@openiot.eu
+ */
+
 package org.openiot.lsm.security.oauth;
 
 import java.io.BufferedReader;
@@ -8,20 +28,13 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Properties;
 
-import org.jasig.cas.services.RegisteredService;
+import org.openiot.commons.util.Tuple2;
 import org.openiot.lsm.security.oauth.mgmt.Permission;
 import org.openiot.lsm.security.oauth.mgmt.Role;
 import org.openiot.lsm.security.oauth.mgmt.User;
 import org.openiot.lsm.server.LSMTripleStore;
-
-import com.hp.hpl.jena.query.QueryExecution;
-import com.hp.hpl.jena.query.QuerySolution;
-import com.hp.hpl.jena.query.ResultSet;
-import com.hp.hpl.jena.sparql.engine.http.QueryEngineHTTP;
 /**
  * 
  * @author Hoan Nguyen Mau Quoc
@@ -36,6 +49,8 @@ public class LSMOAuthHttpManager {
 	final static String OAUTH_SERVICE = "RegisteredService";
 	final static String OAUTH_TICKET = "ServiceTicket";
 	final static String OAUTH_TICKET_GRANTING = "TicketGranting";
+	final static String OAUTH_ROLE_PERMISSION_ADD = "Role_Permission_Add";
+	final static String OAUTH_ROLE_PERMISSION_DEL = "Role_Permission_Del";
 	
 	Properties prop = new Properties();
     
@@ -282,6 +297,48 @@ public class LSMOAuthHttpManager {
 	         
 	         dos = new ObjectOutputStream( conn.getOutputStream() );  
 	         dos.writeObject(roleId);  
+	         dos.flush();  
+	         dos.close();   
+	         
+	      // always check HTTP response code from server
+	        responseCode = conn.getResponseCode();
+	        if (responseCode == HttpURLConnection.HTTP_OK) {	          
+	            System.out.println("Server's response: " + responseCode);
+	        } else {
+	            System.out.println("Server returned non-OK code: " + responseCode);
+	        }	  		
+        }catch (Exception ex) {  
+        	ex.printStackTrace();
+            System.out.println("cannot send data to server");     
+        }
+	}
+	
+	public void deletePermissionFromRole(String roleId, String permId) {
+		// TODO Auto-generated method stub
+		HttpURLConnection conn = null;  
+        ObjectOutputStream dos = null;  
+        int responseCode = 0;
+        try{  
+             URL url = new URL(LSMOauthURL);  
+             String name=OAUTH_ROLE_PERMISSION_DEL;             
+	      // Open a HTTP connection to the URL  
+	
+	         conn = (HttpURLConnection) url.openConnection();  
+	         conn.setDoInput(true);  
+	         conn.setDoOutput(true);  
+	         conn.setUseCaches(false);  
+	
+	         // Use a post method.  
+	         conn.setRequestMethod("POST");  
+	         conn.setRequestProperty("objectType",name);
+	         conn.setRequestProperty("OAuthGraphURL",LSMOauthGraphURL);
+	         conn.setRequestProperty("operator", "update");
+		     conn.setRequestProperty("project", "openiot");
+	         conn.setRequestProperty("Connection", "Keep-Alive");  
+	         conn.setRequestProperty("Content-Type", "text/html"); 
+	         
+	         dos = new ObjectOutputStream( conn.getOutputStream() );  
+	         dos.writeObject(new Tuple2<>(roleId, permId));  
 	         dos.flush();  
 	         dos.close();   
 	         
@@ -884,205 +941,6 @@ public class LSMOAuthHttpManager {
             System.out.println("cannot send data to server");     
         }		
 	}
+
 	
-	
-	
-	
-	/**
-	 * Returns the list of all LSMTicketGrantingTicketImpl having grantId as
-	 * ticketGrantingTicket
-	 * 
-	 * @param grantId
-	 * @return
-	 */
-	public List<LSMServiceTicketImpl> getAllServiceTicketsOfTicketGrantingTicket(String grantId) {
-		String prefix = "http://lsm.deri.ie/resource/";
-		String grantURL = prefix + grantId;
-		if(grantId.contains(prefix)){
-			grantURL = grantId;
-			grantId = grantId.substring(grantId.lastIndexOf("/")+1);
-		}
-		List<LSMServiceTicketImpl> ticketList  = null;
-		String sparql = "select ?ticket"+
-				" from <"+ LSMOauthGraphURL +"> \n" +
-				"where{ "+
-				   "?ticket <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://openiot.eu/ontology/ns/Ticket>."+		
-				   "?ticket <http://openiot.eu/ontology/ns/grantedBy> "+"<"+grantURL+">. \n" +
-				"}";			 
-		try{
-			String service = "http://lsm.deri.ie/sparql";
-			QueryExecution vqe = new QueryEngineHTTP(service, sparql);
-			ResultSet results = vqe.execSelect();
-			ticketList = new ArrayList<LSMServiceTicketImpl>();
-			while (results.hasNext()) {
-				QuerySolution soln = results.nextSolution();
-				LSMServiceTicketImpl t = getServiceTicketImpl(soln.get("?ticket").toString()); //please use the getTicketService with ticketId is a substring of soln.get("?ticket")
-				ticketList.add(t);
-			}
-			vqe.close();
-		}catch(Exception e){
-			e.printStackTrace();
-			return null;
-		}
-		return  ticketList;
-	}
-
-	/**
-	 * Returns the list of all LSMTicketGrantingTicketImpls
-	 * 
-	 * @return
-	 */
-	public List<LSMTicketGrantingTicketImpl> getAllTicketGrantingTickets() {
-		List<LSMTicketGrantingTicketImpl> grantList  = null;
-		String sparql = " select ?tic_grant"+
-				" from <"+ LSMOauthGraphURL +"> \n" +
-				"where{ "+
-				   "?tic_grant <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://openiot.eu/ontology/ns/TicketScheduler>."+		
-				"}";			 
-		try{
-			String service = "http://lsm.deri.ie/sparql";
-			QueryExecution vqe = new QueryEngineHTTP(service, sparql);
-			ResultSet results = vqe.execSelect();
-			grantList = new ArrayList<LSMTicketGrantingTicketImpl>();
-			while(results.hasNext()){
-				QuerySolution soln = results.nextSolution();
-				LSMTicketGrantingTicketImpl t = getTicketGranting(soln.get("?tic_grant").toString());
-				grantList.add(t);
-			}
-			vqe.close();	
-		}catch(Exception e){
-			e.printStackTrace();
-			return null;
-		}
-		return  grantList;
-	}
-
-	/**
-	 * Returns the list of all LSMServiceTicketImpls
-	 * 
-	 * @return
-	 */
-	public List<LSMServiceTicketImpl> getAllServiceTickets() {		
-		List<LSMServiceTicketImpl> ticketList  = null;
-		String sparql = " select ?ticket"+
-				" from <"+ LSMOauthGraphURL +"> \n" +
-				"where{ "+
-				   "?ticket <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://openiot.eu/ontology/ns/Ticket>."+		
-				"}";			 
-		try{
-			String service = "http://lsm.deri.ie/sparql";
-			QueryExecution vqe = new QueryEngineHTTP(service, sparql);
-			ResultSet results = vqe.execSelect();	
-			ticketList = new ArrayList<LSMServiceTicketImpl>();
-			while(results.hasNext()){
-				QuerySolution soln = results.nextSolution();
-				LSMServiceTicketImpl t = getServiceTicketImpl(soln.get("?ticket").toString());// please use getTicket method
-				ticketList.add(t);
-			}			
-			vqe.close();
-		}catch(Exception e){
-			e.printStackTrace();
-			return null;
-		}
-		return  ticketList;
-	}
-
-	/**
-	 * Returns the the number of available LSMTicketGrantingTicketImpls
-	 * 
-	 * @return
-	 */
-	public int getTicketGrantingTicketsCount() {
-		return -1;
-	}
-
-	/**
-	 * Returns the the number of available LSMServiceTicketImpls
-	 * 
-	 * @return
-	 */
-	public int getServiceTicketsCount() {
-		return -1;
-	}
-
-	/**
-	 * Retrievs a user by the username
-	 * 
-	 * @param username
-	 * @return
-	 */
-	public User getUserByUsername(String username) {
-		org.openiot.lsm.security.oauth.mgmt.User user = null;
-		String userURL = "http://lsm.deri.ie/resource/user/"+username;
-		if(username.contains("http://lsm.deri.ie/resource/user/")){
-			userURL = username;
-			username = username.substring(username.lastIndexOf("/")+1);
-		}
-		String sparql = " select ?nick ?mbox ?pass ?role"+
-				" from <"+ LSMOauthGraphURL +"> \n" +
-				"where{ "+
-				   "<"+userURL+"> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://openiot.eu/ontology/ns/User>."+				   
-				   "OPTIONAL{<"+userURL+"> <http://xmlns.com/foaf/0.1/nick> ?nick.}"+
-				   "OPTIONAL{<"+userURL+"> <http://xmlns.com/foaf/0.1/mbox> ?mbox.}"+
-				   "<"+userURL+"> <http://openiot.eu/ontology/ns/password> ?pass."+
-				   "<"+userURL+"> <http://openiot.eu/ontology/ns/role> ?role."+
-				"}";			 
-		try{
-			String service = "http://lsm.deri.ie/sparql";
-			QueryExecution vqe = new QueryEngineHTTP(service, sparql);
-			ResultSet results = vqe.execSelect();
-			user = new org.openiot.lsm.security.oauth.mgmt.User();
-			user.setUsername(username);				
-			while(results.hasNext()){
-				QuerySolution soln = results.nextSolution();
-				user.setEmail(soln.get("?mbox").toString());
-				user.setPassword(soln.get("?pass").toString());
-				user.setName(soln.get("?nick").toString());
-				List<Role> roles = user.getRoles();
-				if(roles==null){
-					roles = new ArrayList<Role>();
-					user.setRoles(roles);
-				}
-				Role role = getRole(soln.get("?role").toString());// please use getRole method
-				if(!roles.contains(role)){
-					roles.add(role);
-				}
-			}			
-			vqe.close();
-		}catch(Exception e){
-			e.printStackTrace();
-			return null;
-		}
-		return  user;
-	}
-
-	/**
-	 * Retrieves all LSMRegisteredServiceImpls
-	 * 
-	 * @return
-	 */
-	public List<RegisteredService> getAllRegisteredServices() {		
-		List<RegisteredService> serviceList  = null;
-		String sparql = " select ?service"+
-				" from <"+ LSMOauthGraphURL +"> \n" +
-				"where{ "+
-				   "?service <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://openiot.eu/ontology/ns/CloudService>."+		
-				"}";			 
-		try{
-			String service = "http://lsm.deri.ie/sparql";
-			QueryExecution vqe = new QueryEngineHTTP(service, sparql);
-			ResultSet results = vqe.execSelect();	
-			serviceList = new ArrayList<RegisteredService>();
-			while(results.hasNext()){
-				QuerySolution soln = results.nextSolution();
-				LSMRegisteredServiceImpl t = getRegisteredService(Long.parseLong(soln.get("?service").toString()));//please use the getRegisteredService method which Long service Id
-				serviceList.add(t);
-			}				
-			vqe.close();
-		}catch(Exception e){
-			e.printStackTrace();			
-			return null;
-		}
-		return  serviceList;
-	}
 }

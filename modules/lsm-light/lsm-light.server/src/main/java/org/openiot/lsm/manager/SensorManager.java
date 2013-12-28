@@ -26,10 +26,8 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Set;
 
 import org.bouncycastle.util.encoders.Hex;
 import org.jasig.cas.authentication.Authentication;
@@ -47,7 +45,6 @@ import org.openiot.lsm.security.oauth.mgmt.Permission;
 import org.openiot.lsm.security.oauth.mgmt.Role;
 import org.openiot.lsm.security.oauth.mgmt.User;
 import org.openiot.lsm.utils.DateUtil;
-import org.openiot.lsm.utils.NumberUtil;
 import org.openiot.lsm.utils.VirtuosoConstantUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -891,6 +888,7 @@ public class SensorManager {
 	 * ***************************************************************************************************************
 	 * security and privacy functionalities
 	 */
+	
 	public Role getRoleById(String roleId){
 		Connection conn = null;
 		Role role = null;
@@ -911,11 +909,11 @@ public class SensorManager {
 			if(st.execute(sql)){
 				ResultSet rs = st.getResultSet();
 				while(rs.next()){
-					role = new Role();
-					role.setName(roleId);
+					role = Role.fromRoleIdStr(roleId);
 					role.setDescription(rs.getString("des"));
-					HashMap<Long, Set<Permission>> permissionsPerService = getPermissionsPerServiceForRole(roleURL);
-					role.setPermissionsPerService(permissionsPerService);
+					List<Permission> permissions = getPermissionsForRole(roleURL);
+					if(permissions != null)
+						role.setPermissions(permissions);
 				}
 				ConnectionManager.attemptClose(rs);				
 			}
@@ -943,7 +941,10 @@ public class SensorManager {
 					"}";				 
 		try{
 			//delete permission list for Role
-			deletePermissionsPerServiceForRole(roleURL);
+//			deletePermissionsForRole(roleURL);
+			
+			//delete role from users
+			deleteRoleFromUsers(roleURL);
 			
 			//delete Role
 			conn = ConnectionManager.getConnectionPool().getConnection();			
@@ -960,31 +961,21 @@ public class SensorManager {
 	}
 	
 	
-	public HashMap<Long, Set<Permission>> getPermissionsPerServiceForRole(String roleURL){
+	public List<Permission> getPermissionsForRole(String roleURL){
 		Connection conn = null;
-		HashMap<Long, Set<Permission>> permissionsPerService = null;
-		String sql = "sparql select ?right ?serviceId ?per"+
+		List<Permission> permissions = null;
+		String sql = "sparql select ?per"+
 				" from <"+ metaGraph +"> \n" +
 				"where{ "+
-				   "?right <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://openiot.eu/ontology/ns/RoleRight>."+				   
-				   "?right <http://openiot.eu/ontology/ns/forRole> <"+roleURL+">."+
-				   "?right <http://openiot.eu/ontology/ns/forService> ?serviceId."+
-				   "?right <http://openiot.eu/ontology/ns/forPermission> ?per."+
+				   "<"+roleURL+"> <http://openiot.eu/ontology/ns/forPermission> ?per."+
 				"}";			 
 		try{
 			conn = ConnectionManager.getConnectionPool().getConnection();			
 			Statement st = conn.createStatement();
 			if(st.execute(sql)){
 				ResultSet rs = st.getResultSet();
-				permissionsPerService = new HashMap<Long, Set<Permission>>();
+				permissions = new ArrayList<Permission>();
 				while(rs.next()){
-					String serviceURL = rs.getString("serviceId");
-					long serviceId = Long.parseLong(serviceURL.substring(serviceURL.lastIndexOf("/")+1));					
-					Set<Permission> permissions = permissionsPerService.get(serviceId);
-					if (permissions == null) {
-						permissions = new HashSet<Permission>();
-						permissionsPerService.put(serviceId, permissions);
-					}
 					Permission permission = getPermissionById(rs.getString("per"));
 					if (!permissions.contains(permission)) {
 						permissions.add(permission);							
@@ -999,16 +990,37 @@ public class SensorManager {
 			ConnectionManager.attemptClose(conn);
 			return null;
 		}
-		return  permissionsPerService;		
+		return  permissions;		
 	}
 	
-	public boolean deletePermissionsPerServiceForRole(String roleURL){
+//	public boolean deletePermissionsForRole(String roleURL){
+//		Connection conn = null;
+//		String sql = "sparql delete from <"+ metaGraph +"> {?right ?p ?o.} " +
+//				   " where {\n"+
+//				   "?right <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://openiot.eu/ontology/ns/RoleRight>."+				   
+//				   "?right <http://openiot.eu/ontology/ns/forRole> <"+roleURL+">."+
+//				   "?right ?p ?o."+
+//				"}";			 
+//		try{
+//			conn = ConnectionManager.getConnectionPool().getConnection();			
+//			Statement st = conn.createStatement();
+//			st.execute(sql);
+//			ConnectionManager.attemptClose(st);
+//			ConnectionManager.attemptClose(conn);
+//		}catch(Exception e){
+//			e.printStackTrace();
+//			ConnectionManager.attemptClose(conn);
+//			return false;
+//		}	
+//		return true;
+//	}
+	
+	public boolean deleteRoleFromUsers(String roleURL){
 		Connection conn = null;
-		String sql = "sparql delete from <"+ metaGraph +"> {?right ?p ?o.} " +
+		String sql = "sparql delete from <"+ metaGraph +"> {?userId <http://openiot.eu/ontology/ns/role> <"+roleURL+">.} " +
 				   " where {\n"+
-				   "?right <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://openiot.eu/ontology/ns/RoleRight>."+				   
-				   "?right <http://openiot.eu/ontology/ns/forRole> <"+roleURL+">."+
-				   "?right ?p ?o."+
+				   "?userId <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://openiot.eu/ontology/ns/User>."+				   
+				   "?userId <http://openiot.eu/ontology/ns/role> <"+roleURL+">."+
 				"}";			 
 		try{
 			conn = ConnectionManager.getConnectionPool().getConnection();			
@@ -1027,7 +1039,7 @@ public class SensorManager {
 	public Permission getPermissionById(String perId){
 		Connection conn = null;
 		Permission per = null;
-		String perPrefix = "http://lsm.deri.ie/resource/";	
+		String perPrefix = VirtuosoConstantUtil.PermissionPrefix;	
 		String perURL = perPrefix + perId;
 		if(perId.contains(perPrefix)){
 			perURL = perId;
@@ -1045,8 +1057,7 @@ public class SensorManager {
 			if(st.execute(sql)){
 				ResultSet rs = st.getResultSet();
 				while(rs.next()){
-					per = new Permission();
-					per.setName(perId);
+					per = Permission.fromPermissionIdStr(perId);
 					per.setDescription(rs.getString("des"));		
 				}
 				ConnectionManager.attemptClose(rs);				
@@ -1060,9 +1071,14 @@ public class SensorManager {
 		return  per;		
 	}
 	
+	/**
+	 *  Deletes permission from the corresponding roles and then deletes the permission.
+	 * @param perId
+	 * @return
+	 */
 	public boolean deletePermissionById(String perId){
 		Connection conn = null;
-		String perPrefix = "http://lsm.deri.ie/resource/";	
+		String perPrefix = VirtuosoConstantUtil.PermissionPrefix;
 		String perURL = perPrefix + perId;
 		if(perId.contains(perPrefix)){
 			perURL = perId;
@@ -1075,9 +1091,62 @@ public class SensorManager {
 				   "<"+perURL+"> ?p ?o."+
 				"}";			 
 		try{
+			//detete permission from the corresponding roles
+			deletePermissionFromRoles(perId);
+			
+			//delete permission
 			conn = ConnectionManager.getConnectionPool().getConnection();			
 			Statement st = conn.createStatement();
 			st.execute(sql);					
+			ConnectionManager.attemptClose(st);
+			ConnectionManager.attemptClose(conn);
+		}catch(Exception e){
+			e.printStackTrace();
+			ConnectionManager.attemptClose(conn);
+			return false;
+		}	
+		return true;
+	}
+	
+	public boolean deletePermissionFromRoles(String perId){
+		String perPrefix = VirtuosoConstantUtil.PermissionPrefix;
+		String perURL = perPrefix + perId;
+		Connection conn = null;
+		String sql = "sparql delete from <"+ metaGraph +"> {?roleId <http://openiot.eu/ontology/ns/forPermission> <"+perURL+">} " +
+				   " where {\n"+
+				   "?roleId <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://openiot.eu/ontology/ns/ClientRole>."+				   
+				   "?roleId <http://openiot.eu/ontology/ns/forPermission> <"+perURL+">"+
+				"}";			 
+		try{
+			conn = ConnectionManager.getConnectionPool().getConnection();			
+			Statement st = conn.createStatement();
+			st.execute(sql);
+			ConnectionManager.attemptClose(st);
+			ConnectionManager.attemptClose(conn);
+		}catch(Exception e){
+			e.printStackTrace();
+			ConnectionManager.attemptClose(conn);
+			return false;
+		}	
+		return true;
+	}
+	
+	public boolean deletePermissionFromRole(String roleId, String perId){
+		String perURL = VirtuosoConstantUtil.PermissionPrefix + perId;
+		if(perId.contains(VirtuosoConstantUtil.PermissionPrefix)){
+			perURL = perId;
+		}
+		String roleURL = VirtuosoConstantUtil.RolePrefix+roleId;
+		if(roleId.contains(VirtuosoConstantUtil.RolePrefix)){
+			roleURL = roleId;
+		}		
+		Connection conn = null;
+		String sql = "sparql delete from <"+ metaGraph +"> {<"+roleURL+"> <http://openiot.eu/ontology/ns/forPermission> <"+perURL+">} ";
+				   
+		try{
+			conn = ConnectionManager.getConnectionPool().getConnection();			
+			Statement st = conn.createStatement();
+			st.execute(sql);
 			ConnectionManager.attemptClose(st);
 			ConnectionManager.attemptClose(conn);
 		}catch(Exception e){
@@ -1096,35 +1165,25 @@ public class SensorManager {
 			userURL = userId;
 			userId = userId.substring(userId.lastIndexOf("/")+1);
 		}
-		String sql = "sparql select ?nick ?mbox ?pass ?role"+
-				" from <"+ metaGraph +"> \n" +
-				"where{ "+
-				   "<"+userURL+"> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://openiot.eu/ontology/ns/User>."+				   
-				   "OPTIONAL{<"+userURL+"> <http://xmlns.com/foaf/0.1/nick> ?nick.}"+
-				   "OPTIONAL{<"+userURL+"> <http://xmlns.com/foaf/0.1/mbox> ?mbox.}"+
-				   "<"+userURL+"> <http://openiot.eu/ontology/ns/password> ?pass."+
-				   "<"+userURL+"> <http://openiot.eu/ontology/ns/role> ?role."+
-				"}";			 
+
+		String sql = "sparql select ?nick ?mbox ?pass ?role" + " from <" + metaGraph + "> \n" + "where{ " + "<" + userURL
+				+ "> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://openiot.eu/ontology/ns/User>." + "OPTIONAL{<" + userURL
+				+ "> <http://xmlns.com/foaf/0.1/nick> ?nick.}" + "OPTIONAL{<" + userURL + "> <http://xmlns.com/foaf/0.1/mbox> ?mbox.}" + "<" + userURL
+				+ "> <http://openiot.eu/ontology/ns/password> ?pass.}";
 		try{
 			conn = ConnectionManager.getConnectionPool().getConnection();			
 			Statement st = conn.createStatement();
 			if(st.execute(sql)){
 				ResultSet rs = st.getResultSet();
-				user = new org.openiot.lsm.security.oauth.mgmt.User();
-				user.setUsername(userId);				
-				while(rs.next()){
+				if(rs.next()){
+					user = new org.openiot.lsm.security.oauth.mgmt.User();
+					user.setUsername(userId);
 					user.setEmail(rs.getString("mbox"));
 					user.setPassword(rs.getString("pass"));
 					user.setName(rs.getString("nick"));
-					List<Role> roles = user.getRoles();
-					if(roles==null){
-						roles = new ArrayList<Role>();
+					List<Role> roles = getUserRoles(userId);
+					if (roles != null)
 						user.setRoles(roles);
-					}
-					Role role = getRoleById(rs.getString("role"));
-					if(!roles.contains(role)){
-						roles.add(role);
-					}
 				}
 				ConnectionManager.attemptClose(rs);				
 			}
@@ -1138,6 +1197,40 @@ public class SensorManager {
 		return  user;		
 	}
 	
+	public List<Role> getUserRoles(String userId){
+		Connection conn = null;
+		List<Role> roles = new ArrayList<Role>();
+		String userURL = VirtuosoConstantUtil.OAuthUserPrefix+userId;
+		if(userId.contains(VirtuosoConstantUtil.OAuthUserPrefix)){
+			userURL = userId;
+			userId = userId.substring(userId.lastIndexOf("/")+1);
+		}
+
+		String sql = "sparql select ?roleId " + " from <" + metaGraph + "> \n" + "where{ "
+				+ "?roleId <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://openiot.eu/ontology/ns/ClientRole>." + "<" + userURL
+				+ "> <http://openiot.eu/ontology/ns/role> ?roleId." + "}";
+		try{
+			conn = ConnectionManager.getConnectionPool().getConnection();			
+			Statement st = conn.createStatement();
+			if(st.execute(sql)){
+				ResultSet rs = st.getResultSet();
+				while(rs.next()){
+					Role role = getRoleById(rs.getString("roleId"));
+					roles.add(role);
+				}
+				ConnectionManager.attemptClose(rs);				
+			}
+			ConnectionManager.attemptClose(st);
+			ConnectionManager.attemptClose(conn);
+		}catch(Exception e){
+			e.printStackTrace();
+			ConnectionManager.attemptClose(conn);
+			return null;
+		}
+		return roles;		
+	}
+	
+
 	public boolean deleteOAuthUserById(String userId){
 		Connection conn = null;
 		String userURL = VirtuosoConstantUtil.OAuthUserPrefix+userId;
@@ -1593,80 +1686,7 @@ public class SensorManager {
 		return  ticketList;
 	}
 
-	/**
-	 * Returns the the number of available LSMTicketGrantingTicketImpls
-	 * 
-	 * @return
-	 */
-	public int getTicketGrantingTicketsCount() {
-		return -1;
-	}
-
-	/**
-	 * Returns the the number of available LSMServiceTicketImpls
-	 * 
-	 * @return
-	 */
-	public int getServiceTicketsCount() {
-		return -1;
-	}
-
-	/**
-	 * Retrievs a user by the username
-	 * 
-	 * @param username
-	 * @return
-	 */
-	public User getUserByUsername(String username) {
-		Connection conn = null;
-		org.openiot.lsm.security.oauth.mgmt.User user = null;
-		String userURL = VirtuosoConstantUtil.OAuthUserPrefix+username;
-		if(username.contains(VirtuosoConstantUtil.OAuthUserPrefix)){
-			userURL = username;
-			username = username.substring(username.lastIndexOf("/")+1);
-		}
-		String sql = "sparql select ?nick ?mbox ?pass ?role"+
-				" from <"+ metaGraph +"> \n" +
-				"where{ "+
-				   "<"+userURL+"> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://openiot.eu/ontology/ns/User>."+				   
-				   "OPTIONAL{<"+userURL+"> <http://xmlns.com/foaf/0.1/nick> ?nick.}"+
-				   "OPTIONAL{<"+userURL+"> <http://xmlns.com/foaf/0.1/mbox> ?mbox.}"+
-				   "<"+userURL+"> <http://openiot.eu/ontology/ns/password> ?pass."+
-				   "<"+userURL+"> <http://openiot.eu/ontology/ns/role> ?role."+
-				"}";			 
-		try{
-			conn = ConnectionManager.getConnectionPool().getConnection();			
-			Statement st = conn.createStatement();
-			if(st.execute(sql)){
-				ResultSet rs = st.getResultSet();
-				user = new org.openiot.lsm.security.oauth.mgmt.User();
-				user.setUsername(username);				
-				while(rs.next()){
-					user.setEmail(rs.getString("mbox"));
-					user.setPassword(rs.getString("pass"));
-					user.setName(rs.getString("nick"));
-					List<Role> roles = user.getRoles();
-					if(roles==null){
-						roles = new ArrayList<Role>();
-						user.setRoles(roles);
-					}
-					Role role = getRoleById(rs.getString("role"));
-					if(!roles.contains(role)){
-						roles.add(role);
-					}
-				}
-				ConnectionManager.attemptClose(rs);				
-			}
-			ConnectionManager.attemptClose(st);
-			ConnectionManager.attemptClose(conn);
-		}catch(Exception e){
-			e.printStackTrace();
-			ConnectionManager.attemptClose(conn);
-			return null;
-		}
-		return  user;
-	}
-
+	
 	/**
 	 * Retrieves all LSMRegisteredServiceImpls
 	 * 

@@ -45,9 +45,7 @@ body {
 						<ui:insert name="nav-links" />
 					</ul>
 					<shiro:user>
-						<p class="navbar-text pull-right">
-							Logged in as <a href="#"><shiro:principal /></a> &nbsp; &nbsp; <a href="logout">Log Out</a>
-						</p>
+						<p class="navbar-text pull-right">Logged in as <a href="#"><shiro:principal type="org.pac4j.oauth.profile.casoauthwrapper.CasOAuthWrapperProfile" property="id"/></a> &nbsp; &nbsp; <a href="logout">Log Out</a></p>
 					</shiro:user>
 
 					<shiro:guest>

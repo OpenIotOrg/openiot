@@ -19,15 +19,15 @@ import org.openiot.lsm.security.oauth.mgmt.User;
 @ApplicationScoped
 public class InMemorySecurityManagerService implements SecurityManagerService {
 
-	private Map<String, Permission> permissions;
+	private Map<PermissionKey, Permission> permissions;
 	private Map<String, User> users;
-	private Map<String, Role> roles;
+	private Map<RoleKey, Role> roles;
 	private Map<Long, RegisteredService> registeredServices;
 
 	public InMemorySecurityManagerService() {
-		permissions = new HashMap<String, Permission>();
+		permissions = new HashMap<PermissionKey, Permission>();
 		users = new HashMap<String, User>();
-		roles = new HashMap<String, Role>();
+		roles = new HashMap<RoleKey, Role>();
 		init();
 	}
 
@@ -39,38 +39,34 @@ public class InMemorySecurityManagerService implements SecurityManagerService {
 
 		User[] users = new User[] { adminUser, darkHelmetUser, lonestarrUser, presidentskroobUser };
 
-		Role adminRole = generateRole("admin", "Administrator role");
-		Role endUserRole = generateRole("end_user", "End user role");
-		Role schedulerRole = generateRole("scheduler", "Scheduler role");
-		Role serviceDefinerRole = generateRole("service_definer", "Service definer role");
-		Role visualizerRole = generateRole("visualizer", "Data visualizer role");
+		Role adminRole = new Role("admin", "Administrator role", 1L);
+		Role adminRole3 = new Role("admin", "Administrator role", 3L);
+		Role endUserRole = new Role("end_user", "End user role", 3L);
+		Role schedulerRole = new Role("scheduler", "Scheduler role", 3L);
+		Role serviceDefinerRole3 = new Role("service_definer", "Service definer role", 3L);
+		Role serviceDefinerRole4 = new Role("service_definer", "Service definer role", 4L);
+		Role visualizerRole = new Role("visualizer", "Data visualizer role", 3L);
 
-		Role[] roles = new Role[] { adminRole, endUserRole, schedulerRole, serviceDefinerRole, visualizerRole };
+		Role[] roles = new Role[] { adminRole, adminRole3, endUserRole, schedulerRole, serviceDefinerRole3, serviceDefinerRole4, visualizerRole };
 
-		Permission allPerm = generatePermission("*", "All permissions");
-		Permission adminCreateUserPerm = generatePermission("admin:create_user", "Create new users");
-		Permission adminDeleteSens1Perm = generatePermission("admin:delete_sensor:s1", "Delete stream s1");
-		Permission adminDeleteSens2and3Perm = generatePermission("admin:delete_sensor:s2,s3", "Delete streams s2 and s3");
-		Permission adminDeleteUsersPerm = generatePermission("admin:delete_user", "Delete existing users");
-		Permission sensorDiscovery1Perm = generatePermission("sensor:discover:s1", "View stream s1");
-		Permission sensorDiscovery2Perm = generatePermission("sensor:discover:s2", "View stream s2");
-		Permission sensorQuery1Perm = generatePermission("sensor:query:s1", "Query stream s1");
-		Permission sensorQuery2Perm = generatePermission("sensor:query:s2", "Query stream s2");
+		Permission allPerm = new Permission("*", "All permissions", 1L);
+		Permission allPerm3 = new Permission("*", "All permissions", 3L);
+		Permission adminDeleteSens2and3Perm3 = new Permission("admin:delete_sensor:s2,s3", "Delete streams s2 and s3", 3L);
+		Permission sensorQuery1Perm3 = new Permission("sensor:query:s1", "Query stream s1", 3L);
+		Permission sensorQuery2Perm4 = new Permission("sensor:query:s2", "Query stream s2", 4L);
 
-		Permission[] permissions = new Permission[] { allPerm, adminCreateUserPerm, adminDeleteSens1Perm, adminDeleteSens2and3Perm, adminDeleteUsersPerm,
-				sensorDiscovery1Perm, sensorDiscovery2Perm, sensorQuery1Perm, sensorQuery2Perm };
+		Permission[] permissions = new Permission[] { allPerm, allPerm3, adminDeleteSens2and3Perm3, sensorQuery1Perm3, sensorQuery2Perm4 };
 
-		adminRole.addPermissionForService(3L, allPerm);
-		serviceDefinerRole.addPermissionForService(3L, adminDeleteSens2and3Perm);
-		serviceDefinerRole.addPermissionForService(3L, sensorQuery1Perm);
-		serviceDefinerRole.addPermissionForService(4L, sensorQuery2Perm);
-		visualizerRole.addPermissionForService(3L, adminCreateUserPerm);
-		visualizerRole.addPermissionForService(3L, sensorQuery2Perm);
+		adminRole.addPermission(allPerm);
+		adminRole3.addPermission(allPerm3);
+		serviceDefinerRole3.addPermission(adminDeleteSens2and3Perm3);
+		serviceDefinerRole3.addPermission(sensorQuery1Perm3);
+		serviceDefinerRole4.addPermission(sensorQuery2Perm4);
 
-		adminUser.setRoles(new ArrayList<Role>(Arrays.asList(new Role[] { adminRole })));
-		presidentskroobUser.setRoles(new ArrayList<Role>(Arrays.asList(new Role[] { serviceDefinerRole })));
-		darkHelmetUser.setRoles(new ArrayList<Role>(Arrays.asList(new Role[] { schedulerRole, endUserRole })));
-		lonestarrUser.setRoles(new ArrayList<Role>(Arrays.asList(new Role[] { visualizerRole, endUserRole, serviceDefinerRole })));
+		adminUser.addRole(adminRole);
+		presidentskroobUser.addRole(serviceDefinerRole3);
+		darkHelmetUser.setRoles(Arrays.asList(new Role[] { schedulerRole, endUserRole }));
+		lonestarrUser.setRoles(Arrays.asList(new Role[] { visualizerRole, endUserRole, serviceDefinerRole4 }));
 
 		for (Permission perm : permissions)
 			addPermission(perm);
@@ -89,20 +85,6 @@ public class InMemorySecurityManagerService implements SecurityManagerService {
 			registeredServices.put(service.getId(), service);
 		}
 
-	}
-
-	private Permission generatePermission(String name, String des) {
-		Permission per = new Permission();
-		per.setDescription(des);
-		per.setName(name);
-		return per;
-	}
-
-	private Role generateRole(String name, String des) {
-		Role role = new Role();
-		role.setDescription(des);
-		role.setName(name);
-		return role;
 	}
 
 	private User generateUser(String name, String email, String username, String password) {
@@ -176,33 +158,33 @@ public class InMemorySecurityManagerService implements SecurityManagerService {
 	}
 
 	@Override
-	public Permission getPermission(String perId) {
-		return permissions.get(perId);
+	public Permission getPermission(Long serviceId, String perId) {
+		return permissions.get(new PermissionKey(serviceId, perId));
 	}
 
 	@Override
-	public void deletePermission(String perId) {
-		permissions.remove(perId);
+	public void deletePermission(Long serviceId, String perId) {
+		permissions.remove(new PermissionKey(serviceId, perId));
 	}
 
 	@Override
 	public void addPermission(Permission permission) {
-		permissions.put(permission.getName(), permission);
+		permissions.put(new PermissionKey(permission.getServiceId(), permission.getName()), permission);
 	}
 
 	@Override
-	public Role getRole(String roleId) {
-		return roles.get(roleId);
+	public Role getRole(Long serviceId, String roleId) {
+		return roles.get(new RoleKey(serviceId, roleId));
 	}
 
 	@Override
-	public void deleteRole(String roleId) {
-		roles.remove(roleId);
+	public void deleteRole(Long serviceId, String roleId) {
+		roles.remove(new RoleKey(serviceId, roleId));
 	}
 
 	@Override
 	public void addRole(Role role) {
-		roles.put(role.getName(), role);
+		roles.put(new RoleKey(role.getServiceId(), role.getName()), role);
 	}
 
 	@Override
@@ -217,7 +199,7 @@ public class InMemorySecurityManagerService implements SecurityManagerService {
 
 	@Override
 	public void addUser(User user) {
-		if(user.getRoles() == null)
+		if (user.getRoles() == null)
 			user.setRoles(new ArrayList<Role>());
 		users.put(user.getUsername(), user);
 	}
@@ -262,6 +244,10 @@ public class InMemorySecurityManagerService implements SecurityManagerService {
 	@Override
 	public List<RegisteredService> getAllServices() {
 		return new ArrayList<RegisteredService>(registeredServices.values());
+	}
+
+	public void removePermissionFromRole(Role role, Permission permission) {
+		// TODO
 	}
 
 }

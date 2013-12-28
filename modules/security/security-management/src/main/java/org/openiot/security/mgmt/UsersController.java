@@ -1,12 +1,12 @@
 package org.openiot.security.mgmt;
 
+import static org.openiot.security.mgmt.Utils.EmptyPermissionList;
+import static org.openiot.security.mgmt.Utils.EmptyRoleList;
+
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
@@ -16,6 +16,7 @@ import org.jasig.cas.services.RegisteredService;
 import org.openiot.lsm.security.oauth.mgmt.Permission;
 import org.openiot.lsm.security.oauth.mgmt.Role;
 import org.openiot.lsm.security.oauth.mgmt.User;
+import org.openiot.security.client.AccessControlUtil;
 
 @ManagedBean
 @ViewScoped
@@ -25,8 +26,6 @@ public class UsersController extends AbstractController {
 	private static final long serialVersionUID = 5365682876974798395L;
 
 	private Role selectedRole;
-
-	private Role newRole;
 
 	private User selectedUser;
 
@@ -40,17 +39,12 @@ public class UsersController extends AbstractController {
 
 	private Map<Long, RegisteredService> allServices;
 
-	@SuppressWarnings("unchecked")
-	private static final List<?> emptyList = Collections.unmodifiableList(Collections.EMPTY_LIST);
-
-	@SuppressWarnings("unchecked")
-	private static final List<Role> EmptyRoleList = (List<Role>) emptyList;
-
-	@SuppressWarnings("unchecked")
-	private static final List<Map.Entry<RegisteredService, List<Permission>>> EmptyPermissionsPerServiceList = (List<Entry<RegisteredService, List<Permission>>>) emptyList;
-
 	@ManagedProperty(value = "#{securityManagerService}")
 	private SecurityManagerService securityManagerService;
+
+	private long selectedServiceId = -1;
+
+	private String selectedServiceIdStr = null;
 
 	public UsersController() {
 	}
@@ -67,7 +61,9 @@ public class UsersController extends AbstractController {
 			final List<RegisteredService> services = securityManagerService.getAllServices();
 			allServices = new HashMap<Long, RegisteredService>(services.size());
 			for (RegisteredService registeredService : services) {
-				allServices.put(registeredService.getId(), registeredService);
+				String name = registeredService.getName();
+				if (AccessControlUtil.getInstance().hasPermission("admin:user_mgmt:" + name))
+					allServices.put(registeredService.getId(), registeredService);
 			}
 		}
 		return allUsers;
@@ -80,13 +76,7 @@ public class UsersController extends AbstractController {
 	public void removeRole(Role role) {
 		// TODO: extremely dangerous! replace with revokeRoleFromUser(user, role)
 		if (selectedUser != null) {
-			for (Iterator<Role> iterator = selectedUser.getRoles().iterator(); iterator.hasNext();) {
-				Role r = iterator.next();
-				if (r.equals(role)) {
-					iterator.remove();
-					break;
-				}
-			}
+			selectedUser.getRoles().remove(selectedRole);
 
 			securityManagerService.deleteUser(selectedUser.getUsername());
 			securityManagerService.addUser(selectedUser);
@@ -98,22 +88,25 @@ public class UsersController extends AbstractController {
 	}
 
 	public void removeUser(User user) {
-		addInfoMessage("User Deleted", user.getUsername());
 		if (user.equals(selectedUser)) {
 			allUsers.remove(user);
 			securityManagerService.deleteUser(selectedUser.getUsername());
-
+			addInfoMessage("User Deleted", user.getUsername());
 			setSelectedUser(null);
 		}
 	}
 
 	public List<Role> getSelectedUserRoles() {
 		List<Role> userRoles = EmptyRoleList;
-		if (selectedUser != null) {
+		if (selectedUser != null && selectedServiceId > -1) {
+			userRoles = new ArrayList<Role>();
 			if (selectedUser.getRoles() == null)
-				selectedUser.setRoles(new ArrayList<Role>());
-			else
-				userRoles = selectedUser.getRoles();
+				selectedUser.setRoles(userRoles);
+			else {
+				for (Role role : selectedUser.getRoles())
+					if (role.getServiceId().equals(selectedServiceId))
+						userRoles.add(role);
+			}
 		}
 		return userRoles;
 	}
@@ -124,20 +117,22 @@ public class UsersController extends AbstractController {
 			List<Role> roles = new ArrayList<Role>();
 
 			for (Role role : allRoles)
-				if (currentRoles == null || !currentRoles.contains(role))
+				if (role.getServiceId().equals(selectedServiceId) && (currentRoles == null || !currentRoles.contains(role)))
 					roles.add(role);
 			return roles;
 		}
 		return EmptyRoleList;
 	}
 
-	public List<Map.Entry<RegisteredService, List<Permission>>> getSelectedRolePermissions() {
-		List<Entry<RegisteredService, List<Permission>>> list = EmptyPermissionsPerServiceList;
+	public List<Permission> getSelectedRolePermissions() {
+		List<Permission> list = EmptyPermissionList;
 		if (selectedRole != null) {
-			Map<RegisteredService, List<Permission>> map = new HashMap<RegisteredService, List<Permission>>();
-			for (Long key : selectedRole.getPermissionsPerService().keySet())
-				map.put(allServices.get(key), new ArrayList<Permission>(selectedRole.getPermissionsPerService().get(key)));
-			list = new ArrayList<Map.Entry<RegisteredService, List<Permission>>>(map.entrySet());
+			if (selectedRole.getPermissions() == null) {
+				list = new ArrayList<Permission>();
+				selectedRole.setPermissions(list);
+			} else {
+				list = selectedRole.getPermissions();
+			}
 		}
 		return list;
 	}
@@ -156,6 +151,7 @@ public class UsersController extends AbstractController {
 
 	public void setSelectedUser(User selectedUser) {
 		this.selectedUser = selectedUser;
+		// setSelectedServiceIdStr(null);
 		setSelectedRole(null);
 		setSelectedOtherRole(null);
 	}
@@ -172,14 +168,33 @@ public class UsersController extends AbstractController {
 		return new ArrayList<RegisteredService>(allServices.values());
 	}
 
-	public Role getNewRole() {
-		if (newRole == null)
-			newRole = new Role();
-		return newRole;
+	public Long getSelectedServiceId() {
+		return selectedServiceId;
 	}
 
-	public void cancelAddRole() {
-		newRole = null;
+	public void setSelectedServiceId(Long selectedServiceId) {
+		this.selectedServiceId = selectedServiceId;
+	}
+
+	public String getSelectedServiceIdStr() {
+		return selectedServiceIdStr;
+	}
+
+	public void setSelectedServiceIdStr(String selectedServiceIdStr) {
+		this.selectedServiceIdStr = selectedServiceIdStr;
+		try {
+			setSelectedServiceId(Long.parseLong(selectedServiceIdStr));
+		} catch (NumberFormatException e) {
+			setSelectedServiceId(-1L);
+		}
+		setSelectedRole(null);
+		setSelectedOtherRole(null);
+	}
+
+	public String getSelectedServiceName() {
+		if(allServices != null && selectedServiceId > -1 && allServices.containsKey(selectedServiceId))
+			return allServices.get(selectedServiceId).getName();
+		return "SELECTED_SERVICE_NOT_FOUND";
 	}
 
 	public void addRole() {
@@ -189,16 +204,10 @@ public class UsersController extends AbstractController {
 			securityManagerService.deleteUser(selectedUser.getUsername());
 			securityManagerService.addUser(selectedUser);
 			addInfoMessage("Role added to the selected user <" + selectedUser.getUsername() + ">", selectedOtherRole.getName());
+			setSelectedOtherRole(null);
 		} else {
 			addWarnMessage("There is no new role to add", "");
 		}
-	}
-
-	public List<Tuple2<RegisteredService, Permission>> flatten(Map.Entry<RegisteredService, List<Permission>> entry) {
-		List<Tuple2<RegisteredService, Permission>> output = new ArrayList<Tuple2<RegisteredService, Permission>>(entry.getValue().size());
-		for (Permission perm : entry.getValue())
-			output.add(new Tuple2<RegisteredService, Permission>(entry.getKey(), perm));
-		return output;
 	}
 
 }

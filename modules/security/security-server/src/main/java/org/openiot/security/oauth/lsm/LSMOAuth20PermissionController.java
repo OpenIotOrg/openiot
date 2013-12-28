@@ -62,7 +62,6 @@ public final class LSMOAuth20PermissionController extends AbstractController {
 
 	private static final String MISSING_CLIENT_ID = "missing_clientId";
 	private static final String NONEXISTENT_CLIENT_ID = "nonexisting_clientId";
-	private static final String TICKET_NOT_GRANTED = "ticket_not_granted";
 
 	private final ServicesManager servicesManager;
 
@@ -73,10 +72,6 @@ public final class LSMOAuth20PermissionController extends AbstractController {
 	public LSMOAuth20PermissionController(final ServicesManager servicesManager, final TicketRegistry ticketRegistry, DataSource dataSource) {
 		this.servicesManager = servicesManager;
 		this.ticketRegistry = ticketRegistry;
-
-		Set<String> userAttributeNames = new HashSet<String>();
-		userAttributeNames.add("role_name");
-
 	}
 
 	@Override
@@ -273,13 +268,15 @@ public final class LSMOAuth20PermissionController extends AbstractController {
 		final User user = manager.getUserByUsername(username);
 		final List<Role> roles = user.getRoles();
 		for (Role role : roles) {
-			Set<String> set = new HashSet<String>();
-			final Set<Permission> permissionForService = role.getPermissionsPerService().get(serviceId);
-			if (permissionForService != null) {
-				for (Permission perm : permissionForService)
-					set.add(perm.getName());
+			if (role.getServiceId().equals(serviceId)) {
+				Set<String> set = new HashSet<String>();
+				final List<Permission> permissionForService = role.getPermissions();
+				if (permissionForService != null) {
+					for (Permission perm : permissionForService)
+						set.add(perm.getName());
+				}
+				rolePermissions.put(role.getName(), set);
 			}
-			rolePermissions.put(role.getName(), set);
 		}
 
 		return rolePermissions;

@@ -20,19 +20,34 @@
 
 package org.openiot.lsm.security.oauth.mgmt;
 
-public class Permission implements java.io.Serializable{
-	/**
-	 * 
-	 */
+public class Permission implements java.io.Serializable {
+
 	private static final long serialVersionUID = 2822756601832497898L;
 	private String name;
 	private String description;
+	private Long serviceId;
+
+	public Permission() {
+
+	}
+
+	public Permission(String name, String description, Long serviceId) {
+		if (name == null)
+			throw new IllegalArgumentException("name cannot be null");
+		if (serviceId == null || serviceId < 0)
+			throw new IllegalArgumentException("Invalide serviceId: " + serviceId);
+		this.name = name;
+		this.description = description;
+		this.serviceId = serviceId;
+	}
 
 	public String getName() {
 		return name;
 	}
 
 	public void setName(String name) {
+		if (name == null)
+			throw new IllegalArgumentException("name cannot be null");
 		this.name = name;
 	}
 
@@ -44,11 +59,26 @@ public class Permission implements java.io.Serializable{
 		this.description = description;
 	}
 
+	public Long getServiceId() {
+		return serviceId;
+	}
+
+	public void setServiceId(Long serviceId) {
+		if (serviceId == null || serviceId < 0)
+			throw new IllegalArgumentException("Invalide serviceId: " + serviceId);
+		this.serviceId = serviceId;
+	}
+
+	public boolean isValid() {
+		return name != null && serviceId != null && serviceId >= 0;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		result = prime * result + ((serviceId == null) ? 0 : serviceId.hashCode());
 		return result;
 	}
 
@@ -66,8 +96,46 @@ public class Permission implements java.io.Serializable{
 				return false;
 		} else if (!name.equals(other.name))
 			return false;
+		if (serviceId == null) {
+			if (other.serviceId != null)
+				return false;
+		} else if (!serviceId.equals(other.serviceId))
+			return false;
 		return true;
 	}
-	
+
+	@Override
+	public String toString() {
+		return "Permission [name=" + name + ", description=" + description + ", serviceId=" + serviceId + "]";
+	}
+
+	/**
+	 * @param permissionIdStr
+	 *            in the format "serviceId"+<code>serviceIdRoleIdSeparator</code>+"name"
+	 * @return
+	 */
+	public static Permission fromPermissionIdStr(String permissionIdStr) {
+		String[] split = permissionIdStr.split(Role.ServiceIdRoleIdSeparator);
+		if (split.length == 2) {
+			try {
+				long serviceId = Long.parseLong(split[0]);
+				Permission permission = new Permission();
+				permission.setServiceId(serviceId);
+				permission.setName(split[1]);
+				return permission;
+			} catch (NumberFormatException e) {
+
+			}
+		}
+		return null;
+	}
+
+	public static String toPermissionIdStr(Permission permission) {
+		return toPermissionIdStr(permission.getName(), permission.getServiceId());
+	}
+
+	public static String toPermissionIdStr(String name, Long serviceId) {
+		return serviceId + Role.ServiceIdRoleIdSeparator + name;
+	}
 
 }

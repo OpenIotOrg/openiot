@@ -27,6 +27,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.openiot.commons.util.Tuple2;
 import org.openiot.lsm.manager.SensorManager;
 import org.openiot.lsm.manager.TriplesDataRetriever;
 import org.openiot.lsm.security.oauth.LSMRegisteredServiceImpl;
@@ -51,6 +52,8 @@ public class OauthServlet extends HttpServlet {
 	final static String OAUTH_SERVICE = "RegisteredService";
 	final static String OAUTH_TICKET = "ServiceTicket";
 	final static String OAUTH_TICKET_GRANTING = "TicketGranting";
+	final static String OAUTH_ROLE_PERMISSION_ADD = "Role_Permission_Add";
+	final static String OAUTH_ROLE_PERMISSION_DEL = "Role_Permission_Del";
     /**
      * @see HttpServlet#HttpServlet()
      */
@@ -92,7 +95,14 @@ public class OauthServlet extends HttpServlet {
 	            else
 	            	response.getWriter().print("FEED FAIL");
 	        }else if(perform.equals("update")){
-	        	
+	        	boolean isFeed = updateOnServer(object,objectType,graphURL);	    	    
+	        	response.setContentType("text/xml");
+	            response.setHeader("Pragma", "no-cache"); // HTTP 1.0
+	            response.setHeader("Cache-Control", "no-cache"); // HTTP 1.1        
+	            if (isFeed)
+	            	response.getWriter().print("UPDATE DONE");
+	            else
+	            	response.getWriter().print("UPDATE FAIL");
 	        }else if(perform.equals("delete")){
 	        	boolean isFeed = deleteFromServer(object.toString(),objectType,graphURL);	    	    
 	        	response.setContentType("text/xml");
@@ -200,6 +210,26 @@ public class OauthServlet extends HttpServlet {
 			}else if(objectType.equals(OAUTH_PER)){
 				return sensorManager.deletePermissionById(value);
 			}			
+		}catch(Exception e){
+			e.printStackTrace();
+			return false;
+		}
+		return true;
+	}
+	
+	@SuppressWarnings("unchecked")
+	private boolean updateOnServer(Object obj, String objectType,String graphURL) {
+		// TODO Auto-generated method stub
+		try {
+			SensorManager sensorManager = new SensorManager();	
+			sensorManager.setMetaGraph(graphURL);
+			if(objectType.equals(OAUTH_ROLE_PERMISSION_ADD)){
+				Tuple2<String, String> roleIdAndPermissionId = (Tuple2<String, String>) obj;
+				sensorManager.insertTriplesToGraph(graphURL, TriplesDataRetriever.addPermissionToRoleRDF(roleIdAndPermissionId.getItem1(), roleIdAndPermissionId.getItem2()));
+			}else if(objectType.equals(OAUTH_ROLE_PERMISSION_DEL)){
+				Tuple2<String, String> roleIdAndPermissionId = (Tuple2<String, String>) obj;
+				return sensorManager.deletePermissionFromRole(roleIdAndPermissionId.getItem1(), roleIdAndPermissionId.getItem2());
+			}
 		}catch(Exception e){
 			e.printStackTrace();
 			return false;

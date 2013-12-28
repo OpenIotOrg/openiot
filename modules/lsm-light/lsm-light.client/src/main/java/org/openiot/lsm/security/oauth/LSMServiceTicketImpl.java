@@ -1,23 +1,3 @@
-/**
- * Copyright (c) 2011-2014, OpenIoT
- *
- * This library is free software; you can redistribute it and/or
- * modify it either under the terms of the GNU Lesser General Public
- * License version 2.1 as published by the Free Software Foundation
- * (the "LGPL"). If you do not alter this
- * notice, a recipient may use your version of this file under the LGPL.
- *
- * You should have received a copy of the LGPL along with this library
- * in the file COPYING-LGPL-2.1; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- *
- * This software is distributed on an "AS IS" basis, WITHOUT WARRANTY
- * OF ANY KIND, either express or implied. See the LGPL  for
- * the specific language governing rights and limitations.
- *
- * Contact: OpenIoT mailto: info@openiot.eu
- */
-
 package org.openiot.lsm.security.oauth;
 
 import org.jasig.cas.authentication.Authentication;
@@ -28,7 +8,7 @@ import org.jasig.cas.ticket.Ticket;
 import org.jasig.cas.ticket.TicketGrantingTicket;
 import org.springframework.util.Assert;
 
-public class LSMServiceTicketImpl extends LSMAbstractTicket implements ServiceTicket,java.io.Serializable {
+public class LSMServiceTicketImpl extends LSMAbstractTicket implements ServiceTicket, java.io.Serializable {
 
 	/** Unique Id for serialization. */
 	private static final long serialVersionUID = -4223319704861765405L;
@@ -36,21 +16,15 @@ public class LSMServiceTicketImpl extends LSMAbstractTicket implements ServiceTi
 	/**
 	 * The service this ticket is valid for.
 	 * 
-	 * @Lob
-	 * @Column(name="SERVICE",nullable=false)
 	 */
 	private Service service;
 
 	/**
 	 * Is this service ticket the result of a new login.
 	 * 
-	 * @Column(name="FROM_NEW_LOGIN",nullable=false)
 	 */
 	private boolean fromNewLogin;
 
-	/**
-	 * @Column(name="TICKET_ALREADY_GRANTED",nullable=false)
-	 */
 	private Boolean grantedTicketAlready = false;
 
 	public LSMServiceTicketImpl() {
@@ -58,9 +32,8 @@ public class LSMServiceTicketImpl extends LSMAbstractTicket implements ServiceTi
 	}
 
 	/**
-	 * Constructs a new ServiceTicket with a Unique Id, a TicketGrantingTicket,
-	 * a Service, Expiration Policy and a flag to determine if the ticket
-	 * creation was from a new Login or not.
+	 * Constructs a new ServiceTicket with a Unique Id, a TicketGrantingTicket, a Service,
+	 * Expiration Policy and a flag to determine if the ticket creation was from a new Login or not.
 	 * 
 	 * @param id
 	 *            the unique identifier for the ticket.
@@ -86,7 +59,6 @@ public class LSMServiceTicketImpl extends LSMAbstractTicket implements ServiceTi
 		this.fromNewLogin = fromNewLogin;
 	}
 
-	
 	public boolean isFromNewLogin() {
 		return this.fromNewLogin;
 	}
@@ -99,11 +71,9 @@ public class LSMServiceTicketImpl extends LSMAbstractTicket implements ServiceTi
 		this.service = service;
 	}
 
-
 	public void setFromNewLogin(boolean fromNewLogin) {
 		this.fromNewLogin = fromNewLogin;
 	}
-
 
 	public boolean isValidFor(final Service serviceToValidate) {
 		updateState();

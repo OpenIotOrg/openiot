@@ -33,6 +33,7 @@ import org.apache.shiro.authz.permission.WildcardPermissionResolver;
 import org.apache.shiro.cache.Cache;
 import org.apache.shiro.cache.CacheManager;
 import org.apache.shiro.cache.MemoryConstrainedCacheManager;
+import org.apache.shiro.subject.PrincipalCollection;
 import org.pac4j.core.exception.HttpCommunicationException;
 import org.pac4j.oauth.client.CasOAuthWrapperClient;
 import org.pac4j.oauth.profile.JsonHelper;
@@ -53,7 +54,7 @@ import com.fasterxml.jackson.databind.JsonNode;
  * @author Mehdi Riahi
  * 
  */
-public class AuthorizationManager {
+public class AuthorizationManager implements ClearCacheListener{
 
 	private static Logger logger = LoggerFactory.getLogger(AuthorizationManager.class);
 
@@ -191,6 +192,13 @@ public class AuthorizationManager {
 			throw new HttpCommunicationException(code, body);
 		}
 		return body;
+	}
+
+	@Override
+	public void clearCache(PrincipalCollection principals) {
+		if(cachingEnabled){
+			cacheManager.clear();
+		}
 	}
 
 }

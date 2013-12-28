@@ -1,4 +1,3 @@
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
@@ -17,23 +16,10 @@ import org.openiot.lsm.security.oauth.LSMTicketGrantingTicketImpl;
 import org.openiot.lsm.security.oauth.mgmt.Permission;
 import org.openiot.lsm.security.oauth.mgmt.Role;
 import org.openiot.lsm.security.oauth.mgmt.User;
+import org.openiot.security.oauth.lsm.LSMOAuthManager;
 
 public class TestLSMOAuthentication {
 	static String OAuthGraphURL = "http://lsm.deri.ie/OpenIoT/OAuth#";
-
-	public static Permission generatePermission(String name, String des) {
-		Permission per = new Permission();
-		per.setDescription(des);
-		per.setName(name);
-		return per;
-	}
-
-	public static Role generateRole(String name, String des) {
-		Role role = new Role();
-		role.setDescription(des);
-		role.setName(name);
-		return role;
-	}
 
 	public static User generateUser(String name, String email, String username, String password) {
 		User user = new User();
@@ -49,23 +35,28 @@ public class TestLSMOAuthentication {
 		Role role = new Role();
 		role.setDescription("Administrator role");
 		role.setName("admin");
+		role.setServiceId(1L);
 
 		Permission per = new Permission();
 		per.setDescription("Create new users");
 		per.setName("admin:create_user");
-		role.addPermissionForService((long) 2, per);
+		per.setServiceId(1L);
+		role.addPermission(per);
 
 		Permission per2 = new Permission();
 		per2.setDescription("Delete stream s1");
 		per2.setName("admin:delete_sensor:s1");
-		role.addPermissionForService((long) 2, per2);
+		per.setServiceId(1L);
+		role.addPermission(per2);
 
 		Permission per3 = new Permission();
 		per3.setDescription("Delete existing users");
 		per3.setName("admin:delete_user");
-		role.addPermissionForService((long) 1, per3);
+		per.setServiceId(1L);
+		role.addPermission(per3);
 
 		return role;
+
 	}
 
 	/**
@@ -79,6 +70,7 @@ public class TestLSMOAuthentication {
 	 * @return
 	 */
 	public static void generateAuthorizationData() {
+		LSMOAuthHttpManager oM = new LSMOAuthHttpManager(OAuthGraphURL);
 		User adminUser = generateUser("Administrator", "admin@example.com", "admin", "5ebe2294ecd0e0f08eab7690d2a6ee69");
 		User darkHelmetUser = generateUser("User P2", "darkh@example.com", "darkhelmet", "d9aaefa96ffeabb3a3bac5fdeadde3fa");
 		User lonestarrUser = generateUser("User P3", "lonestarr@example.com", "lonestarr", "960c8c80adfcc7eee97eb6ebad135642");
@@ -86,53 +78,53 @@ public class TestLSMOAuthentication {
 
 		User[] users = new User[] { adminUser, darkHelmetUser, lonestarrUser, presidentskroobUser };
 
-		Role adminRole = generateRole("admin", "Administrator role");
-		Role endUserRole = generateRole("end_user", "End user role");
-		Role schedulerRole = generateRole("scheduler", "Scheduler role");
-		Role serviceDefinerRole = generateRole("service_definer", "Service definer role");
-		Role visualizerRole = generateRole("visualizer", "Data visualizer role");
+//		Role adminRole = new Role("admin", "Administrator role", 1L);
+		Role adminRole5 = new Role("admin", "Administrator role", 5L);
+//		Role endUserRole = new Role("end_user", "End user role", 3L);
+//		Role schedulerRole = new Role("scheduler", "Scheduler role", 3L);
+//		Role serviceDefinerRole3 = new Role("service_definer", "Service definer role", 3L);
+//		Role serviceDefinerRole4 = new Role("service_definer", "Service definer role", 4L);
+//		Role visualizerRole = new Role("visualizer", "Data visualizer role", 3L);
+//
+//		Role[] roles = new Role[] { adminRole, adminRole3, endUserRole, schedulerRole, serviceDefinerRole3, serviceDefinerRole4, visualizerRole };
+//
+//		Permission allPerm = new Permission("*", "All permissions", 1L);
+		Permission allPerm5 = new Permission("*", "All permissions", 5L);
+		Permission createPermissionPerm5 = new Permission("admin:create_permissions", "Create new permissions", 5L);
+//		Permission adminDeleteSens2and3Perm3 = new Permission("admin:delete_sensor:s2,s3", "Delete streams s2 and s3", 3L);
+//		Permission sensorQuery1Perm3 = new Permission("sensor:query:s1", "Query stream s1", 3L);
+//		Permission sensorQuery2Perm4 = new Permission("sensor:query:s2", "Query stream s2", 4L);
+//
+//		Permission[] permissions = new Permission[] { allPerm, allPerm3, adminDeleteSens2and3Perm3, sensorQuery1Perm3, sensorQuery2Perm4 };
+//
+		adminRole5.addPermission(allPerm5);
+		adminRole5.addPermission(createPermissionPerm5);
+//		adminRole3.addPermission(allPerm3);
+//		serviceDefinerRole3.addPermission(adminDeleteSens2and3Perm3);
+//		serviceDefinerRole3.addPermission(sensorQuery1Perm3);
+//		serviceDefinerRole4.addPermission(sensorQuery2Perm4);
+//
+		adminUser.addRole(adminRole5);
+//		presidentskroobUser.addRole(serviceDefinerRole3);
+//		darkHelmetUser.setRoles(Arrays.asList(new Role[] { schedulerRole, endUserRole }));
+//		lonestarrUser.setRoles(Arrays.asList(new Role[] { visualizerRole, endUserRole, serviceDefinerRole4 }));
+//
+//
+//		for (Permission perm : permissions)
+//			oM.addPermission(perm);
+//
+//		for (Role role : roles)
+//			oM.addRole(role);
 
-		Role[] roles = new Role[] { adminRole, endUserRole, schedulerRole, serviceDefinerRole, visualizerRole };
-
-		Permission allPerm = generatePermission("*", "All permissions");
-		Permission adminCreateUserPerm = generatePermission("admin:create_user", "Create new users");
-		Permission adminDeleteSens1Perm = generatePermission("admin:delete_sensor:s1", "Delete stream s1");
-		Permission adminDeleteSens2and3Perm = generatePermission("admin:delete_sensor:s2,s3", "Delete streams s2 and s3");
-		Permission adminDeleteUsersPerm = generatePermission("admin:delete_user", "Delete existing users");
-		Permission sensorDiscovery1Perm = generatePermission("sensor:discover:s1", "View stream s1");
-		Permission sensorDiscovery2Perm = generatePermission("sensor:discover:s2", "View stream s2");
-		Permission sensorQuery1Perm = generatePermission("sensor:query:s1", "Query stream s1");
-		Permission sensorQuery2Perm = generatePermission("sensor:query:s2", "Query stream s2");
-
-		Permission[] permissions = new Permission[] { allPerm, adminCreateUserPerm, adminDeleteSens1Perm, adminDeleteSens2and3Perm, adminDeleteUsersPerm,
-				sensorDiscovery1Perm, sensorDiscovery2Perm, sensorQuery1Perm, sensorQuery2Perm };
-
-		adminRole.addPermissionForService(3L, allPerm);
-		serviceDefinerRole.addPermissionForService(3L, adminDeleteSens2and3Perm);
-		serviceDefinerRole.addPermissionForService(3L, sensorQuery1Perm);
-		serviceDefinerRole.addPermissionForService(4L, sensorQuery2Perm);
-		visualizerRole.addPermissionForService(3L, adminCreateUserPerm);
-		visualizerRole.addPermissionForService(3L, sensorQuery2Perm);
-
-		adminUser.setRoles(Arrays.asList(new Role[] { adminRole }));
-		presidentskroobUser.setRoles(Arrays.asList(new Role[] { serviceDefinerRole }));
-		darkHelmetUser.setRoles(Arrays.asList(new Role[] { schedulerRole, endUserRole }));
-		lonestarrUser.setRoles(Arrays.asList(new Role[] { visualizerRole, endUserRole, serviceDefinerRole }));
-
-		LSMOAuthHttpManager oM = new LSMOAuthHttpManager(OAuthGraphURL);
-
-		for (Permission perm : permissions)
-			oM.addPermission(perm);
-
-		for (Role role : roles)
-			oM.addRole(role);
-
-		for (User user : users)
-			oM.addUser(user);
+//		for (User user : users)
+//			oM.addUser(user);
+//		oM.addPermission(allPerm5);
+		oM.addRole(adminRole5);
+//		oM.addUser(adminUser);
 
 	}
-	
-	public static List<LSMRegisteredServiceImpl> createDefaultServices(){
+
+	public static List<LSMRegisteredServiceImpl> createDefaultServices() {
 		LSMRegisteredServiceImpl defaultService = new LSMRegisteredServiceImpl();
 		defaultService.setId(1L);
 		defaultService.setAllowedToProxy(true);
@@ -144,7 +136,7 @@ public class TestLSMOAuthentication {
 		defaultService.setName("Service Manager");
 		defaultService.setServiceId("https://localhost:8443/openiot-cas/services/j_acegi_cas_security_check");
 		defaultService.setSsoEnabled(true);
-		
+
 		LSMRegisteredServiceImpl httpService = new LSMRegisteredServiceImpl();
 		httpService.setId(2L);
 		httpService.setAllowedToProxy(true);
@@ -156,7 +148,7 @@ public class TestLSMOAuthentication {
 		httpService.setName("HTTP");
 		httpService.setServiceId("https://localhost:8443/openiot-cas/oauth2.0/callbackAuthorize");
 		httpService.setSsoEnabled(true);
-		
+
 		LSMRegisteredServiceImpl oauthTestService1 = new LSMRegisteredServiceImpl();
 		oauthTestService1.setId(3L);
 		oauthTestService1.setAllowedToProxy(true);
@@ -169,7 +161,7 @@ public class TestLSMOAuthentication {
 		oauthTestService1.setServiceId("http://localhost:9080/callback?client_name=CasOAuthWrapperClient");
 		oauthTestService1.setTheme("Service1");
 		oauthTestService1.setSsoEnabled(true);
-		
+
 		LSMRegisteredServiceImpl oauthTestService2 = new LSMRegisteredServiceImpl();
 		oauthTestService2.setId(4L);
 		oauthTestService2.setAllowedToProxy(true);
@@ -182,32 +174,8 @@ public class TestLSMOAuthentication {
 		oauthTestService2.setServiceId("http://localhost:7080/callback?client_name=CasOAuthWrapperClient");
 		oauthTestService2.setTheme("Service2");
 		oauthTestService2.setSsoEnabled(true);
-		
-		return Arrays.asList(new LSMRegisteredServiceImpl[]{defaultService, httpService, oauthTestService1, oauthTestService2});
-	}
 
-	public static User generateOAuthUser() {
-		Role role = generateRole();
-		List<Role> roles = new ArrayList();
-		roles.add(role);
-
-		Permission per = new Permission();
-		per.setDescription("Query stream s2");
-		per.setName("sensor:query:s2");
-
-		Role role2 = new Role();
-		role2.setDescription("guest role");
-		role2.setName("guest");
-		role2.addPermissionForService((long) 3, per);
-		roles.add(role2);
-
-		User user = new User();
-		user.setUsername("admin");
-		user.setEmail("admin@example.com");
-		user.setName("administrator");
-		user.setPassword("5ebe2294ecd0e0f08eab7690d2a6ee69");
-		user.setRoles(roles);
-		return user;
+		return Arrays.asList(new LSMRegisteredServiceImpl[] { defaultService, httpService, oauthTestService1, oauthTestService2 });
 	}
 
 	public static LSMRegisteredServiceImpl createRegisteredService() {
@@ -308,24 +276,33 @@ public class TestLSMOAuthentication {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		LSMOAuthHttpManager oM = new LSMOAuthHttpManager(OAuthGraphURL);
-		
-//		for(LSMRegisteredServiceImpl rs : createDefaultServices())
-//			oM.addRegisteredService(rs);
+		LSMOAuthManager oM = LSMOAuthManager.getInstance();
+
+//		 for(LSMRegisteredServiceImpl rs : createDefaultServices())
+//		 oM.addRegisteredService(rs);
 //		
-//		generateAuthorizationData();		
+//		 generateAuthorizationData();
 		
-//		final LSMRegisteredServiceImpl registeredService = oM.getRegisteredService(100L);
-//		System.out.println("getUsernameAttribute() is null: " +  registeredService.getUsernameAttribute() == null);
-//		System.out.println("getTheme(): " + registeredService.getTheme());
-//		System.out.println("getTheme() is null: " +  registeredService.getTheme() == null);
-//		System.out.println("getTheme().equals(\"null\"): " +  "null".equals(registeredService.getTheme()));
-//		System.out.println("isAnonymousAccess(): " +  registeredService.isAnonymousAccess());
+		User userByUsername = oM.getUserByUsername("admin");
+		System.out.println(userByUsername);
 		
+		System.out.println(userByUsername.getRoles().size());
+		System.out.println(userByUsername.getRoles().get(0));
 		
+		System.out.println("Test____Role".matches(".*(\\s|__|/).*"));
+
+		// final LSMRegisteredServiceImpl registeredService = oM.getRegisteredService(100L);
+		// System.out.println("getUsernameAttribute() is null: " +
+		// registeredService.getUsernameAttribute() == null);
+		// System.out.println("getTheme(): " + registeredService.getTheme());
+		// System.out.println("getTheme() is null: " + registeredService.getTheme() == null);
+		// System.out.println("getTheme().equals(\"null\"): " +
+		// "null".equals(registeredService.getTheme()));
+		// System.out.println("isAnonymousAccess(): " + registeredService.isAnonymousAccess());
+
 		if (true)
 			return;
-		
+
 		LSMTicketGrantingTicketImpl realTicket = oM.getTicketGranting("TGT-5-9ynOlGGcYiJxaQZxZpZceNgsmKLF5pXOUQadLhV7otqeQaUM9P-openiot.eu");
 		if (realTicket != null) {
 			System.out.println("LastTimeUsed: " + realTicket.getCreationTime() + " | " + new Date(realTicket.getCreationTime()));
@@ -413,7 +390,7 @@ public class TestLSMOAuthentication {
 		if (!allServiceTkts.isEmpty())
 			System.out.println(allServiceTkts.get(0));
 
-		final User user = oM.getUserByUsername("admin");
+		final User user = userByUsername;
 		if (user != null) {
 			System.out.println(user.getUsername());
 			System.out.println(user.getRoles().size());

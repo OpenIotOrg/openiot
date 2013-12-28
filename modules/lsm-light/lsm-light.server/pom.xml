@@ -241,6 +241,11 @@
                         <version>${cas.version}</version>
                 </dependency>
 
+                <dependency>
+                	<groupId>org.openiot</groupId>
+                	<artifactId>lsm-light.client</artifactId>
+                	<version>0.0.1</version>
+                </dependency>
     </dependencies>
 
   <!-- =========================================================== -->

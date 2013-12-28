@@ -9,11 +9,11 @@
 		<ui:define name="title">Home Page</ui:define>
 		<ui:define name="nav-links">
 			<li class="active"><a href="home.jsf">Home</a></li>
-			<openiot:hasAnyRoles name="admin, user-manager">
+			<openiot:hasPermission name="admin:user_mgmt_general">
 				<li><a href="roles.jsf">Manage roles</a></li>
 				<li><a href="users.jsf">Manage users</a></li>
 				<li><a href="perms.jsf">Manage permissions</a></li>
-			</openiot:hasAnyRoles>
+			</openiot:hasPermission>
 		</ui:define>
 		<ui:define name="content">
 			<p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" />
@@ -22,13 +22,13 @@
 					<div style="text-align: center;">
 						<h1>Welcome to the OpenIoT Authentication &amp; Authorization Manager Webapp!</h1>
 						<br />
-						<openiot:lacksRole name="user-manager">
+						<openiot:lacksPermission name="admin:user_mgmt_general">
 							<openiot:lacksRole name="admin">
 								<span class="label label-warning">
 									<h2>You don't have the required authorization for using this application.</h2>
 								</span>
 							</openiot:lacksRole>
-						</openiot:lacksRole>
+						</openiot:lacksPermission>
 					</div>
 				</p:layoutUnit>
 

@@ -29,7 +29,9 @@ import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
 
 import org.jasig.cas.services.RegisteredService;
+import org.openiot.commons.util.PropertyManagement;
 import org.openiot.lsm.security.oauth.LSMOAuthHttpManager;
+import org.openiot.lsm.security.oauth.LSMRegisteredServiceImpl;
 import org.openiot.lsm.security.oauth.mgmt.Permission;
 import org.openiot.lsm.security.oauth.mgmt.Role;
 import org.openiot.lsm.security.oauth.mgmt.User;
@@ -60,21 +62,29 @@ public class LSMSecurityManagerService implements Serializable, SecurityManagerS
 
 	static String OAuthGraphURL = "http://lsm.deri.ie/OpenIoT/OAuth#";
 	private String lSMOauthGraphURL = OAuthGraphURL;
+	private String sparqlEndPoint = "http://lsm.deri.ie/sparql";
 
 	LSMOAuthHttpManager lsmOAuthHttpManager = new LSMOAuthHttpManager(OAuthGraphURL);
 
 	public LSMSecurityManagerService() {
+		PropertyManagement propertyManagement = new PropertyManagement();
+		sparqlEndPoint = propertyManagement.getSecurityLsmSparqlEndPoint();
+
 		filteredServices = new HashSet<String>();
 		filteredServices.add("Service Manager");
 		filteredServices.add("HTTP");
 	}
 
-	public Permission getPermission(String perId) {
-		return lsmOAuthHttpManager.getPermission(perId);
+	public Permission getPermission(Long serviceId, String permName) {
+		return lsmOAuthHttpManager.getPermission(Permission.toPermissionIdStr(permName, serviceId));
 	}
 
-	public void deletePermission(String perId) {
-		lsmOAuthHttpManager.deletePermission(perId);
+	public Permission getPermission(String permId) {
+		return lsmOAuthHttpManager.getPermission(permId);
+	}
+
+	public void deletePermission(Long serviceId, String permName) {
+		lsmOAuthHttpManager.deletePermission(Permission.toPermissionIdStr(permName, serviceId));
 	}
 
 	public void addPermission(Permission permission) {
@@ -82,12 +92,16 @@ public class LSMSecurityManagerService implements Serializable, SecurityManagerS
 
 	}
 
+	public Role getRole(Long serviceId, String roleName) {
+		return lsmOAuthHttpManager.getRole(Role.toRoleIdStr(roleName, serviceId));
+	}
+
 	public Role getRole(String roleId) {
 		return lsmOAuthHttpManager.getRole(roleId);
 	}
 
-	public void deleteRole(String roleId) {
-		lsmOAuthHttpManager.deleteRole(roleId);
+	public void deleteRole(Long serviceId, String roleName) {
+		lsmOAuthHttpManager.deleteRole(Role.toRoleIdStr(roleName, serviceId));
 	}
 
 	public void addRole(Role role) {
@@ -108,8 +122,18 @@ public class LSMSecurityManagerService implements Serializable, SecurityManagerS
 		lsmOAuthHttpManager.addUser(user);
 	}
 
+	public LSMRegisteredServiceImpl getRegisteredService(long serviceId) {
+		final LSMRegisteredServiceImpl registeredService = lsmOAuthHttpManager.getRegisteredService(serviceId);
+		return registeredService;
+	}
+	
+	@Override
+	public void removePermissionFromRole(Role role, Permission permission){
+		lsmOAuthHttpManager.deletePermissionFromRole(Role.toRoleIdStr(role), Permission.toPermissionIdStr(permission));
+	}
+
 	/**
-	 * Retrieves a user by the username
+	 * Retrievs a user by the username
 	 * 
 	 * @param username
 	 * @return
@@ -124,29 +148,21 @@ public class LSMSecurityManagerService implements Serializable, SecurityManagerS
 		String sparql = " select ?nick ?mbox ?pass ?role" + " from <" + lSMOauthGraphURL + "> \n" + "where{ " + "<" + userURL
 				+ "> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://openiot.eu/ontology/ns/User>." + "OPTIONAL{<" + userURL
 				+ "> <http://xmlns.com/foaf/0.1/nick> ?nick.}" + "OPTIONAL{<" + userURL + "> <http://xmlns.com/foaf/0.1/mbox> ?mbox.}" + "<" + userURL
-				+ "> <http://openiot.eu/ontology/ns/password> ?pass." + "<" + userURL + "> <http://openiot.eu/ontology/ns/role> ?role." + "}";
+				+ "> <http://openiot.eu/ontology/ns/password> ?pass.}";
 		try {
-			String service = "http://lsm.deri.ie/sparql";
+			String service = sparqlEndPoint;
 			QueryExecution vqe = new QueryEngineHTTP(service, sparql);
 			ResultSet results = vqe.execSelect();
 			if (results.hasNext()) {
 				user = new org.openiot.lsm.security.oauth.mgmt.User();
 				user.setUsername(username);
-				while (results.hasNext()) {
-					QuerySolution soln = results.nextSolution();
-					user.setEmail(soln.get("?mbox").toString());
-					user.setPassword(soln.get("?pass").toString());
-					user.setName(soln.get("?nick").toString());
-					List<Role> roles = user.getRoles();
-					if (roles == null) {
-						roles = new ArrayList<Role>();
-						user.setRoles(roles);
-					}
-					Role role = getRole(soln.get("?role").toString());
-					if (!roles.contains(role)) {
-						roles.add(role);
-					}
-				}
+				QuerySolution soln = results.nextSolution();
+				user.setEmail(soln.get("?mbox").toString());
+				user.setPassword(soln.get("?pass").toString());
+				user.setName(soln.get("?nick").toString());
+				List<Role> roles = getUserRoles(username);
+				if (roles != null)
+					user.setRoles(roles);
 			}
 			vqe.close();
 		} catch (Exception e) {
@@ -154,6 +170,39 @@ public class LSMSecurityManagerService implements Serializable, SecurityManagerS
 			return null;
 		}
 		return user;
+	}
+
+	/**
+	 * Retrievs roles of a user
+	 * 
+	 * @param username
+	 * @return
+	 */
+	public List<Role> getUserRoles(String username) {
+		List<Role> roles = new ArrayList<Role>();
+		String userURL = "http://lsm.deri.ie/resource/user/" + username;
+		if (username.contains("http://lsm.deri.ie/resource/user/")) {
+			userURL = username;
+			username = username.substring(username.lastIndexOf("/") + 1);
+		}
+		String sparql = " select ?roleId " + " from <" + lSMOauthGraphURL + "> \n" + "where{ "
+				+ "?roleId <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://openiot.eu/ontology/ns/ClientRole>." + "<" + userURL
+				+ "> <http://openiot.eu/ontology/ns/role> ?roleId." + "}";
+		try {
+			String service = sparqlEndPoint;
+			QueryExecution vqe = new QueryEngineHTTP(service, sparql);
+			ResultSet results = vqe.execSelect();
+			while (results.hasNext()) {
+				QuerySolution soln = results.nextSolution();
+				Role role = getRole(soln.get("?roleId").toString());
+				roles.add(role);
+			}
+			vqe.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+		return roles;
 	}
 
 	/**
@@ -169,7 +218,7 @@ public class LSMSecurityManagerService implements Serializable, SecurityManagerS
 				+ " ?userId <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://openiot.eu/ontology/ns/User>."
 				+ " ?userId <http://xmlns.com/foaf/0.1/mbox> \"" + email + "\"}";
 		try {
-			String service = "http://lsm.deri.ie/sparql";
+			String service = sparqlEndPoint;
 			QueryExecution vqe = new QueryEngineHTTP(service, sparql);
 			ResultSet results = vqe.execSelect();
 
@@ -190,7 +239,7 @@ public class LSMSecurityManagerService implements Serializable, SecurityManagerS
 		String sparql = " select ?roleId" + " from <" + lSMOauthGraphURL + "> \n" + "where{ "
 				+ "?roleId <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://openiot.eu/ontology/ns/ClientRole>" + "}";
 		try {
-			String service = "http://lsm.deri.ie/sparql";
+			String service = sparqlEndPoint;
 			QueryExecution vqe = new QueryEngineHTTP(service, sparql);
 			ResultSet results = vqe.execSelect();
 			roleList = new ArrayList<Role>();
@@ -209,15 +258,14 @@ public class LSMSecurityManagerService implements Serializable, SecurityManagerS
 	}
 
 	public List<User> getRoleUsers(Role role) {
-		List<User> userList = null;
-		String roleId = "http://lsm.deri.ie/resource/role/" + role.getName();
-		String sparql = " select ?userId" + " from <" + lSMOauthGraphURL + "> \n" + "where{ " + " ?userId <http://openiot.eu/ontology/ns/role> <" + roleId
-				+ "> " + "}";
+		List<User> userList = new ArrayList<User>();
+		String roleId = "http://lsm.deri.ie/resource/role/" + Role.toRoleIdStr(role);
+		String sparql = " select ?userId from <" + lSMOauthGraphURL + "> \n" + "where{ ?userId <http://openiot.eu/ontology/ns/role> <" + roleId
+				+ ">}";
 		try {
-			String service = "http://lsm.deri.ie/sparql";
+			String service = sparqlEndPoint;
 			QueryExecution vqe = new QueryEngineHTTP(service, sparql);
 			ResultSet results = vqe.execSelect();
-			userList = new ArrayList<User>();
 			while (results.hasNext()) {
 				QuerySolution soln = results.nextSolution();
 				String userId = soln.get("?userId").toString();
@@ -237,7 +285,7 @@ public class LSMSecurityManagerService implements Serializable, SecurityManagerS
 		String sparql = " select ?userId" + " from <" + lSMOauthGraphURL + "> \n" + "where{ "
 				+ " ?userId <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://openiot.eu/ontology/ns/User> }";
 		try {
-			String service = "http://lsm.deri.ie/sparql";
+			String service = sparqlEndPoint;
 			QueryExecution vqe = new QueryEngineHTTP(service, sparql);
 			ResultSet results = vqe.execSelect();
 			userList = new ArrayList<User>();
@@ -247,6 +295,7 @@ public class LSMSecurityManagerService implements Serializable, SecurityManagerS
 				User user = getUser(userId);
 				userList.add(user);
 			}
+			logger.debug("{} users retrieved.", userList.size());
 			vqe.close();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -260,7 +309,7 @@ public class LSMSecurityManagerService implements Serializable, SecurityManagerS
 		String sparql = " select ?permId" + " from <" + lSMOauthGraphURL + "> \n" + "where{ "
 				+ " ?permId <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://openiot.eu/ontology/ns/ClientPermission> }";
 		try {
-			String service = "http://lsm.deri.ie/sparql";
+			String service = sparqlEndPoint;
 			QueryExecution vqe = new QueryEngineHTTP(service, sparql);
 			ResultSet results = vqe.execSelect();
 			permissionList = new ArrayList<Permission>();
@@ -278,9 +327,37 @@ public class LSMSecurityManagerService implements Serializable, SecurityManagerS
 		return permissionList;
 	}
 
+	/**
+	 * Retrieves all LSMRegisteredServiceImpls
+	 * 
+	 * @return
+	 */
+	public List<RegisteredService> getAllRegisteredServices() {
+		List<RegisteredService> serviceList = new ArrayList<RegisteredService>();
+		String sparql = " select ?service" + " from <" + lSMOauthGraphURL + "> \n" + "where{ "
+				+ "?service <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://openiot.eu/ontology/ns/CloudService>." + "}";
+		try {
+			String service = sparqlEndPoint;
+			QueryExecution vqe = new QueryEngineHTTP(service, sparql);
+			ResultSet results = vqe.execSelect();
+			while (results.hasNext()) {
+				QuerySolution soln = results.nextSolution();
+				String serviceURL = soln.get("?service").toString();
+				String serviceId = serviceURL.substring(serviceURL.lastIndexOf("/") + 1);
+				LSMRegisteredServiceImpl t = getRegisteredService(Long.parseLong(serviceId));
+				serviceList.add(t);
+			}
+			vqe.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+		return serviceList;
+	}
+
 	@Override
 	public List<RegisteredService> getAllServices() {
-		final List<RegisteredService> allRegisteredServices = lsmOAuthHttpManager.getAllRegisteredServices();
+		final List<RegisteredService> allRegisteredServices = getAllRegisteredServices();
 		List<RegisteredService> filteredList = new ArrayList<RegisteredService>();
 		for (RegisteredService service : allRegisteredServices) {
 			if (!filteredServices.contains(service.getName()))

@@ -1,23 +1,3 @@
-/**
- * Copyright (c) 2011-2014, OpenIoT
- *
- * This library is free software; you can redistribute it and/or
- * modify it either under the terms of the GNU Lesser General Public
- * License version 2.1 as published by the Free Software Foundation
- * (the "LGPL"). If you do not alter this
- * notice, a recipient may use your version of this file under the LGPL.
- *
- * You should have received a copy of the LGPL along with this library
- * in the file COPYING-LGPL-2.1; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- *
- * This software is distributed on an "AS IS" basis, WITHOUT WARRANTY
- * OF ANY KIND, either express or implied. See the LGPL  for
- * the specific language governing rights and limitations.
- *
- * Contact: OpenIoT mailto: info@openiot.eu
- */
-
 package org.openiot.lsm.security.oauth;
 
 import java.util.ArrayList;
@@ -34,7 +14,7 @@ import org.jasig.cas.services.RegisteredService;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.PathMatcher;
 
-public class LSMRegisteredServiceImpl implements RegisteredService, Comparable<RegisteredService>,java.io.Serializable {
+public class LSMRegisteredServiceImpl implements RegisteredService, Comparable<RegisteredService>, java.io.Serializable {
 	private static final long serialVersionUID = -5172882792800294004L;
 
 	private long id = -1;
@@ -62,7 +42,6 @@ public class LSMRegisteredServiceImpl implements RegisteredService, Comparable<R
 	private int evaluationOrder;
 
 	private String usernameAttribute = null;
-	
 
 	public boolean isAnonymousAccess() {
 		return this.anonymousAccess;
@@ -193,20 +172,18 @@ public class LSMRegisteredServiceImpl implements RegisteredService, Comparable<R
 	}
 
 	/**
-	 * Sets the name of the user attribute to use as the username when providing
-	 * usernames to this registered service.
+	 * Sets the name of the user attribute to use as the username when providing usernames to this
+	 * registered service.
 	 * 
 	 * <p>
-	 * Note: The username attribute will have no affect on services that are
-	 * marked for anonymous access.
+	 * Note: The username attribute will have no affect on services that are marked for anonymous
+	 * access.
 	 * 
 	 * @param username
-	 *            attribute to release for this service that may be one of the
-	 *            following values:
+	 *            attribute to release for this service that may be one of the following values:
 	 *            <ul>
-	 *            <li>name of the attribute this service prefers to consume as
-	 *            username</li>. <li><code>null</code> to enforce default CAS
-	 *            behavior</li>
+	 *            <li>name of the attribute this service prefers to consume as username</li>. <li>
+	 *            <code>null</code> to enforce default CAS behavior</li>
 	 *            </ul>
 	 * @see #isAnonymousAccess()
 	 */
@@ -247,8 +224,8 @@ public class LSMRegisteredServiceImpl implements RegisteredService, Comparable<R
 	}
 
 	/**
-	 * Compares this instance with the <code>other</code> registered service
-	 * based on evaluation order, name. The name comparison is case insensitive.
+	 * Compares this instance with the <code>other</code> registered service based on evaluation
+	 * order, name. The name comparison is case insensitive.
 	 * 
 	 * @see #getEvaluationOrder()
 	 */
