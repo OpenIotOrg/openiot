@@ -14,6 +14,10 @@
 		<cas.version>3.5.2</cas.version>
 		<version.war.plugin>2.4</version.war.plugin>
 		<war-name>openiot-cas</war-name>
+		<!-- maven-compiler-plugin -->
+                <version.compiler.plugin>2.3.1</version.compiler.plugin>
+                <maven.compiler.target>1.6</maven.compiler.target>
+                <maven.compiler.source>1.6</maven.compiler.source>
 	</properties>
 
 	<build>
@@ -30,7 +34,23 @@
 				<artifactId>jboss-as-maven-plugin</artifactId>
 				<version>7.4.Final</version>
 			</plugin>
+			<plugin>
+                                <artifactId>maven-compiler-plugin</artifactId>
+                                <version>${version.compiler.plugin}</version>
+                                <configuration>
+                                        <source>${maven.compiler.source}</source>
+                                        <target>${maven.compiler.target}</target>
+                                </configuration>
+                        </plugin>
 
+			<plugin>
+                                <groupId>org.codehaus.mojo</groupId>
+                                <artifactId>exec-maven-plugin</artifactId>
+                                <version>1.2.1</version>
+                                <configuration>
+                                        <mainClass>InitializeSecurityModule</mainClass>
+                                </configuration>
+                        </plugin>
 		</plugins>
 	</build>
 
@@ -41,14 +61,14 @@
 			<artifactId>cas-server-webapp</artifactId>
 			<version>${cas.version}</version>
 			<type>war</type>
-			<scope>runtime</scope>
+		<!--	<scope>runtime</scope> -->
 		</dependency>
 
 		<dependency>
 			<groupId>org.jasig.cas</groupId>
 			<artifactId>cas-server-support-oauth</artifactId>
 			<version>${cas.version}</version>
-			<scope>runtime</scope>
+		<!--	<scope>runtime</scope> -->
 		</dependency>
 
 		<!-- <dependency> <groupId>org.jasig.cas</groupId> <artifactId>cas-server-support-jdbc</artifactId> <version>${cas.version}</version> 
