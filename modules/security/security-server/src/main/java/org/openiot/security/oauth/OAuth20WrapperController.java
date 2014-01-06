@@ -22,8 +22,6 @@ package org.openiot.security.oauth;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.sql.DataSource;
-import javax.validation.constraints.NotNull;
 
 import org.jasig.cas.support.oauth.OAuthConstants;
 import org.jasig.cas.support.oauth.OAuthUtils;
@@ -58,15 +56,12 @@ public final class OAuth20WrapperController extends BaseOAuthWrapperController i
 
 	private AbstractController permissionsController;
 
-	@NotNull
-	private DataSource dataSource;
-
 	public void afterPropertiesSet() throws Exception {
 		authorizeController = new OAuth20AuthorizeController(servicesManager, loginUrl);
 		callbackAuthorizeController = new OAuth20CallbackAuthorizeController();
 		accessTokenController = new OAuth20AccessTokenController(servicesManager, ticketRegistry, timeout);
 		profileController = new OAuth20ProfileController(ticketRegistry);
-		permissionsController = new LSMOAuth20PermissionController(servicesManager, ticketRegistry, dataSource);
+		permissionsController = new LSMOAuth20PermissionController(servicesManager, ticketRegistry);
 	}
 
 	@Override
@@ -106,10 +101,6 @@ public final class OAuth20WrapperController extends BaseOAuthWrapperController i
 		log.error("Unknown method : {}", method);
 		OAuthUtils.writeTextError(response, OAuthConstants.INVALID_REQUEST, 200);
 		return null;
-	}
-
-	public void setDataSource(DataSource dataSource) {
-		this.dataSource = dataSource;
 	}
 
 }

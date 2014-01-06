@@ -29,7 +29,6 @@ import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.sql.DataSource;
 
 import org.apache.commons.lang.StringUtils;
 import org.jasig.cas.authentication.principal.Principal;
@@ -69,7 +68,7 @@ public final class LSMOAuth20PermissionController extends AbstractController {
 
 	private LSMOAuthManager manager = LSMOAuthManager.getInstance();
 
-	public LSMOAuth20PermissionController(final ServicesManager servicesManager, final TicketRegistry ticketRegistry, DataSource dataSource) {
+	public LSMOAuth20PermissionController(final ServicesManager servicesManager, final TicketRegistry ticketRegistry) {
 		this.servicesManager = servicesManager;
 		this.ticketRegistry = ticketRegistry;
 	}

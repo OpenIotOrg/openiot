@@ -203,5 +203,5 @@
 
 	<!-- Enabling OAuth2.0 support -->
 	<bean id="oauth20WrapperController" class="org.openiot.security.oauth.OAuth20WrapperController" p:loginUrl="${cas.securityContext.casProcessingFilterEntryPoint.loginUrl}"
-		p:servicesManager-ref="servicesManager" p:ticketRegistry-ref="ticketRegistry" p:timeout="7200" p:dataSource-ref="dataSource" />
+		p:servicesManager-ref="servicesManager" p:ticketRegistry-ref="ticketRegistry" p:timeout="7200" />
 </beans>
