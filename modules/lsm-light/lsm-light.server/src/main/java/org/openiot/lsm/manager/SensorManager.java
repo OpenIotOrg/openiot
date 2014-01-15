@@ -19,6 +19,11 @@ package org.openiot.lsm.manager;
 *
 *     Contact: OpenIoT mailto: info@openiot.eu
 */
+/**
+ * 
+ * @author Hoan Nguyen Mau Quoc
+ *
+ */
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -52,8 +57,10 @@ import org.openiot.lsm.utils.VirtuosoConstantUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.SerializationUtils;
+
+
+
 /**
- * 
  * @author Hoan Nguyen Mau Quoc
  * 
  */
@@ -351,6 +358,7 @@ public class SensorManager {
 						sensor.setSourceType(rs.getString("sourceType"));
 						Place place = placeManager.getPlaceWithPlaceId(rs.getString("place"));
 						sensor.setPlace(place);
+						sensor.setProperties(getObservesListOfSensor(rs.getString("sensor")));
 					}
 					ConnectionManager.attemptClose(rs);				
 				}
@@ -391,6 +399,7 @@ public class SensorManager {
 					sensor.setSourceType(rs.getString("sourceType"));
 					Place place = placeManager.getPlaceWithPlaceId(placeId);
 					sensor.setPlace(place);								
+					sensor.setProperties(getObservesListOfSensor(rs.getString("sensor")));
 				}
 				ConnectionManager.attemptClose(rs);				
 			}
@@ -477,6 +486,7 @@ public class SensorManager {
 					sensor.setSourceType(rs.getString("sourceType"));
 					Place place = placeManager.getPlaceWithPlaceId(rs.getString("place"));
 					sensor.setPlace(place);
+					sensor.setProperties(getObservesListOfSensor(rs.getString("sensor")));
 				}
 				ConnectionManager.attemptClose(rs);				
 			}
