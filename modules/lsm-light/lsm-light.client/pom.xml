@@ -68,29 +68,7 @@
 <!--             <groupId>ch.qos.logback</groupId> -->
 <!--             <artifactId>logback-classic</artifactId> -->
 <!--             <version>1.0.13</version> -->
-<!--         </dependency> -->
-<!-- ======== Privacy and Security API Dependencies ========== -->  
-		<dependency>
-			<groupId>org.jasig.cas</groupId>
-			<artifactId>cas-server-webapp</artifactId>
-			<version>${cas.version}</version>
-			<type>war</type>
-			<scope>runtime</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.jasig.cas</groupId>
-			<artifactId>cas-server-support-oauth</artifactId>
-			<version>${cas.version}</version>
-			<scope>runtime</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.jasig.cas</groupId>
-			<artifactId>cas-server-support-jdbc</artifactId>
-			<version>${cas.version}</version>
-		</dependency>
-		
+<!--         </dependency> -->		
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>javax.servlet-api</artifactId>
