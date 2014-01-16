@@ -216,7 +216,7 @@
 		
 		<dependency>
 			<groupId>org.openiot</groupId>
-			<artifactId>lsm.api</artifactId>
+			<artifactId>lsm-light.client</artifactId>
 			<version>0.0.1</version>
 		</dependency>
 		
