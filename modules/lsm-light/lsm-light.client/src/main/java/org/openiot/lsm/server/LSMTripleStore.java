@@ -19,8 +19,6 @@ package org.openiot.lsm.server;
 *     Contact: OpenIoT mailto: info@openiot.eu
 */
 import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -29,14 +27,11 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Properties;
 
-import org.openiot.commons.util.PropertyManagement;
 import org.openiot.lsm.beans.Observation;
 import org.openiot.lsm.beans.RDFTuple;
 import org.openiot.lsm.beans.Sensor;
 import org.openiot.lsm.schema.LSMSchema;
-import org.openiot.lsm.utils.ObsConstant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /**
