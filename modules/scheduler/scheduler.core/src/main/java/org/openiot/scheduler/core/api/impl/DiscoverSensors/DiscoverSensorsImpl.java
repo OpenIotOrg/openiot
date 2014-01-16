@@ -130,7 +130,7 @@ public class DiscoverSensorsImpl {
 		public static String getSensTypeInArea(String lsmMetaGraph,double longitude, double latitude, float radius) {
 			StringBuilder update = new StringBuilder();
 
-			String str = ("select distinct(?sensLabelType) ?type " 
+			String str = ("select distinct(?sensLabelType) "//?type " 
 					+ "from <" + lsmMetaGraph + "> "
 					+ "WHERE " 
 					+ "{"
@@ -141,6 +141,7 @@ public class DiscoverSensorsImpl {
 					+ "filter (<bif:st_intersects>(?geo,<bif:st_point>("+ longitude + "," + latitude + ")," + radius + "))."
 					+ "}");
 
+			logger.debug("qString of: getSensTypeInArea --"+str);
 			update.append(str);
 			return update.toString();
 		}
@@ -171,6 +172,7 @@ public class DiscoverSensorsImpl {
 
 					+ "}group by (?measurement)(?unit) ");
 
+			logger.debug("qString of: getMDataOfSensorTypeInArea --"+str);
 			update.append(str);
 			return update.toString();
 		}
@@ -229,7 +231,7 @@ public class DiscoverSensorsImpl {
 
 		for (int i = 0; i < sensorTypesList.size(); i++) {
 			SensorType sensorType = new SensorType();
-			sensorType.setId(sensorTypesList.get(i).getID());
+			//sensorType.setId(sensorTypesList.get(i).getID());
 			sensorType.setName(sensorTypesList.get(i).getLabel());
 
 			qres = sparqlCl.sparqlToQResult(Queries.getMDataOfSensorTypeInArea(lsmMetaGraph,longitude, latitude,radius,sensorTypesList.get(i).getLabel()));
