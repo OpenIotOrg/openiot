@@ -32,7 +32,7 @@ import org.openiot.lsm.utils.ObsConstant;
  */
 
 public class TestServer {
-	public static LSMTripleStore lsmStore = new LSMTripleStore();
+	public static LSMTripleStore lsmStore = new LSMTripleStore("http://lsm.deri.ie/lsm-light.server/");
 	public static Observation updateData(){
 		
 	/*
