@@ -32,9 +32,9 @@ import org.openrdf.repository.RepositoryException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import lsm.beans.User;
-import lsm.schema.LSMSchema;
-import lsm.server.LSMTripleStore;
+//import lsm.beans.User;
+import org.openiot.lsm.schema.LSMSchema;
+import org.openiot.lsm.server.LSMTripleStore;
 
 import com.hp.hpl.jena.ontology.OntModelSpec;
 
@@ -104,12 +104,12 @@ public class UserRegisterImpl
 		
 		if (usrEnt.size()==0)
 		{
-			User user = new User();
-			user.setUsername(schedulerLsmUserName);
-			user.setPass(schedulerLsmPassword);
+//			User user = new User();
+//			user.setUsername(schedulerLsmUserName);
+//			user.setPass(schedulerLsmPassword);
 			
 			LSMTripleStore lsmStore = new LSMTripleStore();
-			lsmStore.setUser(user);		
+//			lsmStore.setUser(user);		
 			
 			LSMSchema myOnt  =  new  LSMSchema (OntModelSpec.OWL_DL_MEM);
 			LSMSchema myOntInstance = new LSMSchema();
@@ -127,10 +127,11 @@ public class UserRegisterImpl
 			userEnt.createPpasswd();
 			
 			logger.debug(myOntInstance.exportToTriples("TURTLE"));
-			boolean ok = lsmStore.pushRDF(SchedulerLsmFunctionalGraph,myOntInstance.exportToTriples("N-TRIPLE"));
+//			boolean ok = 
+			lsmStore.pushRDF(SchedulerLsmFunctionalGraph,myOntInstance.exportToTriples("N-TRIPLE"));
 
 			
-			if(ok){
+//			if(ok){
 				qres = sparqlCl.sparqlToQResult(
 						org.openiot.scheduler.core.utils.lsmpa.entities.User.Queries.selectUserByEmail(SchedulerLsmFunctionalGraph,this.mail));
 				//parse userdata list should always contain one element
@@ -138,10 +139,10 @@ public class UserRegisterImpl
 						org.openiot.scheduler.core.utils.lsmpa.entities.User.Queries.parseUserData(qres).get(0);
 				
 				replyMessage= usrEntity.getId();
-			}
-			else{
-				replyMessage= "register user error";
-			}
+//			}
+//			else{
+//				replyMessage= "register user error";
+//			}
 		}
 		else
 		{
