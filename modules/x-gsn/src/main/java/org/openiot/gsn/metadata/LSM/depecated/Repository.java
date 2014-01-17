@@ -133,7 +133,7 @@ public class Repository {
             //sensor.setUser(user);
 
             // create LSMTripleStore instance
-            lsmStore = new LSMTripleStore();
+            lsmStore = new LSMTripleStore("default");
 
             //set user information for authentication
             //lsmStore.setUser(user);

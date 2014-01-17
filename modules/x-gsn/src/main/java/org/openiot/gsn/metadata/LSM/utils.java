@@ -33,7 +33,10 @@ public class utils {
 
     private static final transient Logger logger = Logger.getLogger(utils.class);
 
-	
+    private static LSMSchema lsmSchema=new LSMSchema();
+	static{
+		lsmSchema.initFromConfigFile(LSMRepository.LSM_CONFIG_PROPERTIES_FILE);
+	}
     public static String addSensorToLSM(String username,
                                         String password,
                                         String metaGraph,
@@ -84,7 +87,7 @@ public class utils {
             //sensor.setUser(user);
 
             // create LSMTripleStore instance
-            LSMTripleStore lsmStore = new LSMTripleStore();
+            LSMTripleStore lsmStore = new LSMTripleStore(lsmSchema.getLsmServerUrl());
 
             //set user information for authentication
             //lsmStore.setUser(user);
@@ -133,7 +136,7 @@ public class utils {
             //sensor.setUser(user);
 
             // create LSMTripleStore instance
-            LSMTripleStore lsmStore = new LSMTripleStore();
+            LSMTripleStore lsmStore = new LSMTripleStore(lsmSchema.getLsmServerUrl());
 
             //set user information for authentication
             //lsmStore.setUser(user);

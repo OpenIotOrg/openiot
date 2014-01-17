@@ -68,7 +68,7 @@ public class TestLSM {
             //sensor.setUser(user);
 
             // create LSMTripleStore instance
-            LSMTripleStore lsmStore = new LSMTripleStore();
+            LSMTripleStore lsmStore = new LSMTripleStore("");
 
             //set user information for authentication
             //lsmStore.setUser(user);
@@ -155,7 +155,7 @@ public class TestLSM {
             //sensor.setUser(user);
 
             // create LSMTripleStore instance
-            LSMTripleStore lsmStore = new LSMTripleStore();
+            LSMTripleStore lsmStore = new LSMTripleStore("");
 
             //set user information for authentication
             //lsmStore.setUser(user);
