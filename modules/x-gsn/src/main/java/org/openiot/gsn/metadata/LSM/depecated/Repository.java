@@ -28,8 +28,10 @@ package org.openiot.gsn.metadata.LSM.depecated;
 import org.openiot.gsn.beans.VSensorConfig;
 import org.openiot.gsn.utils.PropertiesReader;
 import org.openiot.gsn.utils.TestLSM;
-import lsm.beans.*;
-import lsm.server.LSMTripleStore;
+//import lsm.beans.*;
+//import lsm.server.LSMTripleStore;
+import org.openiot.lsm.beans.*;
+import org.openiot.lsm.server.LSMTripleStore;
 import org.apache.log4j.Logger;
 
 import java.util.Date;
@@ -40,7 +42,7 @@ public class Repository {
     public static final String LSM_CONFIG_PROPERTIES_FILE = "conf/lsm_config.properties";
     public static final String METADATA_FILE_SUFFIX = ".metadata";
     LSMTripleStore lsmStore = null;
-    User user;
+    //User user;
 
     private static Repository singleton;
 
@@ -49,9 +51,9 @@ public class Repository {
         * Set sensor's author
         * If you don't have LSM account, please visit LSM Home page (http://lsm.deri.ie) to sign up
         */
-        User user = new User();
-        user.setUsername(PropertiesReader.readProperty(LSM_CONFIG_PROPERTIES_FILE, "username"));
-        user.setPass(PropertiesReader.readProperty(LSM_CONFIG_PROPERTIES_FILE, "password"));
+        //User user = new User();
+        //user.setUsername(PropertiesReader.readProperty(LSM_CONFIG_PROPERTIES_FILE, "username"));
+        //user.setPass(PropertiesReader.readProperty(LSM_CONFIG_PROPERTIES_FILE, "password"));
 
         logger.warn("username : " + PropertiesReader.readProperty(LSM_CONFIG_PROPERTIES_FILE, "username"));
         logger.warn("password : " + PropertiesReader.readProperty(LSM_CONFIG_PROPERTIES_FILE, "password"));
@@ -90,8 +92,10 @@ public class Repository {
                 s.getSensorType(),
                 s.getInformation(),
                 s.getSource(),
-                0,
-                0
+                "","",
+                new String[]{},
+                0d,
+                0d
         );
 
         System.out.println("SENSOR ID published to LSM => " + id);
@@ -126,13 +130,13 @@ public class Repository {
             place.setLng(vs.getLongitude());
             sensor.setPlace(place);
 
-            sensor.setUser(user);
+            //sensor.setUser(user);
 
             // create LSMTripleStore instance
-            lsmStore = new LSMTripleStore();
+            lsmStore = new LSMTripleStore("default");
 
             //set user information for authentication
-            lsmStore.setUser(user);
+            //lsmStore.setUser(user);
 
 
             System.out.printf(sensor.getId());
@@ -223,14 +227,15 @@ public class Repository {
 
         logger.warn(sensorMetaData.getSensorID());
         // set SensorURL of observation
-        Sensor sensor2 = lsmStore.getSensorById(sensorMetaData.getSensorID());
+        Sensor sensor2 = lsmStore.getSensorById(sensorMetaData.getSensorID(),"");
         obs.setSensor(sensor2.getId());
         //set time when the observation was observed. In this example, the time is current local time.
         obs.setTimes(observation.getTime());
 
         ObservedProperty obvTem = new ObservedProperty();
         obvTem.setObservationId(obs.getId());
-        obvTem.setPropertyName(observation.getPropertyName());
+        //obvTem.setPropertyName(observation.getPropertyName());
+        obvTem.setPropertyType(observation.getPropertyName());
         obvTem.setValue(observation.getValue());
         obvTem.setUnit(observation.getUnit());
         obs.addReading(obvTem);

@@ -51,6 +51,10 @@ public final class AddressBean implements Serializable{
 		this.predicates=EMPTY_PREDICATES;
 	}
 
+	public AddressBean(){
+		this.predicates=EMPTY_PREDICATES;
+	}
+	
 	public String getWrapper ( ) {
 		return this.wrapper;
 	}

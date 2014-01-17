@@ -4,23 +4,71 @@
     <groupId>org.openiot.gsn</groupId>
     <artifactId>xgsn</artifactId>
     <packaging>jar</packaging>
-    <version>1.1.3</version>
+    <version>1.1.4</version>
     <name>xgsn</name>
     <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.eclipse.m2e</groupId>
+          <artifactId>lifecycle-mapping</artifactId>
+          <version>1.0.0</version>
+          <configuration>
+            <lifecycleMappingMetadata>
+              <pluginExecutions>
+                <pluginExecution>
+                  <pluginExecutionFilter>
+
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-dependency-plugin</artifactId>
+                    <versionRange>2.4</versionRange>
+                    <goals>
+                      <goal>copy-dependencies</goal>
+                    </goals>
+                  </pluginExecutionFilter>
+                  <action>
+                    <execute >
+                      <runOnIncremental>false</runOnIncremental>
+                    </execute >
+                  </action>
+                </pluginExecution>
+                <pluginExecution>
+                  <pluginExecutionFilter>
+                    <groupId>org.jibx</groupId>
+                    <artifactId>maven-jibx-plugin</artifactId>
+                    <!--<versionRage>1.1.6a</versionRage> -->                    
+                    <versionRange>1.2.5</versionRange>
+                    <goals>
+                      <goal>bind</goal>
+                    </goals>
+                  </pluginExecutionFilter>
+                  <action>
+                  <execute >
+                    <ignore></ignore>
+                  </execute >
+                </action>
+              </pluginExecution>
+            </pluginExecutions>
+          </lifecycleMappingMetadata>
+        </configuration>
+      </plugin>
+    </plugins>
+    </pluginManagement>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
+                    <source>1.7</source>
+                    <target>1.7</target>
                 </configuration>
             </plugin>
             <plugin>
                 <groupId>org.jibx</groupId>
                 <artifactId>maven-jibx-plugin</artifactId>
-                <version>1.1.6a</version>
-                <configuration>
+                <version>1.2.5</version>
+                <!--<version>1.1.6a</version> -->                
+                <configuration>                
                     <directory>conf/bind</directory>
                     <includes>
                         <include>containerJIBX.xml</include>
@@ -185,12 +233,14 @@
         <dependency>
             <groupId>org.jibx</groupId>
             <artifactId>jibx-run</artifactId>
-            <version>1.1.6a</version>
+            <!--<version>1.1.6a</version> -->
+            <version>1.2.5</version>
         </dependency>
         <dependency>
             <groupId>org.jibx</groupId>
             <artifactId>jibx-extras</artifactId>
-            <version>1.1.6a</version>
+            <!--<version>1.1.6a</version> -->
+            <version>1.2.5</version>
         </dependency>
         <dependency>
             <groupId>org.antlr</groupId>
@@ -326,14 +376,20 @@
             <version>1.x</version>
             <scope>system</scope>
             <systemPath>${basedir}/lib/tinyos-1.x-gsn-src-bin.jar</systemPath>
-        </dependency>
+        </dependency>        
         <dependency>
+            <groupId>org.openiot</groupId>
+            <artifactId>lsm-light.client</artifactId>
+            <version>0.0.1</version>
+        </dependency>
+
+<!--        <dependency>
             <groupId>deri.lsm</groupId>
             <artifactId>lsm</artifactId>
             <version>j6_2013-06-28</version>
             <scope>system</scope>
             <systemPath>${basedir}/lib/lsmlibs_j6_2013-06-28.jar</systemPath>
-        </dependency>
+        </dependency>-->
         <dependency>
             <groupId>winterwell.jtwitter</groupId>
             <artifactId>Twitter</artifactId>

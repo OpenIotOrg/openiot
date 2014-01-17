@@ -24,7 +24,7 @@ import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntClass;
 import com.hp.hpl.jena.ontology.OntProperty;
 
-import lsm.schema.LSMSchema;
+import org.openiot.lsm.schema.LSMSchema;
 
 public class Right 
 {
