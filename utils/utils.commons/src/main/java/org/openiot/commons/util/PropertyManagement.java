@@ -74,12 +74,13 @@ public class PropertyManagement {
 	private static final String SCHEDULER_LSM_FUNCTIONAL_GRAPH = "scheduler.core.lsm.openiotFunctionalGraph";
 	private static final String SCHEDULER_LSM_USER_NAME="scheduler.core.lsm.access.username";
 	private static final String SCHEDULER_LSM_PASSWORD="scheduler.core.lsm.access.password";
-
+	private static final String SCHEDULER_LSM_REMOTE_SERVER="scheduler.core.lsm.remote.server";
 	
 
 	//==============SD&UM====================
 	private static final String SDUM_LSM_FUNCTIONAL_GRAPH = "scheduler.core.lsm.openiotFunctionalGraph";
 	private static final String SDUM_LSM_SPARQL_END_POINT = "sdum.core.lsm.sparql.endpoint";
+	private static final String SDUM_LSM_REMOTE_SERVER="sdum.core.lsm.remote.server";
 	
 
 	//==============LSM-LIGHT====================
@@ -90,11 +91,9 @@ public class PropertyManagement {
 	private static final String LSM_MIN_CONNECTION = "lsm-light.server.minConnection";
 	private static final String LSM_MAX_CONNECTION = "lsm-light.server.maxConnection";
 	private static final String LSM_RETRY_ATTEMPTS = "lsm-light.server.acquireRetryAttempts";
-<<<<<<< HEAD
-=======
+
 	private static final String LSM_LOCAL_METAGRAPH = "lsm-light.server.localMetaGraph";
 	private static final String LSM_LOCAL_DATAGRAPH = "lsm-light.server.localDataGraph";
->>>>>>> remotes/origin/sensor-type-support
 	
 	private Properties props = null;
 	
@@ -156,6 +155,10 @@ public class PropertyManagement {
 	public String getSchedulerLsmPassword() {
 		return props.getProperty(SCHEDULER_LSM_PASSWORD);
 	}
+	
+	public String getShedulerLsmRemoteServer(){
+		return props.getProperty(SCHEDULER_LSM_REMOTE_SERVER);
+	}
 
 	public String getSdumLsmFunctionalGraph() {
 		return props.getProperty(SDUM_LSM_FUNCTIONAL_GRAPH);
@@ -163,6 +166,10 @@ public class PropertyManagement {
 
 	public String getSdumLsmSparqlEndPoint() {
 		return props.getProperty(SDUM_LSM_SPARQL_END_POINT);
+	}
+	
+	public String getSdumLsmRemoteServer(){
+		return props.getProperty(SDUM_LSM_REMOTE_SERVER);
 	}
 
 	public String getLsmServerConnectionDriver(){
@@ -207,9 +214,7 @@ public class PropertyManagement {
 		}
 		return -99;
 	}
-<<<<<<< HEAD
-=======
-	
+
 	public String getLSMLocalMetaGraph(){
 		return props.getProperty(LSM_LOCAL_METAGRAPH);
 	}
@@ -217,5 +222,4 @@ public class PropertyManagement {
 	public String getLSMLocalDataGraph(){
 		return props.getProperty(LSM_LOCAL_DATAGRAPH);
 	}
->>>>>>> remotes/origin/sensor-type-support
 }
