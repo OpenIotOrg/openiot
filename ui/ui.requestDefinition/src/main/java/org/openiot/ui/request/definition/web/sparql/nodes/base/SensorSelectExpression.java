@@ -27,7 +27,7 @@ public class SensorSelectExpression extends AbstractSparqlNode implements Serial
 
 	private static final long serialVersionUID = 1L;
 
-	public SensorSelectExpression(String nodeId, Object lat, Object lon, Object rad, boolean includeGeoCoordFields) {
+	public SensorSelectExpression(String nodeId,String type, Object lat, Object lon, Object rad, boolean includeGeoCoordFields) {
 		super();
 
 		// Generate Expr
@@ -44,7 +44,7 @@ public class SensorSelectExpression extends AbstractSparqlNode implements Serial
 		Where where = new Where();
 		scope.appendToScope(where);
 		where.appendToScope(new Expression("?" + nodeId + "_sensorId <http://lsm.deri.ie/ont/lsm.owl#hasSensorType> ?" + nodeId + "_sensorType ."));
-		where.appendToScope(new Expression("?" + nodeId + "_sensorType  <http://www.w3.org/2000/01/rdf-schema#label> 'gsn' ."));
+		where.appendToScope(new Expression("?" + nodeId + "_sensorType  <http://www.w3.org/2000/01/rdf-schema#label> '"+type+"' ."));
 		where.appendToScope(new Expression("?" + nodeId + "_sensorId <http://www.loa-cnr.it/ontologies/DUL.owl#hasLocation> ?" + nodeId + "_loc ."));
 		where.appendToScope(new Expression("?" + nodeId + "_loc geo:geometry ?" + nodeId + "_geo ."));
 		where.appendToScope(new Expression("?" + nodeId + "_loc geo:lat ?" + nodeId + "_lat ."));
