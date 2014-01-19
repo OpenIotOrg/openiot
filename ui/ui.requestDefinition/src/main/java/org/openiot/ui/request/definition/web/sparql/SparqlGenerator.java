@@ -189,7 +189,7 @@ public class SparqlGenerator extends AbstractGraphNodeVisitor {
 			radiusQuery = "#" + prop.getVariableName() + "#";
 		}
 
-		subWhereNode.appendToScope(new SensorSelectExpression(sensorNode.getUID(), latQuery, lonQuery, radiusQuery, this.sinkNodeNeedsGeoCoords));
+		subWhereNode.appendToScope(new SensorSelectExpression(sensorNode.getUID(),sensorNode.getLabel() ,latQuery, lonQuery, radiusQuery, this.sinkNodeNeedsGeoCoords));
 	}
 
 	private void defineVariable(GraphNodeProperty property, Object defaultValue) {
