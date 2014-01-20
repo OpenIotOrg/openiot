@@ -39,6 +39,10 @@ import org.pac4j.oauth.profile.casoauthwrapper.CasOAuthWrapperProfile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * @author Mehdi Riahi
+ *
+ */
 public class AccessControlUtil {
 
 	private static Logger logger = LoggerFactory.getLogger(AccessControlUtil.class);

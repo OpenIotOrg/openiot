@@ -26,6 +26,10 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
+/**
+ * @author Mehdi Riahi
+ *
+ */
 public class OAuthorizationCredentials implements Serializable {
 
 	private static final long serialVersionUID = 4880915177543108283L;

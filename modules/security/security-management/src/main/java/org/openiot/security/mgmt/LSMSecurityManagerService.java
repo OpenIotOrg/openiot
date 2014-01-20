@@ -50,6 +50,7 @@ import com.hp.hpl.jena.sparql.engine.http.QueryEngineHTTP;
  * @author Mehdi Riahi
  * 
  */
+
 @ManagedBean(name = "securityManagerService")
 @ApplicationScoped
 public class LSMSecurityManagerService implements Serializable, SecurityManagerService {

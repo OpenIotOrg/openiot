@@ -44,6 +44,10 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
+/**
+ * @author Mehdi Riahi
+ *
+ */
 public class CasOAuthClientRealm extends ClientRealm {
 
 	private static Logger log = LoggerFactory.getLogger(CasOAuthClientRealm.class);
