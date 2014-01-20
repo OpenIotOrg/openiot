@@ -13,7 +13,7 @@
 	<title>OpenIOT IDE</title>
 </h:head>
 
-<h:body>  
+<h:body>
 	<pe:layout id="page" fullPage="true">
 
 		<!-- North -->
@@ -51,6 +51,14 @@
 							update=":centerPanel" icon="ui-icon-triangle-1-e"
 							actionListener="#{layout.setNavigation(rqPresTool)}"
 							rendered="#{layout.isLoaded(rqPresTool)}" />
+
+						<!-- Request Presentation Tool -->
+						<ui:param name="snscEditor" value="#{nav.sensorSchemaEditor}" />
+						<p:menuitem value="Sensor Schema Editor" update=":centerPanel"
+							icon="ui-icon-triangle-1-e"
+							actionListener="#{layout.setNavigation(snscEditor)}"
+							rendered="#{layout.isLoaded(snscEditor)}" />
+
 					</p:submenu>
 
 					<p:submenu label="Monitors" style="font-size: 10px !important;">
@@ -72,24 +80,31 @@
 
 						<!-- IDE Monitor -->
 						<ui:param name="ideMon" value="#{nav.ideMonitor}" />
-						<p:menuitem value="IDE Monitor" update=":centerPanel"
+						<p:menuitem value="IDE" update=":centerPanel"
 							icon="ui-icon-triangle-1-e"
 							actionListener="#{layout.setNavigation(ideMon)}"
 							rendered="#{layout.isLoaded(ideMon)}" />
 
 						<!-- SDUM Monitor -->
 						<ui:param name="sdumMon" value="#{nav.sdumMonitor}" />
-						<p:menuitem value="SDUM Monitor" update=":centerPanel"
+						<p:menuitem value="SDUM" update=":centerPanel"
 							icon="ui-icon-triangle-1-e"
 							actionListener="#{layout.setNavigation(sdumMon)}"
 							rendered="#{layout.isLoaded(sdumMon)}" />
 
 						<!-- Scheduler Monitor -->
 						<ui:param name="schedMon" value="#{nav.schedulerMonitor}" />
-						<p:menuitem value="Scheduler Monitor" update=":centerPanel"
+						<p:menuitem value="Scheduler" update=":centerPanel"
 							icon="ui-icon-triangle-1-e"
 							actionListener="#{layout.setNavigation(schedMon)}"
 							rendered="#{layout.isLoaded(schedMon)}" />
+
+						<!-- Sensor Schema Editor Monitor -->
+						<ui:param name="snscEditorMon" value="#{nav.sensorSchemaEditor}" />
+						<p:menuitem value="Sensor Schema Editor" update=":centerPanel"
+							icon="ui-icon-triangle-1-e"
+							actionListener="#{layout.setNavigation(snscEditorMon)}"
+							rendered="#{layout.isLoaded(snscEditorMon)}" />
 					</p:submenu>
 
 
