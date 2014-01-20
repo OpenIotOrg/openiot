@@ -40,8 +40,8 @@ import org.openiot.scheduler.core.utils.lsmpa.entities.ServiceStatus.State;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import lsm.schema.LSMSchema;
-import lsm.server.LSMTripleStore;
+import org.openiot.lsm.schema.LSMSchema;
+import org.openiot.lsm.server.LSMTripleStore;
 
 public class WidgetAvailable {
 	
