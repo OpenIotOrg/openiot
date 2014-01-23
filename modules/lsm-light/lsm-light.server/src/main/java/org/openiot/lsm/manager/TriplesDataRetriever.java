@@ -19,6 +19,11 @@ package org.openiot.lsm.manager;
 *
 *     Contact: OpenIoT mailto: info@openiot.eu
 */
+/**
+ * 
+ * @author Hoan Nguyen Mau Quoc
+ *
+ */
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.InputStream;
@@ -48,11 +53,7 @@ import org.openiot.lsm.utils.ConstantsUtil;
 import org.openiot.lsm.utils.DateUtil;
 import org.openiot.lsm.utils.VirtuosoConstantUtil;
 import org.openiot.lsm.utils.XSLTMapFile;
-/**
- * 
- * @author Hoan Nguyen Mau Quoc
- * 
- */
+
 
 public class TriplesDataRetriever {
 
@@ -289,8 +290,12 @@ public class TriplesDataRetriever {
 			triples+="<"+servicePrefix+id+">  <http://openiot.eu/ontology/ns/status> <http://openiot.eu/ontology/ns/StatusEnabled>.\n";
 		else
 			triples+="<"+servicePrefix+id+">  <http://openiot.eu/ontology/ns/status> <http://openiot.eu/ontology/ns/StatusDisabled>.\n";
-		triples+="<"+servicePrefix+id+"> <http://openiot.eu/ontology/ns/evaluationOrder> \""+service.getEvaluationOrder()+"\"^^<http://www.w3.org/2001/XMLSchema#integer>.\n";		
-		if(!service.isIgnoreAttributes())
+		triples+="<"+servicePrefix+id+"> <http://openiot.eu/ontology/ns/timesUsed> \""+service.getEvaluationOrder()+"\"^^<http://www.w3.org/2001/XMLSchema#integer>.\n";
+		if(service.isEnabled())
+			triples+="<"+servicePrefix+id+">  <http://openiot.eu/ontology/ns/status> <http://openiot.eu/ontology/ns/StatusEnabled>.\n";
+		else
+			triples+="<"+servicePrefix+id+">  <http://openiot.eu/ontology/ns/status> <http://openiot.eu/ontology/ns/StatusDisabled>.\n";
+		if(service.isIgnoreAttributes())
 			triples+="<"+servicePrefix+id+">  <http://openiot.eu/ontology/ns/attributeStatus> <http://openiot.eu/ontology/ns/AttributeEnabled>.\n";
 		else
 			triples+="<"+servicePrefix+id+">  <http://openiot.eu/ontology/ns/attributeStatus> <http://openiot.eu/ontology/ns/AttributeDisabled>.\n";
