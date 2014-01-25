@@ -48,7 +48,7 @@ public class SesameSPARQLClient
 	{					
 		
 		PropertyManagement propertyManagement = new PropertyManagement();
-		therepository = new SPARQLRepository(propertyManagement.getSdumLsmSparqlEndPoint());
+		therepository = new SPARQLRepository(propertyManagement.getSchedulerLsmMetaGraph());
 		
 		try {
 			therepository.initialize();
