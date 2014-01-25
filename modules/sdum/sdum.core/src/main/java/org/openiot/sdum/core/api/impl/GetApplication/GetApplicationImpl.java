@@ -597,7 +597,7 @@ public class GetApplicationImpl {
 	public GetApplicationImpl(String oamoID) 
 	{		
 		PropertyManagement propertyManagement = new PropertyManagement();		
-		lsmFunctionalGraph = propertyManagement.getSchedulerLsmFunctionalGraph();
+		lsmFunctionalGraph = propertyManagement.getSdumLsmFunctionalGraph();
 		
 		this.oamoID = oamoID;
 		logger.debug("Received Parameters: " + "oamoID=" + oamoID);
