@@ -110,7 +110,7 @@ public class GetAvailableAppIDsImpl {
 	public GetAvailableAppIDsImpl(String userID) {
 		
 		PropertyManagement propertyManagement = new PropertyManagement();		
-		lsmFunctionalGraph = propertyManagement.getSchedulerLsmFunctionalGraph();
+		lsmFunctionalGraph = propertyManagement.getSdumLsmFunctionalGraph();
 				
 		this.userID = userID;
 

@@ -23,7 +23,7 @@
 <!-- Author: Nikos Kefalakis (nkef@ait.edu.gr) -->
 
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
-  targetNamespace="urn:openiot:osdspec:xsd:1" xmlns:osd="urn:openiot:osdspec:xsd:1"
+  targetNamespace="http://www.openiot.eu/osdspec" xmlns:osd="http://www.openiot.eu/osdspec"
   xmlns:prt="http://www.w3.org/2007/SPARQL/protocol-types#">
 
   <xs:import namespace="http://www.w3.org/2007/SPARQL/protocol-types#"

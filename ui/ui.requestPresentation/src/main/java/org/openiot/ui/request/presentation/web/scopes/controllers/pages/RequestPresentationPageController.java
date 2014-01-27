@@ -41,6 +41,7 @@ import org.openiot.ui.request.commons.models.OAMOManager;
 import org.openiot.ui.request.commons.providers.SDUMAPIWrapper;
 import org.openiot.ui.request.commons.providers.SchedulerAPIWrapper;
 import org.openiot.ui.request.commons.providers.exceptions.APIException;
+import org.openiot.ui.request.commons.util.MarshalOSDspecUtils;
 import org.openiot.ui.request.presentation.web.model.nodes.interfaces.VisualizationWidget;
 import org.openiot.ui.request.presentation.web.scopes.application.ApplicationBean;
 import org.openiot.ui.request.presentation.web.scopes.session.SessionBean;
@@ -86,7 +87,7 @@ public class RequestPresentationPageController implements Serializable {
 			if (cachedContext == null) {
 				cachedContext = new RequestPresentationPageContext();
 				try {
-					LoggerService.log(Level.INFO, SchedulerAPIWrapper.marshalOSDSpec(cachedContext.getAppManager().exportOSDSpec()));
+					LoggerService.log(Level.INFO, MarshalOSDspecUtils.marshalOSDSpec(cachedContext.getAppManager().exportOSDSpec()));
 				} catch (Exception ex) {
 					LoggerService.log(ex);
 				}

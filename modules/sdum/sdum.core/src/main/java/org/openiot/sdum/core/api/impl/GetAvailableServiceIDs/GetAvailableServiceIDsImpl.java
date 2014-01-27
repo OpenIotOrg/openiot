@@ -118,7 +118,7 @@ public class GetAvailableServiceIDsImpl {
 	public GetAvailableServiceIDsImpl(String applicationID) {
 		
 		PropertyManagement propertyManagement = new PropertyManagement();		
-		openiotFunctionalGraph = propertyManagement.getSchedulerLsmFunctionalGraph();
+		openiotFunctionalGraph = propertyManagement.getSdumLsmFunctionalGraph();
 		
 		this.applicationID = applicationID;
 		logger.debug("Received Parameters: " + "applicationID=" + applicationID);

@@ -382,7 +382,7 @@ public class GetServiceImpl {
 	public GetServiceImpl(String osmoID) {
 
 		PropertyManagement propertyManagement = new PropertyManagement();
-		openiotFunctionalGraph = propertyManagement.getSchedulerLsmFunctionalGraph();
+		openiotFunctionalGraph = propertyManagement.getSdumLsmFunctionalGraph();
 
 		this.osmoID = osmoID;
 		logger.debug("Received Parameters: " + "osmoID=" + osmoID);
