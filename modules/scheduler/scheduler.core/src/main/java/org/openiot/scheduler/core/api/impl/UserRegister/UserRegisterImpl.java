@@ -67,7 +67,7 @@ public class UserRegisterImpl
 		SchedulerLsmFunctionalGraph = propertyManagement.getSchedulerLsmFunctionalGraph();
 		schedulerLsmUserName = propertyManagement.getSchedulerLsmUserName();
 		schedulerLsmPassword = propertyManagement.getSchedulerLsmPassword();
-		lsmDeriServer = propertyManagement.getShedulerLsmRemoteServer();
+		lsmDeriServer = propertyManagement.getSchedulerLsmRemoteServer();
 		
 		this.name=userName;
 		this.mail=userMail;
