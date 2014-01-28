@@ -74,11 +74,12 @@ public class PropertyManagement {
 	private static final String SCHEDULER_LSM_FUNCTIONAL_GRAPH = "scheduler.core.lsm.openiotFunctionalGraph";
 	private static final String SCHEDULER_LSM_USER_NAME="scheduler.core.lsm.access.username";
 	private static final String SCHEDULER_LSM_PASSWORD="scheduler.core.lsm.access.password";
+	private static final String SCHEDULER_LSM_SPARQL_END_POINT = "scheduler.core.lsm.sparql.endpoint";
 	private static final String SCHEDULER_LSM_REMOTE_SERVER="scheduler.core.lsm.remote.server";
 	
 
 	//==============SD&UM====================
-	private static final String SDUM_LSM_FUNCTIONAL_GRAPH = "scheduler.core.lsm.openiotFunctionalGraph";
+	private static final String SDUM_LSM_FUNCTIONAL_GRAPH = "sdum.core.lsm.openiotFunctionalGraph";
 	private static final String SDUM_LSM_SPARQL_END_POINT = "sdum.core.lsm.sparql.endpoint";
 	private static final String SDUM_LSM_REMOTE_SERVER="sdum.core.lsm.remote.server";
 	
@@ -156,7 +157,11 @@ public class PropertyManagement {
 		return props.getProperty(SCHEDULER_LSM_PASSWORD);
 	}
 	
-	public String getShedulerLsmRemoteServer(){
+	public String getSchedulerLsmSparqlEndPoint() {
+		return props.getProperty(SCHEDULER_LSM_SPARQL_END_POINT);
+	}
+	
+	public String getSchedulerLsmRemoteServer(){
 		return props.getProperty(SCHEDULER_LSM_REMOTE_SERVER);
 	}
 
