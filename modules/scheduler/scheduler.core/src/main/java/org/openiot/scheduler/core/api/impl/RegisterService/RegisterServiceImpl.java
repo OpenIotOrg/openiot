@@ -75,7 +75,7 @@ public class RegisterServiceImpl {
 		lsmFunctionalGraph = propertyManagement.getSchedulerLsmFunctionalGraph();
 		lsmUserName = propertyManagement.getSchedulerLsmUserName();
 		lsmPassword = propertyManagement.getSchedulerLsmPassword();
-		lsmDeriServer = propertyManagement.getShedulerLsmRemoteServer();
+		lsmDeriServer = propertyManagement.getSchedulerLsmRemoteServer();
 		
 		this.osdSpec = osdSpec;
 
