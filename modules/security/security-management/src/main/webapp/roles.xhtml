@@ -9,11 +9,14 @@
 		<ui:define name="title">Manage Roles</ui:define>
 		<ui:define name="nav-links">
 			<li><a href="home.jsf">Home</a></li>
+			
+			<!-- Authorization JSF Tag -->
 			<openiot:hasPermission name="admin:user_mgmt_general">
 				<li class="active"><a href="roles.jsf">Manage roles</a></li>
 				<li><a href="users.jsf">Manage users</a></li>
 				<li><a href="perms.jsf">Manage permissions</a></li>
 			</openiot:hasPermission>
+		
 		</ui:define>
 		<ui:define name="content">
 			<openiot:hasPermission name="admin:user_mgmt_general">
