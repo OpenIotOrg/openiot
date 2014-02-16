@@ -34,6 +34,7 @@ import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.realm.Realm;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.web.util.WebUtils;
+import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.oauth.client.CasOAuthWrapperClient;
 import org.pac4j.oauth.profile.casoauthwrapper.CasOAuthWrapperProfile;
 import org.slf4j.Logger;
@@ -89,7 +90,7 @@ public class AccessControlUtil {
 		return getAuthorizationManager().hasRole(role, credentials);
 	}
 
-	public String getLoginUrl(HttpServletRequest req, HttpServletResponse resp) {
+	public String getLoginUrl(HttpServletRequest req, HttpServletResponse resp) throws RequiresHttpAction {
 		return getClient().getRedirectionUrl(new ShiroWebContext(req, resp), true);
 	}
 
@@ -114,11 +115,15 @@ public class AccessControlUtil {
 	}
 
 	public void redirectToLogin(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-		String url = getLoginUrl(req, resp);
-		logger.debug("redirecting to loginUrl: {} ", url);
+		try {
+			String url = getLoginUrl(req, resp);
+			logger.debug("redirecting to loginUrl: {} ", url);
 
-		WebUtils.saveRequest(req);
-		WebUtils.issueRedirect(req, resp, url);
+			WebUtils.saveRequest(req);
+			WebUtils.issueRedirect(req, resp, url);
+		} catch (RequiresHttpAction e) {
+			logger.debug("redurecting to loginUrl failed", e);
+		}
 	}
 
 	private CasOAuthClientRealm getCasOAuthClientRealm() {

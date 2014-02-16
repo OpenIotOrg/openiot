@@ -20,13 +20,12 @@
 
 package org.openiot.security.client;
 
-import org.scribe.model.OAuthConstants;
 
 /**
  * @author Mehdi Riahi
  *
  */
-public class SecurityConstants extends OAuthConstants {
+public class SecurityConstants {
 
 	public static final String ROLE_PERMISSIONS = "role_permissions";
 

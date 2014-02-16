@@ -1,3 +1,5 @@
+package org.openiot.security.oauth.lsm;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -7,6 +9,7 @@ import org.openiot.lsm.security.oauth.mgmt.Permission;
 import org.openiot.lsm.security.oauth.mgmt.Role;
 import org.openiot.lsm.security.oauth.mgmt.User;
 import org.openiot.security.oauth.lsm.LSMOAuthManager;
+
 
 public class InitializeSecurityModule {
 	static String OAuthGraphURL = "http://lsm.deri.ie/OpenIoT/OAuth#";
@@ -115,7 +118,7 @@ public class InitializeSecurityModule {
 		for (LSMRegisteredServiceImpl rs : createDefaultServices())
 			oM.addRegisteredService(rs);
 
-		generateAuthorizationData();
+//		generateAuthorizationData();
 
 	}
 

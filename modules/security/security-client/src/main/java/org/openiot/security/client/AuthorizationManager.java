@@ -20,6 +20,10 @@
 
 package org.openiot.security.client;
 
+import static org.openiot.security.client.SecurityConstants.CALLER_ACCESS_TOKEN;
+import static org.openiot.security.client.SecurityConstants.CALLER_CLIENT_ID;
+import static org.openiot.security.client.SecurityConstants.ROLE_PERMISSIONS;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -37,12 +41,12 @@ import org.apache.shiro.subject.PrincipalCollection;
 import org.pac4j.core.exception.HttpCommunicationException;
 import org.pac4j.oauth.client.CasOAuthWrapperClient;
 import org.pac4j.oauth.profile.JsonHelper;
+import org.scribe.model.OAuthConstants;
 import org.scribe.model.ProxyOAuthRequest;
 import org.scribe.model.Response;
 import org.scribe.model.Verb;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import static org.openiot.security.client.SecurityConstants.*;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -168,8 +172,8 @@ public class AuthorizationManager implements ClearCacheListener{
 		final ProxyOAuthRequest request = new ProxyOAuthRequest(Verb.GET, permissionsURL, client.getConnectTimeout(), client.getReadTimeout(),
 				client.getProxyHost(), client.getProxyPort());
 
-		request.addQuerystringParameter(CLIENT_ID, credentials.getClientId());
-		request.addQuerystringParameter(ACCESS_TOKEN, credentials.getAccessToken());
+		request.addQuerystringParameter(OAuthConstants.CLIENT_ID, credentials.getClientId());
+		request.addQuerystringParameter(OAuthConstants.ACCESS_TOKEN, credentials.getAccessToken());
 
 		final OAuthorizationCredentials callerCredentials = credentials.getCallerCredentials();
 		if (callerCredentials != null) {
