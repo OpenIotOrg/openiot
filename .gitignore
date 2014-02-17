@@ -72,3 +72,7 @@ logs/
 
 # OS generated files #
 ######################
+/ui/android/.idea
+/ui/android/*.iml
+/ui/android/requestPresentation/*.iml
+/ui/android/requestPresentation/.gitignore
