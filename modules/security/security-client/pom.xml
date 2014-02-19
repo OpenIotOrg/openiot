@@ -35,7 +35,7 @@
 		<dependency>
 			<groupId>org.pac4j</groupId>
 			<artifactId>pac4j-oauth</artifactId>
-			<version>1.4.2-SNAPSHOT</version>
+			<version>1.4.1</version>
 		</dependency>
 
 		<dependency>
