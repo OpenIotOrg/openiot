@@ -39,12 +39,11 @@ import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.sparql.engine.http.QueryEngineHTTP;
 
 public class LSMOAuthManager {
-	static String OAuthGraphURL = "http://lsm.deri.ie/OpenIoT/OAuth#";
 	private static LSMOAuthManager instance;
-	private String lSMOauthGraphURL = OAuthGraphURL;
-	private String sparqlEndPoint = "http://lsm.deri.ie/sparql";
+	private String lSMOauthGraphURL;
+	private String sparqlEndPoint;
 
-	LSMOAuthHttpManager lsmOAuthHttpManager = new LSMOAuthHttpManager(OAuthGraphURL);
+	private LSMOAuthHttpManager lsmOAuthHttpManager;
 
 	public static LSMOAuthManager getInstance() {
 		if (instance == null)
@@ -55,6 +54,8 @@ public class LSMOAuthManager {
 	private LSMOAuthManager() {
 		PropertyManagement propertyManagement = new PropertyManagement();
 		sparqlEndPoint = propertyManagement.getSecurityLsmSparqlEndPoint();
+		lSMOauthGraphURL = propertyManagement.getSecurityLsmGraphURL();
+		lsmOAuthHttpManager = new LSMOAuthHttpManager(lSMOauthGraphURL);
 	}
 
 	public String getLSMOauthGraphURL() {
@@ -64,7 +65,6 @@ public class LSMOAuthManager {
 	public void setLSMOauthGraphURL(String lSMOauthGraphURL) {
 		this.lSMOauthGraphURL = lSMOauthGraphURL;
 		lsmOAuthHttpManager.setLSMOauthGraphURL(lSMOauthGraphURL);
-
 	}
 
 	public Permission getPermission(String perId) {

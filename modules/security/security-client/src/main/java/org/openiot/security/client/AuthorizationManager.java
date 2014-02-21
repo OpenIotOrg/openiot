@@ -39,7 +39,7 @@ import org.apache.shiro.cache.CacheManager;
 import org.apache.shiro.cache.MemoryConstrainedCacheManager;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.pac4j.core.exception.HttpCommunicationException;
-import org.pac4j.oauth.client.CasOAuthWrapperClient;
+import org.pac4j.oauth.client.BaseOAuth20Client;
 import org.pac4j.oauth.profile.JsonHelper;
 import org.scribe.model.OAuthConstants;
 import org.scribe.model.ProxyOAuthRequest;
@@ -64,7 +64,7 @@ public class AuthorizationManager implements ClearCacheListener{
 
 	private Cache<OAuthorizationCredentials, Map<String, Set<Permission>>> cacheManager;
 
-	private CasOAuthWrapperClient client;
+	private BaseOAuth20Client<?> client;
 
 	private boolean cachingEnabled = false;
 
@@ -90,7 +90,7 @@ public class AuthorizationManager implements ClearCacheListener{
 		return cachingEnabled;
 	}
 
-	public void setClient(CasOAuthWrapperClient client) {
+	public void setClient(BaseOAuth20Client<?> client) {
 		this.client = client;
 	}
 

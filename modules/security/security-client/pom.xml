@@ -18,6 +18,7 @@
 				</includes>
 			</resource>
 		</resources>
+
 		<plugins>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -28,9 +29,25 @@
 				</configuration>
 			</plugin>
 
+			 <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.16</version>
+                <configuration>
+                    <printSummary>true</printSummary>
+                </configuration>
+            </plugin>
+
 		</plugins>
 	</build>
 	<dependencies>
+
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.11</version>
+			<scope>compile</scope>
+		</dependency>
 
 		<dependency>
 			<groupId>org.pac4j</groupId>
@@ -88,10 +105,25 @@
 			<version>2.0-SNAPSHOT</version>
 		</dependency>
 
+		<!-- ======== JBoss RestEasy JAX-RS with JAXB support Dependencies ========== -->
+
+		<dependency>
+			<groupId>org.jboss.resteasy</groupId>
+			<artifactId>resteasy-jaxb-provider</artifactId>
+			<version>3.0.6.Final</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.jboss.resteasy</groupId>
+			<artifactId>resteasy-client</artifactId>
+			<version>3.0.6.Final</version>
+		</dependency>
+
 	</dependencies>
 
 	<properties>
 		<jdk.version>1.7</jdk.version>
+		<junit.version>4.11</junit.version>
 	</properties>
 
 	<repositories>

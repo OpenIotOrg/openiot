@@ -88,6 +88,7 @@ public class PropertyManagement {
 
 	// ==============Security&Privacy====================
 	private static final String SECURITY_LSM_SPARQL_END_POINT = "security.lsm.sparql.endpoint";
+	private static final String SECURITY_LSM_GRAPH = "security.lsm.graphURL";
 
 	private Properties props = null;
 
@@ -181,6 +182,10 @@ public class PropertyManagement {
 
 	public String getSecurityLsmSparqlEndPoint() {
 		return props.getProperty(SECURITY_LSM_SPARQL_END_POINT);
+	}
+	
+	public String getSecurityLsmGraphURL() {
+		return props.getProperty(SECURITY_LSM_GRAPH);
 	}
 
 	public int getLsmMinConnection() {

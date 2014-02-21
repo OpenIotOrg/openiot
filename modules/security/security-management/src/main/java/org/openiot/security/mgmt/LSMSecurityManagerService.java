@@ -61,15 +61,16 @@ public class LSMSecurityManagerService implements Serializable, SecurityManagerS
 
 	private final HashSet<String> filteredServices;
 
-	static String OAuthGraphURL = "http://lsm.deri.ie/OpenIoT/OAuth#";
-	private String lSMOauthGraphURL = OAuthGraphURL;
-	private String sparqlEndPoint = "http://lsm.deri.ie/sparql";
+	private String lSMOauthGraphURL;
+	private String sparqlEndPoint;
 
-	LSMOAuthHttpManager lsmOAuthHttpManager = new LSMOAuthHttpManager(OAuthGraphURL);
+	private LSMOAuthHttpManager lsmOAuthHttpManager;
 
 	public LSMSecurityManagerService() {
 		PropertyManagement propertyManagement = new PropertyManagement();
 		sparqlEndPoint = propertyManagement.getSecurityLsmSparqlEndPoint();
+		lSMOauthGraphURL = propertyManagement.getSecurityLsmGraphURL();
+		lsmOAuthHttpManager = new LSMOAuthHttpManager(lSMOauthGraphURL);
 
 		filteredServices = new HashSet<String>();
 		filteredServices.add("Service Manager");
