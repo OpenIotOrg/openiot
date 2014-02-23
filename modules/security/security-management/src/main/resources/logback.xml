@@ -26,13 +26,13 @@
 	</appender>
 
 
-	<logger name="org.openiot.security.mgmt" level="DEBUG">
+	<logger name="org.openiot.security.mgmt" level="DEBUG" additivity="false">
 		<appender-ref ref="STDOUT" />
 		<appender-ref ref="file" />
 	</logger>
 	
 	
-	<logger name="org.openiot.security.client" level="DEBUG">
+	<logger name="org.openiot.security.client" level="DEBUG" additivity="false">
 		<appender-ref ref="STDOUT" />
 		<appender-ref ref="file" />
 	</logger>

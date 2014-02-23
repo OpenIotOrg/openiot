@@ -124,6 +124,13 @@
         <level value="INFO" />
         <appender-ref ref="cas" />
     </logger>
+    
+    <logger name="org.openiot.security" additivity="false">
+        <level value="DEBUG" />
+        <appender-ref ref="cas" />
+        <appender-ref ref="STDOUT" />
+    </logger>
+    
 
     <!--
       The root logger sends all log statements EXCEPT those sent to the perf4j

@@ -36,7 +36,6 @@ import org.apache.shiro.authz.permission.PermissionResolver;
 import org.apache.shiro.authz.permission.WildcardPermissionResolver;
 import org.apache.shiro.cache.Cache;
 import org.apache.shiro.cache.CacheManager;
-import org.apache.shiro.cache.MemoryConstrainedCacheManager;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.pac4j.core.exception.HttpCommunicationException;
 import org.pac4j.oauth.client.BaseOAuth20Client;
@@ -58,7 +57,7 @@ import com.fasterxml.jackson.databind.JsonNode;
  * @author Mehdi Riahi
  * 
  */
-public class AuthorizationManager implements ClearCacheListener{
+public class AuthorizationManager implements ClearCacheListener {
 
 	private static Logger logger = LoggerFactory.getLogger(AuthorizationManager.class);
 
@@ -73,13 +72,14 @@ public class AuthorizationManager implements ClearCacheListener{
 	private PermissionResolver permissionResolver = new WildcardPermissionResolver();
 
 	public AuthorizationManager() {
-		setCacheManager(new MemoryConstrainedCacheManager());
+		
 	}
 
 	public void setCacheManager(CacheManager cacheManager) {
-		this.cacheManager = cacheManager.<OAuthorizationCredentials, Map<String, Set<Permission>>> getCache("AuthorizationManager-Cache");
-		if (cacheManager != null)
+		if (cacheManager != null) {
+			this.cacheManager = cacheManager.<OAuthorizationCredentials, Map<String, Set<Permission>>> getCache("AuthorizationManager-Cache");
 			cachingEnabled = true;
+		}
 	}
 
 	public void setPermissionsURL(String permissionsURL) {
@@ -200,7 +200,7 @@ public class AuthorizationManager implements ClearCacheListener{
 
 	@Override
 	public void clearCache(PrincipalCollection principals) {
-		if(cachingEnabled){
+		if (cachingEnabled) {
 			cacheManager.clear();
 		}
 	}

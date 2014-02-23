@@ -38,6 +38,7 @@ import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.subject.SimplePrincipalCollection;
 import org.apache.shiro.util.CollectionUtils;
+import org.openiot.security.client.ACRealm;
 import org.openiot.security.client.ClearCacheListener;
 import org.openiot.security.client.SecurityConstants;
 import org.pac4j.core.client.BaseClient;
@@ -59,61 +60,60 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 
 /**
  * @author Mehdi Riahi
- *
+ * 
  */
-public class CasOAuthClientRealmRest extends ClientRealm {
+public class CasOAuthClientRealmRest extends ClientRealm implements ACRealm {
 
 	private static Logger log = LoggerFactory.getLogger(CasOAuthClientRealmRest.class);
 
 	private String permissionsURL;
 
 	private List<ClearCacheListener> clearCacheListeners = new ArrayList<>();
-	
-	
+
 	/**
-     * Authenticates a user and retrieves its user profile.
-     * 
-     * @param authenticationToken the authentication token
-     */
-    @SuppressWarnings("unchecked")
-    protected AuthenticationInfo internalGetAuthenticationInfo(final AuthenticationToken authenticationToken) {
-        final ClientToken clientToken = (ClientToken) authenticationToken;
-        log.debug("clientToken : {}", clientToken);
-        // token must be provided
-        if (clientToken == null) {
-            return null;
-        }
-        
-        // credentials
-        final Credentials credentials = (Credentials) clientToken.getCredentials();
-        log.debug("credentials : {}", credentials);
-        
-        // client
-        final BaseClient<Credentials, CommonProfile> client = (BaseClient<Credentials, CommonProfile>) getClients()
-            .findClient(clientToken.getClientName());
-        log.debug("client : {}", client);
-        
-        // finish authentication process : get the user profile
-        final CommonProfile profile = client.getUserProfile(credentials);
-        log.debug("profile : {}", profile);
-        // no profile
-        if (profile == null) {
-            final String message = "No profile retrieved from authentication using client : " + client
-                                   + " and credentials : " + credentials;
-            log.info(message);
-            // save that this kind of authentication has already been attempted and returns a null profile
-            FilterHelper.setValue(client, "true");
-            throw new NoAuthenticationException(message);
-        }
-        
-        // refresh authentication token with user id
-        final String userId = profile.getTypedId();
-        clientToken.setUserId(userId);
-        // create simple authentication info
-        final List<? extends Object> principals = CollectionUtils.asList(userId, profile);
-        final PrincipalCollection principalCollection = new SimplePrincipalCollection(principals, getName());
-        return new SimpleAuthenticationInfo(principalCollection, credentials);
-    }
+	 * Authenticates a user and retrieves its user profile.
+	 * 
+	 * @param authenticationToken
+	 *            the authentication token
+	 */
+	@SuppressWarnings("unchecked")
+	protected AuthenticationInfo internalGetAuthenticationInfo(final AuthenticationToken authenticationToken) {
+		final ClientToken clientToken = (ClientToken) authenticationToken;
+		log.debug("clientToken : {}", clientToken);
+		// token must be provided
+		if (clientToken == null) {
+			return null;
+		}
+
+		// credentials
+		final Credentials credentials = (Credentials) clientToken.getCredentials();
+		log.debug("credentials : {}", credentials);
+
+		// client
+		final BaseClient<Credentials, CommonProfile> client = (BaseClient<Credentials, CommonProfile>) getClients().findClient(clientToken.getClientName());
+		log.debug("client : {}", client);
+
+		// finish authentication process : get the user profile
+		final CommonProfile profile = client.getUserProfile(credentials);
+		log.debug("profile : {}", profile);
+		// no profile
+		if (profile == null) {
+			final String message = "No profile retrieved from authentication using client : " + client + " and credentials : " + credentials;
+			log.info(message);
+			// save that this kind of authentication has already been attempted and returns a null
+			// profile
+			FilterHelper.setValue(client, "true");
+			throw new NoAuthenticationException(message);
+		}
+
+		// refresh authentication token with user id
+		final String userId = profile.getTypedId();
+		clientToken.setUserId(userId);
+		// create simple authentication info
+		final List<? extends Object> principals = CollectionUtils.asList(userId, profile);
+		final PrincipalCollection principalCollection = new SimplePrincipalCollection(principals, getName());
+		return new SimpleAuthenticationInfo(principalCollection, credentials);
+	}
 
 	@Override
 	protected AuthorizationInfo doGetAuthorizationInfo(final PrincipalCollection principals) {
@@ -207,11 +207,14 @@ public class CasOAuthClientRealmRest extends ClientRealm {
 	public void addClearCacheListener(ClearCacheListener listener) {
 		clearCacheListeners.add(listener);
 	}
-	
+
 	@Override
 	public void onLogout(PrincipalCollection principals) {
 		super.onLogout(principals);
-		//TODO: delete the ticket
+		final CasOAuthWrapperProfile profile = principals.oneByType(CasOAuthWrapperProfile.class);
+		String accessToken = profile.getAccessToken();
+		CasOAuthWrapperClientRest client = (CasOAuthWrapperClientRest) getClients().findClient(CasOAuthWrapperClientRest.class.getSimpleName());
+		client.removeToken(accessToken);
 	}
 
 	@Override

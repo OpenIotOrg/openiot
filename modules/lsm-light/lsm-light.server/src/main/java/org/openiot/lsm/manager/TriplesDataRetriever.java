@@ -255,7 +255,7 @@ public class TriplesDataRetriever {
 				+ Hex.encodeHexString(SerializationUtils.serialize(ticketGrant.getExpirationPolicy())) + "\"^^<http://www.w3.org/2001/XMLSchema#hexBinary>.\n"
 				+ "<http://lsm.deri.ie/resource/" + id + ">  <http://openiot.eu/ontology/ns/servicesGranted> \""
 				+ Hex.encodeHexString(SerializationUtils.serialize(ticketGrant.getServices())) + "\"^^<http://www.w3.org/2001/XMLSchema#hexBinary>.\n";
-		System.out.println(Hex.encodeHexString(SerializationUtils.serialize(ticketGrant.getAuthentication())));
+//		System.out.println(Hex.encodeHexString(SerializationUtils.serialize(ticketGrant.getAuthentication())));
 		if (ticketGrant.getGrantingTicket() != null) {
 			triples += "<http://lsm.deri.ie/resource/" + id + ">  <http://openiot.eu/ontology/ns/grants> <http://lsm.deri.ie/resource/"
 					+ ticketGrant.getGrantingTicket().getId() + ">.\n";

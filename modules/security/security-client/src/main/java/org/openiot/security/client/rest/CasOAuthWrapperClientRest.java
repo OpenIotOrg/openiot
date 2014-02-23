@@ -28,6 +28,7 @@ public class CasOAuthWrapperClientRest extends BaseOAuth20Client<CasOAuthWrapper
 
 	private String casOAuthUrl;
 	private String casOAuthRestUrl;
+	private RestfulOAuthService restfulService;
 
 	public CasOAuthWrapperClientRest() {
 	}
@@ -51,6 +52,7 @@ public class CasOAuthWrapperClientRest extends BaseOAuth20Client<CasOAuthWrapper
 		CommonHelper.assertNotBlank("casOAuthUrl", this.casOAuthUrl);
 		this.service = new ExtendedOAuth20ServiceImpl(new CasOAuthWrapperApi20(this.casOAuthUrl, false), new OAuthConfig(this.key, this.secret,
 				this.callbackUrl, SignatureType.Header, null, null), this.connectTimeout, this.readTimeout, this.proxyHost, this.proxyPort);
+		restfulService = new RestfulOAuthService(casOAuthRestUrl);
 	}
 
 	@Override
@@ -82,10 +84,15 @@ public class CasOAuthWrapperClientRest extends BaseOAuth20Client<CasOAuthWrapper
 	 */
 	@Override
 	protected Token getAccessToken(final OAuthCredentials credentials) {
-		RestfulOAuthService service = new RestfulOAuthService(casOAuthRestUrl);
-		final Token accessToken = service.getAccessToken((OAuthCredentialsRest) credentials);
+		final Token accessToken = restfulService.getAccessToken((OAuthCredentialsRest) credentials);
 		logger.debug("accessToken : {}", accessToken);
 		return accessToken;
+	}
+
+	public void removeToken(String token) {
+		boolean removed = restfulService.removeAccessToken(token);
+		if (removed)
+			logger.debug("Token {} removed", token);
 	}
 
 	/**

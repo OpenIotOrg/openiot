@@ -4,7 +4,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.ws.rs.client.Entity;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
@@ -18,6 +17,7 @@ public class RestfulOAuthService {
 
 	private static Logger log = LoggerFactory.getLogger(RestfulOAuthService.class);
 	private static final int STATUS_SUCCESS = 201;
+	private static final int STATUS_DELETE_SUCCESS = 200;
 
 	private String casOAuthURL;
 
@@ -29,8 +29,9 @@ public class RestfulOAuthService {
 		Token token = null;
 		ResteasyClient client = new ResteasyClientBuilder().build();
 		ResteasyWebTarget target = client.target(casOAuthURL);
-		UsernamePassword usernamePassword = new UsernamePassword(credentials.getUsername(), credentials.getPassword());
-		Response response = target.request().post(Entity.text(usernamePassword));
+		String params = "username=" + credentials.getUsername() + "&password=" + credentials.getPassword() + "&clientId=" + credentials.getKey()
+				+ "&secret=" + credentials.getSecret();
+		Response response = target.request().post(Entity.text(params));
 		// Read output in string format
 		log.debug("Status code: {}", response.getStatus());
 
@@ -45,6 +46,24 @@ public class RestfulOAuthService {
 
 		response.close();
 		return token;
+	}
+
+	public boolean removeAccessToken(String token) {
+		boolean deleted = false;
+		ResteasyClient client = new ResteasyClientBuilder().build();
+		ResteasyWebTarget target = client.target(casOAuthURL + "/" + token);
+		log.debug("sending request to delete token {}", token);
+		Response response = target.request().delete();
+		log.debug("Delete request sent for token {}", token);
+		log.debug("Status code: {}", response.getStatus());
+		if (response.getStatus() == STATUS_DELETE_SUCCESS) {
+			deleted = true;
+		} else {
+			log.warn("Invalid response code {} from CAS server!", response.getStatus());
+			log.info("Response: {}", response.readEntity(String.class));
+		}
+
+		return deleted;
 	}
 
 	class UsernamePassword {
@@ -64,9 +83,9 @@ public class RestfulOAuthService {
 		public String getPassword() {
 			return password;
 		}
-		
+
 		@Override
-		public String toString(){
+		public String toString() {
 			return "username=" + username + "&password=" + password;
 		}
 	}

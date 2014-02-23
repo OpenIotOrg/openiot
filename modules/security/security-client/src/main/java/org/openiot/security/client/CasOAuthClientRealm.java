@@ -48,7 +48,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
  * @author Mehdi Riahi
  *
  */
-public class CasOAuthClientRealm extends ClientRealm {
+public class CasOAuthClientRealm extends ClientRealm implements ACRealm {
 
 	private static Logger log = LoggerFactory.getLogger(CasOAuthClientRealm.class);
 

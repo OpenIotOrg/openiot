@@ -20,6 +20,7 @@
 
 package org.openiot.security.client;
 
+import io.buji.pac4j.ClientRealm;
 import io.buji.pac4j.ShiroWebContext;
 
 import java.io.IOException;
@@ -29,84 +30,84 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.mgt.CachingSecurityManager;
 import org.apache.shiro.mgt.RealmSecurityManager;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.realm.Realm;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.web.util.WebUtils;
 import org.pac4j.core.exception.RequiresHttpAction;
-import org.pac4j.oauth.client.CasOAuthWrapperClient;
+import org.pac4j.oauth.client.BaseOAuth20Client;
 import org.pac4j.oauth.profile.casoauthwrapper.CasOAuthWrapperProfile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * @author Mehdi Riahi
- *
+ * 
  */
-public class AccessControlUtil {
+public abstract class AccessControlUtil {
 
 	private static Logger logger = LoggerFactory.getLogger(AccessControlUtil.class);
 
-	private static AccessControlUtil instance;
+	private static AccessControlUtilWeb instanceWeb;
+	private static AccessControlUtilRest instanceRest;
+	
+	private ClientRealm clientRealm;
 
-	private CasOAuthClientRealm casOAuthClientRealm;
-
-	private CasOAuthWrapperClient client;
+	private BaseOAuth20Client<?> client;
 
 	private AuthorizationManager authorizationManager;
 
 	public static AccessControlUtil getInstance() {
-		if (instance == null)
-			instance = new AccessControlUtil();
-		return instance;
+		if (instanceWeb == null)
+			instanceWeb = new AccessControlUtilWeb();
+		return instanceWeb;
 	}
-
-	private AccessControlUtil() {
-
-	}
-
-//	public boolean hasPermission(String perm) {
-//		return SecurityUtils.getSubject().isPermitted(perm);
-//	}
 	
+	public static AccessControlUtil getRestInstance() {
+		if (instanceRest == null)
+			instanceRest = new AccessControlUtilRest();
+		return instanceRest;
+	}
+
+	public abstract OAuthorizationCredentials login(String username, String password);
+
+	public abstract void logout();
+	
+	public abstract void redirectToLogin(HttpServletRequest req, HttpServletResponse resp) throws IOException;
+
 	public boolean hasPermission(String perm) {
 		return hasPermission(perm, getOAuthorizationCredentials());
 	}
-	
+
 	public boolean hasPermission(String permStr, OAuthorizationCredentials credentials) {
 		return getAuthorizationManager().hasPermission(permStr, credentials);
 	}
 
-//	public boolean hasRole(String role) {
-//		return SecurityUtils.getSubject().hasRole(role);
-//	}
-	
 	public boolean hasRole(String role) {
 		return hasRole(role, getOAuthorizationCredentials());
 	}
-	
+
 	public boolean hasRole(String role, OAuthorizationCredentials credentials) {
 		return getAuthorizationManager().hasRole(role, credentials);
 	}
 
-	public String getLoginUrl(HttpServletRequest req, HttpServletResponse resp) throws RequiresHttpAction {
-		return getClient().getRedirectionUrl(new ShiroWebContext(req, resp), true);
-	}
-
 	public AuthorizationManager getAuthorizationManager() {
 		if (authorizationManager == null) {
+			ACRealm acRealm = (ACRealm) getCasOAuthClientRealm();
 			authorizationManager = new AuthorizationManager();
 			authorizationManager.setClient(getClient());
-			authorizationManager.setPermissionsURL(getCasOAuthClientRealm().getPermissionsURL());
-			getCasOAuthClientRealm().addClearCacheListener(authorizationManager);
+			authorizationManager.setPermissionsURL(acRealm.getPermissionsURL());
+			authorizationManager.setCacheManager(((CachingSecurityManager) SecurityUtils.getSecurityManager()).getCacheManager());
+			acRealm.addClearCacheListener(authorizationManager);
 		}
 		return authorizationManager;
 	}
 
 	public OAuthorizationCredentials getOAuthorizationCredentials() {
 		final Subject subject = SecurityUtils.getSubject();
-		if(!subject.isAuthenticated())
+		if (!subject.isAuthenticated())
 			return null;
 		final CasOAuthWrapperProfile profile = subject.getPrincipals().oneByType(CasOAuthWrapperProfile.class);
 		String accessToken = profile.getAccessToken();
@@ -114,37 +115,58 @@ public class AccessControlUtil {
 		return new OAuthorizationCredentials(accessToken, clientId, null);
 	}
 
-	public void redirectToLogin(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-		try {
-			String url = getLoginUrl(req, resp);
-			logger.debug("redirecting to loginUrl: {} ", url);
-
-			WebUtils.saveRequest(req);
-			WebUtils.issueRedirect(req, resp, url);
-		} catch (RequiresHttpAction e) {
-			logger.debug("redurecting to loginUrl failed", e);
-		}
-	}
-
-	private CasOAuthClientRealm getCasOAuthClientRealm() {
-		if (casOAuthClientRealm == null) {
+	protected ClientRealm getCasOAuthClientRealm() {
+		if (clientRealm == null) {
 			SecurityManager securityManager = SecurityUtils.getSecurityManager();
 			RealmSecurityManager realmSecurityManager = (RealmSecurityManager) securityManager;
 			Collection<Realm> realms = realmSecurityManager.getRealms();
 			for (Realm realm : realms)
-				if (realm instanceof CasOAuthClientRealm) {
-					casOAuthClientRealm = (CasOAuthClientRealm) realm;
+				if (realm instanceof ClientRealm) {
+					logger.debug("A realm of type {} is found", realm.getClass().getName());
+					clientRealm = (ClientRealm) realm;
 					break;
 				}
 
 		}
-		return casOAuthClientRealm;
+		return clientRealm;
 	}
 
-	private CasOAuthWrapperClient getClient() {
-		if (client == null)
-			client = (CasOAuthWrapperClient) getCasOAuthClientRealm().getClients().findClient("CasOAuthWrapperClient");
+	protected BaseOAuth20Client<?> getClient() {
+		if (client == null){
+			client = (BaseOAuth20Client<?>) getCasOAuthClientRealm().getClients().findAllClients().get(0);
+			logger.debug("Client is of type {}", client.getClass().getName());
+		}
 
 		return client;
+	}
+	
+	private static class AccessControlUtilWeb extends AccessControlUtil {
+
+		@Override
+		public OAuthorizationCredentials login(String username, String password) {
+			return null;
+		}
+
+		@Override
+		public void logout() {
+			
+		}
+		
+		public void redirectToLogin(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+			try {
+				String url = getLoginUrl(req, resp);
+				logger.debug("redirecting to loginUrl: {} ", url);
+
+				WebUtils.saveRequest(req);
+				WebUtils.issueRedirect(req, resp, url);
+			} catch (RequiresHttpAction e) {
+				logger.debug("redurecting to loginUrl failed", e);
+			}
+		}
+		
+		public String getLoginUrl(HttpServletRequest req, HttpServletResponse resp) throws RequiresHttpAction {
+			return getClient().getRedirectionUrl(new ShiroWebContext(req, resp), true);
+		}
+		
 	}
 }
