@@ -36,6 +36,6 @@
  -->
  
 	<bean id="propertyPlaceholderConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer"
-		p:location="file:#{systemProperties['jboss.home.dir']}/standalone/configuration/cas.properties" />
+		p:location="file:#{systemProperties['jboss.server.config.dir']}/cas.properties" />
 </beans>
 

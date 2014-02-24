@@ -3,16 +3,13 @@ package org.openiot.security.oauth.lsm;
 import java.util.Arrays;
 import java.util.List;
 
-import org.openiot.lsm.security.oauth.LSMOAuthHttpManager;
 import org.openiot.lsm.security.oauth.LSMRegisteredServiceImpl;
 import org.openiot.lsm.security.oauth.mgmt.Permission;
 import org.openiot.lsm.security.oauth.mgmt.Role;
 import org.openiot.lsm.security.oauth.mgmt.User;
-import org.openiot.security.oauth.lsm.LSMOAuthManager;
 
 
 public class InitializeSecurityModule {
-	static String OAuthGraphURL = "http://lsm.deri.ie/OpenIoT/OAuth#";
 
 	public static User generateUser(String name, String email, String username, String password) {
 		User user = new User();
@@ -25,7 +22,7 @@ public class InitializeSecurityModule {
 	}
 
 	public static void generateAuthorizationData() {
-		LSMOAuthHttpManager oM = new LSMOAuthHttpManager(OAuthGraphURL);
+		LSMOAuthManager oM = LSMOAuthManager.getInstance();
 		User adminUser = generateUser("Administrator", "admin@openiot.eu", "admin", "5ebe2294ecd0e0f08eab7690d2a6ee69");
 
 		Role adminRole5 = new Role("admin", "Administrator role", 5L);

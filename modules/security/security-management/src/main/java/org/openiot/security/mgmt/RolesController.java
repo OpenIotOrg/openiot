@@ -97,7 +97,7 @@ public class RolesController extends AbstractController {
 			for (RegisteredService registeredService : services) {
 				String name = registeredService.getName();
 				
-				//Checking access control
+				//Checking access
 				if (AccessControlUtil.getInstance().hasPermission("admin:user_mgmt:" + name))
 					allServices.put(registeredService.getId(), registeredService);
 			}

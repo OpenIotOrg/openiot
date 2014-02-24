@@ -32,5 +32,14 @@ public class AccessControlUtilRestTest {
 		accessControlUtil.login("admin", "secret");
 		assertTrue("Admin must have all permissions", accessControlUtil.hasPermission("*"));
 	}
+	
+	@Test 
+	public void testHasPermissionForTarget(){
+		AccessControlUtil accessControlUtil = AccessControlUtil.getRestInstance();
+		accessControlUtil.login("admin", "secret");
+		OAuthorizationCredentials credentials = accessControlUtil.getOAuthorizationCredentials();
+		assertTrue("Admin must have all permissions on testservice2", accessControlUtil.hasPermission("*", "testservice2", credentials));
+	}
+
 
 }

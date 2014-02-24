@@ -60,6 +60,7 @@ class AccessControlUtilRest extends AccessControlUtil {
 		subject.login(token);
 		OAuthorizationCredentials oauthCredentials = getOAuthorizationCredentials();
 		logger.debug("Logged in. Credentials: {}", oauthCredentials);
+		getAuthorizationManager().reset();
 		return oauthCredentials;
 	}
 
@@ -68,6 +69,7 @@ class AccessControlUtilRest extends AccessControlUtil {
 		if (subject.isAuthenticated()) {
 			subject.logout();
 		}
+		getAuthorizationManager().reset();
 	}
 
 	@Override

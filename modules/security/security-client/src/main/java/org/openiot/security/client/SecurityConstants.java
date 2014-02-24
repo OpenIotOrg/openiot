@@ -28,7 +28,14 @@ package org.openiot.security.client;
 public class SecurityConstants {
 
 	public static final String ROLE_PERMISSIONS = "role_permissions";
+	public static final String ERROR = "error";
 
 	public static final String CALLER_ACCESS_TOKEN = "caller_access_token";
 	public static final String CALLER_CLIENT_ID = "caller_client_id";
+	
+	public static final String USER_ACCESS_TOKEN = "user_access_token";
+	public static final String USER_CLIENT_ID = "user_client_id";
+	
+	public static final String TARGET_CLIENT_ID = "target_client_id"; 
+	public static final String EXPIRED_ACCESS_TOKEN = "expired_accessToken";
 }

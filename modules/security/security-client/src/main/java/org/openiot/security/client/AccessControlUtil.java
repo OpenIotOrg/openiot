@@ -52,45 +52,142 @@ public abstract class AccessControlUtil {
 
 	private static AccessControlUtilWeb instanceWeb;
 	private static AccessControlUtilRest instanceRest;
-	
+
 	private ClientRealm clientRealm;
 
 	private BaseOAuth20Client<?> client;
 
 	private AuthorizationManager authorizationManager;
 
+	/**
+	 * Returns a singleton instance of this class for web applications.
+	 * 
+	 * @return
+	 */
 	public static AccessControlUtil getInstance() {
 		if (instanceWeb == null)
 			instanceWeb = new AccessControlUtilWeb();
 		return instanceWeb;
 	}
-	
+
+	/**
+	 * Returns a singleton instance of this class for RESTful applications.
+	 * 
+	 * @return
+	 */
 	public static AccessControlUtil getRestInstance() {
 		if (instanceRest == null)
 			instanceRest = new AccessControlUtilRest();
 		return instanceRest;
 	}
 
+	/**
+	 * Authenticated the user and abtains a token. Should be used only for the REST client.
+	 * 
+	 * @param username
+	 * @param password
+	 * @return an OAuthorizationCredentials object containing the token or null in case of failure
+	 */
 	public abstract OAuthorizationCredentials login(String username, String password);
 
+	/**
+	 * Logs the user out and sends a request to delete the token. Should be used only for the REST
+	 * client.
+	 */
 	public abstract void logout();
-	
+
+	/**
+	 * This method can be called by a servlet container to redirect the user to OpenIoT CAS login
+	 * page.
+	 * 
+	 * @param req
+	 * @param resp
+	 * @throws IOException
+	 */
 	public abstract void redirectToLogin(HttpServletRequest req, HttpServletResponse resp) throws IOException;
 
+	/**
+	 * @param perm
+	 * @return true if the user has the specified permission
+	 */
 	public boolean hasPermission(String perm) {
 		return hasPermission(perm, getOAuthorizationCredentials());
 	}
 
+	/**
+	 * @param permStr
+	 * @param credentials
+	 * @return true if the user with the provided <code>credentials</code> has the specified
+	 *         permission.
+	 */
 	public boolean hasPermission(String permStr, OAuthorizationCredentials credentials) {
 		return getAuthorizationManager().hasPermission(permStr, credentials);
 	}
 
+	/**
+	 * @param permStr
+	 * @param targetClientId
+	 * @param credentials
+	 * @return true if the user with the provided <code>credentials</code> has the specified
+	 *         permission on service <code>targetClientId</code>
+	 */
+	public boolean hasPermission(String permStr, String targetClientId, OAuthorizationCredentials credentials) {
+		return getAuthorizationManager().hasPermission(permStr, targetClientId, credentials);
+	}
+
+	/**
+	 * @param role
+	 * @return true if the user has the specified role
+	 */
 	public boolean hasRole(String role) {
 		return hasRole(role, getOAuthorizationCredentials());
 	}
 
+	/**
+	 * @param role
+	 * @param credentials
+	 * @return true if the user with the provided <code>credentials</code> has the specified role.
+	 */
 	public boolean hasRole(String role, OAuthorizationCredentials credentials) {
 		return getAuthorizationManager().hasRole(role, credentials);
+	}
+
+	/**
+	 * @param role
+	 * @param targetClientId
+	 * @param credentials
+	 * @return true if the user with the provided <code>credentials</code> has the specified role on
+	 *         service <code>targetClientId</code>
+	 */
+	public boolean hasRole(String role, String targetClientId, OAuthorizationCredentials credentials) {
+		return getAuthorizationManager().hasRole(role, targetClientId, credentials);
+	}
+
+	/**
+	 * Note that this might not be a real indication of expiry as we can get the information from
+	 * the cache without contacting the server.
+	 * 
+	 * @return true if the access token has expired
+	 */
+	public boolean isAccessTokenExpired() {
+		return getAuthorizationManager().isAccessTokenExpired();
+	}
+
+	/**
+	 * Sends a request to the server to check if the token is expired.
+	 * 
+	 * @param credentials
+	 * @return
+	 */
+	public boolean checkAccessTokenExpiry(OAuthorizationCredentials credentials) {
+		return getAuthorizationManager().checkAccessTokenExpiry(credentials);
+	}
+
+	/**
+	 * Clears the state information. Call this method before redirecting the user to re-login.
+	 */
+	public void reset() {
+		getAuthorizationManager().reset();
 	}
 
 	public AuthorizationManager getAuthorizationManager() {
@@ -105,6 +202,10 @@ public abstract class AccessControlUtil {
 		return authorizationManager;
 	}
 
+	/**
+	 * @return an OAuthorizationCredentials object containing the user's token and the clientId if
+	 *         the user has logged in, otherwise returns <code>null</code>
+	 */
 	public OAuthorizationCredentials getOAuthorizationCredentials() {
 		final Subject subject = SecurityUtils.getSubject();
 		if (!subject.isAuthenticated())
@@ -122,7 +223,7 @@ public abstract class AccessControlUtil {
 			Collection<Realm> realms = realmSecurityManager.getRealms();
 			for (Realm realm : realms)
 				if (realm instanceof ClientRealm) {
-					logger.debug("A realm of type {} is found", realm.getClass().getName());
+					logger.debug("A realm of type {} was found", realm.getClass().getName());
 					clientRealm = (ClientRealm) realm;
 					break;
 				}
@@ -132,14 +233,14 @@ public abstract class AccessControlUtil {
 	}
 
 	protected BaseOAuth20Client<?> getClient() {
-		if (client == null){
+		if (client == null) {
 			client = (BaseOAuth20Client<?>) getCasOAuthClientRealm().getClients().findAllClients().get(0);
 			logger.debug("Client is of type {}", client.getClass().getName());
 		}
 
 		return client;
 	}
-	
+
 	private static class AccessControlUtilWeb extends AccessControlUtil {
 
 		@Override
@@ -149,9 +250,9 @@ public abstract class AccessControlUtil {
 
 		@Override
 		public void logout() {
-			
+			reset();
 		}
-		
+
 		public void redirectToLogin(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 			try {
 				String url = getLoginUrl(req, resp);
@@ -163,10 +264,10 @@ public abstract class AccessControlUtil {
 				logger.debug("redurecting to loginUrl failed", e);
 			}
 		}
-		
+
 		public String getLoginUrl(HttpServletRequest req, HttpServletResponse resp) throws RequiresHttpAction {
 			return getClient().getRedirectionUrl(new ShiroWebContext(req, resp), true);
 		}
-		
+
 	}
 }
