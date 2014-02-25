@@ -13,7 +13,7 @@
 	<import resource="spring-configuration/propertyFileConfigurer.xml" />
 
 	<!-- Theme Resolver -->
-	<bean id="themeResolver" class="org.jasig.cas.services.web.ServiceThemeResolver" p:defaultThemeName="${cas.themeResolver.defaultThemeName}"
+	<bean id="themeResolver" class="org.jasig.cas.services.web.ServiceThemeResolver" p:defaultThemeName="${cas.themeResolver.defaultThemeName:cas-theme-default}"
 		p:argumentExtractors-ref="argumentExtractors" p:servicesManager-ref="servicesManager">
 		<property name="mobileBrowsers">
 			<map>
@@ -29,7 +29,7 @@
 	<bean id="viewResolver" class="org.springframework.web.servlet.view.ResourceBundleViewResolver" p:order="0">
 		<property name="basenames">
 			<list>
-				<value>${cas.viewResolver.basename}</value>
+				<value>${cas.viewResolver.basename:default_views}</value>
 				<value>protocol_views</value>
 			</list>
 		</property>

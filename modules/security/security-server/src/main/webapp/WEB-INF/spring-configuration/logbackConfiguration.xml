@@ -35,7 +35,7 @@
 		<property name="targetMethod" value="initLogging" />
 		<property name="arguments">
 			<list>
-				<value>${logback.config.location:classpath:logback.xml}</value>
+				<value>${logback.config.location:classpath:logback-cas.xml}</value>
 			</list>
 		</property>
 	</bean>

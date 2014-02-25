@@ -3,15 +3,33 @@ package org.openiot.security.oauth.lsm;
 import java.util.Arrays;
 import java.util.List;
 
+import org.openiot.commons.util.PropertyManagement;
 import org.openiot.lsm.security.oauth.LSMRegisteredServiceImpl;
 import org.openiot.lsm.security.oauth.mgmt.Permission;
 import org.openiot.lsm.security.oauth.mgmt.Role;
 import org.openiot.lsm.security.oauth.mgmt.User;
 
+public class SecurityModuleInitializer {
+	private static final long ID_SERVICE_MANAGER = 1;
+	private static final long ID_HTTP = 2;
+	private static final long ID_TEST_SERVICE_1 = 3;
+	private static final long ID_TEST_SERVICE_2 = 4;
+	private static final long ID_SECURITY_MANAGEMENT = 5;
 
-public class InitializeSecurityModule {
+	private static final String ADMIN_USERNAME = "security.lsm.initialize.admin.username";
+	private static final String ADMIN_PASSWORD = "security.lsm.initialize.admin.password";
+	private static final String ADMIN_EMAIL = "security.lsm.initialize.admin.email";
 
-	public static User generateUser(String name, String email, String username, String password) {
+	public static void initialize() {
+		generateAuthorizationData();
+
+		LSMOAuthManager oM = LSMOAuthManager.getInstance();
+
+		for (LSMRegisteredServiceImpl rs : createDefaultServices())
+			oM.addRegisteredService(rs);
+	}
+
+	private static User generateUser(String name, String email, String username, String password) {
 		User user = new User();
 		user.setName(name);
 		user.setUsername(username);
@@ -21,27 +39,29 @@ public class InitializeSecurityModule {
 		return user;
 	}
 
-	public static void generateAuthorizationData() {
+	private static void generateAuthorizationData() {
 		LSMOAuthManager oM = LSMOAuthManager.getInstance();
-		User adminUser = generateUser("Administrator", "admin@openiot.eu", "admin", "5ebe2294ecd0e0f08eab7690d2a6ee69");
+		PropertyManagement props = new PropertyManagement();
+		User adminUser = generateUser("Administrator", props.getProperty(ADMIN_EMAIL, "admin@openiot.eu"), props.getProperty(ADMIN_USERNAME, "admin"),
+				props.getProperty(ADMIN_PASSWORD, "5ebe2294ecd0e0f08eab7690d2a6ee69"));
 
-		Role adminRole5 = new Role("admin", "Administrator role", 5L);
+		Role adminRole = new Role("admin", "Administrator role", ID_SECURITY_MANAGEMENT);
 
-		Permission allPerm5 = new Permission("*", "All permissions", 5L);
+		Permission allPerm = new Permission("*", "All permissions", ID_SECURITY_MANAGEMENT);
 
-		adminRole5.addPermission(allPerm5);
+		adminRole.addPermission(allPerm);
 
-		adminUser.addRole(adminRole5);
+		adminUser.addRole(adminRole);
 
-		oM.addPermission(allPerm5);
-		oM.addRole(adminRole5);
-		
+		oM.addPermission(allPerm);
+		oM.addRole(adminRole);
+
 		oM.addUser(adminUser);
 	}
 
-	public static List<LSMRegisteredServiceImpl> createDefaultServices() {
+	private static List<LSMRegisteredServiceImpl> createDefaultServices() {
 		LSMRegisteredServiceImpl defaultService = new LSMRegisteredServiceImpl();
-		defaultService.setId(1L);
+		defaultService.setId(ID_SERVICE_MANAGER);
 		defaultService.setAllowedToProxy(true);
 		defaultService.setAnonymousAccess(false);
 		defaultService.setDescription("Service Manager");
@@ -53,7 +73,7 @@ public class InitializeSecurityModule {
 		defaultService.setSsoEnabled(true);
 
 		LSMRegisteredServiceImpl httpService = new LSMRegisteredServiceImpl();
-		httpService.setId(2L);
+		httpService.setId(ID_HTTP);
 		httpService.setAllowedToProxy(true);
 		httpService.setAnonymousAccess(false);
 		httpService.setDescription("OAuth wrapper callback url");
@@ -65,7 +85,7 @@ public class InitializeSecurityModule {
 		httpService.setSsoEnabled(true);
 
 		LSMRegisteredServiceImpl oauthTestService1 = new LSMRegisteredServiceImpl();
-		oauthTestService1.setId(3L);
+		oauthTestService1.setId(ID_TEST_SERVICE_1);
 		oauthTestService1.setAllowedToProxy(true);
 		oauthTestService1.setAnonymousAccess(false);
 		oauthTestService1.setDescription("testsecret1");
@@ -78,7 +98,7 @@ public class InitializeSecurityModule {
 		oauthTestService1.setSsoEnabled(true);
 
 		LSMRegisteredServiceImpl oauthTestService2 = new LSMRegisteredServiceImpl();
-		oauthTestService2.setId(4L);
+		oauthTestService2.setId(ID_TEST_SERVICE_2);
 		oauthTestService2.setAllowedToProxy(true);
 		oauthTestService2.setAnonymousAccess(false);
 		oauthTestService2.setDescription("testsecret2");
@@ -91,7 +111,7 @@ public class InitializeSecurityModule {
 		oauthTestService2.setSsoEnabled(true);
 
 		LSMRegisteredServiceImpl userManagementService = new LSMRegisteredServiceImpl();
-		userManagementService.setId(5L);
+		userManagementService.setId(ID_SECURITY_MANAGEMENT);
 		userManagementService.setAllowedToProxy(true);
 		userManagementService.setAnonymousAccess(false);
 		userManagementService.setDescription("openiot-security-manager-app-secret");
@@ -115,7 +135,7 @@ public class InitializeSecurityModule {
 		for (LSMRegisteredServiceImpl rs : createDefaultServices())
 			oM.addRegisteredService(rs);
 
-//		generateAuthorizationData();
+		// generateAuthorizationData();
 
 	}
 

@@ -36,6 +36,6 @@
  -->
  
 	<bean id="propertyPlaceholderConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer"
-		p:location="file:#{systemProperties['jboss.server.config.dir']}/cas.properties" />
+		p:location="file:#{systemProperties['jboss.server.config.dir']}/openiot.properties" />
 </beans>
 

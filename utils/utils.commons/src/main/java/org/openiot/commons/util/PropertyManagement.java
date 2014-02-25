@@ -135,6 +135,10 @@ public class PropertyManagement {
 		}
 
 	}
+	
+	public String getProperty(String key, String defaultValue){
+		return props.getProperty(key, defaultValue);
+	}
 
 	public String getSchedulerLsmMetaGraph() {
 		return props.getProperty(SCHEDULER_LSM_META_GRAPH);
