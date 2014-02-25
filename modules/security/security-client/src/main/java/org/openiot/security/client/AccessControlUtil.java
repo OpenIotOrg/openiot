@@ -33,7 +33,11 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.mgt.CachingSecurityManager;
 import org.apache.shiro.mgt.RealmSecurityManager;
 import org.apache.shiro.mgt.SecurityManager;
+import org.apache.shiro.mgt.SessionsSecurityManager;
 import org.apache.shiro.realm.Realm;
+import org.apache.shiro.session.Session;
+import org.apache.shiro.session.SessionListener;
+import org.apache.shiro.session.mgt.DefaultSessionManager;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.web.util.WebUtils;
 import org.pac4j.core.exception.RequiresHttpAction;
@@ -164,30 +168,23 @@ public abstract class AccessControlUtil {
 	}
 
 	/**
-	 * Note that this might not be a real indication of expiry as we can get the information from
-	 * the cache without contacting the server.
-	 * 
-	 * @return true if the access token has expired
-	 */
-	public boolean isAccessTokenExpired() {
-		return getAuthorizationManager().isAccessTokenExpired();
-	}
-
-	/**
 	 * Sends a request to the server to check if the token is expired.
 	 * 
 	 * @param credentials
-	 * @return
+	 * @return the expired token or <code>null</code> if non of the tokens in
+	 *         <code>credentials</code> are expired
 	 */
-	public boolean checkAccessTokenExpiry(OAuthorizationCredentials credentials) {
-		return getAuthorizationManager().checkAccessTokenExpiry(credentials);
+	public String getExpiredAccessToken(OAuthorizationCredentials credentials) {
+		return getAuthorizationManager().getExpiredAccessToken(credentials);
 	}
 
 	/**
-	 * Clears the state information. Call this method before redirecting the user to re-login.
+	 * Clears the state information.
 	 */
 	public void reset() {
-		getAuthorizationManager().reset();
+		Subject subject = SecurityUtils.getSubject();
+		if (subject.isAuthenticated())
+			getAuthorizationManager().clearCache(subject.getPrincipals());
 	}
 
 	public AuthorizationManager getAuthorizationManager() {
@@ -241,7 +238,12 @@ public abstract class AccessControlUtil {
 		return client;
 	}
 
-	private static class AccessControlUtilWeb extends AccessControlUtil {
+	private static class AccessControlUtilWeb extends AccessControlUtil implements SessionListener {
+
+		public AccessControlUtilWeb() {
+			DefaultSessionManager sessionManager = (DefaultSessionManager) ((SessionsSecurityManager) SecurityUtils.getSecurityManager()).getSessionManager();
+			sessionManager.getSessionListeners().add(this);
+		}
 
 		@Override
 		public OAuthorizationCredentials login(String username, String password) {
@@ -250,7 +252,7 @@ public abstract class AccessControlUtil {
 
 		@Override
 		public void logout() {
-			reset();
+			// Do nothing
 		}
 
 		public void redirectToLogin(HttpServletRequest req, HttpServletResponse resp) throws IOException {
@@ -267,6 +269,27 @@ public abstract class AccessControlUtil {
 
 		public String getLoginUrl(HttpServletRequest req, HttpServletResponse resp) throws RequiresHttpAction {
 			return getClient().getRedirectionUrl(new ShiroWebContext(req, resp), true);
+		}
+
+		@Override
+		public void onStart(Session session) {
+			resetCache(session);
+		}
+
+		@Override
+		public void onStop(Session session) {
+			// Do Nothing
+		}
+
+		@Override
+		public void onExpiration(Session session) {
+			resetCache(session);
+		}
+
+		private void resetCache(Session session) {
+			Session subjectSession = SecurityUtils.getSubject().getSession(false);
+			if (subjectSession != null && session.getId().equals(subjectSession.getId()))
+				reset();
 		}
 
 	}

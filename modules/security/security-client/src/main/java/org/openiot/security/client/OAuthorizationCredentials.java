@@ -28,8 +28,9 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 
 /**
  * This class represents a chain of OAuth credentials.
+ * 
  * @author Mehdi Riahi
- *
+ * 
  */
 public class OAuthorizationCredentials implements Serializable {
 
@@ -74,6 +75,12 @@ public class OAuthorizationCredentials implements Serializable {
 	@Override
 	public String toString() {
 		return ToStringBuilder.reflectionToString(this);
+	}
+
+	public boolean containsToken(String token) {
+		if (token == null)
+			return false;
+		return token.equals(getAccessToken()) || (callerCredentials != null && callerCredentials.containsToken(token));
 	}
 
 }

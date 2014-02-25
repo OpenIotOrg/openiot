@@ -47,6 +47,7 @@ import org.apache.shiro.subject.PrincipalCollection;
 import org.pac4j.core.exception.HttpCommunicationException;
 import org.pac4j.oauth.client.BaseOAuth20Client;
 import org.pac4j.oauth.profile.JsonHelper;
+import org.pac4j.oauth.profile.casoauthwrapper.CasOAuthWrapperProfile;
 import org.scribe.model.OAuthConstants;
 import org.scribe.model.ProxyOAuthRequest;
 import org.scribe.model.Response;
@@ -79,6 +80,9 @@ import com.fasterxml.jackson.databind.JsonNode;
  */
 public class AuthorizationManager implements ClearCacheListener {
 
+	// TODO: use the subject's session cache authorization data and back the session store by
+	// Ehcache.
+
 	private static Logger logger = LoggerFactory.getLogger(AuthorizationManager.class);
 
 	private Cache<CacheKey, Map<String, Set<Permission>>> cacheManager;
@@ -90,8 +94,6 @@ public class AuthorizationManager implements ClearCacheListener {
 	private String permissionsURL;
 
 	private PermissionResolver permissionResolver = new WildcardPermissionResolver();
-
-	private boolean accessTokenExpired = false;
 
 	public AuthorizationManager() {
 
@@ -118,31 +120,25 @@ public class AuthorizationManager implements ClearCacheListener {
 	}
 
 	/**
-	 * Note that this might not be a real indication of expiry as we can get the information from
-	 * the cache without contacting the server.
-	 * 
-	 * @return true if the access token has expired
-	 */
-	public boolean isAccessTokenExpired() {
-		return accessTokenExpired;
-	}
-
-	/**
 	 * Sends a request to the server to check if the token is expired.
 	 * 
 	 * @param credentials
-	 * @return
+	 * @return the expired token or <code>null</code> if non of the tokens in
+	 *         <code>credentials</code> are expired
 	 */
-	public boolean checkAccessTokenExpiry(OAuthorizationCredentials credentials) {
+	public String getExpiredAccessToken(OAuthorizationCredentials credentials) {
 		if (cachingEnabled)
 			cacheManager.remove(new CacheKey(credentials.getClientId(), credentials));
-		getAuthorizationInfo(credentials, credentials.getClientId());
-		return isAccessTokenExpired();
+		try {
+			getAuthorizationInfo(credentials, credentials.getClientId());
+		} catch (AccessTokenExpiredException e) {
+			return e.getToken();
+		}
+		return null;
 	}
 
-	void reset() {
-		accessTokenExpired = false;
-		clearCache(null);
+	void reset(String token) {
+		clearCacheForToken(token);
 	}
 
 	public boolean hasPermission(String permStr, OAuthorizationCredentials credentials) {
@@ -185,20 +181,16 @@ public class AuthorizationManager implements ClearCacheListener {
 
 	protected Map<String, Set<Permission>> getAuthorizationInfo(final OAuthorizationCredentials credentials, final String targetClientId) {
 		Map<String, Set<Permission>> authorizationInfo = null;
-		try {
-			CacheKey key = new CacheKey(targetClientId, credentials);
+
+		CacheKey key = new CacheKey(targetClientId, credentials);
+		if (cachingEnabled)
+			authorizationInfo = cacheManager.get(key);
+
+		if (authorizationInfo == null) {
+			authorizationInfo = getAuthorizationInfoInternal(credentials, targetClientId);
+
 			if (cachingEnabled)
-				authorizationInfo = cacheManager.get(key);
-
-			if (authorizationInfo == null) {
-				authorizationInfo = getAuthorizationInfoInternal(credentials, targetClientId);
-
-				if (cachingEnabled)
-					cacheManager.put(key, authorizationInfo);
-			}
-		} catch (AccessTokenExpiredException e) {
-			accessTokenExpired = true;
-			clearCache(null);
+				cacheManager.put(key, authorizationInfo);
 		}
 
 		return authorizationInfo;
@@ -213,11 +205,20 @@ public class AuthorizationManager implements ClearCacheListener {
 		if (json != null) {
 			JsonNode errorNode = json.get(ERROR);
 			if (errorNode != null) {
-				logger.info("Error returned: {}", errorNode.asText());
-				if (EXPIRED_ACCESS_TOKEN.equals(errorNode.asText()))
-					accessTokenExpired = true;
+				String errorMsg = errorNode.asText();
+				logger.info("Error returned: {}", errorMsg);
+				if (errorMsg.startsWith(EXPIRED_ACCESS_TOKEN)) {
+					String token = credentials.getAccessToken();
+					if (errorMsg.endsWith("_for_caller"))
+						token = credentials.getCallerCredentials().getAccessToken();
+					else if (errorMsg.endsWith("_for_user"))
+						if (credentials.getCallerCredentials().getCallerCredentials() == null)
+							token = credentials.getCallerCredentials().getAccessToken();
+						else
+							token = credentials.getCallerCredentials().getCallerCredentials().getAccessToken();
+					throw new AccessTokenExpiredException(token, errorMsg);
+				}
 			} else {
-				accessTokenExpired = false;
 				json = json.get(ROLE_PERMISSIONS);
 				if (json != null) {
 					final Iterator<JsonNode> nodes = json.iterator();
@@ -290,7 +291,23 @@ public class AuthorizationManager implements ClearCacheListener {
 	@Override
 	public void clearCache(PrincipalCollection principals) {
 		if (cachingEnabled) {
-			cacheManager.clear();
+			if (principals == null) {
+				logger.debug("Clearing cache");
+				cacheManager.clear();
+			} else {
+				final CasOAuthWrapperProfile profile = principals.oneByType(CasOAuthWrapperProfile.class);
+				String accessToken = profile.getAccessToken();
+				logger.debug("Clearing cache for accessToken: {} ", accessToken);
+				clearCacheForToken(accessToken);
+			}
+		}
+	}
+
+	private void clearCacheForToken(String accessToken) {
+		Set<CacheKey> keys = cacheManager.keys();
+		for (CacheKey key : keys) {
+			if (key.credentials.containsToken(accessToken))
+				cacheManager.remove(key);
 		}
 	}
 
@@ -299,7 +316,6 @@ public class AuthorizationManager implements ClearCacheListener {
 		OAuthorizationCredentials credentials;
 
 		public CacheKey(String targetClientId, OAuthorizationCredentials credentials) {
-			super();
 			this.targetClientId = targetClientId;
 			this.credentials = credentials;
 		}
