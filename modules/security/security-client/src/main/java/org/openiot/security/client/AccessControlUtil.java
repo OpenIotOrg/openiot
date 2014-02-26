@@ -210,7 +210,8 @@ public abstract class AccessControlUtil {
 		final CasOAuthWrapperProfile profile = subject.getPrincipals().oneByType(CasOAuthWrapperProfile.class);
 		String accessToken = profile.getAccessToken();
 		String clientId = getClient().getKey();
-		return new OAuthorizationCredentials(accessToken, clientId, null);
+		String userId = profile.getId();
+		return new OAuthorizationCredentials(userId, accessToken, clientId, null);
 	}
 
 	protected ClientRealm getCasOAuthClientRealm() {

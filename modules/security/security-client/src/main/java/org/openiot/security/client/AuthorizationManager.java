@@ -80,7 +80,7 @@ import com.fasterxml.jackson.databind.JsonNode;
  */
 public class AuthorizationManager implements ClearCacheListener {
 
-	// TODO: use the subject's session cache authorization data and back the session store by
+	// TODO: use the subject's session for caching authorization data and back the session store by
 	// Ehcache.
 
 	private static Logger logger = LoggerFactory.getLogger(AuthorizationManager.class);
