@@ -13,7 +13,7 @@
 	<import resource="spring-configuration/propertyFileConfigurer.xml" />
 
 	<!-- Theme Resolver -->
-	<bean id="themeResolver" class="org.jasig.cas.services.web.ServiceThemeResolver" p:defaultThemeName="${cas.themeResolver.defaultThemeName}"
+	<bean id="themeResolver" class="org.jasig.cas.services.web.ServiceThemeResolver" p:defaultThemeName="${cas.themeResolver.defaultThemeName:cas-theme-default}"
 		p:argumentExtractors-ref="argumentExtractors" p:servicesManager-ref="servicesManager">
 		<property name="mobileBrowsers">
 			<map>
@@ -29,7 +29,7 @@
 	<bean id="viewResolver" class="org.springframework.web.servlet.view.ResourceBundleViewResolver" p:order="0">
 		<property name="basenames">
 			<list>
-				<value>${cas.viewResolver.basename}</value>
+				<value>${cas.viewResolver.basename:default_views}</value>
 				<value>protocol_views</value>
 			</list>
 		</property>
@@ -100,9 +100,11 @@
 			<webflow:always-redirect-on-pause value="false" />
 			<webflow:redirect-in-same-state value="false" />
 		</webflow:flow-execution-attributes>
+		<!-- 
 		<webflow:flow-execution-listeners>
 			<webflow:listener ref="terminateWebSessionListener" />
 		</webflow:flow-execution-listeners>
+		 -->
 	</webflow:flow-executor>
 
 	<webflow:flow-registry id="flowRegistry" flow-builder-services="builder">
@@ -203,5 +205,5 @@
 
 	<!-- Enabling OAuth2.0 support -->
 	<bean id="oauth20WrapperController" class="org.openiot.security.oauth.OAuth20WrapperController" p:loginUrl="${cas.securityContext.casProcessingFilterEntryPoint.loginUrl}"
-		p:servicesManager-ref="servicesManager" p:ticketRegistry-ref="ticketRegistry" p:timeout="7200" p:dataSource-ref="dataSource" />
+		p:servicesManager-ref="servicesManager" p:ticketRegistry-ref="ticketRegistry" p:timeout="7200" />
 </beans>

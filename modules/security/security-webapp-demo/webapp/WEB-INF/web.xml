@@ -34,9 +34,17 @@
   <servlet-name>permissions</servlet-name>
   <servlet-class>eu.openiot.OAuthPermissionTestServlet</servlet-class>
  </servlet>
+ <servlet>
+  <servlet-name>servicerequest</servlet-name>
+  <servlet-class>eu.openiot.ServiceRequestTestServlet</servlet-class>
+ </servlet>
  <servlet-mapping>
   <servlet-name>permissions</servlet-name>
   <url-pattern>/perm</url-pattern>
+ </servlet-mapping>
+ <servlet-mapping>
+  <servlet-name>servicerequest</servlet-name>
+  <url-pattern>/servicerequest</url-pattern>
  </servlet-mapping>
  <welcome-file-list>
   <welcome-file>index.jsp</welcome-file>

@@ -14,11 +14,14 @@
 		<cas.version>3.5.2</cas.version>
 		<version.war.plugin>2.4</version.war.plugin>
 		<war-name>openiot-cas</war-name>
+		<!-- maven-compiler-plugin -->
+		<version.compiler.plugin>2.3.1</version.compiler.plugin>
+		<maven.compiler.target>1.6</maven.compiler.target>
+		<maven.compiler.source>1.6</maven.compiler.source>
 	</properties>
 
 	<build>
-		<!-- Maven will append the version to the finalName (which is the name 
-			given to the generated war, and hence the context root) -->
+		<!-- Maven will append the version to the finalName (which is the name given to the generated war, and hence the context root) -->
 		<finalName>${war-name}</finalName>
 		<plugins>
 			<plugin>
@@ -31,6 +34,14 @@
 				<artifactId>jboss-as-maven-plugin</artifactId>
 				<version>7.4.Final</version>
 			</plugin>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>${version.compiler.plugin}</version>
+				<configuration>
+					<source>${maven.compiler.source}</source>
+					<target>${maven.compiler.target}</target>
+				</configuration>
+			</plugin>
 
 		</plugins>
 	</build>
@@ -42,22 +53,66 @@
 			<artifactId>cas-server-webapp</artifactId>
 			<version>${cas.version}</version>
 			<type>war</type>
-			<scope>runtime</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>org.jasig.cas</groupId>
 			<artifactId>cas-server-support-oauth</artifactId>
 			<version>${cas.version}</version>
-			<scope>runtime</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>org.perf4j</groupId>
+					<artifactId>perf4j</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<!--======== Restlet dependencies ============ -->
+
+		<dependency>
+			<groupId>org.restlet</groupId>
+			<artifactId>org.restlet</artifactId>
+			<version>1.1.1</version>
+			<scope>compile</scope>
 		</dependency>
 
 		<dependency>
-			<groupId>org.jasig.cas</groupId>
-			<artifactId>cas-server-support-jdbc</artifactId>
-			<version>${cas.version}</version>
+			<groupId>org.restlet</groupId>
+			<artifactId>org.restlet.ext.spring</artifactId>
+			<version>1.1.1</version>
+			<scope>runtime</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>*</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
-		
+
+		<dependency>
+			<groupId>com.noelios.restlet</groupId>
+			<artifactId>com.noelios.restlet.ext.spring</artifactId>
+			<version>1.1.1</version>
+			<scope>runtime</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>*</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<dependency>
+			<groupId>com.noelios.restlet</groupId>
+			<artifactId>com.noelios.restlet.ext.servlet</artifactId>
+			<version>1.1.1</version>
+			<type>jar</type>
+			<scope>runtime</scope>
+		</dependency>
+
+		<!-- <dependency> <groupId>org.springframework</groupId> <artifactId>spring-beans</artifactId> <version>${spring.version}</version> 
+			<scope>compile</scope> </dependency> -->
+
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>servlet-api</artifactId>
@@ -70,5 +125,41 @@
 			<version>3.8.1</version>
 			<scope>test</scope>
 		</dependency>
+
+		<!--======== OpenIoT dependencies ============ -->
+		<dependency>
+			<groupId>org.openiot</groupId>
+			<artifactId>utils.commons</artifactId>
+			<version>0.0.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.openiot</groupId>
+			<artifactId>lsm-light.client</artifactId>
+			<version>0.0.1</version>
+		</dependency>
+
+		<!-- ======== LogBack Dependencies ========== -->
+
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>1.1.1</version>
+			<!--<version>1.0.13</version> -->
+		</dependency>
+
+		<dependency>
+			<groupId>org.perf4j</groupId>
+			<artifactId>perf4j</artifactId>
+			<version>0.9.16</version>
+		</dependency>
 	</dependencies>
+
+	<repositories>
+		<repository>
+			<id>restlet-repository</id>
+			<name>Restlet Repository</name>
+			<url>http://maven.restlet.org</url>
+		</repository>
+	</repositories>
 </project>

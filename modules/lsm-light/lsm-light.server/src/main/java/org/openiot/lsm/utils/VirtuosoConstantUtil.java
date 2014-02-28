@@ -38,6 +38,7 @@ public class VirtuosoConstantUtil {
 	 */
 	public final static String CloudServicePrefix = "http://lsm.deri.ie/resource/service/";
 	public final static String RolePrefix = "http://lsm.deri.ie/resource/role/";
+	public final static String PermissionPrefix = "http://lsm.deri.ie/resource/permission/";
 	public final static String OAuthUserPrefix = "http://lsm.deri.ie/resource/user/";		
 	static{
 		initAuthorizedGraph();

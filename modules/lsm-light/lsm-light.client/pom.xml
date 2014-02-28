@@ -68,7 +68,22 @@
 <!--             <groupId>ch.qos.logback</groupId> -->
 <!--             <artifactId>logback-classic</artifactId> -->
 <!--             <version>1.0.13</version> -->
-<!--         </dependency> -->		
+<!--         </dependency> -->
+<!-- ======== Privacy and Security API Dependencies ========== -->  
+		
+		<dependency>
+			<groupId>org.jasig.cas</groupId>
+			<artifactId>cas-server-support-oauth</artifactId>
+			<version>${cas.version}</version>
+		<!--	<scope>runtime</scope> -->
+		</dependency>
+
+		<dependency>
+			<groupId>org.jasig.cas</groupId>
+			<artifactId>cas-server-support-jdbc</artifactId>
+			<version>${cas.version}</version>
+		</dependency>
+		
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>javax.servlet-api</artifactId>
@@ -80,27 +95,12 @@
 			<artifactId>junit</artifactId>
 			<version>3.8.1</version>
 			<scope>test</scope>
-		</dependency>	
-		
-		<!-- ======== Privacy and Security API Dependencies ========== -->  
-		<dependency>
-			<groupId>org.jasig.cas</groupId>
-			<artifactId>cas-server-webapp</artifactId>
-			<version>${cas.version}</version>
-			<type>war</type>
-			<scope>runtime</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.jasig.cas</groupId>
-			<artifactId>cas-server-support-oauth</artifactId>
-			<version>${cas.version}</version>
-			<scope>runtime</scope>
 		</dependency>
 
 		<dependency>
-			<groupId>org.jasig.cas</groupId>
-			<artifactId>cas-server-support-jdbc</artifactId>
-			<version>${cas.version}</version>
+			<groupId>org.openiot</groupId>
+			<artifactId>utils.commons</artifactId>
+			<version>0.0.1</version>
 		</dependency>
-    </dependencies>   
+ </dependencies>   
 </project>

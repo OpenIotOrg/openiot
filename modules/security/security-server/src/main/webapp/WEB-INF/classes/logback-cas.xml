@@ -1,0 +1,143 @@
+<configuration>
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+     		<pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+	</encoder>
+    </appender>
+
+    <appender name="cas" class="ch.qos.logback.core.rolling.RollingFileAppender">
+	<file>${jboss.server.log.dir}/cas.log</file>
+
+	<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+		<!-- Rollover at the first day of each week.  -->
+		<fileNamePattern>cas-%d{yyyy-ww}.%i.log</fileNamePattern>
+		<timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+			<!-- or whenever the file size reaches 100MB -->
+			<maxFileSize>10MB</maxFileSize>
+		</timeBasedFileNamingAndTriggeringPolicy>
+	</rollingPolicy>
+
+        <encoder>
+            <pattern>%d %p [%c] - %m%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="cas-audit" class="ch.qos.logback.core.rolling.RollingFileAppender">
+	<file>${jboss.server.log.dir}/cas-audit.log</file>
+
+	<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+		<!-- Rollover at the first day of each week.  -->
+		<fileNamePattern>cas-audit-%d{yyyy-ww}.%i.log</fileNamePattern>
+		<timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+			<!-- or whenever the file size reaches 100MB -->
+			<maxFileSize>10MB</maxFileSize>
+		</timeBasedFileNamingAndTriggeringPolicy>
+	</rollingPolicy>
+
+        <encoder>
+            <pattern>%d %p [%c] - %m%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- Perf4J appenders -->
+    <!--
+       This AsyncCoalescingStatisticsAppender groups StopWatch log messages
+       into GroupedTimingStatistics messages which it sends on the
+       file appender defined below
+    -->
+
+     <!-- This file appender is used to output aggregated performance statistics -->
+    <appender name="fileAppender" class="ch.qos.logback.core.FileAppender">
+        <file>${jboss.server.log.dir}/perfStats.log</file>
+        <encoder>
+            <pattern>%m%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="graphExecutionTimes" class="org.perf4j.logback.GraphingStatisticsAppender">
+        <!-- Possible GraphTypes are Mean, Min, Max, StdDev, Count and TPS -->
+        <graphType>Mean</graphType>
+        <!-- The tags of the timed execution blocks to graph are specified here -->
+        <tagNamesToGraph>DESTROY_TICKET_GRANTING_TICKET,GRANT_SERVICE_TICKET,GRANT_PROXY_GRANTING_TICKET,VALIDATE_SERVICE_TICKET,CREATE_TICKET_GRANTING_TICKET,AUTHENTICATE</tagNamesToGraph>
+    </appender>
+
+    <appender name="graphExecutionTPS" class="org.perf4j.logback.GraphingStatisticsAppender">
+        <graphType>TPS</graphType>
+        <tagNamesToGraph>DESTROY_TICKET_GRANTING_TICKET,GRANT_SERVICE_TICKET,GRANT_PROXY_GRANTING_TICKET,VALIDATE_SERVICE_TICKET,CREATE_TICKET_GRANTING_TICKET,AUTHENTICATE</tagNamesToGraph>
+    </appender>
+
+    <appender name="CoalescingStatistics" class="org.perf4j.logback.AsyncCoalescingStatisticsAppender">
+        <timeSlice>60000</timeSlice>
+        <appender-ref ref="fileAppender"/>
+        <appender-ref ref="graphExecutionTimes"/>
+        <appender-ref ref="graphExecutionTPS"/>
+    </appender>
+
+    
+
+    <!-- Loggers -->
+    <!--
+      The Perf4J logger. Note that org.perf4j.TimingLogger is the value of the
+      org.perf4j.StopWatch.DEFAULT_LOGGER_NAME constant. Also, note that
+      additivity is set to false, which is usually what is desired - this means
+      that timing statements will only be sent to this logger and NOT to
+      upstream loggers.
+    -->
+    <logger name="org.perf4j.TimingLogger" additivity="false">
+        <level value="INFO" />
+        <appender-ref ref="CoalescingStatistics" />
+    </logger>
+
+    <!--
+        WARNING: Setting the org.springframework logger to DEBUG displays debug information about
+        the request parameter values being bound to the command objects.  This could expose your
+        password in the log file.  If you are sharing your log files, it is recommend you selectively
+        apply DEBUG level logging on a an org.springframework.* package level (i.e. org.springframework.dao)
+    -->
+    <logger name="org.springframework">
+        <level value="WARN" />
+    </logger>
+
+    <logger name="org.springframework.webflow">
+        <level value="WARN" />
+    </logger>
+
+    <logger name="org.jasig" additivity="false">
+        <level value="DEBUG" />
+        <appender-ref ref="cas" />
+	<appender-ref ref="STDOUT" />
+    </logger>
+
+    <logger name="com.github.inspektr.audit.support.Slf4jLoggingAuditTrailManager">
+        <level value="INFO" />
+        <appender-ref ref="cas-audit" />
+	<appender-ref ref="STDOUT" />
+    </logger>
+
+    <!--
+        WARNING: Setting the flow package to DEBUG will display
+        the parameters posted to the login servlet including
+        cleartext authentication credentials
+    -->
+    <logger name="org.jasig.cas.web.flow" additivity="true">
+        <level value="INFO" />
+        <appender-ref ref="cas" />
+    </logger>
+    
+    <logger name="org.openiot.security" additivity="false">
+        <level value="DEBUG" />
+        <appender-ref ref="cas" />
+        <appender-ref ref="STDOUT" />
+    </logger>
+    
+
+    <!--
+      The root logger sends all log statements EXCEPT those sent to the perf4j
+      logger to System.out.
+    -->
+    <root>
+        <level value="ERROR" />
+        <appender-ref ref="STDOUT" />
+    </root>
+</configuration>

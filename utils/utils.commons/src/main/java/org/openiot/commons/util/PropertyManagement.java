@@ -26,8 +26,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Properties;
-
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -72,8 +72,8 @@ public class PropertyManagement {
 	private static final String SCHEDULER_LSM_META_GRAPH = "scheduler.core.lsm.openiotMetaGraph";
 	private static final String SCHEDULER_LSM_DATA_GRAPH = "scheduler.core.lsm.openiotDataGraph";
 	private static final String SCHEDULER_LSM_FUNCTIONAL_GRAPH = "scheduler.core.lsm.openiotFunctionalGraph";
-	private static final String SCHEDULER_LSM_USER_NAME="scheduler.core.lsm.access.username";
-	private static final String SCHEDULER_LSM_PASSWORD="scheduler.core.lsm.access.password";
+	private static final String SCHEDULER_LSM_USER_NAME = "scheduler.core.lsm.access.username";
+	private static final String SCHEDULER_LSM_PASSWORD = "scheduler.core.lsm.access.password";
 	private static final String SCHEDULER_LSM_SPARQL_END_POINT = "scheduler.core.lsm.sparql.endpoint";
 	private static final String SCHEDULER_LSM_REMOTE_SERVER="scheduler.core.lsm.remote.server";
 	
@@ -88,14 +88,18 @@ public class PropertyManagement {
 	private static final String LSM_CONNECTION_DRIVER = "lsm-light.server.connection.driver_class";
 	private static final String LSM_CONNECTION_URL = "lsm-light.server.connection.url";
 	private static final String LSM_CONNECTION_USERNAME = "lsm-light.server.connection.username";
-	private static final String LSM_CONNECTION_PASS= "lsm-light.server.connection.password";
+	private static final String LSM_CONNECTION_PASS = "lsm-light.server.connection.password";
 	private static final String LSM_MIN_CONNECTION = "lsm-light.server.minConnection";
 	private static final String LSM_MAX_CONNECTION = "lsm-light.server.maxConnection";
 	private static final String LSM_RETRY_ATTEMPTS = "lsm-light.server.acquireRetryAttempts";
-
 	private static final String LSM_LOCAL_METAGRAPH = "lsm-light.server.localMetaGraph";
 	private static final String LSM_LOCAL_DATAGRAPH = "lsm-light.server.localDataGraph";
-	
+	private static final String LSM_CLIENT_CONNECTION_SERVER_HOST = "lsm-light.client.connection.server";
+
+	// ==============Security&Privacy====================
+	private static final String SECURITY_LSM_SPARQL_END_POINT = "security.lsm.sparql.endpoint";
+	private static final String SECURITY_LSM_GRAPH = "security.lsm.graphURL";
+
 	private Properties props = null;
 	
 
@@ -114,7 +118,7 @@ public class PropertyManagement {
 
 		logger.debug("jbosServerConfigDir:" + openIotConfigFile);
 
-		FileInputStream fis = null;
+		InputStream fis = null;
 
 		try {
 			fis = new FileInputStream(openIotConfigFile);
@@ -124,6 +128,13 @@ public class PropertyManagement {
 
 			logger.error("Unable to find file: " + openIotConfigFile);
 
+		}
+
+		// trying to find the file in the classpath
+		if (fis == null) {
+			fis = getClass().getClassLoader().getResourceAsStream(PROPERTIES_FILE);
+			if(fis == null)
+				logger.error("Unable to find file in the classpath: " + PROPERTIES_FILE);
 		}
 
 		// loading properites from properties file
@@ -136,8 +147,11 @@ public class PropertyManagement {
 
 	}
 	
-	
-    public String getSchedulerLsmMetaGraph() {
+	public String getProperty(String key, String defaultValue){
+		return props.getProperty(key, defaultValue);
+	}
+
+	public String getSchedulerLsmMetaGraph() {
 		return props.getProperty(SCHEDULER_LSM_META_GRAPH);
 	}
 
@@ -192,9 +206,17 @@ public class PropertyManagement {
 	public String getLsmServerPass(){
 		return props.getProperty(LSM_CONNECTION_PASS);
 	}
+
+	public String getSecurityLsmSparqlEndPoint() {
+		return props.getProperty(SECURITY_LSM_SPARQL_END_POINT);
+	}
 	
-	public int getLsmMinConnection(){
-		try{
+	public String getSecurityLsmGraphURL() {
+		return props.getProperty(SECURITY_LSM_GRAPH);
+	}
+
+	public int getLsmMinConnection() {
+		try {
 			return Integer.parseInt(props.getProperty(LSM_MIN_CONNECTION));
 		}catch(Exception e){
 			logger.error("Invalid input value",e);
@@ -219,12 +241,16 @@ public class PropertyManagement {
 		}
 		return -99;
 	}
-
+	
 	public String getLSMLocalMetaGraph(){
 		return props.getProperty(LSM_LOCAL_METAGRAPH);
 	}
 	
 	public String getLSMLocalDataGraph(){
 		return props.getProperty(LSM_LOCAL_DATAGRAPH);
+	}
+
+	public String getLSMClientConnectionServerHost() {
+		return props.getProperty(LSM_CLIENT_CONNECTION_SERVER_HOST);
 	}
 }

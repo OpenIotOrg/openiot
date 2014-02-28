@@ -28,8 +28,22 @@
 			</shiro:guest>
 			)
 		</p>
+		
 
 		<p>Welcome to the OpenIoT Authentication and Authorization Demo.</p>
+		<shiro:user>
+		<div class="well well-large">
+		<p>
+		<strong>Your token is:</strong> <span class="label label-info"><c:out value="${requestScope.access_token}"/></span>
+		</p>
+		<p>
+		<strong>The clientId is:</strong> <span class="label label-warning"><c:out value="${requestScope.client_id}"/></span>
+		</p>
+		<p>
+		<strong>The service request URL:</strong> <span class="label label-important">https://localhost:7443/servicerequest?access_token=<c:out value="${requestScope.access_token}"/>&client_id=<c:out value="${requestScope.client_id}"/></span>
+		</p>
+		</div>
+		</shiro:user>
 
 		<shiro:user>
 			<p>
@@ -50,11 +64,7 @@
 			log back in under different user accounts to see different
 			permissions.</p>
 
-		<%-- 
-		<jsp:scriptlet>String[] permissions = new String[] { "stream:view:s1", "stream:query:s1", "stream:view:s2", "stream:query:s2", "admin:create_user", "admin:delete_user", "admin:delete_stream:s1",
-					"admin:delete_stream:s2,s3" };
-			pageContext.setAttribute("permissions", permissions);</jsp:scriptlet>
-			--%>
+		
 		<h3>Permissions you have</h3>
 
 		<table class="table table-hover table-condensed table-bordered table-striped">

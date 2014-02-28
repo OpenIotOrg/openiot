@@ -1,0 +1,387 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- /** * Copyright (c) 2011-2014, OpenIoT * * This library is free software; you can redistribute it and/or * modify it either 
+	under the terms of the GNU Lesser General Public * License version 2.1 as published by the Free Software Foundation * (the "LGPL"). 
+	If you do not alter this * notice, a recipient may use your version of this file under the LGPL. * * You should have received 
+	a copy of the LGPL along with this library * in the file COPYING-LGPL-2.1; if not, write to the Free Software * Foundation, Inc., 
+	59 Temple Place, Suite 330, Boston, MA 02111-1307 USA * * This software is distributed on an "AS IS" basis, WITHOUT WARRANTY 
+	* OF ANY KIND, either express or implied. See the LGPL for * the specific language governing rights and limitations. * * Contact: 
+	OpenIoT mailto: info@openiot.eu */ -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<!-- =========================================================== -->
+	<!-- Basics -->
+	<!-- =========================================================== -->
+
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.openiot</groupId>
+	<artifactId>security.management</artifactId>
+	<packaging>war</packaging>
+	<version>0.0.1</version>
+	<name>OpenIoT security management web app</name>
+	<url>https://github.com/OpenIotOrg/openiot</url>
+
+
+	<licenses>
+		<license>
+			<name>GNU Lesser General Public License, version 2.1</name>
+			<distribution>repo</distribution>
+			<url>http://www.gnu.org/licenses/lgpl-2.1.html</url>
+		</license>
+	</licenses>
+
+
+
+	<!-- =========================================================== -->
+	<!-- Properties -->
+	<!-- =========================================================== -->
+
+	<properties>
+		<!-- Explicitly declaring the source encoding eliminates the following message: -->
+		<!-- [WARNING] Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent! -->
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+		<!-- JBoss dependency versions -->
+		<version.jboss.maven.plugin>7.3.Final</version.jboss.maven.plugin>
+
+		<!-- Define the version of the JBoss BOMs we want to import to specify tested stacks. -->
+		<version.jboss.bom>1.0.4.Final</version.jboss.bom>
+		<!-- Alternatively, comment out the above line, and un-comment the line below to use version 1.0.2.Final-redhat-1 which is 
+			a release certified to work with JBoss EAP 6. It requires you have access to the JBoss EAP 6 maven repository. -->
+		<!-- <version.jboss.bom>1.0.2.Final-redhat-1</version.jboss.bom>> -->
+
+		<!-- other plugin versions -->
+		<version.compiler.plugin>2.3.1</version.compiler.plugin>
+		<version.surefire.plugin>2.4.3</version.surefire.plugin>
+		<version.war.plugin>2.1.1</version.war.plugin>
+
+		<!-- maven-compiler-plugin -->
+		<maven.compiler.target>1.6</maven.compiler.target>
+		<maven.compiler.source>1.6</maven.compiler.source>
+	</properties>
+
+
+	<!-- =========================================================== -->
+	<!-- Parent -->
+	<!-- =========================================================== -->
+	<!-- to be filled -->
+
+	<dependencyManagement>
+		<dependencies>
+			<!-- JBoss distributes a complete set of Java EE 6 APIs including a Bill of Materials (BOM). A BOM specifies the versions 
+				of a "stack" (or a collection) of artifacts. We use this here so that we always get the correct versions of artifacts. Here we 
+				use the jboss-javaee-6.0-with-tools stack (you can read this as the JBoss stack of the Java EE 6 APIs, with some extras tools 
+				for your project, such as Arquillian for testing) and the jboss-javaee-6.0-with-hibernate stack you can read this as the JBoss 
+				stack of the Java EE 6 APIs, with extras from the Hibernate family of projects) -->
+			<dependency>
+				<groupId>org.jboss.bom</groupId>
+				<artifactId>jboss-javaee-6.0-with-tools</artifactId>
+				<version>${version.jboss.bom}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.jboss.bom</groupId>
+				<artifactId>jboss-javaee-6.0-with-hibernate</artifactId>
+				<version>${version.jboss.bom}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+
+		</dependencies>
+	</dependencyManagement>
+
+
+	<!-- =========================================================== -->
+	<!-- Dependencies -->
+	<!-- =========================================================== -->
+
+	<dependencies>
+
+
+
+		<!-- OpenIoT dependencies -->
+		<dependency>
+			<groupId>org.openiot</groupId>
+			<artifactId>lsm-light.client</artifactId>
+			<version>0.0.1</version>
+		</dependency>
+		
+        <dependency>
+	        <groupId>org.openiot</groupId>
+	        <artifactId>utils.commons</artifactId>
+	        <version>0.0.1</version>
+        </dependency>
+
+
+		<!-- MISC -->
+		<!-- <dependency> <groupId>org.jboss.spec</groupId> <artifactId>jboss-javaee-6.0</artifactId> <version>3.0.4.Final</version> 
+			<type>pom</type> <scope>provided</scope> </dependency> -->
+
+
+		<dependency>
+			<groupId>org.jboss.spec.javax.ejb</groupId>
+			<artifactId>jboss-ejb-api_3.1_spec</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+
+		<!-- <dependency> <groupId>xalan</groupId> <artifactId>serializer</artifactId> <version>2.7.1.jbossorg-2</version> </dependency> -->
+
+		<dependency>
+			<groupId>org.openiot</groupId>
+			<artifactId>security.client</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.shiro</groupId>
+			<artifactId>shiro-web</artifactId>
+			<version>1.2.2</version>
+		</dependency>
+
+
+		<!-- First declare the APIs we depend on and need for compilation. All of them are provided by JBoss AS 7 -->
+
+		<!-- Import the CDI API, we use provided scope as the API is included in JBoss AS 7 -->
+		<dependency>
+			<groupId>javax.enterprise</groupId>
+			<artifactId>cdi-api</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- Import the Common Annotations API (JSR-250), we use provided scope as the API is included in JBoss AS 7 -->
+		<dependency>
+			<groupId>org.jboss.spec.javax.annotation</groupId>
+			<artifactId>jboss-annotations-api_1.1_spec</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- Import the JAX-RS API, we use provided scope as the API is included in JBoss AS 7 -->
+		<!-- <dependency> -->
+		<!-- <groupId>org.jboss.spec.javax.ws.rs</groupId> -->
+		<!-- <artifactId>jboss-jaxrs-api_1.1_spec</artifactId> -->
+		<!-- <scope>provided</scope> -->
+		<!-- </dependency> -->
+
+
+		<!-- Import the EJB API, we use provided scope as the API is included in JBoss AS 7 -->
+		<!-- <dependency> -->
+		<!-- <groupId>org.jboss.spec.javax.ejb</groupId> -->
+		<!-- <artifactId>jboss-ejb-api_3.1_spec</artifactId> -->
+		<!-- <scope>provided</scope> -->
+		<!-- </dependency> -->
+
+
+
+		<!-- Import the JSF API, we use provided scope as the API is included in JBoss AS 7 -->
+		<dependency>
+			<groupId>org.jboss.spec.javax.faces</groupId>
+			<artifactId>jboss-jsf-api_2.1_spec</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- Now we declare any tools needed -->
+
+		<!-- Annotation processor to generate the JPA 2.0 metamodel classes for typesafe criteria queries -->
+
+		<!-- Annotation processor that raising compilation errors whenever constraint annotations are incorrectly used. -->
+
+		<!-- Needed for running tests (you may also use TestNG) -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<!-- Optional, but highly recommended -->
+		<!-- Arquillian allows you to test enterprise code such as EJBs and Transactional(JTA) JPA from JUnit/TestNG -->
+
+
+		<dependency>
+			<groupId>org.primefaces</groupId>
+			<artifactId>primefaces</artifactId>
+			<version>4.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.primefaces.extensions</groupId>
+			<artifactId>primefaces-extensions</artifactId>
+			<version>1.1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.primefaces.extensions</groupId>
+			<artifactId>all-themes</artifactId>
+			<version>1.0.8</version>
+			<type>pom</type>
+		</dependency>
+
+		<dependency>
+			<groupId>javax.servlet.jsp</groupId>
+			<artifactId>jsp-api</artifactId>
+			<version>2.1</version>
+		</dependency>
+
+
+		<!-- ======== LogBack Dependencies ========== -->
+
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			 <version>1.1.1</version> 
+			<!--<version>1.0.13</version> -->
+		</dependency>
+
+
+
+	</dependencies>
+
+
+
+	<!-- =========================================================== -->
+	<!-- Plugins -->
+	<!-- =========================================================== -->
+
+	<build>
+		<!-- Maven will append the version to the finalName (which is the name given to the generated war, and hence the context root) -->
+		<finalName>${project.artifactId}</finalName>
+		<plugins>
+			<!-- Compiler plugin enforces Java 1.6 compatibility and activates annotation processors -->
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>${version.compiler.plugin}</version>
+				<configuration>
+					<source>${maven.compiler.source}</source>
+					<target>${maven.compiler.target}</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>${version.war.plugin}</version>
+				<configuration>
+					<!-- Java EE 6 doesn't require web.xml, Maven needs to catch up! -->
+					<failOnMissingWebXml>false</failOnMissingWebXml>
+				</configuration>
+			</plugin>
+			<!-- The JBoss AS plugin deploys your war to a local JBoss AS container -->
+			<!-- To use, run: mvn package jboss-as:deploy -->
+			<plugin>
+				<groupId>org.jboss.as.plugins</groupId>
+				<artifactId>jboss-as-maven-plugin</artifactId>
+				<version>${version.jboss.maven.plugin}</version>
+			</plugin>
+		</plugins>
+	</build>
+
+	<profiles>
+		<profile>
+			<!-- The default profile skips all tests, though you can tune it to run just unit tests based on a custom pattern -->
+			<!-- Seperate profiles are provided for running all tests, including Arquillian tests that execute in the specified container -->
+			<id>default</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<artifactId>maven-surefire-plugin</artifactId>
+						<version>${version.surefire.plugin}</version>
+						<configuration>
+							<skip>true</skip>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+
+		<profile>
+			<!-- An optional Arquillian testing profile that executes tests in your JBoss AS instance -->
+			<!-- This profile will start a new JBoss AS instance, and execute the test, shutting it down when done -->
+			<!-- Run with: mvn clean test -Parq-jbossas-managed -->
+			<id>arq-jbossas-managed</id>
+			<dependencies>
+				<dependency>
+					<groupId>org.jboss.as</groupId>
+					<artifactId>jboss-as-arquillian-container-managed</artifactId>
+					<scope>test</scope>
+				</dependency>
+			</dependencies>
+		</profile>
+
+		<profile>
+			<!-- An optional Arquillian testing profile that executes tests in a remote JBoss AS instance -->
+			<!-- Run with: mvn clean test -Parq-jbossas-remote -->
+			<id>arq-jbossas-remote</id>
+			<dependencies>
+				<dependency>
+					<groupId>org.jboss.as</groupId>
+					<artifactId>jboss-as-arquillian-container-remote</artifactId>
+					<scope>test</scope>
+				</dependency>
+			</dependencies>
+		</profile>
+
+		<profile>
+			<!-- When built in OpenShift the 'openshift' profile will be used when invoking mvn. -->
+			<!-- Use this profile for any OpenShift specific customization your app will need. -->
+			<!-- By default that is to put the resulting archive into the 'deployments' folder. -->
+			<!-- http://maven.apache.org/guides/mini/guide-building-for-different-environments.html -->
+			<id>openshift</id>
+			<build>
+				<plugins>
+					<plugin>
+						<artifactId>maven-war-plugin</artifactId>
+						<version>${version.war.plugin}</version>
+						<configuration>
+							<outputDirectory>deployments</outputDirectory>
+							<warName>ROOT</warName>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+
+	</profiles>
+
+	<!-- =========================================================== -->
+	<!-- Repositories -->
+	<!-- =========================================================== -->
+
+	<repositories>
+		<repository>
+			<id>prime-repo</id>
+			<name>PrimeFaces Maven Repository</name>
+			<url>http://repository.primefaces.org</url>
+			<layout>default</layout>
+		</repository>
+
+		<repository>
+			<id>sonatype-nexus-snapshots</id>
+			<name>Sonatype Nexus Snapshots</name>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+
+		<repository>
+			<id>deluan.repo</id>
+			<name>Deluan's Projects Repository</name>
+			<url>http://deluan.googlecode.com/svn/releases</url>
+		</repository>
+		<repository>
+			<id>deluan.snapshots</id>
+			<name>Deluan's Projects Snapshots Repository</name>
+			<url>http://deluan.googlecode.com/svn/snapshots</url>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+		</repository>
+	</repositories>
+
+
+</project>
