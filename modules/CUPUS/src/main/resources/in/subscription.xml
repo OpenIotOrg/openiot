@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding='UTF-8'?>
+<subscription type="booleanTriplet">
+	<validity>300000</validity>
+	<attribute name="a" operator="LESS_OR_EQUAL" type="double">5</attribute>
+	<attribute name="b" operator="EQUAL" type="integer">6</attribute>
+	<attribute name="c" operator="EQUAL" type="string">a</attribute>
+</subscription>
