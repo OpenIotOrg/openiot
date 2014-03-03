@@ -1,1 +1,1 @@
-eXtended Global Sensor Networks
+eXtended Global Sensor Networks (X-GSN)
