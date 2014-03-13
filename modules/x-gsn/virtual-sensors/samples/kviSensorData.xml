@@ -1,0 +1,36 @@
+<virtual-sensor name="kviSensorData" priority="10">
+  <processing-class>
+    <class-name>gsn.vsensor.ModellingVirtualSensor</class-name>
+    <init-params>
+        <param name="model">gsn.utils.models.kvi.kviSegManager</param> <!-- class names of the model to load, separated by , -->
+        <param name="model.0.tsid">temp</param>
+    </init-params>
+    <output-structure>  
+        <field name="tstamp" type="double" />  
+        <field name="val" type="double" />   
+    </output-structure>
+  </processing-class>
+	<description>Not Specified, please edit the file
+		$INSTALL_PATH/virtual-sensors/memoryPlotVS.xml</description>
+	<life-cycle pool-size="10" />
+	<addressing>
+		<predicate key="geographical">Not Specified, please edit the file
+			$INSTALL_PATH/virtual-sensors/memoryPlotVS.xml</predicate>
+	</addressing>
+	<storage history-size="1" />
+	<streams>
+		<stream name="DATA">
+			<source alias="source1" storage-size="1" sampling-rate="1">
+				<address wrapper="csv">
+  <predicate key="file">/home/guo/xgsn/dataset.txt</predicate>
+  <predicate key="fields">tstamp,val</predicate>
+  <predicate key="formats">numeric,numeric</predicate>
+  <predicate key="use-counter-for-check-point">true</predicate>
+  <predicate key="sampling">10</predicate> <!-- sever 1000 milliseconds; 1sec -->
+</address>
+				  <query>select tstamp,val from wrapper</query> 
+			</source>
+			  <query>select * from source1</query>
+		</stream>
+	</streams>
+</virtual-sensor>
