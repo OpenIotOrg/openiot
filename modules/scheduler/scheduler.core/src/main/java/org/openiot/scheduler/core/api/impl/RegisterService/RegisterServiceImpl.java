@@ -62,6 +62,7 @@ public class RegisterServiceImpl {
 	private String lsmFunctionalGraph;
 	private String lsmUserName;
 	private String lsmPassword;
+	private String lsmDeriServer;
 	//
 	private OSDSpec osdSpec;
 
@@ -74,7 +75,8 @@ public class RegisterServiceImpl {
 		lsmFunctionalGraph = propertyManagement.getSchedulerLsmFunctionalGraph();
 		lsmUserName = propertyManagement.getSchedulerLsmUserName();
 		lsmPassword = propertyManagement.getSchedulerLsmPassword();
-				
+		lsmDeriServer = propertyManagement.getShedulerLsmRemoteServer();
+		
 		this.osdSpec = osdSpec;
 
 		logger.debug("Recieved OSDSpec from User with userID: " + osdSpec.getUserID());
@@ -95,7 +97,7 @@ public class RegisterServiceImpl {
 //		user.setUsername(lsmUserName);
 //		user.setPass(lsmPassword);
 
-		LSMTripleStore lsmStore = new LSMTripleStore();
+		LSMTripleStore lsmStore = new LSMTripleStore(lsmDeriServer);
 //		lsmStore.setUser(user);
 
 		LSMSchema myOnt = new LSMSchema(OntModelSpec.OWL_DL_MEM);

@@ -39,6 +39,10 @@ public class ObsConstant {
 	public static String STATUS = "http://lsm.deri.ie/ont/lsm.owl#Status";
 	public static String CAMERA_IMAGE = "http://lsm.deri.ie/ont/lsm.owl#WebcamSnapShot";
 	
+	public static String MACHINE_UTIL = "http://lsm.deri.ie/ont/lsm.owl#MachineUtilization";
+	public static String MATERIALCOUNTER = "http://lsm.deri.ie/ont/lsm.owl#MaterialQuantity";
+	public static String PRODUCTCOUNTER = "http://lsm.deri.ie/ont/lsm.owl#ProductQuantity";
+	public static String PROCESS_EFFICIENCY = "http://lsm.deri.ie/ont/lsm.owl#ProcessEfficiency";
 	/**
 	 * @param args
 	 */

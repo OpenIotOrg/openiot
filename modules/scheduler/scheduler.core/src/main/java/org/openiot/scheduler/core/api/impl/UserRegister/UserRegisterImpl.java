@@ -51,6 +51,7 @@ public class UserRegisterImpl
 	private String SchedulerLsmFunctionalGraph;
 	private String schedulerLsmUserName;
 	private String schedulerLsmPassword;
+	private String lsmDeriServer;
 	//
 	private String name;
 	private String mail;
@@ -66,6 +67,7 @@ public class UserRegisterImpl
 		SchedulerLsmFunctionalGraph = propertyManagement.getSchedulerLsmFunctionalGraph();
 		schedulerLsmUserName = propertyManagement.getSchedulerLsmUserName();
 		schedulerLsmPassword = propertyManagement.getSchedulerLsmPassword();
+		lsmDeriServer = propertyManagement.getShedulerLsmRemoteServer();
 		
 		this.name=userName;
 		this.mail=userMail;
@@ -108,7 +110,7 @@ public class UserRegisterImpl
 //			user.setUsername(schedulerLsmUserName);
 //			user.setPass(schedulerLsmPassword);
 			
-			LSMTripleStore lsmStore = new LSMTripleStore();
+			LSMTripleStore lsmStore = new LSMTripleStore(lsmDeriServer);
 //			lsmStore.setUser(user);		
 			
 			LSMSchema myOnt  =  new  LSMSchema (OntModelSpec.OWL_DL_MEM);
