@@ -16,6 +16,9 @@
 *    along with OpenIoT.  If not, see <http://www.gnu.org/licenses/>.
 *
 *     Contact: OpenIoT mailto: info@openiot.eu
+ * @author Ali Salehi
+ * @author Mehdi Riahi
+ * @author Timotee Maret
 */
 
 package org.openiot.gsn.vsensor;

@@ -16,6 +16,8 @@
 *    along with OpenIoT.  If not, see <http://www.gnu.org/licenses/>.
 *
 *     Contact: OpenIoT mailto: info@openiot.eu
+ * @author Timotee Maret
+ * @author Milos Stojanovic
 */
 
 package org.openiot.gsn.http.datarequest;
