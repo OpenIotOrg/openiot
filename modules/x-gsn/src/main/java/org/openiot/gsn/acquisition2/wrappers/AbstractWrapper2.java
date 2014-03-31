@@ -28,7 +28,7 @@ import java.sql.ResultSet;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import org.apache.log4j.Logger;
-import org.apache.mina.common.IoSession;
+import org.apache.mina.core.session.IoSession;
 
 public abstract class AbstractWrapper2  extends Thread{
   
