@@ -1,6 +1,6 @@
 /**
  *    Copyright (c) 2011-2014, OpenIoT
- *   
+ *
  *    This file is part of OpenIoT.
  *
  *    OpenIoT is free software: you can redistribute it and/or modify
@@ -20,29 +20,34 @@
 
 package org.openiot.ui.request.commons.providers;
 
-import java.io.StringReader;
-import java.util.logging.Level;
+import org.jboss.resteasy.client.ClientRequest;
+import org.jboss.resteasy.client.ClientRequestFactory;
+import org.jboss.resteasy.client.ClientResponse;
+import org.openiot.commons.osdspec.model.OSDSpec;
+import org.openiot.commons.sensortypes.model.SensorTypes;
+import org.openiot.commons.util.PropertyManagement;
+import org.openiot.ui.request.commons.providers.exceptions.APICommunicationException;
+import org.openiot.ui.request.commons.providers.exceptions.APIException;
 
 import javax.ws.rs.core.UriBuilder;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.stream.StreamSource;
-
-import org.jboss.resteasy.client.ClientRequest;
-import org.jboss.resteasy.client.ClientRequestFactory;
-import org.jboss.resteasy.client.ClientResponse;
-
-import org.openiot.commons.osdspec.model.OSDSpec;
-import org.openiot.commons.sensortypes.model.SensorTypes;
-import org.openiot.ui.request.commons.logging.LoggerService;
-import org.openiot.ui.request.commons.providers.exceptions.APICommunicationException;
-import org.openiot.ui.request.commons.providers.exceptions.APIException;
+import java.io.StringReader;
+import java.net.URI;
 
 
 public class SchedulerAPIWrapper {
 
+	private static PropertyManagement propertyManagement = new PropertyManagement();
+
+	private static URI getSchedulerUri() {
+		return UriBuilder.fromUri(propertyManagement.getLSMClientConnectionServerHost()).build();
+	}
+
 	public static SensorTypes getAvailableSensors(String userId, double lat, double lon, double radius) throws APICommunicationException, APIException {
-		ClientRequestFactory clientRequestFactory = new ClientRequestFactory(UriBuilder.fromUri("http://localhost:8080/scheduler.core").build());
+
+		ClientRequestFactory clientRequestFactory = new ClientRequestFactory(getSchedulerUri());
 		ClientRequest discoverSensorsClientRequest = clientRequestFactory.createRelativeRequest("/rest/services/discoverSensors");
 
 		discoverSensorsClientRequest.queryParameter("userID", userId);
@@ -74,7 +79,8 @@ public class SchedulerAPIWrapper {
 	}
 
 	public static void registerService(OSDSpec osdSpec) throws APICommunicationException, APIException {
-		ClientRequestFactory clientRequestFactory = new ClientRequestFactory(UriBuilder.fromUri("http://localhost:8080/scheduler.core").build());
+
+		ClientRequestFactory clientRequestFactory = new ClientRequestFactory(getSchedulerUri());
 		ClientRequest registerServiceRequest = clientRequestFactory.createRelativeRequest("/rest/services/registerService");
 
 		try {
@@ -98,7 +104,7 @@ public class SchedulerAPIWrapper {
 	}
 
 	public static OSDSpec getAvailableApps(String userId) throws APICommunicationException, APIException {
-		ClientRequestFactory clientRequestFactory = new ClientRequestFactory(UriBuilder.fromUri("http://localhost:8080/scheduler.core").build());
+		ClientRequestFactory clientRequestFactory = new ClientRequestFactory(getSchedulerUri());
 		ClientRequest getAvailableAppsClientRequest = clientRequestFactory.createRelativeRequest("/rest/services/getAvailableApps");
 
 		getAvailableAppsClientRequest.queryParameter("userID", userId);
@@ -108,7 +114,7 @@ public class SchedulerAPIWrapper {
 		String responseText = null;
 
 		try {
-			OSDSpec spec = null;
+				OSDSpec spec = null;
 				response = getAvailableAppsClientRequest.get(String.class);
 
 				if (response.getStatus() != 200) {
@@ -126,7 +132,7 @@ public class SchedulerAPIWrapper {
 	}
 
 	public static String userLogin(String email, String password) throws APICommunicationException, APIException {
-		ClientRequestFactory clientRequestFactory = new ClientRequestFactory(UriBuilder.fromUri("http://localhost:8080/scheduler.core").build());
+		ClientRequestFactory clientRequestFactory = new ClientRequestFactory(getSchedulerUri());
 		ClientRequest userLoginClientRequest = clientRequestFactory.createRelativeRequest("/rest/services/userLogin");
 
 		userLoginClientRequest.queryParameter("userMail", email);
@@ -146,11 +152,11 @@ public class SchedulerAPIWrapper {
 				if("error checking if mail exists, cannot init repository".equals(responseText)){
 					throw new APICommunicationException("Could not init user repository");
 				}
-			
+
 				if( "user mail not found".equals(responseText) || "wrong password".equals(responseText)){
 					throw new APIException("Login failed: " + responseText);
 				}
-				
+
 				// Response text should be user id
 				return responseText;
 
@@ -158,9 +164,9 @@ public class SchedulerAPIWrapper {
 			throw new APIException(ex);
 		}
 	}
-	
+
 	public static String userRegister(String name, String email, String password) throws APICommunicationException, APIException {
-		ClientRequestFactory clientRequestFactory = new ClientRequestFactory(UriBuilder.fromUri("http://localhost:8080/scheduler.core").build());
+		ClientRequestFactory clientRequestFactory = new ClientRequestFactory(getSchedulerUri());
 		ClientRequest userRegisterClientRequest = clientRequestFactory.createRelativeRequest("/rest/services/userRegister");
 
 		userRegisterClientRequest.queryParameter("userName", name);
@@ -182,11 +188,11 @@ public class SchedulerAPIWrapper {
 				if("error checking if mail already exists".equals(responseText) || "register user error".equals(responseText)){
 					throw new APICommunicationException("Could not init user repository");
 				}
-			
+
 				if( "mail already exists".equals(responseText)){
 					throw new APIException("Registration failed: " + responseText);
 				}
-				
+
 				// Response text should be new user id
 				return responseText;
 
@@ -194,5 +200,5 @@ public class SchedulerAPIWrapper {
 			throw new APIException(ex);
 		}
 	}
-	
+
 }
