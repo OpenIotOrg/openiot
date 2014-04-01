@@ -1,4 +1,4 @@
-package org.openiot.ld4s.resource.owlclass;
+package org.openiot.ld4s.resource.ontoProperty;
 
 import java.io.UnsupportedEncodingException;
 
@@ -6,6 +6,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.openiot.ld4s.lod_cloud.Context.Domain;
 import org.openiot.ld4s.resource.LD4SApiInterface;
+import org.openiot.ld4s.resource.LD4SDataResource;
 import org.restlet.data.Form;
 import org.restlet.data.Status;
 import org.restlet.representation.Representation;
@@ -13,15 +14,14 @@ import org.restlet.representation.Representation;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 
 /**
- * Resource representing a new client-defined OWL Type.
+ * Resource representing an Ontology Class.
  *
  * @author Myriam Leggieri.
  *
  */
-public class OwlClassResource extends LD4SOwlClassResource implements LD4SApiInterface{
+public class OntoPropertyResource extends LD4SOntoPropertyResource implements LD4SApiInterface{
 
 
-	
 	/**
 	 * Returns a serialized RDF Model 
 	 * that contains the linked data associated with the
@@ -31,6 +31,11 @@ public class OwlClassResource extends LD4SOwlClassResource implements LD4SApiInt
 	 */
 	@Override
 	public Representation get() {
+		if (resourceId == null || resourceId.trim().compareTo("") == 0){
+			setStatus(Status.CLIENT_ERROR_BAD_REQUEST, "Please request only a resource stored in this LD4S TDB");
+			return null;
+		}
+
 		Representation ret = null;
 		logger.fine(resourceName + " as Linked Data: Starting");
 
@@ -44,7 +49,7 @@ public class OwlClassResource extends LD4SOwlClassResource implements LD4SApiInt
 			if (query != -1){
 				uristr = this.uristr.substring(0,query-1);
 			}
-			rdfData = retrieve(LD4SOwlClassResource.ONTOLOGY_FOR_NEW_TYPES_NS, this.namedModel);
+			rdfData = retrieve(this.uristr, this.namedModel);
 			//how it is: for now, if links are requested, then search for new ones 
 			//and filter out all the stored ones.
 			if (!this.context.isEmpty()){
@@ -59,60 +64,11 @@ public class OwlClassResource extends LD4SOwlClassResource implements LD4SApiInt
 			ret = null;
 		}
 
-		return ret;
+		logger.info("REQUEST "+ this.uristr +" PROCESSING END - "+LD4SDataResource.getCurrentTime()); return ret;
 	}
 
 
-//	/**
-//	 * Create and store a new Observation Value resource as Linked Data
-//	 * from the submitted content. 
-//	 * This resource MUST be stored in the LD4S TDB.
-//	 * This resource MUST not be enriched with Linked Data since this would modify the initial
-//	 * submitted content significantly (use POST instead).
-//	 *
-//	 *@param obj information to be semantically annotated and stored
-//	 */
-//	@Put
-//	public Representation put(OV ldobj){
-//		if (resourceId == null || resourceId.trim().compareTo("") == 0){
-//			setStatus(Status.CLIENT_ERROR_BAD_REQUEST);
-//			return null;
-//		}
-//		this.ov = ldobj;
-//
-//		if (ov.getRemote_uri() != null){
-//			//if the preferred resource hosting is a remote one, PUT can not be used
-//			//(use POST instead) 
-//			if (this.ov.isStoredRemotely(ld4sServer.getHostName())){
-//				setStatus(Status.CLIENT_ERROR_BAD_REQUEST);
-//				return null;
-//			}			
-//		}
-//
-//		Representation ret = null;
-//		rdfData = ModelFactory.createDefaultModel();
-//		super.initModel(rdfData,"spitfire.rdf");
-//		logger.fine(resourceName + " LD4S: Now building LD4S.");
-//		try {
-//			rdfData = makeOVData().getModel();
-//		} catch (UnsupportedEncodingException e) {
-//			e.printStackTrace();
-//			setStatus(Status.SERVER_ERROR_INTERNAL, e.getMessage());
-//		} catch (JSONException e) {
-//			e.printStackTrace();
-//			setStatus(Status.SERVER_ERROR_INTERNAL, e.getMessage());
-//		}		
-//		// create a new resource in the database
-//		if (store(rdfData, this.namedModel)){
-//			setStatus(Status.SUCCESS_CREATED);	
-//			ret = serializeAccordingToReqMediaType(rdfData);
-//		}else{
-//			setStatus(Status.SERVER_ERROR_INTERNAL, "Unable to store in the Trple DB");
-//		}
-//		return ret;
-//	}
 
-	// PUT req: resource stored locally + no Linked Data enrichment
 	/**
 	 * Create and store a new Observation Value resource as Linked Data
 	 * from the submitted content. 
@@ -124,11 +80,17 @@ public class OwlClassResource extends LD4SOwlClassResource implements LD4SApiInt
 	 */
 	@Override
 	public Representation put(Form obj){
+		if (resourceId == null || resourceId.trim().compareTo("") == 0){
+			setStatus(Status.CLIENT_ERROR_BAD_REQUEST);
+			return null;
+		}
+
 		Representation ret = null;
 		rdfData = ModelFactory.createDefaultModel();
+		super.initModel(rdfData,"spitfire.rdf");
 		logger.fine(resourceName + " LD4S: Now building LD4S.");
 		try {
-			this.ov = new OwlClass(obj, this.ld4sServer.getHostName());
+			this.ov = new OntoProperty(obj, this.ld4sServer.getHostName());
 
 			if (ov.getRemote_uri() != null){
 				//if the preferred resource hosting is a remote one, PUT can not be used
@@ -160,7 +122,7 @@ public class OwlClassResource extends LD4SOwlClassResource implements LD4SApiInt
 					+e1.getMessage());
 			return null;
 		}
-		return ret;
+		logger.info("REQUEST "+ this.uristr +" PROCESSING END - "+LD4SDataResource.getCurrentTime()); return ret;
 	}
 
 	/**
@@ -174,11 +136,17 @@ public class OwlClassResource extends LD4SOwlClassResource implements LD4SApiInt
 	 */
 	@Override
 	public Representation put(JSONObject obj){
+		if (resourceId == null || resourceId.trim().compareTo("") == 0){
+			setStatus(Status.CLIENT_ERROR_BAD_REQUEST);
+			return null;
+		}
+
 		Representation ret = null;
 		rdfData = ModelFactory.createDefaultModel();
+		super.initModel(rdfData,"spitfire.rdf");
 		logger.fine(resourceName + " LD4S: Now building LD4S.");
 		try {
-			this.ov = new OwlClass(obj, this.ld4sServer.getHostName());
+			this.ov = new OntoProperty(obj, this.ld4sServer.getHostName());
 			if (ov.getRemote_uri() != null){
 				//if the preferred resource hosting server is a remote one, PUT can not be used
 				//(use POST instead) 
@@ -211,7 +179,7 @@ public class OwlClassResource extends LD4SOwlClassResource implements LD4SApiInt
 		}else{
 			setStatus(Status.SERVER_ERROR_INTERNAL, "Unable to store in the Trple DB");
 		}
-		return ret;
+		logger.info("REQUEST "+ this.uristr +" PROCESSING END - "+LD4SDataResource.getCurrentTime()); return ret;
 	}
 
 
@@ -230,7 +198,7 @@ public class OwlClassResource extends LD4SOwlClassResource implements LD4SApiInt
 		super.initModel(rdfData,"spitfire.rdf");
 		logger.fine(resourceName + " LD4S: Now updating.");
 		try {
-			this.ov = new OwlClass(obj, this.ld4sServer.getHostName());
+			this.ov = new OntoProperty(obj, this.ld4sServer.getHostName());
 			rdfData = makeOVLinkedData().getModel();
 
 			// create a new resource in the database only if the preferred resource hosting server is
@@ -260,7 +228,7 @@ public class OwlClassResource extends LD4SOwlClassResource implements LD4SApiInt
 		}		
 
 
-		return ret;
+		logger.info("REQUEST "+ this.uristr +" PROCESSING END - "+LD4SDataResource.getCurrentTime()); return ret;
 	}
 
 	/**
@@ -273,9 +241,10 @@ public class OwlClassResource extends LD4SOwlClassResource implements LD4SApiInt
 	public Representation post(JSONObject obj){
 		Representation ret = null;
 		rdfData = ModelFactory.createDefaultModel();
+		super.initModel(rdfData,"spitfire.rdf");
 		logger.fine(resourceName + " LD4S: Now updating.");
 		try {
-			this.ov = new OwlClass(obj, this.ld4sServer.getHostName());
+			this.ov = new OntoProperty(obj, this.ld4sServer.getHostName());
 			rdfData = makeOVLinkedData().getModel();
 
 			// create a new resource in the database only if the preferred resource hosting server is
@@ -305,19 +274,22 @@ public class OwlClassResource extends LD4SOwlClassResource implements LD4SApiInt
 		}
 
 
-		return ret;
+		logger.info("REQUEST "+ this.uristr +" PROCESSING END - "+LD4SDataResource.getCurrentTime()); return ret;
 	}
 
-	// DELETE req: resource stored locally
 	/**
 	 * Delete an already store Observation Value resource 
 	 *
 	 */
 	@Override
 	public void remove(){
+		if (resourceId == null || resourceId.trim().compareTo("") == 0){
+			setStatus(Status.CLIENT_ERROR_BAD_REQUEST);
+			return;
+		}
 		logger.fine(resourceName + " LD4S: Now deleting "+this.uristr);		
 		// create a new resource in the database
-		if (delete(ov.getRemote_uri(), this.namedModel)){
+		if (delete(this.uristr, this.namedModel)){
 			setStatus(Status.SUCCESS_OK);	 
 		}else{
 			setStatus(Status.SERVER_ERROR_INTERNAL, "Unable to delete from the Trple DB");

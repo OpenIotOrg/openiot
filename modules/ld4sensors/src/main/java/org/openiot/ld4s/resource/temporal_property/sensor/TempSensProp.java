@@ -9,7 +9,7 @@ import org.openiot.ld4s.lod_cloud.Context;
 import org.openiot.ld4s.resource.LD4SDataResource;
 import org.openiot.ld4s.resource.LD4SObject;
 import org.openiot.ld4s.vocabulary.LD4SConstants;
-import org.openiot.ld4s.vocabulary.SptVocab;
+import org.openiot.ld4s.vocabulary.OpenIoTVocab;
 import org.restlet.data.Form;
 
 import com.hp.hpl.jena.ontology.OntClass;
@@ -204,7 +204,7 @@ public class TempSensProp extends LD4SObject  implements Serializable{
 
 	@Override
 	protected void initDefaultType() {
-		this.defaultType = SptVocab.SENSOR_TEMPORAL_PROPERTY;
+		this.defaultType = OpenIoTVocab.MOBILE_CONTEXT;
 	}
 
 }

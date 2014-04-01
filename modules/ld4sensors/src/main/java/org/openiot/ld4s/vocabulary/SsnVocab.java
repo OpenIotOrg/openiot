@@ -103,4 +103,7 @@ public class SsnVocab {
 	      .createClass(SsnVocab.NS+"SensingDevice");
 	  // Vocabulary individuals
 	  // /////////////////////////
+
+	public static final OntClass SENSOR = m_model
+		      .createClass(SsnVocab.NS+"Sensor");
 }

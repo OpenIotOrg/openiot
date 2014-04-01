@@ -1,30 +1,29 @@
-package org.openiot.ld4s.resource.temporal_property.sensor;
+package org.openiot.ld4s.resource.ontoProperty;
 
-import org.openiot.ld4s.lod_cloud.Context.Domain;
 import org.openiot.ld4s.resource.LD4SDataResource;
-import org.openiot.ld4s.vocabulary.OpenIoTVocab;
-import org.openiot.ld4s.vocabulary.SptVocab;
-import org.openiot.ld4s.vocabulary.SsnVocab;
 
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.vocabulary.DCTerms;
+import com.hp.hpl.jena.vocabulary.OWL;
+import com.hp.hpl.jena.vocabulary.RDF;
+import com.hp.hpl.jena.vocabulary.RDFS;
 
 /**
- * Construct an oobservation value resource.
+ * Construct an Ontology Property resource.
  *
  * @author Myriam Leggieri.
  *
  */
-public class LD4STempSensPropResource extends LD4SDataResource {
+public class LD4SOntoPropertyResource extends LD4SDataResource {
 	/** Service resource name. */
-	protected String resourceName = "Observation Value";
-	
+	protected String resourceName = "Ontology Property";
+
 	/** RDF Data Model of this Service resource semantic annotation. */
 	protected Model rdfData = null;
-	
+
 	/** Resource provided by this Service resource. */
-	protected TempSensProp ov = null;
+	protected OntoProperty ov = null;
 
 
 	/**
@@ -41,10 +40,10 @@ public class LD4STempSensPropResource extends LD4SDataResource {
 		Resource resource = makeOVData();
 		//set the linking criteria
 		this.context = ov.getLink_criteria();
-		resource = addLinkedData(resource, Domain.ALL, this.context);
+		//		resource = addLinkedData(resource, Domain.ALL, this.context);
 		return resource;
 	}
-	
+
 	/**
 	 * Creates main resources and additional related information
 	 * excluding linked data
@@ -62,6 +61,7 @@ public class LD4STempSensPropResource extends LD4SDataResource {
 		return resource;
 	}
 
+
 	/**
 	 * Creates the main resource
 	 * @param model
@@ -78,54 +78,60 @@ public class LD4STempSensPropResource extends LD4SDataResource {
 			subjuri = ov.getRemote_uri();
 		}
 		resource = rdfData.createResource(subjuri);
-		String item = ov.getFoi();
-		if (item != null && item.trim().compareTo("")!=0){
-			if (item.startsWith("http://")){
-				resource.addProperty(SsnVocab.FEATURE_OF_INTEREST, 
-						rdfData.createResource(item));	
-			}else{
-				resource = addFoi(resource, item);
-			}
-		}		
-		item = ov.getSensor_id();
-		if (item != null && item.trim().compareTo("")!=0){
-			if (item.startsWith("http://")){
-				resource.addProperty(
-						OpenIoTVocab.CONTEXT_OF, 
-						rdfData.createResource(item));	
-			}else{
-				resource.addProperty(OpenIoTVocab.CONTEXT_OF, item);
-			}
-		}
-		item = ov.getNet_role();
-		if (item != null && item.trim().compareTo("")!=0){
-			if (item.startsWith("http://")){
-				resource.addProperty(SptVocab.NET_ROLE, 
-						rdfData.createResource(item));	
-			}else{
-				/** @todo: special search on dbpedia for a proper type 
-				 * + create a resource of this type and store it locally. */ 
-				resource.addProperty(SptVocab.NET_ROLE, item);
-			}
-		}	
-		String[] vals = ov.getNet_links();
-		if (vals != null){
-			for (int i=0; i<vals.length ;i++){
-				if (vals[i] != null){
-					if (vals[i].startsWith("http://")){
-						resource.addProperty(SptVocab.NET_LINK, 
-								rdfData.createResource(vals[i]));	
-					}else{
-						resource.addProperty(SptVocab.NET_LINK, vals[i]);
-					}	
+
+		OntoProperty.Type[] types = ov.getOntoPropTypes();
+		if (types != null){
+			for (int ind=0; ind<types.length ;ind++){
+				switch (types[ind]){
+				case SubProperty:
+					if (ov.getSuperProperty() != null){
+						resource.addProperty(RDFS.subPropertyOf, 
+								rdfData.createProperty(ov.getSuperProperty()));
+					}
+					break;
+				case AnnotationProperty:
+				case DataTypeProperty:
+				case FunctionalProperty:
+				case InverseFunctionalProperty:
+				case ObjectProperty:
+				case Property:
+				case SymmetricProperty:
+				case TransitiveProperty:				
+				default:
+					resource.addProperty(RDF.type, types[ind].name());
+					break;
+
 				}
-			}			
+			}
 		}
-		resource = crossResourcesAnnotation(ov, resource);
+
+		String[] item = ov.getInverseProperties();
+		if (item != null){
+			for (int ind=0; ind<item.length ;ind++){
+				resource.addProperty(OWL.inverseOf, 
+						rdfData.createProperty(item[ind]));
+			}
+		}
+		item = ov.getEquivalentProperties();
+		if (item != null){
+			for (int ind=0; ind<item.length ;ind++){
+				resource.addProperty(OWL.equivalentProperty, 
+						rdfData.createProperty(item[ind]));
+			}
+		}
+		String str = ov.getDomain();
+		if (str != null){
+			resource.addProperty(RDFS.domain, 
+					rdfData.createResource(str));
+		}
+		str = ov.getRange();
+		if (str != null){
+			resource.addProperty(RDFS.range, 
+					rdfData.createResource(str));
+		}
+		//		resource = crossResourcesAnnotation(ov, resource);
 		return resource;
 	}
 
-		  
 
-	
 }

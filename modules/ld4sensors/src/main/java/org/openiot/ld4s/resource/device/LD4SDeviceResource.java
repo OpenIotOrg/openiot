@@ -3,11 +3,11 @@ package org.openiot.ld4s.resource.device;
 import org.openiot.ld4s.lod_cloud.Context.Domain;
 import org.openiot.ld4s.resource.LD4SDataResource;
 import org.openiot.ld4s.vocabulary.CorelfVocab;
+import org.openiot.ld4s.vocabulary.OpenIoTVocab;
 import org.openiot.ld4s.vocabulary.SptVocab;
 
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.vocabulary.DCTerms;
 
 /**
  * Construct an oobservation value resource.
@@ -17,7 +17,7 @@ import com.hp.hpl.jena.vocabulary.DCTerms;
  */
 public class LD4SDeviceResource extends LD4SDataResource {
 	/** Service resource name. */
-	protected String resourceName = "Sensing Device";
+	protected String resourceName = "Sensor";
 
 	/** RDF Data Model of this Service resource semantic annotation. */
 	protected Model rdfData = null;
@@ -107,10 +107,10 @@ public class LD4SDeviceResource extends LD4SDataResource {
 		if (tprops != null){
 			for (int i=0; i<tprops.length ;i++){
 				if (tprops[i].startsWith("http://")){
-					resource.addProperty(SptVocab.TEMPORAL, 
+					resource.addProperty(OpenIoTVocab.CONTEXT, 
 							rdfData.createResource(tprops[i]));	
 				}else{
-					resource.addProperty(SptVocab.TEMPORAL, 
+					resource.addProperty(OpenIoTVocab.CONTEXT, 
 							rdfData.createTypedLiteral(tprops[i]));
 				}
 			}			

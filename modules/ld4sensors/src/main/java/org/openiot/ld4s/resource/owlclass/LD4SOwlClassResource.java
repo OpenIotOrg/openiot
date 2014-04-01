@@ -35,7 +35,7 @@ public class LD4SOwlClassResource extends LD4SDataResource {
 	protected OwlClass ov = null;
 
 	/** An OpenIoT ontology module dedicate to the definition of new client-defined types. */
-	private static String ONTOLOGY_FOR_NEW_TYPES_NS = null;
+	protected static String ONTOLOGY_FOR_NEW_TYPES_NS = null;
 
 	private static OntModel ontologyBaseModel = null; 
 	/**

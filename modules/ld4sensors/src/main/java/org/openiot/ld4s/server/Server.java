@@ -10,6 +10,8 @@ import org.openiot.ld4s.resource.link.LinkResource;
 import org.openiot.ld4s.resource.link_review.LinkReviewResource;
 import org.openiot.ld4s.resource.measurement_capab.MCResource;
 import org.openiot.ld4s.resource.measurement_prop.MPResource;
+import org.openiot.ld4s.resource.ontoClass.OntoClassResource;
+import org.openiot.ld4s.resource.ontoProperty.OntoPropertyResource;
 import org.openiot.ld4s.resource.other.OtherResource;
 import org.openiot.ld4s.resource.ov.OVResource;
 import org.openiot.ld4s.resource.ping.PingResource;
@@ -149,29 +151,29 @@ public class Server extends Application{
 //				router.attach("/link/sparql", SparqlResource.class);
 				
 				// POST req: resource stored remotely IF resourceId == null
-				router.attach("/ov/", OVResource.class);
-				router.attach("/ov", OVResource.class);
+				router.attach("/sensor_reading/", OVResource.class);
+				router.attach("/sensor_reading", OVResource.class);
 				// GET req:resource stored locally
 				// PUT req: resource stored locally + no Linked Data enrichment
 				// POST req: resource stored locally + Linked Data enrichment
 				// DELETE req: resource stored locally
-				router.attach("/ov/{resource_id}", OVResource.class);
+				router.attach("/sensor_reading/{resource_id}", OVResource.class);
 				// GET with query string for link filtering req: resource stored locally 
-				router.attach("/ov/{resource_id}?d={domains}&nod={nodomains}&trange={time}&s={space}&th={thing}", OVResource.class);
+				router.attach("/sensor_reading/{resource_id}?d={domains}&nod={nodomains}&trange={time}&s={space}&th={thing}", OVResource.class);
 					
 					
 				//=============================================================
 				
 				// POST req: resource stored remotely IF resourceId == null
-				router.attach("/device/", DeviceResource.class);
-				router.attach("/device", DeviceResource.class);
+				router.attach("/sensor/", DeviceResource.class);
+				router.attach("/sensor", DeviceResource.class);
 				// GET req:resource stored locally
 				// PUT req: resource stored locally + no Linked Data enrichment
 				// POST req: resource stored locally + Linked Data enrichment
 				// DELETE req: resource stored locally
-				router.attach("/device/{resource_id}", DeviceResource.class);
+				router.attach("/sensor/{resource_id}", DeviceResource.class);
 				// GET with query string for link filtering req: resource stored locally 
-				router.attach("/device/{resource_id}?d={domains}&nod={nodomains}&trange={time}&s={space}&th={thing}", DeviceResource.class);
+				router.attach("/sensor/{resource_id}?d={domains}&nod={nodomains}&trange={time}&s={space}&th={thing}", DeviceResource.class);
 
 				//=============================================================
 				
@@ -189,15 +191,15 @@ public class Server extends Application{
 				//=============================================================
 				
 				// POST req: resource stored remotely IF resourceId == null
-				router.attach("/tps/", TempSensPropResource.class);
-				router.attach("/tps", TempSensPropResource.class);
+				router.attach("/mobile_context/", TempSensPropResource.class);
+				router.attach("/mobile_context", TempSensPropResource.class);
 				// GET req:resource stored locally
 				// PUT req: resource stored locally + no Linked Data enrichment
 				// POST req: resource stored locally + Linked Data enrichment
 				// DELETE req: resource stored locally
-				router.attach("/tps/{resource_id}", TempSensPropResource.class);
+				router.attach("/mobile_context/{resource_id}", TempSensPropResource.class);
 				// GET with query string for link filtering req: resource stored locally 
-				router.attach("/tps/{resource_id}?d={domains}&nod={nodomains}&trange={time}&s={space}&th={thing}", TempSensPropResource.class);
+				router.attach("/mobile_context/{resource_id}?d={domains}&nod={nodomains}&trange={time}&s={space}&th={thing}", TempSensPropResource.class);
 				
 				//=============================================================
 				
@@ -237,6 +239,33 @@ public class Server extends Application{
 				router.attach("/meas_prop/{resource_id}", MPResource.class);
 				// GET with query string for link filtering req: resource stored locally 
 				router.attach("/meas_prop/{resource_id}?d={domains}&nod={nodomains}&trange={time}&s={space}&th={thing}", MPResource.class);
+
+				//=============================================================
+
+//				// GET req
+//				// PUT req
+//				// POST req
+//				// DELETE req
+//				router.attach("/new_type/", OwlClassResource.class);
+//				router.attach("/new_type", OwlClassResource.class);
+				
+				//=============================================================
+
+				// GET req
+				// PUT req
+				// POST req
+				// DELETE req
+				router.attach("/ontology_class/", OntoClassResource.class);
+				router.attach("/ontology_class", OntoClassResource.class);
+				
+				//=============================================================
+				
+				// GET req
+				// PUT req
+				// POST req
+				// DELETE req
+				router.attach("/ontology_property/", OntoPropertyResource.class);
+				router.attach("/ontology_property", OntoPropertyResource.class);
 				
 				//=============================================================
 				

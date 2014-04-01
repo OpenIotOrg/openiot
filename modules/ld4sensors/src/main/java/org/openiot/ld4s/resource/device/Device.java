@@ -104,8 +104,9 @@ public class Device extends LD4SObject  implements Serializable{
 		if (json.has("observation"+LD4SConstants.JSON_SEPARATOR+"values")){
 			this.setValues(json.getJSONArray("observation"+LD4SConstants.JSON_SEPARATOR+"values"));
 		}
-		if (json.has("tsproperties")){
-			this.setTsproperties(json.getJSONArray("tsproperties"));
+		if (json.has("mobile"+LD4SConstants.JSON_SEPARATOR+"context")){
+			this.setTsproperties(json.getJSONArray("mobile"+
+					LD4SConstants.JSON_SEPARATOR+"context"));
 		}
 		if (json.has("context")){
 			this.setLink_criteria(json.getString("context"), localhost);
@@ -267,7 +268,7 @@ public class Device extends LD4SObject  implements Serializable{
 
 	@Override
 	protected void initDefaultType() {
-		this.defaultType = SsnVocab.DEVICE;
+		this.defaultType = SsnVocab.SENSOR;
 	}
 
 	public void setFoi(String foi) {
