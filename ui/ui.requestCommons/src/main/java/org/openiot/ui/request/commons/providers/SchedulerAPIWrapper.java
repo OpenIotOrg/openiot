@@ -42,7 +42,7 @@ public class SchedulerAPIWrapper {
 	private static PropertyManagement propertyManagement = new PropertyManagement();
 
 	private static URI getSchedulerUri() {
-		return UriBuilder.fromUri(propertyManagement.getLSMClientConnectionServerHost()).build();
+		return UriBuilder.fromUri(propertyManagement.getSchedulerHostUrl()).build();
 	}
 
 	public static SensorTypes getAvailableSensors(String userId, double lat, double lon, double radius) throws APICommunicationException, APIException {
