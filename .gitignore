@@ -17,10 +17,17 @@ org.eclipse.core.resources.prefs
 org.eclipse.m2e.core.prefs
 .factorypath
 
+# IntelliJ Files     #
+######################
 
 # Eclipse Plug-In Settings #
 ############################
 .pmd
+
+# IntelliJ Files     #
+######################
+/.idea
+*.iml
 
 
 
