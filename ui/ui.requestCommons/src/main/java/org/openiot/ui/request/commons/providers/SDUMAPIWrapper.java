@@ -40,7 +40,7 @@ public class SDUMAPIWrapper {
 
 	static  {
 		PropertyManagement propertyManagement = new PropertyManagement();
-		SDUM_HOST_URL =  UriBuilder.fromUri(propertyManagement.getSdumHostUrl()).build();
+		SDUM_HOST_URL =  UriBuilder.fromUri(propertyManagement.getRequestCommonsSdumHostUrl()).build();
 	}
 
 	public static SdumServiceResultSet pollForReport(String serviceId) throws APICommunicationException, APIException {

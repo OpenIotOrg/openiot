@@ -75,13 +75,11 @@ public class PropertyManagement {
 	private static final String SCHEDULER_LSM_PASSWORD = "scheduler.core.lsm.access.password";
 	private static final String SCHEDULER_LSM_SPARQL_END_POINT = "scheduler.core.lsm.sparql.endpoint";
 	private static final String SCHEDULER_LSM_REMOTE_SERVER = "scheduler.core.lsm.remote.server";
-	private static final String SCHEDULER_CORE_HOST_URL = "scheduler.core.host.url";
 
 	//==============SD&UM====================
 	private static final String SDUM_LSM_FUNCTIONAL_GRAPH = "sdum.core.lsm.openiotFunctionalGraph";
 	private static final String SDUM_LSM_SPARQL_END_POINT = "sdum.core.lsm.sparql.endpoint";
 	private static final String SDUM_LSM_REMOTE_SERVER = "sdum.core.lsm.remote.server";
-	private static final String SDUM_CORE_HOST_URL = "sdum.core.host.url";
 
 
 	//==============LSM-LIGHT====================
@@ -99,6 +97,11 @@ public class PropertyManagement {
 	// ==============Security&Privacy====================
 	private static final String SECURITY_LSM_SPARQL_END_POINT = "security.lsm.sparql.endpoint";
 	private static final String SECURITY_LSM_GRAPH = "security.lsm.graphURL";
+
+
+	// ==============REQUEST COMMONS ====================
+	private static final String REQUEST_COMMONS_SCHEDULER_CORE_HOST_URL = "request.definition.scheduler.core.host.url";
+	private static final String REQUEST_COMMONS_SDUM_CORE_HOST_URL = "request.definition.sdum.core.host.url";
 
 	private Properties props = null;
 
@@ -151,10 +154,6 @@ public class PropertyManagement {
 		return props.getProperty(key, defaultValue);
 	}
 
-	public String getSchedulerHostUrl() {
-		return props.getProperty(SCHEDULER_CORE_HOST_URL);
-	}
-
 	public String getSchedulerLsmMetaGraph() {
 		return props.getProperty(SCHEDULER_LSM_META_GRAPH);
 	}
@@ -195,8 +194,12 @@ public class PropertyManagement {
 		return props.getProperty(SDUM_LSM_REMOTE_SERVER);
 	}
 
-	public String getSdumHostUrl() {
-		return SDUM_CORE_HOST_URL;
+	public String getRequestCommonsSdumHostUrl() {
+		return REQUEST_COMMONS_SDUM_CORE_HOST_URL;
+	}
+
+	public String getRequestCommonsSchedulerHostUrl() {
+		return props.getProperty(REQUEST_COMMONS_SCHEDULER_CORE_HOST_URL);
 	}
 
 	public String getLsmServerConnectionDriver() {
