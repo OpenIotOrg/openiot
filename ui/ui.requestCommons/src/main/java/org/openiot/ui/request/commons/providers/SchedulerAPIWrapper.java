@@ -39,15 +39,16 @@ import java.net.URI;
 
 public class SchedulerAPIWrapper {
 
-	private static PropertyManagement propertyManagement = new PropertyManagement();
+	private static final URI SCHEDULER_HOST_URL;
 
-	private static URI getSchedulerUri() {
-		return UriBuilder.fromUri(propertyManagement.getSchedulerHostUrl()).build();
+	static {
+		PropertyManagement propertyManagement = new PropertyManagement();
+		SCHEDULER_HOST_URL = UriBuilder.fromUri(propertyManagement.getSchedulerHostUrl()).build();
 	}
 
 	public static SensorTypes getAvailableSensors(String userId, double lat, double lon, double radius) throws APICommunicationException, APIException {
 
-		ClientRequestFactory clientRequestFactory = new ClientRequestFactory(getSchedulerUri());
+		ClientRequestFactory clientRequestFactory = new ClientRequestFactory(SCHEDULER_HOST_URL);
 		ClientRequest discoverSensorsClientRequest = clientRequestFactory.createRelativeRequest("/rest/services/discoverSensors");
 
 		discoverSensorsClientRequest.queryParameter("userID", userId);
@@ -80,7 +81,7 @@ public class SchedulerAPIWrapper {
 
 	public static void registerService(OSDSpec osdSpec) throws APICommunicationException, APIException {
 
-		ClientRequestFactory clientRequestFactory = new ClientRequestFactory(getSchedulerUri());
+		ClientRequestFactory clientRequestFactory = new ClientRequestFactory(SCHEDULER_HOST_URL);
 		ClientRequest registerServiceRequest = clientRequestFactory.createRelativeRequest("/rest/services/registerService");
 
 		try {
@@ -104,7 +105,7 @@ public class SchedulerAPIWrapper {
 	}
 
 	public static OSDSpec getAvailableApps(String userId) throws APICommunicationException, APIException {
-		ClientRequestFactory clientRequestFactory = new ClientRequestFactory(getSchedulerUri());
+		ClientRequestFactory clientRequestFactory = new ClientRequestFactory(SCHEDULER_HOST_URL);
 		ClientRequest getAvailableAppsClientRequest = clientRequestFactory.createRelativeRequest("/rest/services/getAvailableApps");
 
 		getAvailableAppsClientRequest.queryParameter("userID", userId);
@@ -132,7 +133,7 @@ public class SchedulerAPIWrapper {
 	}
 
 	public static String userLogin(String email, String password) throws APICommunicationException, APIException {
-		ClientRequestFactory clientRequestFactory = new ClientRequestFactory(getSchedulerUri());
+		ClientRequestFactory clientRequestFactory = new ClientRequestFactory(SCHEDULER_HOST_URL);
 		ClientRequest userLoginClientRequest = clientRequestFactory.createRelativeRequest("/rest/services/userLogin");
 
 		userLoginClientRequest.queryParameter("userMail", email);
@@ -166,7 +167,7 @@ public class SchedulerAPIWrapper {
 	}
 
 	public static String userRegister(String name, String email, String password) throws APICommunicationException, APIException {
-		ClientRequestFactory clientRequestFactory = new ClientRequestFactory(getSchedulerUri());
+		ClientRequestFactory clientRequestFactory = new ClientRequestFactory(SCHEDULER_HOST_URL);
 		ClientRequest userRegisterClientRequest = clientRequestFactory.createRelativeRequest("/rest/services/userRegister");
 
 		userRegisterClientRequest.queryParameter("userName", name);

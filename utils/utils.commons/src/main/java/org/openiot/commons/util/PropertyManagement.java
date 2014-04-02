@@ -68,51 +68,36 @@ public class PropertyManagement {
 
 	//==============Scheduler====================
 
-	private static final String SCHEDULER_LSM_META_GRAPH = "scheduler.core.lsm" +
-			".openiotMetaGraph";
-	private static final String SCHEDULER_LSM_DATA_GRAPH = "scheduler.core.lsm" +
-			".openiotDataGraph";
-	private static final String SCHEDULER_LSM_FUNCTIONAL_GRAPH = "scheduler.core.lsm" +
-			".openiotFunctionalGraph";
-	private static final String SCHEDULER_LSM_USER_NAME = "scheduler.core.lsm.access" +
-			".username";
-	private static final String SCHEDULER_LSM_PASSWORD = "scheduler.core.lsm.access" +
-			".password";
-	private static final String SCHEDULER_LSM_SPARQL_END_POINT = "scheduler.core.lsm" +
-			".sparql.endpoint";
-	private static final String SCHEDULER_LSM_REMOTE_SERVER = "scheduler.core.lsm.remote" +
-			".server";
+	private static final String SCHEDULER_LSM_META_GRAPH = "scheduler.core.lsm.openiotMetaGraph";
+	private static final String SCHEDULER_LSM_DATA_GRAPH = "scheduler.core.lsm.openiotDataGraph";
+	private static final String SCHEDULER_LSM_FUNCTIONAL_GRAPH = "scheduler.core.lsm.openiotFunctionalGraph";
+	private static final String SCHEDULER_LSM_USER_NAME = "scheduler.core.lsm.access.username";
+	private static final String SCHEDULER_LSM_PASSWORD = "scheduler.core.lsm.access.password";
+	private static final String SCHEDULER_LSM_SPARQL_END_POINT = "scheduler.core.lsm.sparql.endpoint";
+	private static final String SCHEDULER_LSM_REMOTE_SERVER = "scheduler.core.lsm.remote.server";
 	private static final String SCHEDULER_CORE_HOST_URL = "scheduler.core.host.url";
 
-
 	//==============SD&UM====================
-	private static final String SDUM_LSM_FUNCTIONAL_GRAPH = "sdum.core.lsm" +
-			".openiotFunctionalGraph";
-	private static final String SDUM_LSM_SPARQL_END_POINT = "sdum.core.lsm.sparql" +
-			".endpoint";
+	private static final String SDUM_LSM_FUNCTIONAL_GRAPH = "sdum.core.lsm.openiotFunctionalGraph";
+	private static final String SDUM_LSM_SPARQL_END_POINT = "sdum.core.lsm.sparql.endpoint";
 	private static final String SDUM_LSM_REMOTE_SERVER = "sdum.core.lsm.remote.server";
+	private static final String SDUM_CORE_HOST_URL = "sdum.core.host.url";
 
 
 	//==============LSM-LIGHT====================
-	private static final String LSM_CONNECTION_DRIVER = "lsm-light.server.connection" +
-			".driver_class";
+	private static final String LSM_CONNECTION_DRIVER = "lsm-light.server.connection.driver_class";
 	private static final String LSM_CONNECTION_URL = "lsm-light.server.connection.url";
-	private static final String LSM_CONNECTION_USERNAME = "lsm-light.server.connection" +
-			".username";
-	private static final String LSM_CONNECTION_PASS = "lsm-light.server.connection" +
-			".password";
+	private static final String LSM_CONNECTION_USERNAME = "lsm-light.server.connection.username";
+	private static final String LSM_CONNECTION_PASS = "lsm-light.server.connection.password";
 	private static final String LSM_MIN_CONNECTION = "lsm-light.server.minConnection";
 	private static final String LSM_MAX_CONNECTION = "lsm-light.server.maxConnection";
-	private static final String LSM_RETRY_ATTEMPTS = "lsm-light.server" +
-			".acquireRetryAttempts";
+	private static final String LSM_RETRY_ATTEMPTS = "lsm-light.server.acquireRetryAttempts";
 	private static final String LSM_LOCAL_METAGRAPH = "lsm-light.server.localMetaGraph";
 	private static final String LSM_LOCAL_DATAGRAPH = "lsm-light.server.localDataGraph";
-	private static final String LSM_CLIENT_CONNECTION_SERVER_HOST = "lsm-light.client" +
-			".connection.server";
+	private static final String LSM_CLIENT_CONNECTION_SERVER_HOST = "lsm-light.client.connection.server";
 
 	// ==============Security&Privacy====================
-	private static final String SECURITY_LSM_SPARQL_END_POINT = "security.lsm.sparql" +
-			".endpoint";
+	private static final String SECURITY_LSM_SPARQL_END_POINT = "security.lsm.sparql.endpoint";
 	private static final String SECURITY_LSM_GRAPH = "security.lsm.graphURL";
 
 	private Properties props = null;
@@ -128,8 +113,7 @@ public class PropertyManagement {
 	private void initializeProperties() {
 
 		String jbosServerConfigDir = System.getProperty("jboss.server.config.dir");
-		String openIotConfigFile = jbosServerConfigDir + File.separator +
-				PROPERTIES_FILE;
+		String openIotConfigFile = jbosServerConfigDir + File.separator + PROPERTIES_FILE;
 		props = new Properties();
 
 		logger.debug("jbosServerConfigDir:" + openIotConfigFile);
@@ -163,12 +147,12 @@ public class PropertyManagement {
 
 	}
 
-	public String getSchedulerHostUrl() {
-		return props.getProperty(SCHEDULER_CORE_HOST_URL);
-	}
-
 	public String getProperty(String key, String defaultValue) {
 		return props.getProperty(key, defaultValue);
+	}
+
+	public String getSchedulerHostUrl() {
+		return props.getProperty(SCHEDULER_CORE_HOST_URL);
 	}
 
 	public String getSchedulerLsmMetaGraph() {
@@ -209,6 +193,10 @@ public class PropertyManagement {
 
 	public String getSdumLsmRemoteServer() {
 		return props.getProperty(SDUM_LSM_REMOTE_SERVER);
+	}
+
+	public String getSdumHostUrl() {
+		return SDUM_CORE_HOST_URL;
 	}
 
 	public String getLsmServerConnectionDriver() {

@@ -19,16 +19,22 @@
  */
 package org.openiot.ui.request.definition.web.sparql.nodes.base;
 
-import java.io.Serializable;
-
 import org.apache.commons.lang3.StringUtils;
+import org.openiot.commons.util.PropertyManagement;
+
+import java.io.Serializable;
 
 public class SensorSelectExpression extends AbstractSparqlNode implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
+	static {
+		PropertyManagement propertyManagement = new PropertyManagement();
+	}
+
 	public SensorSelectExpression(String nodeId,String type, Object lat, Object lon, Object rad, boolean includeGeoCoordFields) {
 		super();
+
 
 		// Generate Expr
 		appendToScope(new Expression("?" + nodeId + "_record <http://lsm.deri.ie/ont/lsm.owl#isObservedPropertyOf> ?" + nodeId + "_sensor ."));
