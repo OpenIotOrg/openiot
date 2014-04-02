@@ -1,4 +1,4 @@
-<!DOCTYPE HTML>
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core"
@@ -10,11 +10,11 @@
 	xmlns:widgets="http://java.sun.com/jsf/composite/components/widgets">
 
 <f:view contentType="text/html">
-	<f:event type="javax.faces.event.PreRenderViewEvent"
+	<f:event type="preRenderView"
 		listener="#{applicationDesignPageController.doAccessControl}" />
 
 	<h:head>
-		<meta content='text/html; charset=UTF-8' http-equiv="Conmenutent-Type" />
+		<meta content='text/html; charset=UTF-8' http-equiv="Content-Type" />
 		<h:outputStylesheet library="css" name="core.css" />
 		<h:outputScript library="js" name="core.js" />
 		<script src="http://maps.google.com/maps/api/js?sensor=false"
