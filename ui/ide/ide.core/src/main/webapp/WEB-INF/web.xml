@@ -18,9 +18,7 @@
 	<!-- Primefaces Theme -->
 	<context-param>
 		<param-name>primefaces.THEME</param-name>
-		<param-value>redmond</param-value>
+		<param-value>delta</param-value>
 	</context-param>
-
-
 
 </web-app>
