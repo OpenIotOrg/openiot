@@ -20,17 +20,14 @@ package org.openiot.ide.core;
  *     Contact: OpenIoT mailto: info@openiot.eu
  */
 
-import java.io.IOException;
-import java.io.Serializable;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
-import java.net.URL;
-import java.util.HashMap;
-
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Named;
+import java.io.IOException;
+import java.io.Serializable;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.HashMap;
 
 /**
  * @author Chris Georgoulis e-mail: cgeo@ait.edu.gr
@@ -41,10 +38,6 @@ import javax.inject.Named;
 @SessionScoped
 public class LayoutController implements Serializable {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 6629499890720592580L;
 	private HashMap<String, Boolean> map;
 	private String navigation;
 
@@ -83,19 +76,14 @@ public class LayoutController implements Serializable {
 				HttpURLConnection huc = (HttpURLConnection) u.openConnection();
 				huc.setRequestMethod("HEAD");
 				huc.connect();
-				b = Boolean
-						.valueOf(huc.getResponseCode() == HttpURLConnection.HTTP_OK);
+				b = huc.getResponseCode() == HttpURLConnection.HTTP_OK;
 				map.put(url, b);
-			} catch (MalformedURLException e) {
-				// e.printStackTrace();
-			} catch (ProtocolException e) {
-				// e.printStackTrace();
 			} catch (IOException e) {
 				// e.printStackTrace();
 			}
 		}
 
-		return b.booleanValue();
+		return b;
 	}
 
 }
