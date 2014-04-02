@@ -34,6 +34,8 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
  */
 public class OAuthorizationCredentials implements Serializable {
 
+	private static final String LSM_RESOURCE_USER = "http://lsm.deri.ie/resource/user/";
+
 	private static final long serialVersionUID = 4880915177543108283L;
 
 	private String accessToken;
@@ -59,9 +61,13 @@ public class OAuthorizationCredentials implements Serializable {
 	public String getClientId() {
 		return clientId;
 	}
-	
+
 	public String getUserId() {
 		return userId;
+	}
+
+	public String getUserIdURI() {
+		return LSM_RESOURCE_USER + userId;
 	}
 
 	public OAuthorizationCredentials getCallerCredentials() {
