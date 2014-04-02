@@ -25,11 +25,8 @@ package org.openiot.commons.util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
+import java.util.HashMap;
 import java.util.Properties;
 
 /**
@@ -102,6 +99,9 @@ public class PropertyManagement {
 	// ==============REQUEST COMMONS ====================
 	private static final String REQUEST_COMMONS_SCHEDULER_CORE_HOST_URL = "request.definition.scheduler.core.host.url";
 	private static final String REQUEST_COMMONS_SDUM_CORE_HOST_URL = "request.definition.sdum.core.host.url";
+
+
+	private static final String IDE_CORE_NAVIGATION_PREFIX = "ide.core.navigation";
 
 	private Properties props = null;
 
@@ -251,6 +251,17 @@ public class PropertyManagement {
 			logger.error("Invalid input value", e);
 		}
 		return -99;
+	}
+
+	public HashMap<String, String> getIdeNavigationSettings() {
+		HashMap<String, String> navigationMap = new HashMap<String, String>();
+
+		for (String key : props.stringPropertyNames()) {
+			if (key.startsWith(IDE_CORE_NAVIGATION_PREFIX)) {
+				navigationMap.put(key, props.getProperty(key));
+			}
+		}
+		return navigationMap;
 	}
 
 	public String getLSMLocalMetaGraph() {

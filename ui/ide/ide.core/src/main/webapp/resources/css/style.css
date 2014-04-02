@@ -26,7 +26,7 @@ body {
     position: fixed;
     top: 40px;
     left: 60%;
-    width: 350;
+    width: 350px;
     height: auto;
     z-index: 9999;
 
@@ -36,8 +36,6 @@ body {
     position: relative;
     margin: 0 0 10px 0;
     opacity: 0.45;
-    filter: alpha(opacity=45);
-
 }
 
 .form {

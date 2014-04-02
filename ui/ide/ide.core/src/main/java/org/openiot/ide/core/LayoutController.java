@@ -20,8 +20,11 @@ package org.openiot.ide.core;
  *     Contact: OpenIoT mailto: info@openiot.eu
  */
 
+import org.omnifaces.cdi.ViewScoped;
+import org.openiot.commons.util.PropertyManagement;
+
 import javax.annotation.PostConstruct;
-import javax.enterprise.context.SessionScoped;
+import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.IOException;
 import java.io.Serializable;
@@ -31,21 +34,27 @@ import java.util.HashMap;
 
 /**
  * @author Chris Georgoulis e-mail: cgeo@ait.edu.gr
- * 
  */
 
 @Named("layout")
-@SessionScoped
+@ViewScoped
 public class LayoutController implements Serializable {
 
 	private HashMap<String, Boolean> map;
 	private String navigation;
 
-	public LayoutController() {
-	}
+	@Inject
+	private MenuFactory menuFactory;
+
+	private HashMap<String, String> navigationMap;
+
 
 	@PostConstruct
 	public void init() {
+
+		PropertyManagement props = new PropertyManagement();
+		navigationMap = props.getIdeNavigationSettings();
+
 		navigation = "welcome.jsf";
 		map = new HashMap<String, Boolean>();
 	}
@@ -61,7 +70,7 @@ public class LayoutController implements Serializable {
 	/**
 	 * Checks if the component exists / is Loaded in order to display the menu
 	 * link
-	 * 
+	 *
 	 * @return boolean
 	 */
 	public boolean isLoaded(String url) {
