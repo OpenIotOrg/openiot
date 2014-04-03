@@ -1,7 +1,6 @@
 package org.openiot.ide.core;
 
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.Multimap;
+import org.apache.commons.collections.map.MultiValueMap;
 import org.primefaces.model.menu.DefaultMenuItem;
 import org.primefaces.model.menu.DefaultMenuModel;
 import org.primefaces.model.menu.DefaultSubMenu;
@@ -25,19 +24,21 @@ public class MenuFactory implements Serializable {
 	private static final String FIELD_URL = "url";
 
 
-	private DefaultMenuModel createMenu(HashMap<String, String> navigationMap) {
+	public DefaultMenuModel createMenu(HashMap<String, String> navigationMap) {
 		DefaultMenuModel menu = new DefaultMenuModel();
 		DefaultSubMenu mainMenu = new DefaultSubMenu();
 		menu.addElement(mainMenu);
 
 
-		//TODO
-		Multimap<String, HashMap<String, String>> propertyMap = createPropertyMap(
-				navigationMap);
+		HashMap<String, HashMap<String, String>> propertyMap =
+				createPropertyMap(navigationMap);
 
 		for (HashMap<String, String> map : propertyMap.values()) {
 			createMenuItem(mainMenu, map.get(FIELD_TITLE), map.get(FIELD_URL));
 		}
+
+		DefaultSubMenu monitorMenu = new DefaultSubMenu();
+		menu.addElement(monitorMenu);
 
 		return menu;
 	}
@@ -54,29 +55,41 @@ public class MenuFactory implements Serializable {
 	}
 
 
-	private Multimap<String, HashMap<String, String>> createPropertyMap(
+	private HashMap<String, HashMap<String, String>> createPropertyMap(
 			HashMap<String, String> navigationMap) {
+		HashMap<String, HashMap<String, String>> itemMap = null;
 
-		Multimap<String, String> groupMap = ArrayListMultimap.create();
 
-		for (String key : navigationMap.keySet()) {
-			String newKey = key.split(IDE_CORE_GROUP)[1];
+		try {
+//		HashMap<String, List<String>> groupMap = new HashMap<>();
+			MultiValueMap groupMap = new MultiValueMap();
 
-			Scanner sc = new Scanner(newKey);
-			String group = sc.next();
-			groupMap.put(group, sc.nextLine());
-			sc.close();
-		}
+			for (String key : navigationMap.keySet()) {
 
-		Multimap<String, HashMap<String, String>> itemMap = ArrayListMultimap.create();
+				String newKey = key.split(IDE_CORE_GROUP)[1];
 
-		for (String parentKey : groupMap.keySet()) {
-			HashMap<String, String> childMap = new HashMap<>();
-			for (String childKey : groupMap.get(parentKey)) {
-				String fullKey = IDE_CORE_GROUP + "." + parentKey + "." + childKey;
-				childMap.put(childKey, navigationMap.get(fullKey));
+				Scanner sc = new Scanner(newKey).useDelimiter("\\.");
+				String group = sc.next();
+				groupMap.put(group, sc.next());
+
+				sc.close();
 			}
-			itemMap.put(parentKey, childMap);
+
+			itemMap = new HashMap<>();
+
+			for (Object parentKey : groupMap.keySet()) {
+
+				HashMap<String, String> childMap = new HashMap<>();
+
+				for (Object childKey : groupMap.getCollection(parentKey)) {
+					String fullKey = IDE_CORE_GROUP + parentKey + "." + childKey;
+					childMap.put((String) childKey, navigationMap.get(fullKey));
+				}
+
+				itemMap.put((String) parentKey, childMap);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 
 		return itemMap;

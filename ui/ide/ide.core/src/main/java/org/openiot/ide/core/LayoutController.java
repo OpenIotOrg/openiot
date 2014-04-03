@@ -22,14 +22,12 @@ package org.openiot.ide.core;
 
 import org.omnifaces.cdi.ViewScoped;
 import org.openiot.commons.util.PropertyManagement;
+import org.primefaces.model.menu.DefaultMenuModel;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Named;
-import java.io.IOException;
 import java.io.Serializable;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.HashMap;
 
 /**
@@ -40,23 +38,22 @@ import java.util.HashMap;
 @ViewScoped
 public class LayoutController implements Serializable {
 
-	private HashMap<String, Boolean> map;
 	private String navigation;
 
 	@Inject
 	private MenuFactory menuFactory;
 
-	private HashMap<String, String> navigationMap;
-
+	private DefaultMenuModel menu;
 
 	@PostConstruct
 	public void init() {
 
 		PropertyManagement props = new PropertyManagement();
-		navigationMap = props.getIdeNavigationSettings();
+		HashMap<String, String> navigationMap = props.getIdeNavigationSettings();
+
+		menu = menuFactory.createMenu(navigationMap);
 
 		navigation = "welcome.jsf";
-		map = new HashMap<String, Boolean>();
 	}
 
 	public String getNavigation() {
@@ -67,32 +64,35 @@ public class LayoutController implements Serializable {
 		this.navigation = navigation;
 	}
 
+	public DefaultMenuModel getMenu() {
+		return menu;
+	}
+
 	/**
 	 * Checks if the component exists / is Loaded in order to display the menu
 	 * link
 	 *
 	 * @return boolean
 	 */
-	public boolean isLoaded(String url) {
-
-		Boolean b = true;
-
-		if (map.containsKey(url)) {
-			b = map.get(url);
-		} else {
-			try {
-				URL u = new URL(url);
-				HttpURLConnection huc = (HttpURLConnection) u.openConnection();
-				huc.setRequestMethod("HEAD");
-				huc.connect();
-				b = huc.getResponseCode() == HttpURLConnection.HTTP_OK;
-				map.put(url, b);
-			} catch (IOException e) {
-				// e.printStackTrace();
-			}
-		}
-
-		return b;
-	}
-
+//	public boolean isLoaded(String url) {
+//
+//		Boolean b = true;
+//
+//		if (map.containsKey(url)) {
+//			b = map.get(url);
+//		} else {
+//			try {
+//				URL u = new URL(url);
+//				HttpURLConnection huc = (HttpURLConnection) u.openConnection();
+//				huc.setRequestMethod("HEAD");
+//				huc.connect();
+//				b = huc.getResponseCode() == HttpURLConnection.HTTP_OK;
+//				map.put(url, b);
+//			} catch (IOException e) {
+//				// e.printStackTrace();
+//			}
+//		}
+//
+//		return b;
+//	}
 }
