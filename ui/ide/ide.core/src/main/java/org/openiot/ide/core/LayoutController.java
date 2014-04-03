@@ -2,7 +2,7 @@ package org.openiot.ide.core;
 
 /**
  *    Copyright (c) 2011-2014, OpenIoT
- *    
+ *
  *    This file is part of OpenIoT.
  *
  *    OpenIoT is free software: you can redistribute it and/or modify
@@ -21,14 +21,12 @@ package org.openiot.ide.core;
  */
 
 import org.omnifaces.cdi.ViewScoped;
-import org.openiot.commons.util.PropertyManagement;
 import org.primefaces.model.menu.DefaultMenuModel;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
-import java.util.HashMap;
 
 /**
  * @author Chris Georgoulis e-mail: cgeo@ait.edu.gr
@@ -48,10 +46,8 @@ public class LayoutController implements Serializable {
 	@PostConstruct
 	public void init() {
 
-		PropertyManagement props = new PropertyManagement();
-		HashMap<String, String> navigationMap = props.getIdeNavigationSettings();
 
-		menu = menuFactory.createMenu(navigationMap);
+		menu = menuFactory.createMainMenu();
 
 		navigation = "welcome.jsf";
 	}
