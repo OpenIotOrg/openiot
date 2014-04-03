@@ -37,7 +37,7 @@ import java.util.Iterator;
 import java.util.Properties;
 
 import org.apache.log4j.Logger;
-import org.apache.mina.common.IoSession;
+import org.apache.mina.core.session.IoSession;
 
 public class SafeStorage {
   

@@ -1,6 +1,6 @@
 /**
 *    Copyright (c) 2011-2014, OpenIoT
-*   
+*
 *    This file is part of OpenIoT.
 *
 *    OpenIoT is free software: you can redistribute it and/or modify
@@ -31,24 +31,22 @@ import org.openiot.gsn.wrappers.AbstractWrapper;
 import java.net.InetSocketAddress;
 
 import org.apache.log4j.Logger;
-import org.apache.mina.common.ConnectFuture;
-import org.apache.mina.common.IoSession;
-import org.apache.mina.common.RuntimeIOException;
+import org.apache.mina.core.future.ConnectFuture;
+import org.apache.mina.core.session.IoSession;
 import org.apache.mina.filter.codec.ProtocolCodecFilter;
 import org.apache.mina.filter.codec.serialization.ObjectSerializationCodecFactory;
-import org.apache.mina.transport.socket.nio.SocketConnector;
-import org.apache.mina.transport.socket.nio.SocketConnectorConfig;
+import org.apache.mina.transport.socket.nio.NioSocketConnector;
 /**
- * Required parameters: 
+ * Required parameters:
  * ss-port
  * ss-host
  * wrapper-name
  *
  */
 public abstract class SafeStorageAbstractWrapper extends AbstractWrapper implements MessageHandler{
-	
+
 	private static final long CONNECTION_RETRY_TIME = 10000;
-  
+
   private final transient Logger     logger                 = Logger.getLogger ( SafeStorageAbstractWrapper.class );
 
   public void dispose() {
@@ -58,11 +56,11 @@ public abstract class SafeStorageAbstractWrapper extends AbstractWrapper impleme
   public String getWrapperName() {
     return "Safe Storage Proxy - "+key;
   }
-  
+
   String key,ss_host;
   AddressBean wrapperDetails;
   int ss_port;
-  
+
   public boolean initialize() {
     String wrapper = getActiveAddressBean().getPredicateValue("wrapper-name");
     String vs = getActiveAddressBean().getVirtualSensorName();
@@ -84,41 +82,41 @@ public abstract class SafeStorageAbstractWrapper extends AbstractWrapper impleme
 				logger.error(e.getMessage());
 			}
 		  }
-	  } 
+	  }
   }
-  
+
  /**
   * HELPER METHOD FOR CONNECTING TO STORAGE SERVER
   */
   public boolean connect(String host,int port,AddressBean wrapperDetails,MessageHandler handler,String requester) {
     int CONNECT_TIMEOUT = 30; // seconds
-    SocketConnector connector = new SocketConnector();
+    NioSocketConnector connector = new NioSocketConnector();
     // Change the worker timeout to 1 second to make the I/O thread quit soon
     // when there's no connection to manage.
-    connector.setWorkerTimeout(1);
+    //connector.setWorkerTimeout(1);
     // Configure the service.
-    SocketConnectorConfig cfg = new SocketConnectorConfig();
-    cfg.setConnectTimeout(CONNECT_TIMEOUT);
+	connector.setConnectTimeoutMillis(CONNECT_TIMEOUT*1000);
     ObjectSerializationCodecFactory oscf = new ObjectSerializationCodecFactory();
     oscf.setDecoderMaxObjectSize(oscf.getEncoderMaxObjectSize());
     //logger.debug("MINA Decoder MAX: " + oscf.getDecoderMaxObjectSize() + " MINA Encoder MAX: " + oscf.getEncoderMaxObjectSize());
-    cfg.getFilterChain().addLast("codec",   new ProtocolCodecFilter(oscf));
+    connector.getFilterChain().addLast("codec",   new ProtocolCodecFilter(oscf));
+	connector.setHandler(new SafeStorageClientSessionHandler(wrapperDetails,handler,key ));
     IoSession session = null;
     try {
-      ConnectFuture future = connector.connect(new InetSocketAddress(host, port), new SafeStorageClientSessionHandler(wrapperDetails,handler,key ), cfg);
-      future.join();
+      ConnectFuture future = connector.connect(new InetSocketAddress(host, port));
+      future.awaitUninterruptibly();
       session = future.getSession();
       return true;
-    } catch (RuntimeIOException e) {
-      logger.error("Failed to connect to SafeStorage on "+host+":"+port); 
+    } catch (RuntimeException e) {
+      logger.error("Failed to connect to SafeStorage on "+host+":"+port);
       return false;
     }finally {
       if (session!=null) {
-        session.getCloseFuture().join();
+        session.getCloseFuture().awaitUninterruptibly();
       }
     }
   }
-  
+
   public void restartConnection () {
 	  run();
   }

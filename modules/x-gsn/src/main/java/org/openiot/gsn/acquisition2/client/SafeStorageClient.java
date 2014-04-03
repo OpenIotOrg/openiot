@@ -1,6 +1,6 @@
 /**
 *    Copyright (c) 2011-2014, OpenIoT
-*   
+*
 *    This file is part of OpenIoT.
 *
 *    OpenIoT is free software: you can redistribute it and/or modify
@@ -31,54 +31,57 @@ import java.net.InetSocketAddress;
 
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
-import org.apache.mina.common.ConnectFuture;
-import org.apache.mina.common.IoSession;
-import org.apache.mina.common.RuntimeIOException;
+import org.apache.mina.core.future.ConnectFuture;
+import org.apache.mina.core.session.IoSession;
 import org.apache.mina.filter.codec.ProtocolCodecFilter;
 import org.apache.mina.filter.codec.serialization.ObjectSerializationCodecFactory;
-import org.apache.mina.transport.socket.nio.SocketConnector;
-import org.apache.mina.transport.socket.nio.SocketConnectorConfig;
+import org.apache.mina.transport.socket.nio.NioSocketConnector;
 
 public class SafeStorageClient {
-  
-  private static final int CONNECT_TIMEOUT = 30; // seconds 
-  
+
+  private static final int CONNECT_TIMEOUT = 30; // seconds
+
   private static transient Logger                                logger                              = Logger.getLogger ( SafeStorageClient.class );
-  
-  
-  public SafeStorageClient(String host,int port,AddressBean wrapperDetails) {
-    SocketConnector connector = new SocketConnector();
+
+  public SafeStorageClient(String host, int port, AddressBean wrapperDetails) {
+    NioSocketConnector connector = new NioSocketConnector();
+
     // Change the worker timeout to 1 second to make the I/O thread quit soon
     // when there's no connection to manage.
-    connector.setWorkerTimeout(1);
+    // No longer exists in Mina2
+    // connector.setWorkerTimeout(1);
     // Configure the service.
-    SocketConnectorConfig cfg = new SocketConnectorConfig();
-    cfg.setConnectTimeout(CONNECT_TIMEOUT);
-    cfg.getFilterChain().addLast("codec",   new ProtocolCodecFilter( new ObjectSerializationCodecFactory()));
+    connector.setConnectTimeoutMillis(CONNECT_TIMEOUT * 1000);
+    connector.getFilterChain().addLast("codec", new ProtocolCodecFilter(new ObjectSerializationCodecFactory()));
+
     IoSession session = null;
-    try {
-      ConnectFuture future = connector.connect(new InetSocketAddress(host, port), new SafeStorageClientSessionHandler(wrapperDetails ,new MessageHandler() {
+    connector.setHandler(new SafeStorageClientSessionHandler(wrapperDetails, new MessageHandler() {
 
         public boolean messageToBeProcessed(DataMsg dataMessage) {
           System.out.println(dataMessage);
           return true;
         }
 
-		public void restartConnection() {
-			// TODO Auto-generated method stub
-			
-		}},"requester-1"), cfg);
-      future.join();
+        public void restartConnection() {
+          // TODO Auto-generated method stub
+
+        }
+      }, "requester-1"));
+
+    try {
+      ConnectFuture future = connector.connect(new InetSocketAddress(host, port));
+      future.awaitUninterruptibly();
       session = future.getSession();
-    } catch (RuntimeIOException e) {
-      logger.error("Failed to connect to "+host+":"+port); 
+    } catch (RuntimeException e) {
+      logger.error("Failed to connect to "+host+":"+port);
       logger.error( e.getMessage(),e);
     }finally {
-      if (session!=null)
-        session.getCloseFuture().join();
+      if (session != null) {
+        session.getCloseFuture().awaitUninterruptibly();
+      }
     }
   }
-  
+
   public static void main(String[] args) {
     PropertyConfigurator.configure ( Main.DEFAULT_GSN_LOG4J_PROPERTIES );
     AddressBean wrapperDetails = new AddressBean("mem2",new KeyValueImp("MyKey","MyValue"));
