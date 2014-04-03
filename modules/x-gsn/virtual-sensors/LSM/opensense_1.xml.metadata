@@ -1,13 +1,13 @@
 source=http\://planetdata.epfl.ch\:22002/gsn?REQUEST\=113&name\=opensense_1
 sensorName=opensense_1
-dataGraph=http\://lsm.deri.ie/OpenIoT/sensordata\#
+dataGraph=http\://lsm.deri.ie/OpenIoT/test/sensordata\#
 field.temperature.unit=C
 registered=true
 field.humidity.unit=Percent
 field.temperature.propertyName=http\://lsm.deri.ie/OpenIoT/Temperature
-sensorID=http\://lsm.deri.ie/resource/20772733567513
+sensorID=http://lsm.deri.ie/resource/61330620147099
 author=opensense
-metaGraph=http\://lsm.deri.ie/OpenIoT/sensormeta\#
+metaGraph=http\://lsm.deri.ie/OpenIoT/test/sensormeta\#
 fields=humidity,temperature
 field.co.unit=PPM
 sensorType=lausanne

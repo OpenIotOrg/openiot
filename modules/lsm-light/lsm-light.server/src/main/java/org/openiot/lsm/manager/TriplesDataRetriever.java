@@ -111,7 +111,7 @@ public class TriplesDataRetriever {
 		String xsltPath = XSLTMapFile.sensormeta2xslt;
 		xsltPath = ConstantsUtil.realPath + xsltPath;
 //		xsltPath = "webapp/WEB-INF" + xsltPath;
-		TransformerFactory tFactory = TransformerFactory.newInstance();
+		TransformerFactory tFactory = TransformerFactory.newInstance("net.sf.saxon.TransformerFactoryImpl",null);
         String xml = "";
         try {
         	Place place = s.getPlace();
