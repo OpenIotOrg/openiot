@@ -7,11 +7,17 @@ import org.primefaces.model.menu.DefaultMenuItem;
 import org.primefaces.model.menu.DefaultMenuModel;
 import org.primefaces.model.menu.DefaultSubMenu;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import java.io.IOException;
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Scanner;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 
 /**
@@ -39,7 +45,17 @@ public class MenuFactory implements Serializable {
 	@Inject
 	private Resources resources;
 
+	private HashMap<String, HashMap<String, String>> propertyMap;
 
+	@PostConstruct
+	private void init() {
+		propertyMap = createPropertyMap();
+	}
+
+
+	/**
+	 * Creates the main menu according to the Injected Navigation map from Resources
+	 * */
 	public DefaultMenuModel createMainMenu() {
 
 		DefaultMenuModel menu = new DefaultMenuModel();
@@ -54,15 +70,13 @@ public class MenuFactory implements Serializable {
 		monitorMenu.setLabel(SUBMENU_MONITORS);
 		menu.addElement(monitorMenu);
 
-		//get property map
-
-		HashMap<String, HashMap<String, String>> propertyMap = createPropertyMap();
+		validateUrls();
 
 		//build submenus
-		try {
-			for (HashMap<String, String> map : propertyMap.values()) {
+		for (HashMap<String, String> map : propertyMap.values()) {
+			//build main menu item
+			try {
 
-				//build main menu item
 				DefaultMenuItem item = createMenuItem(
 						map.get(FIELD_TITLE), map.get(FIELD_URL));
 				mainMenu.addElement(item);
@@ -74,10 +88,11 @@ public class MenuFactory implements Serializable {
 							createMenuItem(map.get(FIELD_TITLE), monitoringUrl);
 					monitorMenu.addElement(monitorItem);
 				}
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
 		}
+
 
 		//add Ide Core Monitor
 		DefaultMenuItem ideCoreMonitor = createMenuItem("IDE", IDE_CORE_MONITORING_URL);
@@ -87,6 +102,14 @@ public class MenuFactory implements Serializable {
 	}
 
 
+	/**
+	 * Creates a single menu item and sets it's ActionListener to update the current
+	 * navigation Url
+	 *
+	 * @param value
+	 * @param url
+	 * @return
+	 */
 	private DefaultMenuItem createMenuItem(String value, String url) {
 
 		DefaultMenuItem item = new DefaultMenuItem();
@@ -102,6 +125,12 @@ public class MenuFactory implements Serializable {
 	}
 
 
+	/**
+	 * Groups the navigation properties in a Linked Hashmap where
+	 * Key = the navigation group name e.g. Request Presentation
+	 * Values = a Hashmap with the group fields e.g. Url, Title, Active Monitoring
+	 * @return
+	 */
 	private HashMap<String, HashMap<String, String>> createPropertyMap() {
 		HashMap<String, HashMap<String, String>> itemMap = null;
 
@@ -120,7 +149,7 @@ public class MenuFactory implements Serializable {
 			sc.close();
 		}
 
-		itemMap = new HashMap<>();
+		itemMap = new LinkedHashMap<>();
 
 		for (Object parentKey : groupMap.keySet()) {
 
@@ -137,10 +166,93 @@ public class MenuFactory implements Serializable {
 		return itemMap;
 	}
 
+	/**
+	 * checks if the base Url ends with a '/' character and appends accordingly
+	 * @param baseUrl
+	 * @return
+	 */
 	private String createMonitorURL(String baseUrl) {
 		if (!StringUtils.endsWith(baseUrl, "/")) {
 			baseUrl += "/";
 		}
 		return baseUrl + FIELD_MONITORING;
 	}
+
+	/**
+	 * Creates
+	 */
+	private void validateUrls() {
+
+		//Spawn a new Thread for each url Validation
+		List<Thread> threads = new ArrayList<>(propertyMap.size());
+
+		ExecutorService es = Executors.newFixedThreadPool(propertyMap.entrySet().size());
+
+
+		for (Map.Entry<String, HashMap<String, String>> entry : propertyMap.entrySet()) {
+			es.execute(new ValidatorRunnable(entry));
+			threads.add(new Thread(new ValidatorRunnable(entry)));
+		}
+
+		es.shutdown();
+		try {
+			es.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+
+//		for (Thread t : threads) {
+//			t.start();
+//		}
+//
+//		for (Thread t : threads) {
+//			try {
+//				t.join();
+//			} catch (InterruptedException e) {
+//				e.printStackTrace();
+//			}
+//		}
+
+	}
+
+	/**
+	 * This private class validates the URLs in the property map and accordingly
+	 * removes the invalid ones
+	 */
+	private class ValidatorRunnable implements Runnable {
+
+		Map.Entry<String, HashMap<String, String>> entry;
+
+		private ValidatorRunnable(Map.Entry<String, HashMap<String, String>> entry) {
+			this.entry = entry;
+		}
+
+		@Override
+		public void run() {
+			String url = entry.getValue().get(FIELD_URL);
+			boolean isUrlValid = isValid(entry.getValue().get(FIELD_URL));
+
+			if (!isUrlValid) {
+				propertyMap.remove(entry.getKey());
+			}
+		}
+
+		public boolean isValid(String url) {
+//
+			boolean isValid = true;
+
+			try {
+				URL u = new URL(url);
+				HttpURLConnection huc = (HttpURLConnection) u.openConnection();
+				huc.setRequestMethod("HEAD");
+				huc.connect();
+				isValid = huc.getResponseCode() == HttpURLConnection.HTTP_OK;
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			return isValid;
+		}
+	}
+
+
 }

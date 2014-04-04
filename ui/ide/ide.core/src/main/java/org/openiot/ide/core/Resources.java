@@ -16,5 +16,4 @@ public class Resources implements Serializable {
 		PropertyManagement props = new PropertyManagement();
 		return props.getIdeNavigationSettings();
 	}
-
 }
