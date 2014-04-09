@@ -20,13 +20,23 @@
 
 package org.openiot.gsn.metadata.LSM;
 
-import lsm.beans.*;
-import lsm.server.LSMTripleStore;
+import org.apache.log4j.Logger;
+import org.openiot.lsm.beans.*;
+import org.openiot.lsm.server.LSMTripleStore;
+//import lsm.beans.*;
+//import lsm.server.LSMTripleStore;
+
 
 import java.util.Date;
 
 public class utils {
 
+    private static final transient Logger logger = Logger.getLogger(utils.class);
+
+    private static LSMSchema lsmSchema=new LSMSchema();
+	static{
+		lsmSchema.initFromConfigFile(LSMRepository.LSM_CONFIG_PROPERTIES_FILE);
+	}
     public static String addSensorToLSM(String username,
                                         String password,
                                         String metaGraph,
@@ -37,30 +47,30 @@ public class utils {
                                         String sensorType,
                                         String infor,
                                         String sensorSource,
+                                        String [] properties,
                                         double latitude,
                                         double longitude) {
 
         String sensorID = "";
-
+        logger.info("Add sensor: "+sensorName+","+sensorAuthor+","+sourceType+","+sensorType);
+        logger.info("Graphs: "+metaGraph+","+dataGraph);
+        for (String p:properties){
+        logger.info("Properties: "+p);}
         try {
             // 1. Create an instance of Sensor class and set the sensor metadata
             Sensor sensor = new Sensor();
             sensor.setName(sensorName);
             sensor.setAuthor(sensorAuthor);
             sensor.setSourceType(sourceType);
+            sensor.setSensorType(sensorType);
             sensor.setInfor(infor);
             sensor.setSource(sensorSource);
-
-            sensor.setSensorType(sensorType);
-            //your original code
-//            sensor.setMetaGraph("http://lsm.deri.ie/yourMetaGraphURL");
-//            sensor.setDataGraph("http://lsm.deri.ie/yourDataGraphURL");
-
-            //in this case, for OpenIoT, you have to set:
-            sensor.setMetaGraph(metaGraph);
-            sensor.setDataGraph(dataGraph);
-
+            for (String p:properties){
+            	sensor.addProperty(p);
+            }
             sensor.setTimes(new Date());
+            sensor.setMetaGraph(metaGraph);
+            sensor.setDataGraph(dataGraph);            
             // set sensor location information (latitude, longitude, city, country, continent...)
             Place place = new Place();
             place.setLat(latitude);
@@ -71,22 +81,20 @@ public class utils {
             * Set sensor's author
             * If you don't have LSM account, please visit LSM Home page (http://lsm.deri.ie) to sign up
             */
-            User user = new User();
-            user.setUsername(username);
-            user.setPass(password);
-            sensor.setUser(user);
+            //User user = new User();
+            //user.setUsername(username);
+            //user.setPass(password);
+            //sensor.setUser(user);
 
             // create LSMTripleStore instance
-            LSMTripleStore lsmStore = new LSMTripleStore();
+            logger.info("Connecting to LSM: "+lsmSchema.getLsmServerUrl());
+            LSMTripleStore lsmStore = new LSMTripleStore(lsmSchema.getLsmServerUrl());
 
             //set user information for authentication
-            lsmStore.setUser(user);
+            //lsmStore.setUser(user);
 
             //call sensorAdd method
-            lsmStore.sensorAdd(sensor);
-
-            sensorID = sensor.getId();
-
+            sensorID=lsmStore.sensorAdd(sensor);           
             //System.out.println(listSensor(sensor).toString());
 
         } catch (Exception ex) {
@@ -103,33 +111,36 @@ public class utils {
                                                 String metaGraph,
                                                 String dataGraph,
                                                 String sensorID,
-                                                String fieldName,
+                                                String propertyType,
                                                 double fieldValue,
                                                 String fieldUnit,
                                                 Date date) {
 
         boolean success = true;
+        
+        logger.debug("Update sensor data: "+sensorID +","+propertyType+","+metaGraph+","+dataGraph);
+        
         try {
             /*
             * Set sensor's author
             * If you don't have LSM account, please visit LSM Home page (http://lsm.deri.ie) to sign up
             */
-            User user = new User();
-            user.setUsername(username);
-            user.setPass(password);
+            //User user = new User();
+            //user.setUsername(username);
+            //user.setPass(password);
 
             Sensor sensor = new Sensor();
 
             sensor.setId(sensorID);
 
 
-            sensor.setUser(user);
+            //sensor.setUser(user);
 
             // create LSMTripleStore instance
-            LSMTripleStore lsmStore = new LSMTripleStore();
+            LSMTripleStore lsmStore = new LSMTripleStore(lsmSchema.getLsmServerUrl());
 
             //set user information for authentication
-            lsmStore.setUser(user);
+            //lsmStore.setUser(user);
 
             /*
             * An Observation is a Situation in which a Sensing method has been used to estimate or
@@ -139,23 +150,25 @@ public class utils {
 
             //create an Observation object
             Observation obs = new Observation();
-
+          
             // set SensorURL of observation
-            obs.setSensor(sensorID);
+            
             //set time when the observation was observed. In this example, the time is current local time.
             obs.setTimes(date);
-            obs.setMetaGraph(metaGraph);
-            obs.setDataGraph(dataGraph);
             /*
             * Relation linking an Observation to the Property that was observed
             */
             ObservedProperty obvTem = new ObservedProperty();
             obvTem.setObservationId(obs.getId());
-            obvTem.setPropertyName(fieldName);
+            //obvTem.setPropertyName(fieldName);  //jpc updated API
+            obvTem.setPropertyType(propertyType);
             obvTem.setValue(fieldValue);
             obvTem.setUnit(fieldUnit);
             obs.addReading(obvTem);
+            obs.setMetaGraph(metaGraph);
+            obs.setDataGraph(dataGraph);
 
+            obs.setSensor(sensorID);
             lsmStore.sensorDataUpdate(obs);
 
         } catch (Exception ex) {
@@ -205,6 +218,7 @@ public class utils {
                 metaData.getSensorType(),
                 metaData.getInformation(),
                 metaData.getSource(),
+                metaData.getProperties(),
                 metaData.getLatitude(),
                 metaData.getLongitude());
 
@@ -227,7 +241,7 @@ public class utils {
                 .append("\nsourcetyp : ").append(s.getSourceType())
                 .append("\nplace     : ").append(s.getPlace())
                 .append("\ntimes     : ").append(s.getTimes())
-                .append("\nuser      : ").append(s.getUser())
+                //.append("\nuser      : ").append(s.getUser())
                 .append("\nstring    : ").append(s.toString())
                 .append("\nlatitude  : ").append(s.getPlace().getLat())
                 .append("\nlongitude : ").append(s.getPlace().getLng())

@@ -29,9 +29,11 @@ import org.openiot.commons.util.PropertyManagement;
 import org.openrdf.query.BindingSet;
 import org.openrdf.query.QueryEvaluationException;
 import org.openrdf.query.TupleQueryResult;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import lsm.schema.LSMSchema;
-import lsm.server.LSMTripleStore;
+import org.openiot.lsm.schema.LSMSchema;
+import org.openiot.lsm.server.LSMTripleStore;
 
 import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntClass;
@@ -57,24 +59,24 @@ public class ServiceStatus {
 							String str = (b.getValue((String) n) == null) ? null : b.getValue((String) n)
 									.stringValue();
 							srvcStatus.setId(str);
-							System.out.print("srvcStatus id: " + srvcStatus.getId() + " ");
+							logger.debug("srvcStatus id: " + srvcStatus.getId() + " ");
 						} else if (((String) n).equalsIgnoreCase("srvcStatusTime")) {
 							String str = (b.getValue((String) n) == null) ? null : b.getValue((String) n)
 									.stringValue();
 							srvcStatus.setTime(str);
-							System.out.print("srvcStatusTime : " + srvcStatus.getTime() + " ");
+							logger.debug("srvcStatusTime : " + srvcStatus.getTime() + " ");
 						} else if (((String) n).equalsIgnoreCase("srvcStatusStatus")) {
 							String str = (b.getValue((String) n) == null) ? null : b.getValue((String) n)
 									.stringValue();
 							srvcStatus.setStatus(ServiceStatus.State.toEnum(str));
-							System.out.print("srvcStatusStatus : " + srvcStatus.getStatus().getCode() + " ");
+							logger.debug("srvcStatusStatus : " + srvcStatus.getStatus().getCode() + " ");
 						} else if (((String) n).equalsIgnoreCase("srvcStatusOf")) {
 							String str = (b.getValue((String) n) == null) ? null : b.getValue((String) n)
 									.stringValue();
 							Service srvc = new Service();
 							srvc.setId(str);
 							srvcStatus.setServiceOf(srvc);
-							System.out.print("srvcStatusOf : " + srvcStatus.getServiceOf().getId() + " ");
+							logger.debug("srvcStatusOf : " + srvcStatus.getServiceOf().getId() + " ");
 						}
 					}
 					serviceStatusList.add(srvcStatus);
@@ -190,6 +192,8 @@ public class ServiceStatus {
 		}
 
 	}// class
+	
+	final static Logger logger = LoggerFactory.getLogger(ServiceStatus.class);
 
 	private LSMSchema myOnt;
 	private LSMSchema ontInstance;

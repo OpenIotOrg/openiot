@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<ns2:OSDSpec userID="nodeID://b48397" xmlns:ns2="urn:openiot:osdspec:xsd:1" xmlns:ns3="http://www.w3.org/2007/SPARQL/protocol-types#">
+<ns2:OSDSpec userID="nodeID://b48397" xmlns:ns2="http://www.openiot.eu/osdspec" xmlns:ns3="http://www.w3.org/2007/SPARQL/protocol-types#">
     <ns2:OAMO name="Gauge demo">
         <ns2:description><![CDATA[
 This example shows how to setup the gauge widget. In this example we setup a widget

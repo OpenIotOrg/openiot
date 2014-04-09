@@ -16,6 +16,8 @@
 *    along with OpenIoT.  If not, see <http://www.gnu.org/licenses/>.
 *
 *     Contact: OpenIoT mailto: info@openiot.eu
+ * @author wombachera
+ * @author Mehdi Riahi
 */
 
 package org.openiot.gsn.wrappers;

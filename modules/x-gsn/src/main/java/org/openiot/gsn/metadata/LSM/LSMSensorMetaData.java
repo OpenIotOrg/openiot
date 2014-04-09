@@ -56,6 +56,7 @@ public class LSMSensorMetaData {
     private String information;
     private String sourceType;
     private String source;
+    private String[] properties;
     private boolean registeredToLSM;
 
     public double getLatitude() {
@@ -161,7 +162,9 @@ public class LSMSensorMetaData {
 
         try {
             //TODO: optimization: read properties file once, then scan for each field
-            this.setSensorName(PropertiesReader.readProperty(fileName, "sensorName"));
+            logger.debug("Read file "+fileName);
+            
+        	this.setSensorName(PropertiesReader.readProperty(fileName, "sensorName"));
             this.setAuthor(PropertiesReader.readProperty(fileName, "author"));
             this.setInformation(PropertiesReader.readProperty(fileName, "information"));
             this.setSensorType(PropertiesReader.readProperty(fileName, "sensorType"));
@@ -188,6 +191,12 @@ public class LSMSensorMetaData {
                 fields.put(fieldName, lsmFieldMetaData);
                 logger.info(fields.get(fieldName));
             }
+            String [] props = new String[fieldNames.length];
+            int i=0;
+            for (LSMFieldMetaData field : fields.values()){
+            	props[i]=field.getLsmPropertyName();i++;
+            }
+            this.setProperties(props);
 
         } catch (NullPointerException e) {
             logger.warn("Error while reading properties file: " + fileName);
@@ -205,5 +214,13 @@ public class LSMSensorMetaData {
     public boolean setSensorAsRegistered(String fileName) {
         return PropertiesReader.writeProperty(fileName, "registered", "true");
     }
+
+	public String[] getProperties() {
+		return properties;
+	}
+
+	public void setProperties(String[] properties) {
+		this.properties = properties;
+	}
 
 }

@@ -57,17 +57,17 @@ public class GetAvailableServiceIDsImpl {
 							String str = (b.getValue((String) n) == null) ? null : b.getValue((String) n)
 									.stringValue();
 							id.setId(str);
-							System.out.println("srvc id: " + id.getId() + " ");
+							logger.debug("srvc id: " + id.getId() + " ");
 						} else if (((String) n).equalsIgnoreCase("srvcName")) {
 							String str = (b.getValue((String) n) == null) ? null : b.getValue((String) n)
 									.stringValue();
 							id.setName(str);
-							System.out.println("srvcName : " + id.getName() + " ");
+							logger.debug("srvcName : " + id.getName() + " ");
 						} else if (((String) n).equalsIgnoreCase("srvcDesc")) {
 							String str = (b.getValue((String) n) == null) ? null : b.getValue((String) n)
 									.stringValue();
 							id.setDescription(str);
-							System.out.println("srvcDesc : " + id.getDescription() + " ");
+							logger.debug("srvcDesc : " + id.getDescription() + " ");
 						}
 					}
 					dids.getDescriptiveID().add(id);
@@ -118,7 +118,7 @@ public class GetAvailableServiceIDsImpl {
 	public GetAvailableServiceIDsImpl(String applicationID) {
 		
 		PropertyManagement propertyManagement = new PropertyManagement();		
-		openiotFunctionalGraph = propertyManagement.getSchedulerLsmFunctionalGraph();
+		openiotFunctionalGraph = propertyManagement.getSdumLsmFunctionalGraph();
 		
 		this.applicationID = applicationID;
 		logger.debug("Received Parameters: " + "applicationID=" + applicationID);

@@ -20,7 +20,6 @@ package org.openiot.lsm.http;
 *     Contact: OpenIoT mailto: info@openiot.eu
 */
 
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -34,13 +33,14 @@ import java.io.Writer;
 import java.util.Locale;
 
 import javax.servlet.ServletException;
-import javax.servlet.ServletOutputStream;
-import javax.servlet.annotation.WebInitParam;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
+/**
+ * 
+ * @author Hoan Nguyen Mau Quoc
+ * 
+ */
 /**
  * Servlet implementation class DowloadFileServlet
  */

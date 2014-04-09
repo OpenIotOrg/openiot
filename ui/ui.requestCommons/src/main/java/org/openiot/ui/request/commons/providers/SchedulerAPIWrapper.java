@@ -21,18 +21,17 @@
 package org.openiot.ui.request.commons.providers;
 
 import java.io.StringReader;
-import java.io.StringWriter;
 import java.util.logging.Level;
 
 import javax.ws.rs.core.UriBuilder;
 import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.stream.StreamSource;
 
 import org.jboss.resteasy.client.ClientRequest;
 import org.jboss.resteasy.client.ClientRequestFactory;
 import org.jboss.resteasy.client.ClientResponse;
+
 import org.openiot.commons.osdspec.model.OSDSpec;
 import org.openiot.commons.sensortypes.model.SensorTypes;
 import org.openiot.ui.request.commons.logging.LoggerService;
@@ -79,9 +78,7 @@ public class SchedulerAPIWrapper {
 		ClientRequest registerServiceRequest = clientRequestFactory.createRelativeRequest("/rest/services/registerService");
 
 		try {
-			String osdSpecString = marshalOSDSpec(osdSpec);
-
-			registerServiceRequest.body("application/xml", osdSpecString);
+			registerServiceRequest.body("application/xml", osdSpec);
 
 			ClientResponse<String> response;
 
@@ -95,35 +92,6 @@ public class SchedulerAPIWrapper {
 			} catch (Throwable ex) {
 				throw new APIException(ex);
 			}
-		} catch (Exception ex) {
-			throw new APIException(ex);
-		}
-	}
-	
-	public static String marshalOSDSpec(OSDSpec osdSpec) throws APIException{
-		String osdSpecString = "";
-		try {
-			JAXBContext jc = JAXBContext.newInstance(OSDSpec.class);
-			Marshaller marshaller = jc.createMarshaller();
-			marshaller.setProperty(Marshaller.JAXB_ENCODING, "UTF-8");
-			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-			java.io.StringWriter sw = new StringWriter();
-			marshaller.marshal(osdSpec, sw);
-			osdSpecString = sw.toString().replace("&lt;", "<").replace("&gt;", ">");
-			return osdSpecString;
-		} catch (Exception ex) {
-			throw new APIException(ex);
-		}
-	}
-	
-	public static OSDSpec unmarshalOSDSpec(String osdSpecString) throws APIException{
-		try {
-			// Unserialize
-			JAXBContext jaxbContext = JAXBContext.newInstance(OSDSpec.class);
-			Unmarshaller um = jaxbContext.createUnmarshaller();
-			OSDSpec spec = (OSDSpec) um.unmarshal(new StreamSource(new StringReader(osdSpecString)));
-			
-			return spec;
 		} catch (Exception ex) {
 			throw new APIException(ex);
 		}

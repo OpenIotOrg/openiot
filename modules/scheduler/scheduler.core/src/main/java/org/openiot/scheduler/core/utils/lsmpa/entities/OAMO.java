@@ -5,9 +5,12 @@ import java.util.List;
 import java.util.Set;
 
 import org.openiot.commons.util.PropertyManagement;
+import org.openiot.scheduler.core.api.impl.RegisterService.RegisterServiceImpl;
 import org.openrdf.query.BindingSet;
 import org.openrdf.query.QueryEvaluationException;
 import org.openrdf.query.TupleQueryResult;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntClass;
@@ -16,10 +19,11 @@ import com.hp.hpl.jena.vocabulary.RDF;
 import com.hp.hpl.jena.vocabulary.RDFS;
 import com.hp.hpl.jena.vocabulary.XSD;
 
-import lsm.schema.LSMSchema;
-import lsm.server.LSMTripleStore;
+import org.openiot.lsm.schema.LSMSchema;
+import org.openiot.lsm.server.LSMTripleStore;
 
 public class OAMO {
+	
 	
 	public static class Queries {
 		public static ArrayList<OAMO> parseOAMO(TupleQueryResult qres) {
@@ -35,19 +39,19 @@ public class OAMO {
 							String str = (b.getValue((String) n) == null) ? null : b.getValue((String) n)
 									.stringValue();
 							oamo.setId(str);
-							System.out.println("oamoID: " + oamo.getId() + " ");
+							logger.debug("oamoID: " + oamo.getId() + " ");
 						} else if (((String) n).equalsIgnoreCase("oamoName")) {
 							String str = (b.getValue((String) n) == null) ? null : b.getValue((String) n)
 									.stringValue();
 							oamo.setName(str);
-							System.out.println("oamoName : " + oamo.getName() + " ");
+							logger.debug("oamoName : " + oamo.getName() + " ");
 						} else if (((String) n).equalsIgnoreCase("userID")) {
 							String str = (b.getValue((String) n) == null) ? null : b.getValue((String) n)
 									.stringValue();
 							User user = new User();
 							user.setId(str);
 							oamo.setUser(user);
-							System.out.println("userID : " + oamo.getUser().getId() + " ");
+							logger.debug("userID : " + oamo.getUser().getId() + " ");
 						}
 						// else if(((String) n).equalsIgnoreCase("srvcID"))
 						// {
@@ -62,12 +66,12 @@ public class OAMO {
 							String str = (b.getValue((String) n) == null) ? null : b.getValue((String) n)
 									.stringValue();
 							oamo.setDescription(str);
-							System.out.println("oamoDesc : " + oamo.getDescription() + " ");
+							logger.debug("oamoDesc : " + oamo.getDescription() + " ");
 						} else if (((String) n).equalsIgnoreCase("oamoGraphMeta")) {
 							String str = (b.getValue((String) n) == null) ? null : b.getValue((String) n)
 									.stringValue();
 							oamo.setGraphMeta(str);
-							System.out.println("oamoGraphMeta : " + oamo.getGraphMeta() + " ");
+							logger.debug("oamoGraphMeta : " + oamo.getGraphMeta() + " ");
 						}
 					}
 					oamoList.add(oamo);
@@ -126,6 +130,8 @@ public class OAMO {
 		}
 	}// class
 
+	final static Logger logger = LoggerFactory.getLogger(OAMO.class);
+	
 	private LSMSchema myOnt;
 	private LSMSchema ontInstance;
 	private String graph;

@@ -72,3 +72,10 @@ logs/
 
 # OS generated files #
 ######################
+/MyFile.5.log.db
+/MyFile.data.db
+*.log.db
+/MyFile.index.db
+/MyFile.lock.db
+/MyFile.trace.db
+/csv-check-points

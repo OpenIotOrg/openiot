@@ -27,6 +27,8 @@ import org.openiot.commons.util.PropertyManagement;
 import org.openrdf.query.BindingSet;
 import org.openrdf.query.QueryEvaluationException;
 import org.openrdf.query.TupleQueryResult;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntClass;
@@ -35,8 +37,8 @@ import com.hp.hpl.jena.vocabulary.RDF;
 import com.hp.hpl.jena.vocabulary.RDFS;
 import com.hp.hpl.jena.vocabulary.XSD;
 
-import lsm.schema.LSMSchema;
-import lsm.server.LSMTripleStore;
+import org.openiot.lsm.schema.LSMSchema;
+import org.openiot.lsm.server.LSMTripleStore;
 
 public class Access {
 	
@@ -54,7 +56,7 @@ public class Access {
 							String str = (b.getValue((String) n) == null) ? null : b.getValue((String) n)
 									.stringValue();
 							acs.setId(str);
-							System.out.print("acs id: " + acs.getId() + " ");
+							logger.debug("acs id: " + acs.getId() + " ");
 						}
 					}
 					accessList.add(acs);
@@ -136,6 +138,8 @@ public class Access {
 		}
 	}// class
 
+	final static Logger logger = LoggerFactory.getLogger(Access.class);
+	
 	private LSMSchema myOnt;
 	private LSMSchema ontInstance;
 	private String graph;

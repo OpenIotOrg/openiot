@@ -22,6 +22,7 @@ package org.openiot.ui.request.definition.web.scopes.controllers.pages;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.io.StringReader;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -31,6 +32,9 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.RequestScoped;
 import javax.faces.context.FacesContext;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Unmarshaller;
+import javax.xml.transform.stream.StreamSource;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -56,6 +60,7 @@ import org.openiot.ui.request.commons.nodes.interfaces.GraphNode;
 import org.openiot.ui.request.commons.nodes.interfaces.GraphNodeProperty;
 import org.openiot.ui.request.commons.providers.SchedulerAPIWrapper;
 import org.openiot.ui.request.commons.providers.exceptions.APIException;
+import org.openiot.ui.request.commons.util.MarshalOSDspecUtils;
 import org.openiot.ui.request.definition.web.factory.PropertyGridFormFactory;
 import org.openiot.ui.request.definition.web.jsf.components.events.NodeInsertedEvent;
 import org.openiot.ui.request.definition.web.model.nodes.impl.sources.GenericSource;
@@ -327,8 +332,12 @@ public class ApplicationDesignPageController implements Serializable {
 
 		// Try to parse OSDSpec
 		OSDSpec spec = null;
-		try {
-			spec = SchedulerAPIWrapper.unmarshalOSDSpec(IOUtils.toString(context.getUploadedSpec().getInputstream(), "UTF-8"));
+		try {			
+			// Unserialize
+			JAXBContext jaxbContext = JAXBContext.newInstance(OSDSpec.class);
+			Unmarshaller um = jaxbContext.createUnmarshaller();
+			spec = (OSDSpec) um.unmarshal(new StreamSource(
+					new StringReader(IOUtils.toString(context.getUploadedSpec().getInputstream(), "UTF-8"))));			
 		} catch (Exception ex) {
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, messages.getString("GROWL_ERROR_HEADER"), FaceletLocalization.getLocalisedMessage(messages, "ERROR_COULD_NOT_PARSE_OSDSPEC_FILE")));
 			return;
@@ -361,7 +370,12 @@ public class ApplicationDesignPageController implements Serializable {
 
 		// Export spec
 		OSDSpec spec = getContext().getAppManager().exportOSDSpec();
-		String osdSpecString = SchedulerAPIWrapper.marshalOSDSpec(spec);
+		String osdSpecString;
+		try {
+			osdSpecString = MarshalOSDspecUtils.marshalOSDSpec(spec);
+		} catch (Exception e) {
+			throw new APIException(e);
+		}
 
 		getContext().setExportedSpec(new DefaultStreamedContent(IOUtils.toInputStream(osdSpecString, "UTF-8"), "application/xml", "applications.xml"));
 	}

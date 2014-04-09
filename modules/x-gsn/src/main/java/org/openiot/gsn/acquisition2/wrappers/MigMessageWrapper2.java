@@ -16,6 +16,10 @@
 *    along with OpenIoT.  If not, see <http://www.gnu.org/licenses/>.
 *
 *     Contact: OpenIoT mailto: info@openiot.eu
+ * @author Mustafa Yuecel
+ * @author Timotee Maret
+ * @author Ali Salehi
+ * @author Mehdi Riahi
 */
 
 package org.openiot.gsn.acquisition2.wrappers;

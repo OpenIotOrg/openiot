@@ -48,7 +48,7 @@ public class SesameSPARQLClient
 	{					
 		
 		PropertyManagement propertyManagement = new PropertyManagement();
-		therepository = new SPARQLRepository(propertyManagement.getSdumLsmSparqlEndPoint());
+		therepository = new SPARQLRepository(propertyManagement.getSchedulerLsmSparqlEndPoint());
 		
 		try {
 			therepository.initialize();
@@ -59,7 +59,8 @@ public class SesameSPARQLClient
 		}
 	}
 	public SesameSPARQLClient(String url) throws RepositoryException
-	{					
+	{		
+		therepository = new SPARQLRepository(url);
 		try {
 			therepository.initialize();
 		} 

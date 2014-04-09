@@ -19,11 +19,6 @@ package org.openiot.lsm.server;
 *     Contact: OpenIoT mailto: info@openiot.eu
 */
 import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -31,47 +26,55 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Date;
-import java.util.List;
-import java.util.Properties;
+import java.util.HashMap;
 
-
-import org.dom4j.Document;
-import org.dom4j.DocumentHelper;
-import org.dom4j.Element;
 import org.openiot.lsm.beans.Observation;
 import org.openiot.lsm.beans.RDFTuple;
 import org.openiot.lsm.beans.Sensor;
-import org.openiot.lsm.beans.User;
 import org.openiot.lsm.schema.LSMSchema;
-import org.openiot.lsm.utils.ObsConstant;
-
-
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+/**
+ * 
+ * @author Hoan Nguyen Mau Quoc
+ * 
+ */
 
 public class LSMTripleStore implements LSMServer {
     static final int BUFFER_SIZE = 4096;
-	final String RDFServletURL = ObsConstant.ServerHost + "rdfservlet";
-	final String ObjectServletURL = ObsConstant.ServerHost + "objservlet";
-    final String UPLOAD_URL = ObsConstant.ServerHost + "upload";
-	private User user;
+	String RDFServletURL;
+	String ObjectServletURL;
+    String UPLOAD_URL;
+    
+    private String openiot_ServerHost;
+    
+  //logger
+    final static Logger logger = LoggerFactory.getLogger(LSMTripleStore.class);    
+    
+    public String getOpeniot_ServerHost() {
+		return openiot_ServerHost;
+	}
+
+	public LSMTripleStore(String serverHost){
+    	try {
+    		this.openiot_ServerHost = serverHost;
+			RDFServletURL = openiot_ServerHost + "rdfservlet";
+			ObjectServletURL = openiot_ServerHost + "objservlet";
+		    UPLOAD_URL = openiot_ServerHost + "upload";
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}    	
+    }
 	
-		
-	public User getUser() {
-		return user;
-	}
-
-	public void setUser(User user) {
-		this.user = user;
-	}
-
+    
 	@Override
-	public boolean sensorAdd(String triple,String graphURL) {
+	public void sensorAdd(String triples,String graphURL) {
 		// TODO Auto-generated method stub
 		HttpURLConnection conn = null;  
-        DataOutputStream dos = null;  
+		ObjectOutputStream dos = null;  
         String api = "1";
-        String urlString = RDFServletURL+"?api="+api+"&username="+user.getUsername()+"&pass="+user.getPass()
-        		+"&responsetype=xml";
+        String urlString = RDFServletURL;
         try{  
             URL url = new URL(urlString);  
 
@@ -84,14 +87,14 @@ public class LSMTripleStore implements LSMServer {
 
          // Use a post method.  
          conn.setRequestMethod("POST");  
-
+         conn.setRequestProperty("api", api);
+         conn.setRequestProperty("apiType", "insert");
          conn.setRequestProperty("Connection", "Keep-Alive");  
          conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");  
          conn.setRequestProperty("graphURL", graphURL);
          
-         dos = new DataOutputStream( conn.getOutputStream() );  
-//         System.out.println(triple);
-         dos.writeBytes(triple);  
+         dos = new ObjectOutputStream( conn.getOutputStream() );         
+         dos.writeObject(triples);  
          dos.flush();  
          dos.close();  
          
@@ -99,45 +102,26 @@ public class LSMTripleStore implements LSMServer {
 	     int responseCode = conn.getResponseCode();
 	     if (responseCode == HttpURLConnection.HTTP_OK) {
 	            // reads server's response
-	    	 InputStream is =conn.getInputStream();
-	         int ch;
-	         StringBuffer sb = new StringBuffer();        
-	         while ((ch = is.read()) != -1) {
-	             sb.append((char)ch);
-	         }
-	         System.out.println(sb);
-	         Document document = DocumentHelper.parseText(sb.toString());
-	  		 Element root = document.getRootElement();
-	  		 List<Element> elements = root.elements();
-	  		 for(Element elm:elements){
-				 if(elm.getName().equals("login")){
-					 String isLogin = elm.getStringValue();
-					 if(isLogin.equals("false"))
-						 return false;
-				 }else if(elm.getName().equals("feed")){
-					 String isFeed = elm.getStringValue();
-					 if(isFeed.equals("false"))
-						 return false;
-				 }
-			 }          
-	         is.close();
+	    	 BufferedReader reader = new BufferedReader(new InputStreamReader(
+	                    conn.getInputStream()));
+	         String response = reader.readLine();
+	         logger.info(response);
+	         logger.info("your sensor was added");
+//	         System.out.println(response);	        
 	     } else {
-	         System.out.println("Server returned non-OK code: " + responseCode);
+	    	 logger.error("Server returned non-OK code: " + responseCode);
 	     }
         }catch (Exception ex) {  
-        	ex.printStackTrace();
-            System.out.println("cannot send data to server");     
+        	logger.error("sensorAdd returns error",ex);   
         }  
-        return true;
     }
 
 	@Override
-	public boolean sensorDataUpdate(String triples,String graphURL){
+	public void sensorDataUpdate(String triples,String graphURL){
 		HttpURLConnection conn = null;  
-        DataOutputStream dos = null;  
+        ObjectOutputStream dos = null;  
         String api = "2";
-        String urlString = RDFServletURL+"?api="+api+"&username="+user.getUsername()+"&pass="+user.getPass()
-        		+"&responsetype=xml";
+        String urlString = RDFServletURL;
         try{  
             URL url = new URL(urlString);  
 
@@ -150,54 +134,41 @@ public class LSMTripleStore implements LSMServer {
 
          // Use a post method.  
          conn.setRequestMethod("POST");  
-
+         conn.setRequestProperty("api", api);
+         conn.setRequestProperty("apiType", "update");
          conn.setRequestProperty("Connection", "Keep-Alive");  
          conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");  
          conn.setRequestProperty("graphURL", graphURL);
          
-         dos = new DataOutputStream( conn.getOutputStream() );  
-//         System.out.println(triples);
-         dos.writeBytes(triples);  
+         dos = new ObjectOutputStream( conn.getOutputStream() );         
+         dos.writeObject(triples);  
          dos.flush();  
          dos.close();  
          
-         InputStream is =conn.getInputStream();
-         int ch;
-         StringBuffer sb = new StringBuffer();        
-         while ((ch = is.read()) != -1) {
-             sb.append((char)ch);
-         }
-         Document document = DocumentHelper.parseText(sb.toString());
-  		 Element root = document.getRootElement();
-  		 List<Element> elements = root.elements();
-  		 for(Element elm:elements){
-			 if(elm.getName().equals("login")){
-				 String isLogin = elm.getStringValue();
-				 if(isLogin.equals("false"))
-					 return false;
-			 }else if(elm.getName().equals("feed")){
-				 String isFeed = elm.getStringValue();
-				 if(isFeed.equals("false"))
-					 return false;
-			 }
-		 }
-          
-         is.close();
+         int responseCode = conn.getResponseCode();
+	     if (responseCode == HttpURLConnection.HTTP_OK) {
+	            // reads server's response
+	    	 BufferedReader reader = new BufferedReader(new InputStreamReader(
+	                    conn.getInputStream()));
+	         String response = reader.readLine();
+	         logger.info(response);
+	         logger.info("Your sensor data is updated successfully");
+//	         System.out.println(response);	        
+	     } else {
+	    	 logger.error("Server returned non-OK code: " + responseCode);
+	     }
         }catch (Exception ex) {  
-        	ex.printStackTrace();
-            System.out.println("cannot send the data to LSM Server");     
+        	logger.error("sensorDataUpdate returns error",ex);  
         }
-		return true;
 	}
 
 	@Override
-	public boolean sensorDelete(String sensorURL,String graphURL) {
+	public void sensorDelete(String sensorURL,String graphURL) {
 		// TODO Auto-generated method stub
 		HttpURLConnection conn = null;  
-        DataOutputStream dos = null;  
+        ObjectOutputStream dos = null;  
         String api = "3";
-        String urlString = RDFServletURL+"?api="+api+"&username="+user.getUsername()+"&pass="+user.getPass()
-        		+"&responsetype=xml";
+        String urlString = RDFServletURL;
         try{  
             URL url = new URL(urlString);  
 
@@ -210,54 +181,39 @@ public class LSMTripleStore implements LSMServer {
 
          // Use a post method.  
          conn.setRequestMethod("POST");  
-
+         conn.setRequestProperty("api", api);
+         conn.setRequestProperty("apiType", "delete");
          conn.setRequestProperty("Connection", "Keep-Alive");  
-         conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");  
+         conn.setRequestProperty("Content-Type", "text/html");  
          conn.setRequestProperty("graphURL", graphURL);
          
-         dos = new DataOutputStream( conn.getOutputStream() );  
-         dos.writeBytes(sensorURL);  
+         dos = new ObjectOutputStream( conn.getOutputStream() );  
+         dos.writeObject(sensorURL);  
          dos.flush();  
          dos.close();  
          
-         InputStream is =conn.getInputStream();
-         int ch;
-         StringBuffer sb = new StringBuffer();        
-         while ((ch = is.read()) != -1) {
-             sb.append((char)ch);
-         }
-         
-         Document document = DocumentHelper.parseText(sb.toString());
-  		 Element root = document.getRootElement();
-  		 List<Element> elements = root.elements();
-  		 for(Element elm:elements){
-			 if(elm.getName().equals("login")){
-				 String isLogin = elm.getStringValue();
-				 if(isLogin.equals("false"))
-					 return false;
-			 }else if(elm.getName().equals("feed")){
-				 String isFeed = elm.getStringValue();
-				 if(isFeed.equals("false"))
-					 return false;
-			 }
-		 }
-          
-         is.close();
+         int responseCode = conn.getResponseCode();
+	     if (responseCode == HttpURLConnection.HTTP_OK) {
+	            // reads server's response
+	    	 BufferedReader reader = new BufferedReader(new InputStreamReader(
+	                    conn.getInputStream()));
+	         String response = reader.readLine();
+	         logger.info("Sensor is deleted successfully");    
+	     } else {
+	    	 logger.error("Server returned non-OK code: " + responseCode);
+	     }
         }catch (Exception ex) {  
-        	ex.printStackTrace();
-            System.out.println("cannot send the data to LSM Server");     
-        }
-		return true;
+        	logger.error("sensorDelete returns error",ex);  
+        }       
 	}
 	
 	@Override
-	public boolean deleteAllReadings(String sensorURL,String graphURL) {
+	public void deleteAllReadings(String sensorURL,String graphURL) {
 		// TODO Auto-generated method stub
 		HttpURLConnection conn = null;  
-        DataOutputStream dos = null;  
+		ObjectOutputStream dos = null;  
         String api = "4";
-        String urlString = RDFServletURL+"?api="+api+"&username="+user.getUsername()+"&pass="+user.getPass()
-        		+"&responsetype=xml";
+        String urlString = RDFServletURL;
         try{  
             URL url = new URL(urlString);  
 
@@ -270,59 +226,42 @@ public class LSMTripleStore implements LSMServer {
 
          // Use a post method.  
          conn.setRequestMethod("POST");  
-
+         conn.setRequestProperty("api", api);
+         conn.setRequestProperty("apiType", "delete");
          conn.setRequestProperty("Connection", "Keep-Alive");  
          conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");  
          conn.setRequestProperty("graphURL", graphURL);
          
-         dos = new DataOutputStream( conn.getOutputStream() );  
-//         System.out.println(triples);
-         dos.writeBytes(sensorURL);  
+         dos = new ObjectOutputStream( conn.getOutputStream() );
+         dos.writeObject(sensorURL);  
          dos.flush();  
          dos.close();  
          
-         InputStream is =conn.getInputStream();
-         int ch;
-         StringBuffer sb = new StringBuffer();        
-         while ((ch = is.read()) != -1) {
-             sb.append((char)ch);
-         }
-         System.out.println(sb.toString());
-         Document document = DocumentHelper.parseText(sb.toString());
-  		 Element root = document.getRootElement();
-  		 List<Element> elements = root.elements();
-  		 for(Element elm:elements){
- 			 if(elm.getName().equals("login")){
- 				 String isLogin = elm.getStringValue();
- 				 if(isLogin.equals("false"))
- 					 return false;
- 			 }else if(elm.getName().equals("feed")){
- 				 String isFeed = elm.getStringValue();
- 				 if(isFeed.equals("false"))
- 					 return false;
- 			 }
- 		 }
-          
-         is.close();
+         int responseCode = conn.getResponseCode();
+	     if (responseCode == HttpURLConnection.HTTP_OK) {
+	            // reads server's response
+	    	 BufferedReader reader = new BufferedReader(new InputStreamReader(
+	                    conn.getInputStream()));
+	         String response = reader.readLine();
+	         logger.info(response);     
+	     } else {
+	         logger.error("Server returned non-OK code: " + responseCode);
+	     }
         }catch (Exception ex) {  
-        	ex.printStackTrace();
-            System.out.println("cannot send the data to LSM Server");     
+        	logger.error("deleteALlReadings returns error",ex);  
         }
-		return true;
 	}
 
 	@Override
-	public boolean deleteAllReadings(String sensorURL, String graphURL,String dateOperator,
+	public void deleteAllReadings(String sensorURL, String graphURL,String dateOperator,
 			Date fromTime, Date toTime) {
 		// TODO Auto-generated method stub
 				HttpURLConnection conn = null;  
-		        DataOutputStream dos = null;  
+		        ObjectOutputStream dos = null;  
 		        String api = "delete";
-		        String urlString = RDFServletURL+"?api="+api+"&username="+user.getUsername()+"&pass="+user.getPass()
-		        		+"&responsetype=xml";
+		        String urlString = RDFServletURL;
 		        try{  
 		            URL url = new URL(urlString);  
-
 		      // Open a HTTP connection to the URL  
 
 		         conn = (HttpURLConnection) url.openConnection();  
@@ -332,7 +271,8 @@ public class LSMTripleStore implements LSMServer {
 
 		         // Use a post method.  
 		         conn.setRequestMethod("POST");  
-
+		         conn.setRequestProperty("api", api);
+		         conn.setRequestProperty("apiType", "delete");
 		         conn.setRequestProperty("Connection", "Keep-Alive");  
 		         conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");  
 		         conn.setRequestProperty("graphURL", graphURL);
@@ -340,48 +280,34 @@ public class LSMTripleStore implements LSMServer {
 		         conn.setRequestProperty("fromTime", fromTime.toString());
 		         conn.setRequestProperty("toTime", toTime.toString());
 		         
-		         dos = new DataOutputStream( conn.getOutputStream() );  
-//		         System.out.println(triples);
-		         dos.writeBytes(sensorURL);  
+		         dos = new ObjectOutputStream( conn.getOutputStream() );  
+		         dos.writeObject(sensorURL);  
 		         dos.flush();  
 		         dos.close();  
 		         
-		         InputStream is =conn.getInputStream();
-		         int ch;
-		         StringBuffer sb = new StringBuffer();        
-		         while ((ch = is.read()) != -1) {
-		             sb.append((char)ch);
-		         }
-		         Document document = DocumentHelper.parseText(sb.toString());
-		  		 Element root = document.getRootElement();
-		  		 List<Element> elements = root.elements();
-		  		 for(Element elm:elements){
-		  			 if(elm.getName().equals("login")){
-		  				 String isLogin = elm.getStringValue();
-		  				 if(isLogin.equals("false"))
-		  					 return false;
-		  			 }else if(elm.getName().equals("feed")){
-		  				 String isFeed = elm.getStringValue();
-		  				 if(isFeed.equals("false"))
-		  					 return false;
-		  			 }
-		  		 }
-		         is.close();
+		         int responseCode = conn.getResponseCode();
+			     if (responseCode == HttpURLConnection.HTTP_OK) {
+			            // reads server's response
+			    	 BufferedReader reader = new BufferedReader(new InputStreamReader(
+			                    conn.getInputStream()));
+			         String response = reader.readLine();
+			         logger.info(response);
+//			         System.out.println(response);	        
+			     } else {
+			         logger.error("Server returned non-OK code: " + responseCode);
+			     }
 		        }catch (Exception ex) {  
-		        	ex.printStackTrace();
-		            System.out.println("cannot send the data to LSM Server");     
+		            logger.error("deleteAllReadings returns error",ex);     
 		        }
-				return true;
 	}
 
 	@Override
 	public Sensor getSensorById(String sensorURL,String graphURL) {
 		// TODO Auto-generated method stub
 		HttpURLConnection conn = null;  
-        DataOutputStream dos = null;  
+		ObjectOutputStream dos = null;  
         String api = "5";
-        String urlString = RDFServletURL+"?api="+api+"&username="+user.getUsername()+"&pass="+user.getPass()
-        		+"&responsetype=object";
+        String urlString = RDFServletURL;
         Sensor sensor = null;
         try{  
             URL url = new URL(urlString);  
@@ -395,23 +321,29 @@ public class LSMTripleStore implements LSMServer {
 
          // Use a post method.  
          conn.setRequestMethod("POST");  
-
+         conn.setRequestProperty("api", api);
+         conn.setRequestProperty("apiType", "get");
          conn.setRequestProperty("Connection", "Keep-Alive");  
          conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");  
          conn.setRequestProperty("graphURL", graphURL);
          
-         dos = new DataOutputStream( conn.getOutputStream() );  
-         dos.writeBytes(sensorURL);  
+         dos = new ObjectOutputStream( conn.getOutputStream() );  
+         dos.writeObject(sensorURL);  
          dos.flush();  
          dos.close();  
          
-         ObjectInputStream outputFromServlet =new ObjectInputStream(conn.getInputStream());
-         sensor = (Sensor) outputFromServlet .readObject();
-         System.out.println(sensor.getId());
-         
+      // always check HTTP response code from server
+	     int responseCode = conn.getResponseCode();
+	     if (responseCode == HttpURLConnection.HTTP_OK) {
+	         ObjectInputStream outputFromServlet =new ObjectInputStream(conn.getInputStream());
+	         sensor = (Sensor) outputFromServlet .readObject();
+	         logger.info("sensor Id return:"+sensor.getId());
+	     }else {
+	         logger.error("Server returned non-OK code: " + responseCode);
+	     }         
         }catch (Exception ex) {  
-        	ex.printStackTrace();
-            System.out.println("Sorry!!!Your sensor does not exist. Please check your sensorURL i");     
+//        	ex.printStackTrace();
+            logger.error("getSensorById returns error",ex);     
         }
 		return sensor;
 	}
@@ -420,10 +352,9 @@ public class LSMTripleStore implements LSMServer {
 	public Sensor getSensorBySource(String sensorsource,String graphURL) {
 		// TODO Auto-generated method stub		
 		HttpURLConnection conn = null;  
-        DataOutputStream dos = null;  
+		ObjectOutputStream dos = null;  
         String api = "6";
-        String urlString = RDFServletURL+"?api="+api+"&username="+user.getUsername()+"&pass="+user.getPass()
-        		+"&responsetype=object";
+        String urlString = RDFServletURL;
         Sensor sensor = null;
         try{  
             URL url = new URL(urlString);  
@@ -436,23 +367,28 @@ public class LSMTripleStore implements LSMServer {
 
          // Use a post method.  
          conn.setRequestMethod("POST");  
-
+         conn.setRequestProperty("api", api);
+         conn.setRequestProperty("apiType", "get");
          conn.setRequestProperty("Connection", "Keep-Alive");  
          conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");  
          conn.setRequestProperty("graphURL", graphURL);
          
-         dos = new DataOutputStream( conn.getOutputStream() );  
-         dos.writeBytes(sensorsource);  
+         dos = new ObjectOutputStream( conn.getOutputStream() );  
+         dos.writeObject(sensorsource);  
          dos.flush();  
          dos.close();  
          
-         ObjectInputStream outputFromServlet =new ObjectInputStream(conn.getInputStream());
-         sensor = (Sensor) outputFromServlet .readObject();
-         System.out.println(sensor.getId());         
+         int responseCode = conn.getResponseCode();
+	     if (responseCode == HttpURLConnection.HTTP_OK) {
+	    	 ObjectInputStream outputFromServlet =new ObjectInputStream(conn.getInputStream());
+	    	 sensor = (Sensor) outputFromServlet .readObject();
+	    	 logger.info("sensor Id return:"+sensor.getId());
+	     }else {
+	         logger.error("Server returned non-OK code: " + responseCode);
+	     }                  
         }catch (Exception ex) {  
-        	ex.printStackTrace();
-            System.out.println("Sorry!!!Your sensor does not exist. Please check your sensorsource!");     
-            return null;
+//        	ex.printStackTrace();
+        	logger.error("getSensorBySource returns error",ex);     
         }
 		return sensor;
 	}
@@ -467,9 +403,9 @@ public class LSMTripleStore implements LSMServer {
 		HttpURLConnection conn = null;  
         ObjectOutputStream dos = null;  
         int responseCode = 0;
+        String idReturn = "";
         String api = "21";
-        String urlString = ObjectServletURL+"?api="+api+"&username="+user.getUsername()
-        		+"&pass="+user.getPass() +"&responsetype=xml";
+        String urlString = ObjectServletURL;
         try{  
             URL url = new URL(urlString);  
 
@@ -482,44 +418,41 @@ public class LSMTripleStore implements LSMServer {
 
          // Use a post method.  
          conn.setRequestMethod("POST");  
-
+         conn.setRequestProperty("api", api);
+         conn.setRequestProperty("apiType", "insert");
          conn.setRequestProperty("Connection", "Keep-Alive");  
          conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");  
         
-         dos = new ObjectOutputStream( conn.getOutputStream() );  
-         System.out.println(sensor.getId());
+         dos = new ObjectOutputStream( conn.getOutputStream() ); 
          dos.writeObject(sensor);  
          dos.flush();  
          dos.close();  
          
          responseCode = conn.getResponseCode();
 	     if (responseCode == HttpURLConnection.HTTP_OK) {
-	            // reads server's response
-	    	 InputStream is =conn.getInputStream();
-	         int ch;
-	         StringBuffer sb = new StringBuffer();        
-	         while ((ch = is.read()) != -1) {
-	             sb.append((char)ch);
-	         }
-	         is.close();
-	         System.out.println(sb);
-	         return sb.toString();	  		
-	  	}	  		
+	    	 BufferedReader reader = new BufferedReader(new InputStreamReader(
+	                    conn.getInputStream()));
+	         String response = reader.readLine();
+	         logger.info(response);
+	         logger.info("sensor id returns:"+sensor.getId());
+	         idReturn = sensor.getId();
+	     }else {
+		     logger.error("Server returned non-OK code: " + responseCode);
+		 }		
         }catch (Exception ex) {  
-        	ex.printStackTrace();
-            System.out.println("cannot send data to server");     
+//        	ex.printStackTrace();
+            logger.error("sensorAdd returns error",ex);     
         }
-        return responseCode+"";
+        return idReturn;
 	}
 
 	@Override
-	public boolean sensorDataUpdate(Observation observation){
+	public void sensorDataUpdate(Observation observation){
 		// TODO Auto-generated method stub
 			HttpURLConnection conn = null;  
 	        ObjectOutputStream dos = null;  
 	        String api = "22";
-	        String urlString = ObjectServletURL+"?api="+api+"&username="+user.getUsername()+"&pass="+user.getPass()
-	        		+"&responsetype=xml";
+	        String urlString = ObjectServletURL;
 	        try{  
 	            URL url = new URL(urlString);  
 
@@ -532,7 +465,8 @@ public class LSMTripleStore implements LSMServer {
 
 	         // Use a post method.  
 	         conn.setRequestMethod("POST");  
-
+	         conn.setRequestProperty("api", api);
+	         conn.setRequestProperty("apiType", "insert");
 	         conn.setRequestProperty("Connection", "Keep-Alive");  
 	         conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");  
 	        
@@ -542,45 +476,31 @@ public class LSMTripleStore implements LSMServer {
 	         dos.flush();  
 	         dos.close();  
 	         
-	         InputStream is =conn.getInputStream();
-	         int ch;
-	         StringBuffer sb = new StringBuffer();        
-	         while ((ch = is.read()) != -1) {
-	             sb.append((char)ch);
-	         }
-	         System.out.println(sb.toString());
-	         Document document = DocumentHelper.parseText(sb.toString());
-	  		 Element root = document.getRootElement();
-	  		 List<Element> elements = root.elements();
-	  		 for(Element elm:elements){
-	 			 if(elm.getName().equals("login")){
-	 				 String isLogin = elm.getStringValue();
-	 				 if(isLogin.equals("false"))
-	 					 return false;
-	 			 }else if(elm.getName().equals("feed")){
-	 				 String isFeed = elm.getStringValue();
-	 				 if(isFeed.equals("false"))
-	 					 return false;
-	 			 }
-	 		 }
-	         is.close();
+	         int responseCode = conn.getResponseCode();
+		     if (responseCode == HttpURLConnection.HTTP_OK) {
+		    	 BufferedReader reader = new BufferedReader(new InputStreamReader(
+		                    conn.getInputStream()));
+		         String response = reader.readLine();
+		         logger.info(response);
+		         logger.info("Sensor data is updated successfully");
+		         logger.info("Please use LSM Sparql Endpoint http://lsm.deri.ie/sparql to check it");
+		     }else {
+			     logger.error("Server returned non-OK code: " + responseCode);
+			 }
 	        }catch (Exception ex) {  
-	        	ex.printStackTrace();
-	            System.out.println("cannot send the data to LSM Server");     
+//	        	ex.printStackTrace();
+	            logger.error("sensorDataUpdate return error",ex);     
 	        }
-			return true;
 	}
 	
 	
-	@SuppressWarnings("null")
 	@Override
 	public boolean pushRDF(String graphURL,String triples) {
 		// TODO Auto-generated method stub
 		HttpURLConnection conn = null;  
         ObjectOutputStream dos = null;  
         String api = "23";
-        String urlString = ObjectServletURL+"?api="+api+"&username="+user.getUsername()+"&pass="+user.getPass()
-        		+"&responsetype=xml";
+        String urlString = ObjectServletURL;
         try{  
             URL url = new URL(urlString);  
 
@@ -593,9 +513,11 @@ public class LSMTripleStore implements LSMServer {
 
          // Use a post method.  
          conn.setRequestMethod("POST");  
-
+         conn.setRequestProperty("api", api);
+         conn.setRequestProperty("apiType", "insert");
          conn.setRequestProperty("Connection", "Keep-Alive");  
          conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");  
+         conn.setRequestProperty("graphURL", graphURL);
          
          RDFTuple tuple = new RDFTuple(graphURL,triples);
          dos = new ObjectOutputStream( conn.getOutputStream() );
@@ -603,44 +525,30 @@ public class LSMTripleStore implements LSMServer {
          dos.flush();  
          dos.close();  
          
-         InputStream is =conn.getInputStream();
-         int ch;
-         StringBuffer sb = new StringBuffer();        
-         while ((ch = is.read()) != -1) {
-             sb.append((char)ch);
-         }
-//         System.out.println(sb.toString());
-         Document document = DocumentHelper.parseText(sb.toString());
-  		 Element root = document.getRootElement();
-  		 List<Element> elements = root.elements();
-  		 for(Element elm:elements){
- 			 if(elm.getName().equals("login")){
- 				 String isLogin = elm.getStringValue();
- 				 if(isLogin.equals("false"))
- 					 return false;
- 			 }else if(elm.getName().equals("feed")){
- 				 String isFeed = elm.getStringValue();
- 				 if(isFeed.equals("false"))
- 					 return false;
- 			 }
- 		 }
-         is.close();
+         int responseCode = conn.getResponseCode();
+	     if (responseCode == HttpURLConnection.HTTP_OK) {
+	    	 BufferedReader reader = new BufferedReader(new InputStreamReader(
+	                    conn.getInputStream()));
+	         String response = reader.readLine();
+	         logger.info(response);
+	         logger.info("Please use LSM Sparql Endpoint http://lsm.deri.ie/sparql to check it");
+	         return true;
+	     }else {
+		     logger.error("Server returned non-OK code: " + responseCode);
+		 }
         }catch (Exception ex) {  
-        	ex.printStackTrace();
-            System.out.println("cannot send the data to LSM Server");   
-            return false;
+            logger.error("cannot send the data to LSM Server",ex);   
         }
-		return true;
+        return false;
 	}
 
 	@Override
-	public boolean deleteTriples(String graphURL, String triples) {
+	public void deleteTriples(String graphURL, String triples) {
 		// TODO Auto-generated method stub
 		HttpURLConnection conn = null;  
         ObjectOutputStream dos = null;  
         String api = "24";
-        String urlString = ObjectServletURL+"?api="+api+"&username="+user.getUsername()+"&pass="+user.getPass()
-        		+"&responsetype=xml";
+        String urlString = ObjectServletURL;
         try{  
             URL url = new URL(urlString);  
 
@@ -653,9 +561,11 @@ public class LSMTripleStore implements LSMServer {
 
          // Use a post method.  
          conn.setRequestMethod("POST");  
-
+         conn.setRequestProperty("api", api);
+         conn.setRequestProperty("apiType", "insert");
          conn.setRequestProperty("Connection", "Keep-Alive");  
          conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");  
+         conn.setRequestProperty("graphURL", graphURL);
          
          RDFTuple tuple = new RDFTuple(graphURL,triples);
          dos = new ObjectOutputStream( conn.getOutputStream() );
@@ -663,44 +573,28 @@ public class LSMTripleStore implements LSMServer {
          dos.flush();  
          dos.close();  
          
-         InputStream is =conn.getInputStream();
-         int ch;
-         StringBuffer sb = new StringBuffer();        
-         while ((ch = is.read()) != -1) {
-             sb.append((char)ch);
-         }
-//         System.out.println(sb.toString());
-         Document document = DocumentHelper.parseText(sb.toString());
-  		 Element root = document.getRootElement();
-  		 List<Element> elements = root.elements();
-  		 for(Element elm:elements){
- 			 if(elm.getName().equals("login")){
- 				 String isLogin = elm.getStringValue();
- 				 if(isLogin.equals("false"))
- 					 return false;
- 			 }else if(elm.getName().equals("feed")){
- 				 String isFeed = elm.getStringValue();
- 				 if(isFeed.equals("false"))
- 					 return false;
- 			 }
- 		 }
-         is.close();
+         int responseCode = conn.getResponseCode();
+	     if (responseCode == HttpURLConnection.HTTP_OK) {
+	    	 BufferedReader reader = new BufferedReader(new InputStreamReader(
+	                    conn.getInputStream()));
+	         String response = reader.readLine();
+	         logger.info(response);
+	     }else {
+		     logger.error("Server returned non-OK code: " + responseCode);
+		 }
         }catch (Exception ex) {  
-        	ex.printStackTrace();
-            System.out.println("cannot send the data to LSM Server");   
-            return false;
+//        	ex.printStackTrace();
+            logger.error("cannot send the data to LSM Server",ex);   
         }
-		return true;
 	}
 
 	@Override
-	public boolean deleteTriples(String graphURL) {
+	public void deleteTriples(String graphURL) {
 		// TODO Auto-generated method stub
 		HttpURLConnection conn = null;  
         ObjectOutputStream dos = null;  
         String api = "24";
-        String urlString = ObjectServletURL+"?api="+api+"&username="+user.getUsername()+"&pass="+user.getPass()
-        		+"&responsetype=xml";
+        String urlString = ObjectServletURL;
         try{  
             URL url = new URL(urlString);  
 
@@ -713,7 +607,8 @@ public class LSMTripleStore implements LSMServer {
 
          // Use a post method.  
          conn.setRequestMethod("POST");  
-
+         conn.setRequestProperty("api", api);
+         conn.setRequestProperty("apiType", "insert");
          conn.setRequestProperty("Connection", "Keep-Alive");  
          conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");  
          
@@ -723,34 +618,19 @@ public class LSMTripleStore implements LSMServer {
          dos.flush();  
          dos.close();  
          
-         InputStream is =conn.getInputStream();
-         int ch;
-         StringBuffer sb = new StringBuffer();        
-         while ((ch = is.read()) != -1) {
-             sb.append((char)ch);
-         }
-//         System.out.println(sb.toString());
-         Document document = DocumentHelper.parseText(sb.toString());
-  		 Element root = document.getRootElement();
-  		 List<Element> elements = root.elements();
-  		 for(Element elm:elements){
- 			 if(elm.getName().equals("login")){
- 				 String isLogin = elm.getStringValue();
- 				 if(isLogin.equals("false"))
- 					 return false;
- 			 }else if(elm.getName().equals("feed")){
- 				 String isFeed = elm.getStringValue();
- 				 if(isFeed.equals("false"))
- 					 return false;
- 			 }
- 		 }
-         is.close();
+         int responseCode = conn.getResponseCode();
+	     if (responseCode == HttpURLConnection.HTTP_OK) {
+	    	 BufferedReader reader = new BufferedReader(new InputStreamReader(
+	                    conn.getInputStream()));
+	         String response = reader.readLine();
+	         logger.info(response);
+	     }else {
+		     logger.error("Server returned non-OK code: " + responseCode);
+		 }
         }catch (Exception ex) {  
-        	ex.printStackTrace();
-            System.out.println("cannot send the data to LSM Server");   
-            return false;
+//        	ex.printStackTrace();
+            logger.error("cannot send the data to LSM Server",ex);   
         }
-		return true;
 	}
 
 	@Override
@@ -768,9 +648,9 @@ public class LSMTripleStore implements LSMServer {
 	        // opens output stream of the HTTP connection for writing data
 	        OutputStream outputStream = httpConn.getOutputStream();
 	 
-	        System.out.println("Start writing data...");
+	        logger.info("Start writing data...");
 	        schema.getBase().write(outputStream,"RDF/XML");
-	        System.out.println("Data was written.");
+	        logger.info("Data was written.");
 	        outputStream.close();
 
 	        // always check HTTP response code from server
@@ -780,15 +660,62 @@ public class LSMTripleStore implements LSMServer {
 	            BufferedReader reader = new BufferedReader(new InputStreamReader(
 	                    httpConn.getInputStream()));
 	            String response = reader.readLine();
-	            System.out.println("Server's response: " + response);
+	            logger.info("Server's response: " + response);
 	        } else {
-	            System.out.println("Server returned non-OK code: " + responseCode);
+	            logger.error("Server returned non-OK code: " + responseCode);
 	        }
 		}catch(Exception e){
-			e.printStackTrace();
+//			e.printStackTrace();
+			logger.error("uploadSchema returns error",e);
 		}
 	}
 
+	@Override
+	public void updateTriples(String graphURL, String newTriplePatterns, String oldTriplePatterns) {
+		// TODO Auto-generated method stub
+		// TODO Auto-generated method stub
+		HttpURLConnection conn = null;  
+        ObjectOutputStream dos = null;  
+        int responseCode = 0;
+        try{  
+             URL url = new URL(ObjectServletURL);  
+	      // Open a HTTP connection to the URL  
 	
+	         conn = (HttpURLConnection) url.openConnection();  
+	         conn.setDoInput(true);  
+	         conn.setDoOutput(true);  
+	         conn.setUseCaches(false);  
+	
+	         // Use a post method.  
+	         conn.setRequestMethod("POST");  
+	         conn.setRequestProperty("graphURL",graphURL);
+		     conn.setRequestProperty("project", "openiot");
+		     conn.setRequestProperty("operator", "delete");
+	         conn.setRequestProperty("Connection", "Keep-Alive");  
+	         conn.setRequestProperty("Content-Type", "text/html"); 
+	         
+	         HashMap<String, String> patterns = new HashMap<String, String>();
+	         patterns.put("delete", oldTriplePatterns);
+	         patterns.put("update", newTriplePatterns);
+	         dos = new ObjectOutputStream( conn.getOutputStream() );  
+	         dos.writeObject(patterns);  
+	         dos.flush();  
+	         dos.close();   
+	         
+	      // always check HTTP response code from server
+	        responseCode = conn.getResponseCode();
+	        if (responseCode == HttpURLConnection.HTTP_OK) {
+	        	BufferedReader reader = new BufferedReader(new InputStreamReader(
+	                    conn.getInputStream()));
+	            String response = reader.readLine();
+	            System.out.println("Server's response: " + response);
+	        } else {
+	            System.out.println("Server returned non-OK code: " + responseCode);
+	        }	  		
+        }catch (Exception ex) {  
+        	ex.printStackTrace();
+            System.out.println("cannot send data to server");     
+        }
+	}
 
 }

@@ -11,7 +11,6 @@
 	<xsl:variable name="utc-timestamp" select="current-dateTime()"/>
 	<xsl:param name="sensorId"/>
 	<xsl:param name="sourceURL"/>
-	<xsl:param name="userId"/>
 	<xsl:param name="sourceType"/>
 	<xsl:param name="sensortype"/>
 	<xsl:param name="name"/>
@@ -52,9 +51,7 @@
 	    			concat('&#60;',$sensorId,'&#62; ',
 	    			'&#60;','http://lsm.deri.ie/ont/lsm.owl#hasSourceType','&#62; ','&#34;',$sourceType,'&#34;','.'),
 	    			concat('&#60;',$sensorId,'&#62; ',
-	    			'&#60;','http://www.w3.org/2000/01/rdf-schema#label','&#62; ','&#34;',$name,'&#34;','.'),	    			
-	    			concat('&#60;',$sensorId,'&#62; ',
-	    			'&#60;','http://lsm.deri.ie/ont/lsm.owl#isAddedBy','&#62; ','&#60;',$userId,'&#62;.')	    			
+	    			'&#60;','http://www.w3.org/2000/01/rdf-schema#label','&#62; ','&#34;',$name,'&#34;','.')   			
            			" separator="&#10;"/>
 	</xsl:template>
 			

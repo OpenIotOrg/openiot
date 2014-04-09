@@ -26,9 +26,9 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Properties;
 
-import lsm.beans.User;
-import lsm.schema.LSMSchema;
-import lsm.server.LSMTripleStore;
+//import lsm.beans.User;
+import org.openiot.lsm.schema.LSMSchema;
+import org.openiot.lsm.server.LSMTripleStore;
 
 import org.openiot.commons.osdspec.model.OAMO;
 import org.openiot.commons.osdspec.model.OSDSpec;
@@ -62,6 +62,7 @@ public class RegisterServiceImpl {
 	private String lsmFunctionalGraph;
 	private String lsmUserName;
 	private String lsmPassword;
+	private String lsmDeriServer;
 	//
 	private OSDSpec osdSpec;
 
@@ -74,7 +75,8 @@ public class RegisterServiceImpl {
 		lsmFunctionalGraph = propertyManagement.getSchedulerLsmFunctionalGraph();
 		lsmUserName = propertyManagement.getSchedulerLsmUserName();
 		lsmPassword = propertyManagement.getSchedulerLsmPassword();
-				
+		lsmDeriServer = propertyManagement.getSchedulerLsmRemoteServer();
+		
 		this.osdSpec = osdSpec;
 
 		logger.debug("Recieved OSDSpec from User with userID: " + osdSpec.getUserID());
@@ -91,12 +93,12 @@ public class RegisterServiceImpl {
 	}
 
 	private void registerService() {
-		User user = new User();
-		user.setUsername(lsmUserName);
-		user.setPass(lsmPassword);
+//		User user = new User();
+//		user.setUsername(lsmUserName);
+//		user.setPass(lsmPassword);
 
-		LSMTripleStore lsmStore = new LSMTripleStore();
-		lsmStore.setUser(user);
+		LSMTripleStore lsmStore = new LSMTripleStore(lsmDeriServer);
+//		lsmStore.setUser(user);
 
 		LSMSchema myOnt = new LSMSchema(OntModelSpec.OWL_DL_MEM);
 		LSMSchema myOntInstance = new LSMSchema();
@@ -212,13 +214,14 @@ public class RegisterServiceImpl {
 		}// oamo
 
 		logger.debug(myOntInstance.exportToTriples("TURTLE"));
-		boolean ok = lsmStore.pushRDF(lsmFunctionalGraph, myOntInstance.exportToTriples("N-TRIPLE"));
+//		boolean ok = 
+		lsmStore.pushRDF(lsmFunctionalGraph, myOntInstance.exportToTriples("N-TRIPLE"));
 
-		if (ok) {
-			replyMessage = "regester service successfull";
-		} else {
-			replyMessage = "regester service error";
-		}
+//		if (ok) {
+//			replyMessage = "regester service successfull";
+//		} else {
+//			replyMessage = "regester service error";
+//		}
 
 		logger.debug(replyMessage);
 	}

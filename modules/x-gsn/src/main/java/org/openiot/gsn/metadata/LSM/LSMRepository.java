@@ -129,6 +129,7 @@ public class LSMRepository {
                 lsmSensorMetaData.getSensorType(),
                 lsmSensorMetaData.getInformation(),
                 lsmSensorMetaData.getSource(),
+                lsmSensorMetaData.getProperties(),
                 vsConfig.getLatitude(),
                 vsConfig.getLongitude());
 
@@ -186,6 +187,7 @@ public class LSMRepository {
                 lsmSensorMetaData.getSensorType(),
                 lsmSensorMetaData.getInformation(),
                 lsmSensorMetaData.getSource(),
+                lsmSensorMetaData.getProperties(),
                 latitude,
                 longitude);
 
