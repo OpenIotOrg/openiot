@@ -6,6 +6,7 @@ import org.openiot.ld4s.vocabulary.OpenIoTVocab;
 import org.openiot.ld4s.vocabulary.SptVocab;
 import org.openiot.ld4s.vocabulary.SsnVocab;
 
+import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.vocabulary.DCTerms;
@@ -108,6 +109,21 @@ public class LD4STempSensPropResource extends LD4SDataResource {
 				resource.addProperty(SptVocab.NET_ROLE, item);
 			}
 		}	
+		item = ov.getTime();
+		if (item != null && item.trim().compareTo("")!=0){
+			resource.addProperty(OpenIoTVocab.MOBILITY_TIME, 
+					resource.getModel().createTypedLiteral(item, XSDDatatype.XSDlong));
+		}
+		item = ov.getStart_range();
+		if (item != null && item.trim().compareTo("")!=0){
+			resource.addProperty(OpenIoTVocab.MOBILITY_START, 
+					resource.getModel().createTypedLiteral(item, XSDDatatype.XSDlong));
+		}
+		item = ov.getEnd_range();
+		if (item != null && item.trim().compareTo("")!=0){
+			resource.addProperty(OpenIoTVocab.MOBILITY_END, 
+					resource.getModel().createTypedLiteral(item, XSDDatatype.XSDlong));
+		}		
 		String[] vals = ov.getNet_links();
 		if (vals != null){
 			for (int i=0; i<vals.length ;i++){

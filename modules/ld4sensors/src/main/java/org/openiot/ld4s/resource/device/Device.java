@@ -56,6 +56,9 @@ public class Device extends LD4SObject  implements Serializable{
 
 	/** OV IDs (ov base name). */
 	private String[] values = null;
+	
+	/** Original Source (in case the sensor data and metadata come from a third party provider/api). */
+	private String source = null;
 
 
 
@@ -84,6 +87,10 @@ public class Device extends LD4SObject  implements Serializable{
 			this.setUnit_of_measurement(LD4SDataResource.removeBrackets(
 					json.getString("uom")));
 		}
+		if (json.has("source")){
+			this.setSource(LD4SDataResource.removeBrackets(
+					json.getString("source")));
+		}
 		if (json.has("observed"+LD4SConstants.JSON_SEPARATOR+"property")){
 			this.setObserved_property(LD4SDataResource.removeBrackets(
 					json.getString("observed"+LD4SConstants.JSON_SEPARATOR+"property")));
@@ -104,9 +111,9 @@ public class Device extends LD4SObject  implements Serializable{
 		if (json.has("observation"+LD4SConstants.JSON_SEPARATOR+"values")){
 			this.setValues(json.getJSONArray("observation"+LD4SConstants.JSON_SEPARATOR+"values"));
 		}
-		if (json.has("mobile"+LD4SConstants.JSON_SEPARATOR+"context")){
-			this.setTsproperties(json.getJSONArray("mobile"+
-					LD4SConstants.JSON_SEPARATOR+"context"));
+		if (json.has("mobility"+LD4SConstants.JSON_SEPARATOR+"contexts")){
+			this.setTsproperties(json.getJSONArray("mobility"+
+					LD4SConstants.JSON_SEPARATOR+"contexts"));
 		}
 		if (json.has("context")){
 			this.setLink_criteria(json.getString("context"), localhost);
@@ -135,16 +142,7 @@ public class Device extends LD4SObject  implements Serializable{
 	}
 
 
-	@Override
-	public String getRemote_uri() {
-		return remote_uri;
-	}
 
-
-	@Override
-	public void setRemote_uri(String host) {
-		this.remote_uri = host;
-	}
 
 	public void setValues(String[] values) {
 		this.values = values;
@@ -277,6 +275,14 @@ public class Device extends LD4SObject  implements Serializable{
 
 	public String getFoi() {
 		return foi;
+	}
+
+	public String getSource() {
+		return source;
+	}
+
+	public void setSource(String source) {
+		this.source = source;
 	}
 	
 	

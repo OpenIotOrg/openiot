@@ -46,6 +46,7 @@ import org.openiot.ld4s.server.ServerProperties;
 import org.openiot.ld4s.vocabulary.CorelfVocab;
 import org.openiot.ld4s.vocabulary.FoafVocab;
 import org.openiot.ld4s.vocabulary.LD4SConstants;
+import org.openiot.ld4s.vocabulary.OpenIoTVocab;
 import org.openiot.ld4s.vocabulary.ProvVocab;
 import org.openiot.ld4s.vocabulary.RevVocab;
 import org.openiot.ld4s.vocabulary.SiocVocab;
@@ -898,25 +899,30 @@ public abstract class LD4SDataResource extends ServerResource{
 	 */
 	public static String getResourceUri(String host,
 			String type, String name) {
-		String address = host, start = "http://", tmp = "";
-		if (address.startsWith(start)){
-			address = address.substring(start.length());
-		}
-		int port_start = address.indexOf(":");
-		if (port_start != -1){
-			tmp =  address.substring(port_start);
-			address = address.substring(0, port_start);
-		}
+//		String address = host, start = "http://", tmp = "";
+//		if (address.startsWith(start)){
+//			address = address.substring(start.length());
+//		}
+//		int port_start = address.indexOf(":");
+//		if (port_start != -1){
+//			tmp =  address.substring(port_start);
+//			address = address.substring(0, port_start);
+//		}
+//
+//		try {
+//			InetAddress inetAddr = InetAddress.getByName(address);
+//			address = inetAddr.getCanonicalHostName();
+//		}
+//		catch (UnknownHostException e) {
+//			System.out.println("Host not found: " + e.getMessage());
+//		}
 
-		try {
-			InetAddress inetAddr = InetAddress.getByName(address);
-			address = inetAddr.getCanonicalHostName();
-		}
-		catch (UnknownHostException e) {
-			System.out.println("Host not found: " + e.getMessage());
-		}
-
-		String uri = start + address + tmp + type +"/"+ name.toLowerCase();
+		String uri = 
+//				start + address + tmp + type +"/"
+				"http://services.openiot.eu/resources/"
+				
+				+ name.toLowerCase();
+				
 
 		return uri;
 	}
@@ -1144,21 +1150,7 @@ public abstract class LD4SDataResource extends ServerResource{
 			resource.addProperty(CorelfVocab.RESOURCE_TIME, 
 					resource.getModel().createTypedLiteral(item, XSDDatatype.XSDlong));
 		}
-		item = ov.getTime();
-		if (item != null && item.trim().compareTo("")!=0){
-			resource.addProperty(CorelfVocab.TIME, 
-					resource.getModel().createTypedLiteral(item, XSDDatatype.XSDlong));
-		}
-		item = ov.getStart_range();
-		if (item != null && item.trim().compareTo("")!=0){
-			resource.addProperty(SptVocab.START_TIME, 
-					resource.getModel().createTypedLiteral(item, XSDDatatype.XSDlong));
-		}
-		item = ov.getEnd_range();
-		if (item != null && item.trim().compareTo("")!=0){
-			resource.addProperty(SptVocab.END_TIME, 
-					resource.getModel().createTypedLiteral(item, XSDDatatype.XSDlong));
-		}		
+		
 		item = ov.getBase_datetime();
 		if (item != null && item.trim().compareTo("")!=0){
 			resource.addProperty(CorelfVocab.BASE_TIME, 
@@ -1315,27 +1307,43 @@ public abstract class LD4SDataResource extends ServerResource{
 			java.lang.String foi, String date,
 			String time, String company, String country)
 					throws java.lang.Exception{
-		String item_uri = getResourceUri(this.ld4sServer.getHostName(), "res/property", observed_property);
+		
+		String item_uri = getResourceUri(this.ld4sServer.getHostName(), "res/property", observed_property);		
 		Resource item_resource = resource.getModel().createResource(item_uri);
-		Context con = new Context(this.ld4sServer.getHostName());
-		con.setThing(observed_property);
-		con.setAdditionalTerms(new String[][]{
-				{"", foi}
-		});
+	
+		String op = observed_property.toLowerCase().trim();
+		if (op.compareTo("airtemperature") == 0){
+			item_resource.addProperty(RDF.type, OpenIoTVocab.AIR_TEMPERATURE);
+		} else if (op.compareTo("atmospherepressure") == 0){
+			item_resource.addProperty(RDF.type, OpenIoTVocab.ATMOSPHERE_PRESSURE);
+		} else if (op.compareTo("atmospherehumidity") == 0){
+			item_resource.addProperty(RDF.type, OpenIoTVocab.ATMOSPHERE_HUMIDITY);
+		} else if (op.compareTo("atmospherevisibility") == 0){
+			item_resource.addProperty(RDF.type, OpenIoTVocab.ATMOSPHERE_VISIBILITY);
+		} else if (op.compareTo("windchill") == 0){
+			item_resource.addProperty(RDF.type, OpenIoTVocab.WIND_CHILL);
+		} else if (op.compareTo("windspeed") == 0){
+			item_resource.addProperty(RDF.type, OpenIoTVocab.WIND_SPEED);
+		} else if (op.compareTo("status") == 0){
+			item_resource.addProperty(RDF.type, OpenIoTVocab.STATUS);
+		} else if (op.compareTo("webcamsnapshot") == 0){
+			item_resource.addProperty(RDF.type, OpenIoTVocab.WEBCAM_SNAPSHOT);
 
-		if (observed_property.contains("PowerConsumption")
-				|| observed_property.contains("powerconsumption")){
-			con.setDate(date);
-			con.setCompany(company);
-			con.setTime(time);
-			con.setCountry(country);
-			item_resource = addLinkedData(item_resource, Domain.ELECTRICITY_TARIFF, con);
-		}else{
-			item_resource = addLinkedData(item_resource, Domain.FEATURE, con);	
-		}
+				
+		}else{		
+			
+			Context con = new Context(this.ld4sServer.getHostName());
+			con.setThing(observed_property);
+			con.setAdditionalTerms(new String[][]{
+					{"", foi}
+			});
 
+			
+				item_resource = addLinkedData(item_resource, Domain.FEATURE, con);	
+			}
 		if (item_resource != null){
-			resource.addProperty(prop, item_resource);
+//			resource.addProperty(prop, item_resource);
+			resource.addProperty(SsnVocab.OBSERVES, item_resource);
 		}
 		return resource;
 	}
@@ -1347,7 +1355,7 @@ public abstract class LD4SDataResource extends ServerResource{
 		con.setThing(uom);
 		item_resource = addLinkedData(item_resource, Domain.UNIT, con);
 		if (item_resource != null){
-			resource.addProperty(SptVocab.UOM, item_resource);
+			resource.addProperty(OpenIoTVocab.UNIT, item_resource);
 		}
 		return resource;
 	}

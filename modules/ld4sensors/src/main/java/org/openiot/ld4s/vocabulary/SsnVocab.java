@@ -46,6 +46,16 @@ public class SsnVocab {
 	  // Vocabulary properties
 	  // /////////////////////////
 
+	  public static final ObjectProperty OBSERVED_PROPERTY = m_model
+		      .createObjectProperty(NS+"observedProperty");
+	  public static final ObjectProperty OBSERVATION_RESULT_TIME = m_model
+		      .createObjectProperty(NS+"observationResultTime");
+	  public static final ObjectProperty OBSERVATION_RESULT = m_model
+		      .createObjectProperty(NS+"observationResult");
+	  public static final ObjectProperty OBSERVED_BY = m_model
+		      .createObjectProperty(NS+"observedBy");
+	  public static final ObjectProperty OBSERVES = m_model
+		      .createObjectProperty(NS+"observes");
 	  public static final ObjectProperty IN_CONDITION = m_model
       .createObjectProperty(NS+"inCondition");
 	  public static final ObjectProperty FOR_PROPERTY = m_model
@@ -68,6 +78,10 @@ public class SsnVocab {
 	  // Vocabulary classes
 	  // /////////////////////////
 
+	  public static final OntClass OBSERVATION = m_model
+		      .createClass(SsnVocab.NS+"Observation");
+	  public static final OntClass OBSERVATION_VALUE = m_model
+		      .createClass(SsnVocab.NS+"ObservationValue");
 	  public static final OntClass SENSITIVITY = m_model
       .createClass(SsnVocab.NS+"Sensitivity");
 	  public static final OntClass RESPONSE_TIME = m_model

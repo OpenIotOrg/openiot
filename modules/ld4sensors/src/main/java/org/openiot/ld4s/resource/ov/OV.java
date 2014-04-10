@@ -52,6 +52,21 @@ public class OV extends LD4SObject  implements Serializable{
 
 	/** Sensor ID. */
 	private String sensor_id = null;
+	
+	/** Observation. */
+	private String observation = null;
+	
+	/** Unit of Measurement. */
+	private String unit_of_measurement = null;
+	
+	/** Observed Property. */
+	private String observed_property = null;
+	
+	/** Feature of Interest. If provided, it will be associated with the Observed Property. */
+	private String foi = null;
+	
+	/** Temporal Sensor Properties IDs (same base name than the main resource). */
+	private String[] tsproperties = null;
 
 
 	public OV(String host, String[] values, String resource_time,
@@ -68,6 +83,14 @@ public class OV extends LD4SObject  implements Serializable{
 
 	public OV(JSONObject json, String localhost) throws Exception {
 		super(json);
+		if (json.has("uom")){
+			this.setUnit_of_measurement(LD4SDataResource.removeBrackets(
+					json.getString("uom")));
+		}
+		if (json.has("foi")){
+			this.setFoi(LD4SDataResource.removeBrackets(
+					json.getString("foi")));
+		}
 		if (json.has("uri")){
 			this.setRemote_uri(LD4SDataResource.removeBrackets(
 					json.getString("uri")));
@@ -76,12 +99,24 @@ public class OV extends LD4SObject  implements Serializable{
 			this.setResource_time(LD4SDataResource.removeBrackets(
 					json.getString("resource"+LD4SConstants.JSON_SEPARATOR+"time")));
 		}
+		if (json.has("observation")){
+			this.setObservation(LD4SDataResource.removeBrackets(
+					json.getString("observation")));
+		}
 		if (json.has("values")){
 			this.setValues(json.getJSONArray("values"));
 		}
 		if (json.has("sensor"+LD4SConstants.JSON_SEPARATOR+"id")){
 			this.setSensor_id(LD4SDataResource.removeBrackets(
 					json.getString("senso"+LD4SConstants.JSON_SEPARATOR+"id")));
+		}
+		if (json.has("observed"+LD4SConstants.JSON_SEPARATOR+"property")){
+			this.setObserved_property(LD4SDataResource.removeBrackets(
+					json.getString("observed"+LD4SConstants.JSON_SEPARATOR+"property")));
+		}
+		if (json.has("mobility"+LD4SConstants.JSON_SEPARATOR+"contexts")){
+			this.setTsproperties(json.getJSONArray("mobility"+
+					LD4SConstants.JSON_SEPARATOR+"contexts"));
 		}
 		if (json.has("context")){
 			this.setLink_criteria(json.getString("context"), localhost);
@@ -99,16 +134,7 @@ public class OV extends LD4SObject  implements Serializable{
 	}
 
 
-	@Override
-	public String getRemote_uri() {
-		return remote_uri;
-	}
 
-
-	@Override
-	public void setRemote_uri(String host) {
-		this.remote_uri = host;
-	}
 
 	public void setValues(String[] values) {
 		this.values = values;
@@ -181,5 +207,56 @@ public class OV extends LD4SObject  implements Serializable{
 	@Override
 	protected void initDefaultType() {
 		this.defaultType = SptVocab.OV;
+	}
+
+	public String getObservation() {
+		return observation;
+	}
+
+	public void setObservation(String observation) {
+		this.observation = observation;
+	}
+	
+	public void setUnit_of_measurement(String unit_of_measurement) {
+		this.unit_of_measurement = unit_of_measurement;
+	}
+
+	public String getUnit_of_measurement() {
+		return unit_of_measurement;
+	}
+	
+	public void setObserved_property(String observed_property) {
+		this.observed_property = observed_property;
+	}
+
+	/**
+	 * @return Observed Property URI
+	 */
+	public String getObserved_property() {
+		return observed_property;
+	}
+
+	public String getFoi() {
+		return foi;
+	}
+
+	public void setFoi(String foi) {
+		this.foi = foi;
+	}
+
+	public String[] getTsproperties() {
+		return tsproperties;
+	}
+
+	public void setTsproperties(String[] tsproperties) {
+		this.tsproperties = tsproperties;
+	}
+	
+	public void setTsproperties(JSONArray jvalues) throws JSONException {
+		String[] values = new String[jvalues.length()];
+		for (int i=0; i< jvalues.length(); i++){
+			values[i] = jvalues.get(i).toString();
+		}
+		setTsproperties(values);
 	}
 }

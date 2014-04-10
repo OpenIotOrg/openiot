@@ -4,6 +4,7 @@ import org.openiot.ld4s.lod_cloud.Context.Domain;
 import org.openiot.ld4s.resource.LD4SDataResource;
 import org.openiot.ld4s.vocabulary.CorelfVocab;
 import org.openiot.ld4s.vocabulary.OpenIoTVocab;
+import org.openiot.ld4s.vocabulary.ProvVocab;
 import org.openiot.ld4s.vocabulary.SptVocab;
 
 import com.hp.hpl.jena.rdf.model.Model;
@@ -63,37 +64,36 @@ public class LD4SDeviceResource extends LD4SDataResource {
 		resource = rdfData.createResource(subjuri);
 
 		String item = ov.getBase_name();
+//		if (item != null && item.trim().compareTo("")!=0){
+//			if (item.startsWith("http://")){
+//				resource.addProperty(CorelfVocab.BASE_NAME, 
+//						rdfData.createResource(item));	
+//			}else{
+//				resource.addProperty(CorelfVocab.BASE_NAME, 
+//						rdfData.createTypedLiteral(item));
+//			}
+//		}
+//		item = ov.getBase_ov_name();
+//		if (item != null && item.trim().compareTo("")!=0){
+//			if (item.startsWith("http://")){
+//				resource.addProperty(CorelfVocab.BASE_OV_NAME, 
+//						rdfData.createResource(item));	
+//			}else{
+//				resource.addProperty(CorelfVocab.BASE_OV_NAME, 
+//						rdfData.createTypedLiteral(item));
+//			}
+//		}
+		item = ov.getSource();
 		if (item != null && item.trim().compareTo("")!=0){
 			if (item.startsWith("http://")){
-				resource.addProperty(CorelfVocab.BASE_NAME, 
+				resource.addProperty(ProvVocab.PERFORMED_BY, 
 						rdfData.createResource(item));	
 			}else{
-				resource.addProperty(CorelfVocab.BASE_NAME, 
-						rdfData.createTypedLiteral(item));
-			}
-		}
-		item = ov.getBase_ov_name();
-		if (item != null && item.trim().compareTo("")!=0){
-			if (item.startsWith("http://")){
-				resource.addProperty(CorelfVocab.BASE_OV_NAME, 
-						rdfData.createResource(item));	
-			}else{
-				resource.addProperty(CorelfVocab.BASE_OV_NAME, 
+				resource.addProperty(ProvVocab.PERFORMED_BY, 
 						rdfData.createTypedLiteral(item));
 			}
 		}
 		
-		item = ov.getObserved_property();
-		if (item != null && item.trim().compareTo("")!=0){
-			if (item.startsWith("http://")){
-				resource.addProperty(SptVocab.OBSERVED_PROPERTY, 
-						rdfData.createResource(item));	
-			}else{
-				resource = addObsProp(resource, item, SptVocab.OBSERVED_PROPERTY, ov.getFoi(),
-						ov.getConDate(), ov.getConTime(),
-						ov.getConCompany(), ov.getConCountry());
-			}
-		}	
 		item = ov.getUnit_of_measurement();
 		if (item != null && item.trim().compareTo("")!=0){
 			if (item.startsWith("http://")){
@@ -107,27 +107,15 @@ public class LD4SDeviceResource extends LD4SDataResource {
 		if (tprops != null){
 			for (int i=0; i<tprops.length ;i++){
 				if (tprops[i].startsWith("http://")){
-					resource.addProperty(OpenIoTVocab.CONTEXT, 
+					resource.addProperty(OpenIoTVocab.MOBILITY, 
 							rdfData.createResource(tprops[i]));	
 				}else{
-					resource.addProperty(OpenIoTVocab.CONTEXT, 
+					resource.addProperty(OpenIoTVocab.MOBILITY, 
 							rdfData.createTypedLiteral(tprops[i]));
 				}
 			}			
 		}
-		String[] vals = ov.getValues();
-		if (vals != null){
-			for (int i=0; i<vals.length ;i++){
-				if (vals[i] != null){
-					if (vals[i].startsWith("http://")){
-						resource.addProperty(SptVocab.OUT, 
-								rdfData.createResource(vals[i]));	
-					}else{
-						resource.addProperty(SptVocab.OUT, vals[i]);
-					}	
-				}
-			}			
-		}
+		
 		resource = crossResourcesAnnotation(ov, resource);
 		return resource;
 	}

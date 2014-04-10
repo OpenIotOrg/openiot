@@ -49,6 +49,8 @@ public class ProvVocab {
 	    .createObjectProperty(NS+"actedOnBehalfOf");
 	  public static final ObjectProperty WAS_GENERATED_BY = m_model
     .createObjectProperty(NS+"wasGeneratedBy");
+	  public static final ObjectProperty PERFORMED_BY = m_model
+			    .createObjectProperty(NS+"performedBy");
 	  
 	  // Vocabulary classes
 	  // /////////////////////////

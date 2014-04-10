@@ -99,17 +99,7 @@ public class Platform extends LD4SObject  implements Serializable{
 	}
 
 
-	@Override
-	public String getRemote_uri() {
-		return remote_uri;
-	}
-
-
-	@Override
-	public void setRemote_uri(String host) {
-		this.remote_uri = host;
-	}
-
+	
 	@Override
 	public void setStoredRemotely(boolean storedRemotely) {
 		this.stored_remotely = storedRemotely;		

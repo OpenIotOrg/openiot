@@ -191,15 +191,15 @@ public class Server extends Application{
 				//=============================================================
 				
 				// POST req: resource stored remotely IF resourceId == null
-				router.attach("/mobile_context/", TempSensPropResource.class);
-				router.attach("/mobile_context", TempSensPropResource.class);
+				router.attach("/mobility_context/", TempSensPropResource.class);
+				router.attach("/mobility_context", TempSensPropResource.class);
 				// GET req:resource stored locally
 				// PUT req: resource stored locally + no Linked Data enrichment
 				// POST req: resource stored locally + Linked Data enrichment
 				// DELETE req: resource stored locally
-				router.attach("/mobile_context/{resource_id}", TempSensPropResource.class);
+				router.attach("/mobility_context/{resource_id}", TempSensPropResource.class);
 				// GET with query string for link filtering req: resource stored locally 
-				router.attach("/mobile_context/{resource_id}?d={domains}&nod={nodomains}&trange={time}&s={space}&th={thing}", TempSensPropResource.class);
+				router.attach("/mobility_context/{resource_id}?d={domains}&nod={nodomains}&trange={time}&s={space}&th={thing}", TempSensPropResource.class);
 				
 				//=============================================================
 				

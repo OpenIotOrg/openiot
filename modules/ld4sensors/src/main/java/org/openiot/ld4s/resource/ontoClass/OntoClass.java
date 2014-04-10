@@ -160,13 +160,13 @@ public class OntoClass extends LD4SObject  implements Serializable{
 	
 	@Override
 	public String getRemote_uri() {
-		return remote_uri;
+		return "http://openiot.eu/ontology/ext/"+resource_id;
 	}
 
 
 	@Override
 	public void setRemote_uri(String host) {
-		this.remote_uri = host;
+		this.resource_id = host;
 	}
 
 	@Override

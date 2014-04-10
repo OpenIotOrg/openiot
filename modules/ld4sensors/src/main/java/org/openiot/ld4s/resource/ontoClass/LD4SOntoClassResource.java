@@ -115,7 +115,7 @@ public class LD4SOntoClassResource extends LD4SDataResource {
 			OntoClassType classValue = restr.getClassValue();
 			if (classValue != null){
 				switch (classValue.getChoice()){
-				case DATATYPE:
+				case Datatype:
 					LinkedList<String> range = classValue.getEnumValues();
 					if (range != null){
 						Node bnode1 = Node.createAnon();
@@ -135,7 +135,7 @@ public class LD4SOntoClassResource extends LD4SDataResource {
 						
 					}
 					break;
-				case CLASS:
+				case Class:
 				case SUBCLASS:
 				default:
 					bnode_resource.addProperty(
@@ -203,7 +203,7 @@ public class LD4SOntoClassResource extends LD4SDataResource {
 		if (types != null){
 			for (int ind=0; ind<types.length ;ind++){
 				switch (types[ind].getChoice()){
-				case DATATYPE:
+				case Datatype:
 					resource.addProperty(RDF.type, 
 							RDFS.Datatype);
 					
@@ -223,7 +223,7 @@ public class LD4SOntoClassResource extends LD4SDataResource {
 								rdfData.createResource(types[ind].getSuperClass()));
 					}
 					break;
-				case CLASS:
+				case Class:
 				default:
 					resource.addProperty(RDF.type, rdfData.createResource(types[ind].getUri()));
 					break;

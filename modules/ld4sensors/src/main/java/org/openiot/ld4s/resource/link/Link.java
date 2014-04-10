@@ -237,12 +237,12 @@ public class Link extends LD4SObject{
 
 	@Override
 	public String getRemote_uri() {
-		return this.remote_uri;
+		return this.resource_id;
 	}
 
 	@Override
 	public void setRemote_uri(String resourceHost) {
-		this.remote_uri = resourceHost;		
+		this.resource_id = resourceHost;		
 	}
 
 	@Override

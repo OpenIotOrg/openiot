@@ -1,16 +1,22 @@
 package org.openiot.ld4s.resource.ov;
 
+import java.util.Random;
+
 import org.openiot.ld4s.lod_cloud.Context.Domain;
 import org.openiot.ld4s.resource.LD4SDataResource;
+import org.openiot.ld4s.vocabulary.OpenIoTVocab;
 import org.openiot.ld4s.vocabulary.SptVocab;
+import org.openiot.ld4s.vocabulary.SsnVocab;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
+import com.hp.hpl.jena.datatypes.xsd.impl.XSDDateTimeType;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.vocabulary.DCTerms;
+import com.hp.hpl.jena.vocabulary.RDF;
 
 /**
- * Construct an oobservation value resource.
+ * Construct an observation value resource.
  *
  * @author Myriam Leggieri.
  *
@@ -69,36 +75,103 @@ public class LD4SOVResource extends LD4SDataResource {
 	 * @throws Exception 
 	 */
 	protected  Resource createOVResource() throws Exception {
-		Resource resource = null;
+		Resource observation_value_resource = null;
 		String subjuri = null;
 		if (resourceId != null){
 			subjuri = this.uristr;	
 		}else{
 			subjuri = ov.getRemote_uri();
 		}
-		resource = rdfData.createResource(subjuri);
+		observation_value_resource = rdfData.createResource(subjuri);
 		
+		observation_value_resource.addProperty(RDF.type, SsnVocab.OBSERVATION_VALUE);
 		
 		String[] vals = ov.getValues();
 		if (vals != null){
 			for (int i=0; i<vals.length ;i++){
 				if (vals[i] != null){
-					resource.addProperty(SptVocab.VALUE, 
+					observation_value_resource.addProperty(OpenIoTVocab.VALUE, 
 							rdfData.createTypedLiteral(vals[i], XSDDatatype.XSDdouble));
 				}
 			}			
 		}
-		String item = ov.getSensor_id();
+		//create observation, if not given. link it with the sensor, if given.
+		String item = ov.getObservation();
+		Resource observation_resource = null;
+		if (item != null && item.trim().compareTo("")!=0){
+			observation_resource = rdfData.createResource(item);
+		}else{
+			String observation_uri = getResourceUri(this.ld4sServer.getHostName(), "/observation", 
+					String.valueOf((new Random()).nextInt()));		
+			observation_resource = rdfData.createResource(observation_uri);
+		}
+		observation_value_resource.addProperty(OpenIoTVocab.IS_OBSERVED_VALUE_OF, observation_resource);
+		observation_resource.addProperty(SsnVocab.OBSERVATION_RESULT, observation_value_resource);
+		observation_resource.addProperty(RDF.type, SsnVocab.OBSERVATION);
+		
+		String[] tprops = ov.getTsproperties();
+		if (tprops != null){
+			for (int i=0; i<tprops.length ;i++){
+				if (tprops[i].startsWith("http://")){
+					observation_resource.addProperty(OpenIoTVocab.CONTEXT, 
+							rdfData.createResource(tprops[i]));	
+				}else{
+					observation_resource.addProperty(OpenIoTVocab.CONTEXT, 
+							rdfData.createTypedLiteral(tprops[i]));
+				}
+			}			
+		}
+		
+		item = ov.getSensor_id();
 		if (item != null && item.trim().compareTo("")!=0){
 			if (item.startsWith("http://")){
-				resource.addProperty(SptVocab.OUT_OF, 
-						rdfData.createResource(item));	
+				observation_resource.addProperty(SsnVocab.OBSERVED_BY,
+						rdfData.createResource(item));
+
 			}else{
-				resource.addProperty(SptVocab.OUT_OF, item);
+//				resource.addProperty(SptVocab.OUT_OF, item);
+				observation_value_resource.addProperty(SsnVocab.OBSERVED_BY, item);
 			}
 		}
-		resource = crossResourcesAnnotation(ov, resource);
-		return resource;
+		
+		item = ov.getResource_time();
+		if (item != null && item.trim().compareTo("")!=0){
+				observation_value_resource.addProperty(SsnVocab.OBSERVATION_RESULT_TIME, 
+						rdfData.createTypedLiteral(item, XSDDatatype.XSDdateTime));	
+		}
+		item = ov.getStart_range();
+		if (item != null && item.trim().compareTo("")!=0){
+				observation_value_resource.addProperty(SptVocab.START_TIME, 
+						rdfData.createTypedLiteral(item, XSDDatatype.XSDdateTime));	
+		}
+		item = ov.getEnd_range();
+		if (item != null && item.trim().compareTo("")!=0){
+				observation_value_resource.addProperty(SptVocab.END_TIME, 
+						rdfData.createTypedLiteral(item, XSDDatatype.XSDdateTime));	
+		}
+		item = ov.getUnit_of_measurement();
+		if (item != null && item.trim().compareTo("")!=0){
+			if (item.startsWith("http://")){
+				observation_value_resource.addProperty(OpenIoTVocab.UNIT, 
+						rdfData.createResource(item));	
+			}else{
+				observation_value_resource = addUom(observation_value_resource, item);
+			}
+		}
+		item = ov.getObserved_property();
+		if (item != null && item.trim().compareTo("")!=0){
+			if (item.startsWith("http://")){
+				observation_value_resource.addProperty(SsnVocab.OBSERVED_PROPERTY, 
+						rdfData.createResource(item));	
+			}else{
+				observation_value_resource = addObsProp(observation_value_resource, 
+						item, SsnVocab.OBSERVED_PROPERTY, ov.getFoi(),
+						ov.getConDate(), ov.getConTime(),
+						ov.getConCompany(), ov.getConCountry());
+			}
+		}	
+		observation_value_resource = crossResourcesAnnotation(ov, observation_value_resource);
+		return observation_value_resource;
 	}
 
 		  
