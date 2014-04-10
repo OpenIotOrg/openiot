@@ -174,11 +174,11 @@ public class LD4SOntoClassResource extends LD4SDataResource {
 	protected  Resource createOVResource() throws Exception {
 		Resource resource = null;
 		String subjuri = null;
-		if (resourceId != null){
-			subjuri = this.uristr;	
-		}else{
-			subjuri = ov.getRemote_uri();
-		}
+//		if (resourceId != null){
+//			subjuri = this.uristr;	
+//		}else{
+			subjuri = ov.getResource_id();
+//		}
 		resource = rdfData.createResource(subjuri);
 
 		OntoClassSet[] item = ov.getDisjointClasses();

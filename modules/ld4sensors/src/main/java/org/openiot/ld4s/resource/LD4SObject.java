@@ -18,7 +18,7 @@ public abstract class LD4SObject{
 	protected OntClass defaultType;
 
 	/** Eventual remote resource hosting server URI. */
-	protected String resource_id = null;
+	protected String resource_uri = null;
 
 	/** Flag for the resource being store remotely or not. */
 	protected boolean stored_remotely = false;
@@ -75,10 +75,10 @@ public abstract class LD4SObject{
 	protected abstract void initDefaultType(); 
 	protected abstract void initAcceptedTypes(); 
 	public String getRemote_uri() {
-		return "http://services.openiot.eu/resources/"+resource_id;
+		return resource_uri;
 	}
 	public void setRemote_uri(String host) {
-		this.resource_id = host;
+		this.resource_uri = host;
 	}
 	public abstract void setStoredRemotely(boolean storedRemotely);
 	public abstract boolean isStoredRemotely();
@@ -140,9 +140,9 @@ public abstract class LD4SObject{
 				this.setDescription(LD4SDataResource.removeBrackets(
 						json.getString("description")));
 			}
-			if (json.has("resource"+LD4SConstants.JSON_SEPARATOR+"id")){
+			if (json.has("resource"+LD4SConstants.JSON_SEPARATOR+"uri")){
 				this.setRemote_uri(LD4SDataResource.removeBrackets(
-						json.getString("resource"+LD4SConstants.JSON_SEPARATOR+"id")));
+						json.getString("resource"+LD4SConstants.JSON_SEPARATOR+"uri")));
 			}
 			if (json.has("location"+LD4SConstants.JSON_SEPARATOR+"name")){
 				this.setLocation_name(LD4SDataResource.removeBrackets(

@@ -113,13 +113,13 @@ public class MP extends LD4SObject  implements Serializable{
 
 	@Override
 	public String getRemote_uri() {
-		return resource_id;
+		return resource_uri;
 	}
 
 
 	@Override
 	public void setRemote_uri(String host) {
-		this.resource_id = host;
+		this.resource_uri = host;
 	}
 
 	public void setResource_time(String resource_time) {
