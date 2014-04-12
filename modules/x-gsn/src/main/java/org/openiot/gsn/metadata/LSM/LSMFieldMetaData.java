@@ -15,12 +15,19 @@
 *    You should have received a copy of the GNU Lesser General Public License
 *    along with OpenIoT.  If not, see <http://www.gnu.org/licenses/>.
 *
-*     Contact: OpenIoT mailto: info@openiot.eu
+*    Contact: OpenIoT mailto: info@openiot.eu
+*    @author Sofiane Sarni
+*    @author Jean-Paul Calbimonte
 */
 
 package org.openiot.gsn.metadata.LSM;
 
 public class LSMFieldMetaData {
+    private String gsnFieldName;
+    private String lsmPropertyName;
+    private String lsmUnit;
+    private String featureOfInterest;
+
     public String getGsnFieldName() {
         return gsnFieldName;
     }
@@ -28,20 +35,6 @@ public class LSMFieldMetaData {
     public void setGsnFieldName(String gsnFieldName) {
         this.gsnFieldName = gsnFieldName;
     }
-
-    private String gsnFieldName;
-    private String lsmPropertyName;
-
-    @Override
-    public String toString() {
-        return "LSMFieldMetaData{" +
-                "gsnFieldName='" + gsnFieldName + '\'' +
-                ", lsmPropertyName='" + lsmPropertyName + '\'' +
-                ", unit='" + lsmUnit + '\'' +
-                '}';
-    }
-
-    private String lsmUnit;
 
     public String getLsmPropertyName() {
         return lsmPropertyName;
@@ -58,4 +51,22 @@ public class LSMFieldMetaData {
     public void setLsmUnit(String lsmUnit) {
         this.lsmUnit = lsmUnit;
     }
-}
+
+    @Override
+    public String toString() {
+        return "LSMFieldMetaData{" +
+                "gsnFieldName='" + gsnFieldName + '\'' +
+                ", lsmPropertyName='" + lsmPropertyName + '\'' +
+                ", unit='" + lsmUnit + '\'' +
+                '}';
+    }
+
+	public String getFeatureOfInterest() {
+		return featureOfInterest;
+	}
+
+	public void setFeatureOfInterest(String featureOfInterest) {
+		this.featureOfInterest = featureOfInterest;
+	}
+
+    }

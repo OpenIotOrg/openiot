@@ -237,7 +237,7 @@ public class TestLSM {
     	 ** Sensor name: lausanne_1057 */ 
          // 1. Create an instance of Sensor class and set the sensor metadata 
     		
-    		String id=org.openiot.gsn.metadata.LSM.utils.addSensorToLSM("sofiane",  "sofiane", 
+    		String id=org.openiot.gsn.metadata.LSM.utils.addSensorToLSM( 
     				"http://lsm.deri.ie/OpenIoT/sensormeta#", "http://lsm.deri.ie/OpenIoT/sensordata#", 
     				"lausanne_1058", "jp", "gsntypne", "weather", "Air quality top", 
     				"http://opensensedata.epfl.ch:22002/gsn?REQUEST=113&name=lausanne_1057", 
@@ -258,10 +258,10 @@ public class TestLSM {
     	 */ 
     	//create an Observation object
     	
-    	utils.updateSensorDataOnLSM("sofiane", "sofiane", 
+    	utils.updateSensorDataOnLSM( 
     			"http://lsm.deri.ie/OpenIoT/sensormeta#", "http://lsm.deri.ie/OpenIoT/sensordata#", 
     			"http://lsm.deri.ie/resource/11015611079233", "http://lsm.deri.ie/ont/lsm.owl#AirTemperature", 9.877676, 
-    			"C", new Date());
+    			"C", "feature",new Date());
     	
     	/*
     	Observation obs = new Observation(); 

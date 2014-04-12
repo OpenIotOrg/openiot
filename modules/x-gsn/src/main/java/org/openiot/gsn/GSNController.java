@@ -96,7 +96,7 @@ public class GSNController extends Thread {
 		if (this.vsLoader == null) // override protection
 			this.vsLoader = vsLoader;
 	}
-
+	
 	private class StopManager extends Thread {
 
 		public void run() {

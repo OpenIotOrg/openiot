@@ -15,7 +15,8 @@
 *    You should have received a copy of the GNU Lesser General Public License
 *    along with OpenIoT.  If not, see <http://www.gnu.org/licenses/>.
 *
-*     Contact: OpenIoT mailto: info@openiot.eu
+*    Contact: OpenIoT mailto: info@openiot.eu
+*    @author Sofiane Sarni
 */
 
 package org.openiot.gsn.metadata.LSM;
