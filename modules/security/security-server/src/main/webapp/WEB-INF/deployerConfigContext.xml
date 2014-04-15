@@ -88,7 +88,7 @@
 	
 
 	<!-- Configuring the LSM service registry -->
-	<bean id="serviceRegistryDao" class="org.openiot.security.oauth.lsm.LSMServiceRegistryDaoImpl" p:initializeOnStartup="${security.lsm.initializeOnStartup}"/>
+	<bean id="serviceRegistryDao" class="org.openiot.security.oauth.lsm.LSMServiceRegistryDaoImpl" p:initializeOnStartup="${security.initializeOnStartup}"/>
 
 	<bean id="auditTrailManager" class="com.github.inspektr.audit.support.Slf4jLoggingAuditTrailManager" />
 
