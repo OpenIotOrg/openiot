@@ -31,19 +31,6 @@
               	
 <sensorType1> rdfs:label "TypeName".
 
-<place/location1> rdf:type DUL:Place;
-                  wgs84:lat 52.3;
-                  wgs84:long 98.2;
-                  lsm:is_in_city <city1>;
-                  lgd:is_in_province <prov1>;
-                  lgd:is_in_country <country1>;
-                  lgd:is_in_continent <conti>.
-
-<city1> rdfs:label  "cityname".
-<prov1> rdfs:label "province".
-<country1> rdfs:label "country".
-<conti> rdfs:label "conti".
-
 <sensor/5010/serial/serial2> rdf:type phenonet:SerialNumber; 
                              phenonet:hasId "5010" .
                                                                      
@@ -61,4 +48,18 @@
                              
 aws:air_temperature qu:unit phenonet:degreeCelsius;
                     rr:columnName "temperature" .
+
+
+<place/location1> rdf:type DUL:Place;
+                  wgs84:lat 52.3;
+                  wgs84:long 98.2;
+                  lsm:is_in_city <city1>;
+                  lgd:is_in_province <prov1>;
+                  lgd:is_in_country <country1>;
+                  lgd:is_in_continent <conti>.
+
+<city1> rdfs:label  "cityname".
+<prov1> rdfs:label "province".
+<country1> rdfs:label "italy".
+<conti> rdfs:label "europe".
                              

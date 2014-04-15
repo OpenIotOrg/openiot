@@ -38,7 +38,6 @@ import org.openiot.gsn.Main;
 import org.openiot.gsn.VSensorLoader;
 import org.openiot.gsn.metadata.LSM.LSMSensorMetaData;
 import org.openiot.gsn.metadata.LSM.MetadataCreator;
-import org.openiot.gsn.metadata.LSM.utils;
 import org.openiot.gsn.metadata.rdf.SensorMetadata;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -108,7 +107,7 @@ public class VSManagerService {
 	@POST
 	@Path("/{vsname}/register")
 	public Response registerVS(InputStream metadata,@PathParam("vsname") String vsname) {
-	    
+	    String sensorId;
 	    String filePath=VSensorLoader.getVSConfigurationFilePath(vsname).replace(".xml",".metadata");
 		try {
 			List<String> lines =IOUtils.readLines(metadata);
@@ -118,14 +117,14 @@ public class VSManagerService {
 			LSMSensorMetaData lsmmd=new LSMSensorMetaData();
 			
 			lsmmd.init(ConfigFactory.parseFile(new File(filePath)));
-			utils.addSensorToLSM(lsmmd);
+			sensorId=MetadataCreator.addSensorToLSM(lsmmd);
 			
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.error(e.getMessage());
 			throw new VSensorConfigException("Unable to load RDF metadata for sensor. "+e.getMessage());
 		}
-		return Response.ok().build();
+		return Response.ok(sensorId).build();
 	}	
 }
 

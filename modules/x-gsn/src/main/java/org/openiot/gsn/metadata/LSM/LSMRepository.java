@@ -134,18 +134,7 @@ public class LSMRepository {
         }*/
 
         // announce sensor to LSM
-        String sensorID = utils.addSensorToLSM(
-                lsmSchema.getMetaGraph(),
-                lsmSchema.getDataGraph(),
-                lsmSensorMetaData.getSensorName(),
-                lsmSensorMetaData.getAuthor(),
-                lsmSensorMetaData.getSourceType(),
-                lsmSensorMetaData.getSensorType(),
-                lsmSensorMetaData.getInformation(),
-                lsmSensorMetaData.getSource(),
-                lsmSensorMetaData.getProperties(),
-                vsConfig.getLatitude(),
-                vsConfig.getLongitude());
+        String sensorID = MetadataCreator.addSensorToLSM(lsmSensorMetaData);
 
         // check returned sensor ID
         if (sensorID == "") {
@@ -184,21 +173,7 @@ public class LSMRepository {
         }*/        
 
         // announce sensor to LSM
-        String sensorID = utils.addSensorToLSM(
-                //lsmUser.getUser(),
-                //lsmUser.getPassword(),
-                lsmSchema.getMetaGraph(),
-                lsmSchema.getDataGraph(),
-                lsmSensorMetaData.getSensorName(),
-                lsmSensorMetaData.getAuthor(),
-                lsmSensorMetaData.getSourceType(),
-                lsmSensorMetaData.getSensorType(),
-                lsmSensorMetaData.getInformation(),
-                lsmSensorMetaData.getSource(),
-                lsmSensorMetaData.getProperties(),
-                latitude,
-                longitude);
-
+        String sensorID = MetadataCreator.addSensorToLSM(lsmSensorMetaData);
         // check returned sensor ID
         if (sensorID == "") {
             logger.warn("Couldn't register sensor " + lsmSensorMetaData.getSensorName() + " to LSM. Received empty sensor ID");

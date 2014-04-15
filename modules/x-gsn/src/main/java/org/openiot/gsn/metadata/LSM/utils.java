@@ -41,69 +41,6 @@ public class utils {
 		lsmSchema.initFromConfigFile(LSMRepository.LSM_CONFIG_PROPERTIES_FILE);
 	}
 
-    public static String addSensorToLSM(LSMSensorMetaData md){
-    	return addSensorToLSM(lsmSchema.getMetaGraph(), 
-    			lsmSchema.getDataGraph(), 
-    			md.getSensorName(), md.getAuthor(), md.getSourceType(), 
-    			md.getSensorType(), md.getInformation(), md.getSource(), 
-    			md.getProperties(), md.getLatitude(), md.getLongitude());
-    }
-    
-	
-    public static String addSensorToLSM(
-                                        String metaGraph,
-                                        String dataGraph,
-                                        String sensorName,
-                                        String sensorAuthor,
-                                        String sourceType,
-                                        String sensorType,
-                                        String infor,
-                                        String sensorSource,
-                                        String [] properties,
-                                        double latitude,
-                                        double longitude) {
-
-        String sensorID = "";
-        logger.info("Add sensor: "+sensorName+","+sensorAuthor+","+sourceType+","+sensorType);
-        logger.info("Graphs: "+metaGraph+","+dataGraph);
-        for (String p:properties){
-        logger.info("Properties: "+p);}
-        try {
-            Sensor sensor = new Sensor();
-            sensor.setName(sensorName);
-            sensor.setAuthor(sensorAuthor);
-            sensor.setSourceType(sourceType);
-            sensor.setSensorType(sensorType);
-            sensor.setInfor(infor);
-            sensor.setSource(sensorSource);
-            for (String p:properties){
-            	sensor.addProperty(p);
-            }
-            sensor.setTimes(new Date());
-            sensor.setMetaGraph(metaGraph);
-            sensor.setDataGraph(dataGraph);
-         
-            // set sensor location information (latitude, longitude, city, country, continent...)
-            Place place = new Place();
-            place.setLat(latitude);
-            place.setLng(longitude);
-            sensor.setPlace(place);
-
-            // create LSMTripleStore instance
-            logger.info("Connecting to LSM: "+lsmSchema.getLsmServerUrl());
-            LSMTripleStore lsmStore = new LSMTripleStore(lsmSchema.getLsmServerUrl());
-
-            sensorID=lsmStore.sensorAdd(sensor);           
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            System.out.println("cannot send the data to server");
-        }
-
-        return sensorID;
-
-    }
-
     public static boolean updateSensorDataOnLSM(
                                                 String metaGraph,
                                                 String dataGraph,
@@ -173,20 +110,8 @@ public class utils {
         //System.out.println(success);
 
 
-        String SID = addSensorToLSM(
-                schema.getMetaGraph(),
-                schema.getDataGraph(),
-                metaData.getSensorName(),
-                metaData.getAuthor(),
-                metaData.getSourceType(),
-                metaData.getSensorType(),
-                metaData.getInformation(),
-                metaData.getSource(),
-                metaData.getProperties(),
-                metaData.getLatitude(),
-                metaData.getLongitude());
-
-        System.out.println("Sensor registered to LSM with ID: " + SID);
+        //String SID = addSensorToLSM(metaData);
+        //System.out.println("Sensor registered to LSM with ID: " + SID);
 
         System.exit(0);
     }

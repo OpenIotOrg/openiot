@@ -52,29 +52,11 @@ public class TestLSM {
                                              double fieldValue,
                                              String fieldUnit) {
         try {
-            /*
-            * Set sensor's author
-            * If you don't have LSM account, please visit LSM Home page (http://lsm.deri.ie) to sign up
-            */
-            //User user = new User();
-            //user.setUsername(username);
-            //user.setPass(password);
-
-            Sensor sensor = new Sensor();
-            //sensor.setId(sensorID);
-
-
-
-
-            //sensor.setUser(user);
 
             // create LSMTripleStore instance
             LSMTripleStore lsmStore = new LSMTripleStore("");
 
-            //set user information for authentication
-            //lsmStore.setUser(user);
-
-            /*
+         /*
             * An Observation is a Situation in which a Sensing method has been used to estimate or
             * calculate a value of a Property of a FeatureOfInterest.
             */
@@ -237,7 +219,7 @@ public class TestLSM {
     	 ** Sensor name: lausanne_1057 */ 
          // 1. Create an instance of Sensor class and set the sensor metadata 
     		
-    		String id=org.openiot.gsn.metadata.LSM.utils.addSensorToLSM( 
+    		String id=org.openiot.gsn.metadata.LSM.MetadataCreator.addSensorToLSM( 
     				"http://lsm.deri.ie/OpenIoT/sensormeta#", "http://lsm.deri.ie/OpenIoT/sensordata#", 
     				"lausanne_1058", "jp", "gsntypne", "weather", "Air quality top", 
     				"http://opensensedata.epfl.ch:22002/gsn?REQUEST=113&name=lausanne_1057", 

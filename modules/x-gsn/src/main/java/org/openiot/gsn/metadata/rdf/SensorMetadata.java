@@ -23,12 +23,12 @@ package org.openiot.gsn.metadata.rdf;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.io.Reader;
 import java.io.StringWriter;
 
 import org.openiot.gsn.metadata.LSM.LSMFieldMetaData;
 import org.openiot.gsn.metadata.LSM.LSMSensorMetaData;
 
+import com.hp.hpl.jena.n3.turtle.TurtleParseException;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.NodeIterator;
@@ -45,7 +45,7 @@ public class SensorMetadata {
   private final static String rdfs="http://www.w3.org/2000/01/rdf-schema#";
   private final static String qu="http://purl.oclc.org/NET/ssnx/qu/qu#";
   private final static String rr="http://www.w3.org/ns/r2rml#";
-  public void loadFromFile(String rdfFile) throws FileNotFoundException{
+  public void loadFromFile(String rdfFile) throws FileNotFoundException,TurtleParseException{
 	  FileInputStream fis = new FileInputStream(rdfFile);
 	  model.read(fis,null,"TURTLE");
   }
