@@ -26,6 +26,7 @@ package org.openiot.lsm.beans;
  */
 import java.util.Date;
 
+import org.openiot.commons.util.PropertyManagement;
 import org.openiot.lsm.utils.ConstantsUtil;
 import org.openiot.lsm.utils.DateUtil;
 
@@ -52,7 +53,8 @@ public class Place implements java.io.Serializable{
 
 	public Place() {
 		super();
-		id = "http://lsm.deri.ie/resource/"+System.nanoTime();
+		PropertyManagement proMgn = new PropertyManagement();
+		id = proMgn.getOpeniotResourceNamespace()+System.nanoTime();
 	}
 	
 	public Place(double lat, double lng) {
