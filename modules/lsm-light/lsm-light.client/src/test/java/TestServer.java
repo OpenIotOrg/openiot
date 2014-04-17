@@ -32,7 +32,7 @@ import org.openiot.lsm.utils.ObsConstant;
  */
 
 public class TestServer {
-	public static LSMTripleStore lsmStore = new LSMTripleStore();
+	public static LSMTripleStore lsmStore = new LSMTripleStore("http://lsm.deri.ie/lsm-light.server/");
 	public static Observation updateData(){
 		
 	/*
@@ -53,9 +53,9 @@ public class TestServer {
 	 */
 	ObservedProperty obvTem = new ObservedProperty();
 	obvTem.setObservationId(obs.getId());
-	obvTem.setPropertyType(ObsConstant.TEMPERATURE);
-	obvTem.setValue(9.58485958485958);
-	obvTem.setUnit("C");
+	obvTem.setPropertyType(ObsConstant.MACHINE_UTIL);
+	obvTem.setValue(1);
+	obvTem.setUnit("%");
 	obs.addReading(obvTem);
 	
 	ObservedProperty obvCO = new ObservedProperty();

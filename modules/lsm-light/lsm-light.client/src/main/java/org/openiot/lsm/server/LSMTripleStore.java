@@ -19,8 +19,6 @@ package org.openiot.lsm.server;
 *     Contact: OpenIoT mailto: info@openiot.eu
 */
 import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -29,13 +27,12 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Properties;
 
+import org.openiot.commons.util.PropertyManagement;
 import org.openiot.lsm.beans.Observation;
 import org.openiot.lsm.beans.RDFTuple;
 import org.openiot.lsm.beans.Sensor;
 import org.openiot.lsm.schema.LSMSchema;
-import org.openiot.lsm.utils.ObsConstant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /**
@@ -49,23 +46,29 @@ public class LSMTripleStore implements LSMServer {
 	String RDFServletURL;
 	String ObjectServletURL;
     String UPLOAD_URL;
-  //logger
-    final static Logger logger = LoggerFactory.getLogger(LSMTripleStore.class);
-    Properties prop = new Properties();
     
-    public LSMTripleStore(){
-    	InputStream in = LSMTripleStore.class.getResourceAsStream("/lsm-client.properties");
+    private String openiot_ServerHost;
+    
+  //logger
+    final static Logger logger = LoggerFactory.getLogger(LSMTripleStore.class);    
+    public final static PropertyManagement propertyManagement = new PropertyManagement();
+    
+    public String getOpeniot_ServerHost() {
+		return openiot_ServerHost;
+	}
+
+	public LSMTripleStore(String serverHost){
     	try {
-			prop.load(in);
-			String server = prop.getProperty("connection.serverhost"); 
-			RDFServletURL = server + "rdfservlet";
-			ObjectServletURL = server + "objservlet";
-		    UPLOAD_URL = server + "upload";
-		} catch (IOException e) {
+    		this.openiot_ServerHost = serverHost;
+			RDFServletURL = openiot_ServerHost + "rdfservlet";
+			ObjectServletURL = openiot_ServerHost + "objservlet";
+		    UPLOAD_URL = openiot_ServerHost + "upload";
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}    	
     }
+	
     
 	@Override
 	public void sensorAdd(String triples,String graphURL) {
@@ -494,7 +497,7 @@ public class LSMTripleStore implements LSMServer {
 	
 	
 	@Override
-	public void pushRDF(String graphURL,String triples) {
+	public boolean pushRDF(String graphURL,String triples) {
 		// TODO Auto-generated method stub
 		HttpURLConnection conn = null;  
         ObjectOutputStream dos = null;  
@@ -531,12 +534,14 @@ public class LSMTripleStore implements LSMServer {
 	         String response = reader.readLine();
 	         logger.info(response);
 	         logger.info("Please use LSM Sparql Endpoint http://lsm.deri.ie/sparql to check it");
+	         return true;
 	     }else {
 		     logger.error("Server returned non-OK code: " + responseCode);
 		 }
         }catch (Exception ex) {  
             logger.error("cannot send the data to LSM Server",ex);   
         }
+        return false;
 	}
 
 	@Override

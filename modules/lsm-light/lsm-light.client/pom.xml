@@ -68,16 +68,21 @@
 <!--             <groupId>ch.qos.logback</groupId> -->
 <!--             <artifactId>logback-classic</artifactId> -->
 <!--             <version>1.0.13</version> -->
-<!--         </dependency> -->
-<!-- ======== Privacy and Security API Dependencies ========== -->  
+<!--         </dependency> -->		
 		<dependency>
-			<groupId>org.jasig.cas</groupId>
-			<artifactId>cas-server-webapp</artifactId>
-			<version>${cas.version}</version>
-			<type>war</type>
-			<scope>runtime</scope>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<version>3.0.1</version>
 		</dependency>
 
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>3.8.1</version>
+			<scope>test</scope>
+		</dependency>	
+		
+		<!-- ======== Privacy and Security API Dependencies ========== -->  		
 		<dependency>
 			<groupId>org.jasig.cas</groupId>
 			<artifactId>cas-server-support-oauth</artifactId>
@@ -92,16 +97,33 @@
 		</dependency>
 		
 		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>javax.servlet-api</artifactId>
-			<version>3.0.1</version>
-		</dependency>
-
-		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>3.8.1</version>
 			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.openiot</groupId>
+			<artifactId>utils.commons</artifactId>
+			<version>0.0.1</version>
+		</dependency>
+		
+		<!-- ======== Sesame Dependencies ========== -->
+		<dependency>
+			<groupId>org.openrdf.sesame</groupId>
+			<artifactId>sesame-query</artifactId>
+			<version>2.7.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.openrdf.sesame</groupId>
+			<artifactId>sesame-queryresultio-sparqlxml</artifactId>
+			<version>2.7.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.openrdf.sesame</groupId>
+			<artifactId>sesame-repository-sparql</artifactId>
+			<version>2.7.0</version>
 		</dependency>
     </dependencies>   
 </project>

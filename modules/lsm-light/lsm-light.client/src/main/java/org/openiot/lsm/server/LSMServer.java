@@ -35,6 +35,7 @@ public interface LSMServer {
 	 * add new Sensor
 	 *
 	 */
+	
 	public String sensorAdd(Sensor sensor);
 	public void sensorAdd(String triple,String graphURL);
 	public void sensorDelete(String sensorURL,String graphURL);
@@ -46,7 +47,7 @@ public interface LSMServer {
 	public void deleteAllReadings(String sensorURL,String graphURL);
 	public void deleteAllReadings(String sensorURL, String graphURL,String dateOperator, Date fromTime, Date toTime);
 	
-	public void pushRDF(String graphURL,String triples);
+	public boolean pushRDF(String graphURL,String triples);
 	public void deleteTriples(String graphURL, String triples);
 	public void deleteTriples(String graphURL);
 	public void updateTriples(String graphURL, String newTriplePatterns, String oldTriplePatterns);
