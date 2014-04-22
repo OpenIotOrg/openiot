@@ -22,6 +22,8 @@ package org.openiot.lsm.beans;
 
 import java.util.Date;
 import java.util.HashMap;
+
+import org.openiot.commons.util.PropertyManagement;
 /**
  * 
  * @author Hoan Nguyen Mau Quoc
@@ -50,7 +52,8 @@ public class Sensor implements java.io.Serializable {
 		this.properties = properties;
 	}
 	public Sensor(){
-		id = "http://lsm.deri.ie/resource/"+System.nanoTime();
+		PropertyManagement proMgn = new PropertyManagement();
+		id = proMgn.getOpeniotResourceNamespace()+System.nanoTime();
 		properties = new HashMap<String,String>();
 	}
 	public String getId() {

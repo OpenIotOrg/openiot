@@ -38,6 +38,7 @@ import org.openiot.lsm.beans.RDFTuple;
 import org.openiot.lsm.beans.Sensor;
 import org.openiot.lsm.manager.SensorManager;
 import org.openiot.lsm.manager.TriplesDataRetriever;
+import org.openiot.lsm.pooling.ConnectionManager;
 import org.openiot.lsm.utils.ConstantsUtil;
 import org.openiot.lsm.utils.NumberUtil;
 import org.openiot.lsm.utils.VirtuosoConstantUtil;
@@ -156,9 +157,12 @@ public class ObjectServlet extends HttpServlet {
 	        		sensorManager.setMetaGraph(observation.getMetaGraph());
 
 	        		sensor = sensorManager.getSpecifiedSensorWithSensorId(observation.getSensor());
-	        		String foi = VirtuosoConstantUtil.sensorObjectDataPrefix + 
+	        		String foi = "";
+	        		if(observation.getFeatureOfInterest().equals(""))
+	        			foi = ConnectionManager.propertyManagement.getOpeniotResourceNamespace() + 
 							Double.toString(sensor.getPlace().getLat()).replace(".", "").replace("-", "")+
-							Double.toString(sensor.getPlace().getLng()).replace(".", "").replace("-", "");					
+							Double.toString(sensor.getPlace().getLng()).replace(".", "").replace("-", "");	
+	        		else foi = observation.getFeatureOfInterest();					
 	        		triples+=TriplesDataRetriever.getObservationTripleData(observation.getId(), observation.getSensor(), foi, observation.getTimes());
 	        		
 	        		OntModel model = ModelFactory.createOntologyModel();	        		        		

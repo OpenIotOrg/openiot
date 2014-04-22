@@ -9,11 +9,14 @@
 	<xsl:output method="text" media-type="text/plain"/>
 	
 	<xsl:variable name="utc-timestamp" select="current-dateTime()"/>
+	<xsl:param name="prefix"/>
+	
 	<xsl:param name="sensorId"/>
 	<xsl:param name="sourceURL"/>
 	<xsl:param name="sourceType"/>
 	<xsl:param name="sensortype"/>
 	<xsl:param name="name"/>
+	<xsl:param name="owner"/>
 	
 	<xsl:param name="placeId"/>
 	<xsl:param name="lat"/>
@@ -35,7 +38,7 @@
 	<xsl:template match="/">
 		<xsl:call-template name="information"/>
 		<xsl:call-template name="place"/>
-		<xsl:call-template name="featureOfInterest"/>
+<!-- 		<xsl:call-template name="featureOfInterest"/> -->
 	</xsl:template>
 	
 	<xsl:template name="information">	
@@ -45,28 +48,26 @@
 	    			'&#60;','http://purl.oclc.org/NET/ssnx/ssn#Sensor','&#62;. '),
 	    			concat('&#60;',$sensorId,'&#62; ',
 	    			'&#60;','http://purl.org/net/provenance/ns#PerformedAt','&#62; ',
-	    			' &#34;',$utc-timestamp,'&#34;&#94;&#94;&#60;','http://www.w3.org/2001/XMLSchema#dateTime&#62;.'),
-	    	    	concat('&#60;',$sensorId,'&#62; ',
-	    			'&#60;','http://purl.org/net/provenance/ns#PerformedBy','&#62; ','&#60;',$sourceURL,'&#62;','.'),
+	    			' &#34;',$utc-timestamp,'&#34;&#94;&#94;&#60;','http://www.w3.org/2001/XMLSchema#dateTime&#62;.'),	    	    	
 	    			concat('&#60;',$sensorId,'&#62; ',
-	    			'&#60;','http://lsm.deri.ie/ont/lsm.owl#hasSourceType','&#62; ','&#34;',$sourceType,'&#34;','.'),
+	    			'&#60;','http://www.w3.org/ns/prov#wasGeneratedBy','&#62; ','&#60;',$owner,'&#62;','.'),
 	    			concat('&#60;',$sensorId,'&#62; ',
 	    			'&#60;','http://www.w3.org/2000/01/rdf-schema#label','&#62; ','&#34;',$name,'&#34;','.')   			
            			" separator="&#10;"/>
 	</xsl:template>
 			
-	<xsl:template name="featureOfInterest">		
-         <xsl:value-of select="concat('&#10;','&#60;',$foi,'&#62; ',
-	    			'&#60;','http://www.w3.org/1999/02/22-rdf-syntax-ns#type','&#62; ',
-	    			'&#60;','http://purl.oclc.org/NET/ssnx/ssn#FeatureOfInterest','&#62;.'),
-         			concat('&#60;',$foi,'&#62; ',
-	    			'&#60;','http://www.w3.org/2003/01/geo/wgs84_pos#lat','&#62; ',
-	    			'&#34;',$lat,'&#34;&#94;&#94;&#60;','http://www.w3.org/2001/XMLSchema#decimal&#62;.'),
-	    			concat('&#60;',$foi,'&#62; ',
-	    			'&#60;','http://www.w3.org/2003/01/geo/wgs84_pos#long','&#62; ',
-	    			'&#34;',$lng,'&#34;&#94;&#94;&#60;','http://www.w3.org/2001/XMLSchema#decimal&#62;.')
-	    			" separator="&#10;"/>
-	</xsl:template>
+<!-- 	<xsl:template name="featureOfInterest">		 -->
+<!--          <xsl:value-of select="concat('&#10;','&#60;',$foi,'&#62; ', -->
+<!-- 	    			'&#60;','http://www.w3.org/1999/02/22-rdf-syntax-ns#type','&#62; ', -->
+<!-- 	    			'&#60;','http://purl.oclc.org/NET/ssnx/ssn#FeatureOfInterest','&#62;.'), -->
+<!--          			concat('&#60;',$foi,'&#62; ', -->
+<!-- 	    			'&#60;','http://www.w3.org/2003/01/geo/wgs84_pos#lat','&#62; ', -->
+<!-- 	    			'&#34;',$lat,'&#34;&#94;&#94;&#60;','http://www.w3.org/2001/XMLSchema#decimal&#62;.'), -->
+<!-- 	    			concat('&#60;',$foi,'&#62; ', -->
+<!-- 	    			'&#60;','http://www.w3.org/2003/01/geo/wgs84_pos#long','&#62; ', -->
+<!-- 	    			'&#34;',$lng,'&#34;&#94;&#94;&#60;','http://www.w3.org/2001/XMLSchema#decimal&#62;.') -->
+<!-- 	    			" separator="&#10;"/> -->
+<!-- 	</xsl:template> -->
 
 	<xsl:template name="place">
 		<xsl:value-of select="concat('&#10;','&#60;',$sensorId,'&#62; ',
@@ -89,37 +90,37 @@
 	    			'&#34;',$city,'&#44;',$country,'&#34;.'),	    			
 	    			concat('&#60;',$placeId,'&#62; ',
 	    			'&#60;','http://lsm.deri.ie/ont/lsm.owl#is_in_city','&#62; ',
-	    			'&#60;','http://lsm.deri.ie/resource/',$cityId,'&#62;.'),
-	    			concat('&#60;','http://lsm.deri.ie/resource/',$cityId,'&#62; ',
+	    			'&#60;',$prefix,$cityId,'&#62;.'),
+	    			concat('&#60;',$prefix,$cityId,'&#62; ',
 	    			'&#60;','http://www.w3.org/1999/02/22-rdf-syntax-ns#type','&#62; ',
 	    			'&#60;','http://linkedgeodata.org/ontology/City','&#62;.'),
-	    			concat('&#60;','http://lsm.deri.ie/resource/',$cityId,'&#62; ',
+	    			concat('&#60;',$prefix,$cityId,'&#62; ',
 	    			'&#60;','http://www.w3.org/2000/01/rdf-schema#label','&#62; ','&#34;',$city,'&#34;.'),	    				
 	    			concat('&#60;',$placeId,'&#62; ',	    			
 	    			'&#60;','http://linkedgeodata.org/property/is_in_province','&#62; ',
-					'&#60;','http://lsm.deri.ie/resource/',$provinceId,'&#62;.'),
-	    			concat('&#60;','http://lsm.deri.ie/resource/',$provinceId,'&#62; ',
+					'&#60;',$prefix,$provinceId,'&#62;.'),
+	    			concat('&#60;',$prefix,$provinceId,'&#62; ',
 	    			'&#60;','http://www.w3.org/1999/02/22-rdf-syntax-ns#type','&#62; ',
 	    			'&#60;','http://linkedgeodata.org/ontology/Province','&#62;.'),
-	    			concat('&#60;','http://lsm.deri.ie/resource/',$provinceId,'&#62; ',
+	    			concat('&#60;',$prefix,$provinceId,'&#62; ',
 	    			'&#60;','http://www.w3.org/2000/01/rdf-schema#label','&#62; ','&#34;',$province,'&#34;.'),
 	    			
 	    			concat('&#60;',$placeId,'&#62; ',
 	    			'&#60;','http://linkedgeodata.org/property/is_in_country','&#62; ',
-	    			'&#60;','http://lsm.deri.ie/resource/',$countryId,'&#62;.'),
-	    			concat('&#60;','http://lsm.deri.ie/resource/',$countryId,'&#62; ',
+	    			'&#60;',$prefix,$countryId,'&#62;.'),
+	    			concat('&#60;',$prefix,$countryId,'&#62; ',
 	    			'&#60;','http://www.w3.org/1999/02/22-rdf-syntax-ns#type','&#62; ',
 	    			'&#60;','http://linkedgeodata.org/ontology/Country','&#62;.'),
-	    			concat('&#60;','http://lsm.deri.ie/resource/',$countryId,'&#62; ',
+	    			concat('&#60;',$prefix,$countryId,'&#62; ',
 	    			'&#60;','http://www.w3.org/2000/01/rdf-schema#label','&#62; ','&#34;',$country,'&#34;.'),
 	    			
 	    			concat('&#60;',$placeId,'&#62; ',
 	    			'&#60;','http://linkedgeodata.org/property/is_in_continent','&#62; ',
-	    			'&#60;','http://lsm.deri.ie/resource/',$continentId,'&#62;.'),
-	    			concat('&#60;','http://lsm.deri.ie/resource/',$continentId,'&#62; ',
+	    			'&#60;',$prefix,$continentId,'&#62;.'),
+	    			concat('&#60;',$prefix,$continentId,'&#62; ',
 	    			'&#60;','http://www.w3.org/1999/02/22-rdf-syntax-ns#type','&#62; ',
 	    			'&#60;','http://linkedgeodata.org/ontology/Continent','&#62;.'),
-	    			concat('&#60;','http://lsm.deri.ie/resource/',$continentId,'&#62; ',
+	    			concat('&#60;',$prefix,$continentId,'&#62; ',
 	    			'&#60;','http://www.w3.org/2000/01/rdf-schema#label','&#62; ','&#34;',$continent,'&#34;.')   			
            			" separator="&#10;"/>
 	</xsl:template>
