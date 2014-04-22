@@ -274,7 +274,7 @@ public final class LSMOAuth20PermissionController extends AbstractController {
 		// }
 
 		// Check if the caller has permission for retrieving permission information
-		if (targetClientId != clientId) {
+		if (!targetClientId.equals(clientId)) {
 			final Principal principal = ticketGrantingTicket.getAuthentication().getPrincipal();
 			if (!isPermitted(principal.getId(), targetService.getId())) {
 				log.error("[{} from {}] is not permitted to retrieve permission information on [{}]", principal.getId(), clientId, targetClientId);
@@ -287,7 +287,7 @@ public final class LSMOAuth20PermissionController extends AbstractController {
 		final JsonGenerator jsonGenerator = jsonFactory.createJsonGenerator(response.getWriter());
 
 		final Principal principal = userTicketGrantingTicket.getAuthentication().getPrincipal();
-		final Map<String, Set<String>> permissions = extractPermissions(service.getId(), principal.getId());
+		final Map<String, Set<String>> permissions = extractPermissions(targetService.getId(), principal.getId());
 
 		jsonGenerator.writeStartObject();
 		jsonGenerator.writeStringField(CasWrapperProfile.ID, principal.getId());

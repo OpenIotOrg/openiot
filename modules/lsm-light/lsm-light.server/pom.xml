@@ -67,7 +67,7 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-            
+            <!-- 
             <dependency>
                    <groupId>org.jboss.bom</groupId>
                    <artifactId>jboss-javaee-6.0-with-resteasy</artifactId>
@@ -75,7 +75,7 @@
                    <type>pom</type>
                    <scope>import</scope>
            </dependency>               
-
+ 			-->
         </dependencies>
     </dependencyManagement>
     
@@ -116,17 +116,7 @@
 
 
                 <!-- ======== JBoss RestEasy JAX-RS with JAXB support Dependencies ========== -->
-        <dependency>
-                <groupId>org.jboss.resteasy</groupId>
-                <artifactId>resteasy-jaxrs</artifactId>
-                <version>2.3.6.Final</version>
-        </dependency>  
-     
-        <dependency>
-                <groupId>org.jboss.resteasy</groupId>
-                <artifactId>resteasy-jaxb-provider</artifactId>
-                <version>2.3.6.Final</version>
-        </dependency>
+
 
 
                 <!-- ====== org.eclipse.persistence.jaxb.JAXBContextFactory Dependencies -->
@@ -245,6 +235,11 @@
                 	<groupId>org.openiot</groupId>
                 	<artifactId>lsm-light.client</artifactId>
                 	<version>0.0.1</version>
+                </dependency>
+                <dependency>
+                	<groupId>org.openiot</groupId>
+                	<artifactId>security.client</artifactId>
+                	<version>0.0.1-SNAPSHOT</version>
                 </dependency>
     </dependencies>
 
