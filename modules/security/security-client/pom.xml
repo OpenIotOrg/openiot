@@ -5,6 +5,7 @@
 	<artifactId>security.client</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
+	
 	<build>
 		<sourceDirectory>src</sourceDirectory>
 		<resources>
@@ -18,7 +19,7 @@
 				</includes>
 			</resource>
 		</resources>
-
+		
 		<plugins>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -35,13 +36,26 @@
 				<version>2.16</version>
 				<configuration>
 					<printSummary>true</printSummary>
-					<!-- If you want to run the tests from command line add -DskipTests=false to the command  -->
+					<!-- If you want to run the tests from command line add -DskipTests=false to the command -->
 					<skipTests>${skipTests}</skipTests>
 				</configuration>
 			</plugin>
 
 		</plugins>
 	</build>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.jboss.bom</groupId>
+				<artifactId>jboss-javaee-6.0-with-resteasy</artifactId>
+				<version>${version.jboss.bom}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
 	<dependencies>
 
 		<dependency>
@@ -116,15 +130,12 @@
 
 		<dependency>
 			<groupId>org.jboss.resteasy</groupId>
-			<artifactId>resteasy-jaxb-provider</artifactId>
-			<version>3.0.6.Final</version>
+			<artifactId>resteasy-jaxrs</artifactId>
 		</dependency>
-
 		<dependency>
-			<groupId>org.jboss.resteasy</groupId>
-			<artifactId>resteasy-client</artifactId>
-			<version>3.0.6.Final</version>
-		</dependency>
+        	<groupId>org.jboss.resteasy</groupId>
+        	<artifactId>resteasy-jaxb-provider</artifactId>
+        </dependency>
 
 	</dependencies>
 
@@ -133,6 +144,9 @@
 		<junit.version>4.11</junit.version>
 		<shiro.version>1.2.2</shiro.version>
 		<skipTests>true</skipTests>
+		<!-- Define the version of JBoss' Java EE 6 APIs and Tools we want 
+            to import. -->
+        <version.jboss.bom>1.0.4.Final</version.jboss.bom>
 	</properties>
 
 	<repositories>

@@ -3,12 +3,8 @@ package org.openiot.security.client.rest;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.core.Response;
-
-import org.jboss.resteasy.client.jaxrs.ResteasyClient;
-import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
-import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
+import org.jboss.resteasy.client.ClientRequest;
+import org.jboss.resteasy.client.ClientResponse;
 import org.scribe.model.Token;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,40 +23,51 @@ public class RestfulOAuthService {
 
 	public Token getAccessToken(OAuthCredentialsRest credentials) {
 		Token token = null;
-		ResteasyClient client = new ResteasyClientBuilder().build();
-		ResteasyWebTarget target = client.target(casOAuthURL);
-		String params = "username=" + credentials.getUsername() + "&password=" + credentials.getPassword() + "&clientId=" + credentials.getKey()
-				+ "&secret=" + credentials.getSecret();
-		Response response = target.request().post(Entity.text(params));
-		// Read output in string format
-		log.debug("Status code: {}", response.getStatus());
+		ClientRequest request = new ClientRequest(casOAuthURL);
+		// String params = "username=" + credentials.getUsername() + "&password=" +
+		// credentials.getPassword() + "&clientId=" + credentials.getKey() + "&secret="
+		// + credentials.getSecret();
+		request.formParameter("username", credentials.getUsername());
+		request.formParameter("password", credentials.getPassword());
+		request.formParameter("clientId", credentials.getKey());
+		request.formParameter("secret", credentials.getSecret());
+		try {
+			ClientResponse<String> response = request.post(String.class);
+			// Read output in string format
+			log.debug("Status code: {}", response.getStatus());
 
-		if (response.getStatus() == STATUS_SUCCESS) {
-			Matcher matcher = Pattern.compile(".*action=\".*/(.*?)\".*").matcher(response.readEntity(String.class));
-			if (matcher.matches())
-				token = new Token(matcher.group(1), "");
-		} else {
-			log.warn("Invalid response code {} from CAS server!", response.getStatus());
-			log.info("Response: {}", response.readEntity(String.class));
+			if (response.getStatus() == STATUS_SUCCESS) {
+				Matcher matcher = Pattern.compile(".*action=\".*/(.*?)\".*").matcher(response.getEntity());
+				if (matcher.matches())
+					token = new Token(matcher.group(1), "");
+			} else {
+				log.warn("Invalid response code {} from CAS server!", response.getStatus());
+				log.info("Response: {}", response.getEntity());
+			}
+
+			response.releaseConnection();
+		} catch (Exception e) {
+			log.error("Error while retrieving access token", e);
 		}
-
-		response.close();
 		return token;
 	}
 
 	public boolean removeAccessToken(String token) {
 		boolean deleted = false;
-		ResteasyClient client = new ResteasyClientBuilder().build();
-		ResteasyWebTarget target = client.target(casOAuthURL + "/" + token);
+		ClientRequest request = new ClientRequest(casOAuthURL + "/" + token);
 		log.debug("sending request to delete token {}", token);
-		Response response = target.request().delete();
-		log.debug("Delete request sent for token {}", token);
-		log.debug("Status code: {}", response.getStatus());
-		if (response.getStatus() == STATUS_DELETE_SUCCESS) {
-			deleted = true;
-		} else {
-			log.warn("Invalid response code {} from CAS server!", response.getStatus());
-			log.info("Response: {}", response.readEntity(String.class));
+		try {
+			ClientResponse<String> response = request.delete(String.class);
+			log.debug("Delete request sent for token {}", token);
+			log.debug("Status code: {}", response.getStatus());
+			if (response.getStatus() == STATUS_DELETE_SUCCESS) {
+				deleted = true;
+			} else {
+				log.warn("Invalid response code {} from CAS server!", response.getStatus());
+				log.info("Response: {}", response.getEntity());
+			}
+		} catch (Exception e) {
+			log.error("Delete request error", e);
 		}
 
 		return deleted;
