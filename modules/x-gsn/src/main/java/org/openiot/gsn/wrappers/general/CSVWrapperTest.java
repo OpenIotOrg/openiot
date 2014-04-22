@@ -1,6 +1,6 @@
 /**
 *    Copyright (c) 2011-2014, OpenIoT
-*   
+*
 *    This file is part of OpenIoT.
 *
 *    OpenIoT is free software: you can redistribute it and/or modify
@@ -41,10 +41,10 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class CSVWrapperTest {
-	private final String CSV_FILE_NAME =  "test.csv.csv"; 
+	private final String CSV_FILE_NAME =  "test.csv.csv";
 	private final String CHECK_POINT_DIR = "csv-check-points.csv";
 
-	
+
 	@Before
 	public void setUp() throws Exception {
 		BasicConfigurator.configure();
@@ -53,7 +53,7 @@ public class CSVWrapperTest {
 
 	@After
 	public void tearDown() throws Exception {
-	
+
 	}
 
 	@Test
@@ -70,8 +70,8 @@ public class CSVWrapperTest {
 		assertEquals(true,CSVHandler.isTimeStampFormat("timestamp(xyz)"));
 		assertEquals("xyz", CSVHandler.getTimeStampFormat("timestamp(xyz)"));
 	}
-	
-	@Test 
+
+	@Test
 	public void testBadFields() {
 		assertEquals(true,CSVHandler.validateFormats(new String[] {"numeric"}));
 		assertFalse(CSVHandler.validateFormats(new String[] {"doubble"}));
@@ -85,39 +85,39 @@ public class CSVWrapperTest {
 		String formats = "Timestamp(d.M.y ) , Numeric , timestamp(k:m) , numeric    ";
 		String badFormat = "Timestamp(d.M.y k:m) , numeric , numeric, numeric,numeric,dollluble ";
 		String badFormat2 ="Timestamp(d.Mjo0o.y k:m) , numeric, numeric, numeric";
-		
+
 		CSVHandler wrapper = new CSVHandler();
 		assertEquals(false,wrapper.initialize("test.csv.csv", fields,badFormat,',','\"',0,"NaN,-1234,4321"));
 		assertEquals(false,wrapper.initialize("test.csv.csv", fields,badFormat,',','\"',0,"NaN,-1234,4321"));
 		assertEquals(false,wrapper.initialize("test.csv.csv", fields,badFormat2,',','\"',0,"NaN,-1234,4321"));
-		
+
 		assertEquals(true,wrapper.initialize("test.csv.csv", fields,formats,',','\"',0,"NaN,-1234,4321"));
-		
+
 		FileUtils.writeStringToFile(new File(wrapper.getCheckPointFile()),  "","UTF-8");
 		String[] formatsParsed = wrapper.getFormats();
 		String[] fieldsParsed =  wrapper.getFields();
 		assertEquals(true,compare(fieldsParsed, new String[] {"timed","air_temp","timed","air_temp2"}));
 		assertEquals(true,compare(formatsParsed, new String[] {"Timestamp(d.M.y )","Numeric","timestamp(k:m)","numeric"}));
-		
+
 		TreeMap<String, Serializable> se = wrapper.convertTo(wrapper.getFormats(),wrapper.getFields(),wrapper.getNulls(),new String[] {} , wrapper.getSeparator());
 		assertEquals(wrapper.getFields().length-1, se.keySet().size());//timestamp is douplicated.
 		assertEquals(null, se.get("timed"));
 		se = wrapper.convertTo(wrapper.getFormats(),wrapper.getFields(),wrapper.getNulls(),new String[] {"","","","-1234","4321","NaN"} , wrapper.getSeparator());
 		assertEquals(null, se.get("timed"));
-		
+
 		se = wrapper.convertTo(wrapper.getFormats(),wrapper.getFields(),wrapper.getNulls(),new String[] {"","","","-1234","4321","NaN"} , wrapper.getSeparator());
 		assertEquals(null, se.get("timed"));
-		
+
 		se = wrapper.convertTo(wrapper.getFormats(),wrapper.getFields(),wrapper.getNulls(),new String[] {"01.01.2009","1234","","-4321","ignore-me","NaN"} , wrapper.getSeparator());
 		long parsedTimestamp = (Long)se.get("timed");
 		assertEquals(true,parsedTimestamp>0);
 		assertEquals(1234.0, se.get("air_temp"));
 		assertEquals(-4321.0, se.get("air_temp2"));
-		
+
 		se = wrapper.convertTo(wrapper.getFormats(),wrapper.getFields(),wrapper.getNulls(),new String[] {"01.01.2009","-1234","10:10","-4321","ignore-me","NaN"} , wrapper.getSeparator());
 		assertEquals(true,((Long)se.get("timed"))>parsedTimestamp);
 		assertNull(se.get("air_temp"));
-	
+
 	}
 	@Test
 	public void testCheckpoints() throws IOException {
@@ -128,37 +128,37 @@ public class CSVWrapperTest {
 		"01.01.2009,3,10:12,12,\"Ali Salehi\"\n";
 		CSVHandler wrapper = new CSVHandler();
 		assertEquals(true,wrapper.initialize("test.csv.csv", fields,formats,',','\"',0,"NaN,-1234,4321"));
-		ArrayList<TreeMap<String, Serializable>> parsed = wrapper.parseValues(new StringReader(data), -1);
+		ArrayList<TreeMap<String, Serializable>> parsed = wrapper.parseValues(new StringReader(data), -1, 250);
 		assertEquals(3, parsed.size());
-		assertEquals(wrapper.work(new StringReader(data), CHECK_POINT_DIR).size(), parsed.size());
+		assertEquals(wrapper.work(new StringReader(data), CHECK_POINT_DIR, 250).size(), parsed.size());
 		assertEquals(true,((Long)parsed.get(0).get("timed"))<((Long)parsed.get(1).get("timed")));
 		long recentTimestamp = ((Long)parsed.get(parsed.size()-1).get("timed"));
 		data+="01.01.2009,3,10:12,12,\"Ali Salehi\"\n";
-		assertEquals(0,wrapper.parseValues(new StringReader(data), recentTimestamp).size());
-		assertEquals(0,wrapper.work(new StringReader(data), CHECK_POINT_DIR).size());
-		
+		assertEquals(0,wrapper.parseValues(new StringReader(data), recentTimestamp, 250).size());
+		assertEquals(0,wrapper.work(new StringReader(data), CHECK_POINT_DIR, 250).size());
+
 		data+="01.01.2009,3,10:12,12,\"Ali Salehi\"\n";
 		data+="01.01.2009,3,10:11,12,\"Ali Salehi\"\n";
 		data+="01.01.2009,3,10:10,12,\"Ali Salehi\"\n";
-		assertEquals(0,wrapper.parseValues(new StringReader(data), recentTimestamp).size());
-		assertEquals(0,wrapper.work(new StringReader(data), CHECK_POINT_DIR).size());
+		assertEquals(0,wrapper.parseValues(new StringReader(data), recentTimestamp, 250).size());
+		assertEquals(0,wrapper.work(new StringReader(data), CHECK_POINT_DIR, 250).size());
 		data+="01.01.2009,3,10:13,13,\"Ali Salehi\"\n";
-		assertEquals(1,wrapper.parseValues(new StringReader(data), recentTimestamp).size());
-		assertEquals(1,wrapper.work(new StringReader(data), CHECK_POINT_DIR).size());
+		assertEquals(1,wrapper.parseValues(new StringReader(data), recentTimestamp, 250).size());
+		assertEquals(1,wrapper.work(new StringReader(data), CHECK_POINT_DIR, 250).size());
 		data="###########################\n\n\n\n,,,,,,,,,\n\n\n"; // Empty File.
 		wrapper.setSkipFirstXLines(1);
-		assertEquals(0,wrapper.parseValues(new StringReader(data), recentTimestamp).size());
-		assertEquals(0,wrapper.work(new StringReader(data), CHECK_POINT_DIR).size());
-		
+		assertEquals(0,wrapper.parseValues(new StringReader(data), recentTimestamp, 250).size());
+		assertEquals(0,wrapper.work(new StringReader(data), CHECK_POINT_DIR, 250).size());
+
 	}
-	
+
 	@Test
 	public void testTimeStampParser() throws IOException {
 		DateTime toReturn = CSVHandler.parseTimeStamp("d.M.y k:m","01.10.2008 06:20");
 		assertEquals(new DateTime(2008,10,01,6,20,0,0), toReturn);
 		assertEquals(0, CSVHandler.generateFieldIdx("", false).length);
 	}
-	
+
 	@Test
 	public void testFileUtils() throws IOException {
 		String content = "";
@@ -169,11 +169,11 @@ public class CSVWrapperTest {
 		FileUtils.writeStringToFile(f,content,"UTF-8");
 		assertEquals(content,FileUtils.readFileToString(f,"UTF-8"));
 	}
-	
+
 	public boolean compare(String[] a,String[] b) {
 		if (a.length!=b.length)
 			return false;
-		for (int i=0;i<a.length;i++) 
+		for (int i=0;i<a.length;i++)
 			if (!a[i].equals(b[i]))
 				return false;
 		return true;
