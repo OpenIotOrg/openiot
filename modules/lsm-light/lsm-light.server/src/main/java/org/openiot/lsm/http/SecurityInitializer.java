@@ -36,24 +36,27 @@ public class SecurityInitializer {
 	public static final String SECURITY_MANAGEMENT_KEY = "security.initialize.management.key";
 
 	private String lSMOauthGraphURL;
-	private PropertyManagement props;
+	private static PropertyManagement props;
 	private OauthServletHelper helper;
 	private AccessControlUtil acUtil;
 
-	private SecurityInitializer() {
+	private SecurityInitializer(String graphURL) {
 		props = new PropertyManagement();
-		lSMOauthGraphURL = props.getSecurityLsmGraphURL();
+		lSMOauthGraphURL = graphURL;
 		helper = new OauthServletHelper();
 		acUtil = AccessControlUtil.getRestInstance();
 	}
 
 	public static void init() {
 		SensorManager sensorManager = new SensorManager();
+		props = new PropertyManagement();
+		String securityLsmGraphURL = props.getSecurityLsmGraphURL();
+		sensorManager.setMetaGraph(securityLsmGraphURL);
 		logger.debug("Retrieving all registered services");
 		List<RegisteredService> allRegisteredServices = sensorManager.getAllRegisteredServices();
 		if (allRegisteredServices == null || allRegisteredServices.isEmpty()) {
 			logger.debug("No registered services found. Initializing ...");
-			SecurityInitializer securityInitializer = new SecurityInitializer();
+			SecurityInitializer securityInitializer = new SecurityInitializer(securityLsmGraphURL);
 			securityInitializer.initialize();
 		}
 	}
