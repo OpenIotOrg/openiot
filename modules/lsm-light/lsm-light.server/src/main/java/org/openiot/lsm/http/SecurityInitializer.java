@@ -113,7 +113,15 @@ public class SecurityInitializer {
 		predefPermissions.add(new Permission(PermissionsUtil.SEC_MGMT_CREATE_PERMISSION + key, "Create new permissions", ID_SECURITY_MANAGEMENT));
 		predefPermissions.add(new Permission(PermissionsUtil.SEC_MGMT_CREATE_ROLE + key, "Create new roles", ID_SECURITY_MANAGEMENT));
 		predefPermissions.add(new Permission(PermissionsUtil.SEC_MGMT_GRANT_ROLE + key, "Grant/revoke roles", ID_SECURITY_MANAGEMENT));
-		
+
+		// Pre-defined permissions and roles for lsm-light.server
+		predefPermissions.add(new Permission(PermissionsUtil.ADD_SENSOR, "add new sensor to server", ID_LSM_SERVER));
+		predefPermissions.add(new Permission(PermissionsUtil.ADD_TRIPLES, "insert triples into server", ID_LSM_SERVER));
+		predefPermissions.add(new Permission(PermissionsUtil.UPDATE_SENSOR_DATA, "add new sensor reading", ID_LSM_SERVER));
+		predefPermissions.add(new Permission(PermissionsUtil.GET_SENSOR, "retrieve sensor", ID_LSM_SERVER));
+		predefPermissions.add(new Permission(PermissionsUtil.DEL_SENSOR, "delete sensor", ID_LSM_SERVER));
+		predefPermissions.add(new Permission(PermissionsUtil.DEL_READING, "delete sensor reading", ID_LSM_SERVER));
+		predefPermissions.add(new Permission(PermissionsUtil.DEL_TRIPLES, "delete triples", ID_LSM_SERVER));
 		for (Permission permission : predefPermissions) {
 			addPermission(permission);
 		}

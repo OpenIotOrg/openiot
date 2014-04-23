@@ -104,7 +104,7 @@ public class TestServer {
 		// TODO Auto-generated method stub		        
         try{  
         	AccessControlUtil accessControlUtil = AccessControlUtil.getRestInstance();
-    		OAuthorizationCredentials credential = accessControlUtil.login("lsm-light.client", "nmqhoan");
+    		OAuthorizationCredentials credential = accessControlUtil.login("lsm-light.client", "client.secret");
     		accessControlUtil.getOAuthorizationCredentials();
     		String token = credential.getAccessToken();
     		String clientId = credential.getClientId();
@@ -118,10 +118,10 @@ public class TestServer {
 //        	lsmStore.sensorDelete("http://lsm.deri.ie/resource/1398244042563735000", "http://test/sensormeta#",clientId,token);
 //        	lsmStore.deleteTriples("http://test/sensormeta#");
         	
-//        	Sensor sensor = addNewSensor(clientId, token);  
-//          Observation obs = TestServer.updateData();
-//	        obs.setSensor(sensor.getId());
-//	        lsmStore.sensorDataUpdate(obs,clientId, token);
+        	Sensor sensor = addNewSensor(clientId, token);  
+            Observation obs = TestServer.updateData();
+	        obs.setSensor(sensor.getId());
+	        lsmStore.sensorDataUpdate(obs,clientId, token);
 	        
 //	        Sensor s = lsmStore.getSensorById("http://lsm.deri.ie/resource/1386253085149029000","http://test/sensormeta#");
 //	        System.out.println(s.getId());
