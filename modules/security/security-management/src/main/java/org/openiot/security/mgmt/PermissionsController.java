@@ -44,7 +44,7 @@ import org.primefaces.context.RequestContext;
 
 /**
  * @author Mehdi Riahi
- *
+ * 
  */
 @ManagedBean
 @ViewScoped
@@ -92,10 +92,11 @@ public class PermissionsController extends AbstractController {
 					allServices.put(registeredService.getId(), registeredService);
 			}
 			permissionRoles = new HashMap<Permission, List<Role>>();
+			for (Permission permission : allPermissions) {
+				permissionRoles.put(permission, new ArrayList<Role>());
+			}
 			for (Role role : allRoles) {
 				for (Permission permission : role.getPermissions()) {
-					if (!permissionRoles.containsKey(permission))
-						permissionRoles.put(permission, new ArrayList<Role>());
 					permissionRoles.get(permission).add(role);
 				}
 			}
@@ -194,15 +195,15 @@ public class PermissionsController extends AbstractController {
 	}
 
 	public String getSelectedServiceName() {
-		if(allServices != null && selectedServiceId > -1 && allServices.containsKey(selectedServiceId))
+		if (allServices != null && selectedServiceId > -1 && allServices.containsKey(selectedServiceId))
 			return allServices.get(selectedServiceId).getName();
 		return "SELECTED_SERVICE_NOT_FOUND";
 	}
-	
+
 	public boolean hasPermissionDeletionPermission() {
 		return AccessControlUtil.getInstance().hasPermission("admin:delete_permission:" + getSelectedServiceName());
 	}
-	
+
 	public Permission getNewPermission() {
 		if (newPermission == null)
 			newPermission = new Permission();

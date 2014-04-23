@@ -1,148 +1,149 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>org.openiot</groupId>
-  <artifactId>lsm-light.server</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
-  <packaging>war</packaging>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.openiot</groupId>
+	<artifactId>lsm-light.server</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<packaging>war</packaging>
 
-<licenses>
-        <license>
-            <name>GNU Lesser General Public License, version 2.1</name>
-            <distribution>repo</distribution>
-            <url>http://www.gnu.org/licenses/lgpl-2.1.html</url>
-        </license>
-    </licenses>
-
-
-  <!-- =========================================================== -->
-  <!-- Properties -->
-  <!-- =========================================================== -->
-    <properties>
-        <!-- Explicitly declaring the source encoding eliminates the following 
-            message: [WARNING] Using platform encoding (UTF-8 actually) to copy filtered 
-            resources, i.e. build is platform dependent!
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding> -->
-        
-        <!-- JBoss dependency versions -->
-        <version.jboss.maven.plugin>7.3.Final</version.jboss.maven.plugin>
-        
-        <!-- Define the version of JBoss' Java EE 6 APIs and Tools we want 
-            to import. -->
-        <version.jboss.bom>1.0.4.Final</version.jboss.bom>
-        
-        <!-- Alternatively, comment out the above line, and un-comment the line
-            below to use version 1.0.2.Final-redhat-1 which is a release certified to 
-            work with JBoss EAP 6. It requires you have access to the JBoss EAP 6 
-            maven repository. -->
-        <!-- <version.jboss.bom>1.0.2.Final-redhat-1</version.jboss.bom>> -->
-        
-        <!-- other plugin versions -->
-        <version.compiler.plugin>2.3.2</version.compiler.plugin>
-        <version.surefire.plugin>2.4.3</version.surefire.plugin>
-        <version.war.plugin>2.1.1</version.war.plugin>
-	     <cas.version>3.5.2</cas.version>
-        <!-- maven-compiler-plugin -->
-        <maven.compiler.target>1.7</maven.compiler.target>
-        <maven.compiler.source>1.7</maven.compiler.source>
-    </properties>
+	<licenses>
+		<license>
+			<name>GNU Lesser General Public License, version 2.1</name>
+			<distribution>repo</distribution>
+			<url>http://www.gnu.org/licenses/lgpl-2.1.html</url>
+		</license>
+	</licenses>
 
 
- 
-  <!-- =========================================================== -->
-  <!-- Dependencies -->
-  <!-- =========================================================== -->
+	<!-- =========================================================== -->
+	<!-- Properties -->
+	<!-- =========================================================== -->
+	<properties>
+		<!-- Explicitly declaring the source encoding eliminates the following message: [WARNING] Using platform encoding (UTF-8 actually) 
+			to copy filtered resources, i.e. build is platform dependent! <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding> -->
 
-    <dependencyManagement>
-        <dependencies>
-            <!-- JBoss distributes a complete set of Java EE 6 APIs including a Bill 
-                of Materials (BOM). A BOM specifies the versions of a "stack" (or a collection) 
-                of artifacts. We use this here so that we always get the correct versions 
-                of artifacts. Here we use the jboss-javaee-6.0-with-tools stack (you can 
-                read this as the JBoss stack of the Java EE 6 APIs, with some extras tools 
-                for your project)) -->
-            <dependency>
-                <groupId>org.jboss.bom</groupId>
-                <artifactId>jboss-javaee-6.0-with-tools</artifactId>
-                <version>${version.jboss.bom}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency> 
-        </dependencies>
-    </dependencyManagement>
-    
-    <dependencies>
+		<!-- JBoss dependency versions -->
+		<version.jboss.maven.plugin>7.3.Final</version.jboss.maven.plugin>
 
-		<!--======== OpenIoT dependencies ============-->
-        <dependency>
-	        <groupId>org.openiot</groupId>
-	        <artifactId>utils.commons</artifactId>
-	        <version>0.0.1</version>
-        </dependency>
-        
-                <!-- ========  CDI API Dependencies ========== -->
-        <!-- We use provided scope as the API is included in JBoss AS 7 -->
-        <dependency>
-            <groupId>javax.enterprise</groupId>
-            <artifactId>cdi-api</artifactId>
-            <scope>provided</scope>
-        </dependency>
+		<!-- Define the version of JBoss' Java EE 6 APIs and Tools we want to import. -->
+		<version.jboss.bom>1.0.4.Final</version.jboss.bom>
+
+		<!-- Alternatively, comment out the above line, and un-comment the line below to use version 1.0.2.Final-redhat-1 which is 
+			a release certified to work with JBoss EAP 6. It requires you have access to the JBoss EAP 6 maven repository. -->
+		<!-- <version.jboss.bom>1.0.2.Final-redhat-1</version.jboss.bom>> -->
+
+		<!-- other plugin versions -->
+		<version.compiler.plugin>2.3.2</version.compiler.plugin>
+		<version.surefire.plugin>2.4.3</version.surefire.plugin>
+		<version.war.plugin>2.1.1</version.war.plugin>
+		<cas.version>3.5.2</cas.version>
+		<!-- maven-compiler-plugin -->
+		<maven.compiler.target>1.7</maven.compiler.target>
+		<maven.compiler.source>1.7</maven.compiler.source>
+		<skipTests>true</skipTests>
+	</properties>
 
 
-                <!-- ======== JBoss Common Annotations API Dependencies ========== -->
-        <!-- We use provided scope as the API is included in JBoss AS 7 -->
-        <dependency>
-            <groupId>org.jboss.spec.javax.annotation</groupId>
-            <artifactId>jboss-annotations-api_1.1_spec</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        
-        
-        <!-- ======== JSF API Dependencies ========== -->
-        <!-- We use provided scope as the API is included in JBoss AS 7 -->
-        <dependency>
-            <groupId>org.jboss.spec.javax.faces</groupId>
-            <artifactId>jboss-jsf-api_2.1_spec</artifactId>
-            <scope>provided</scope>
-        </dependency>
 
-        <!-- ====== org.eclipse.persistence.jaxb.JAXBContextFactory Dependencies -->
-         
-        <dependency>
-                <groupId>org.eclipse.persistence</groupId>
-                <artifactId>eclipselink</artifactId>
-                <version>2.5.0</version>
-        </dependency>
+	<!-- =========================================================== -->
+	<!-- Dependencies -->
+	<!-- =========================================================== -->
 
-        <!-- ======== jUnit Dependencies ========== -->
-
-        <!-- Needed for running tests  -->
+	<dependencyManagement>
+		<dependencies>
+			<!-- JBoss distributes a complete set of Java EE 6 APIs including a Bill of Materials (BOM). A BOM specifies the versions 
+				of a "stack" (or a collection) of artifacts. We use this here so that we always get the correct versions of artifacts. Here we 
+				use the jboss-javaee-6.0-with-tools stack (you can read this as the JBoss stack of the Java EE 6 APIs, with some extras tools 
+				for your project)) -->
 			<dependency>
-				<groupId>junit</groupId>
-				<artifactId>junit</artifactId>
-				<version>4.11</version>
-				<scope>compile</scope>
+				<groupId>org.jboss.bom</groupId>
+				<artifactId>jboss-javaee-6.0-with-tools</artifactId>
+				<version>${version.jboss.bom}</version>
+				<type>pom</type>
+				<scope>import</scope>
 			</dependency>
+			<!-- <dependency> <groupId>org.jboss.bom</groupId> <artifactId>jboss-javaee-6.0-with-resteasy</artifactId> <version>${version.jboss.bom}</version> 
+				<type>pom</type> <scope>import</scope> </dependency> -->
+		</dependencies>
+	</dependencyManagement>
+
+	<dependencies>
+
+		<!--======== OpenIoT dependencies ============ -->
+		<dependency>
+			<groupId>org.openiot</groupId>
+			<artifactId>utils.commons</artifactId>
+			<version>0.0.1</version>
+		</dependency>
+
+		<!-- ======== CDI API Dependencies ========== -->
+		<!-- We use provided scope as the API is included in JBoss AS 7 -->
+		<dependency>
+			<groupId>javax.enterprise</groupId>
+			<artifactId>cdi-api</artifactId>
+			<scope>provided</scope>
+		</dependency>
 
 
-        <!-- ======== LSM API Dependencies ========== -->
+		<!-- ======== JBoss Common Annotations API Dependencies ========== -->
+		<!-- We use provided scope as the API is included in JBoss AS 7 -->
+		<dependency>
+			<groupId>org.jboss.spec.javax.annotation</groupId>
+			<artifactId>jboss-annotations-api_1.1_spec</artifactId>
+			<scope>provided</scope>
+		</dependency>
 
- 		<dependency>
+
+		<!-- ======== JSF API Dependencies ========== -->
+		<!-- We use provided scope as the API is included in JBoss AS 7 -->
+		<dependency>
+			<groupId>org.jboss.spec.javax.faces</groupId>
+			<artifactId>jboss-jsf-api_2.1_spec</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+
+		<!-- ======== JBoss RestEasy JAX-RS with JAXB support Dependencies ========== -->
+
+
+
+		<!-- ====== org.eclipse.persistence.jaxb.JAXBContextFactory Dependencies -->
+
+		<dependency>
+			<groupId>org.eclipse.persistence</groupId>
+			<artifactId>eclipselink</artifactId>
+			<version>2.5.0</version>
+		</dependency>
+
+		<!-- ======== jUnit Dependencies ========== -->
+
+		<!-- Needed for running tests -->
+		<!-- <dependency> -->
+		<!-- <groupId>junit</groupId> -->
+		<!-- <artifactId>junit</artifactId> -->
+		<!-- <scope>test</scope> -->
+		<!-- </dependency> -->
+
+
+		<!-- ======== LSM API Dependencies ========== -->
+
+		<dependency>
 			<groupId>com.hp.hpl.jena</groupId>
 			<artifactId>jena</artifactId>
 			<version>2.6.4</version>
-		</dependency>	
+		</dependency>
 
 		<dependency>
 			<groupId>dom4j</groupId>
 			<artifactId>dom4j</artifactId>
 			<version>1.6.1</version>
-		</dependency>    
+		</dependency>
 
 		<dependency>
 			<groupId>com.jolbox</groupId>
 			<artifactId>bonecp</artifactId>
 			<version>0.7.1.RELEASE</version>
-		</dependency>  
+		</dependency>
 
 		<dependency>
 			<groupId>javax.servlet</groupId>
@@ -162,158 +163,173 @@
 			<version>20090211</version>
 		</dependency>
 
-	    <dependency>
-        	<groupId>virtuoso</groupId>
-        	<artifactId>virt_jena</artifactId>
-        	<version>2.6.2</version>
-    	</dependency> 
-    	<dependency>
-        	<groupId>virtuoso</groupId>
-        	<artifactId>virtjdbc4</artifactId>
-        	<version>4</version>
-    	</dependency>
-             
-         <!-- ======== LogBack Dependencies ========== -->
-
-         <dependency>
-                 <groupId>ch.qos.logback</groupId>
-                 <artifactId>logback-classic</artifactId>
-                 <version>1.0.11</version>
-         </dependency>
-
-
-         <!-- ========javamelody (monitoring) dependency ==========-->
-         <dependency>
-             <groupId>net.bull.javamelody</groupId>
-             <artifactId>javamelody-core</artifactId>
-             <version>1.45.0</version>
-         </dependency>
-         
-         <!-- ========privacy and security dependencies ==========-->
-         <dependency>
-         	<groupId>org.openiot</groupId>
-         	<artifactId>lsm-light.client</artifactId>
-         	<version>0.0.1</version>
-         </dependency>
-         <dependency>
-         	<groupId>org.openiot</groupId>
-         	<artifactId>security.client</artifactId>
-         	<version>0.0.1-SNAPSHOT</version>
-         </dependency>
-              
 		<dependency>
-			<groupId>org.scribe</groupId>
-			<artifactId>scribe-up</artifactId>
-			<version>1.2.0</version>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.11</version>
+			<scope>compile</scope>
 		</dependency>
-    </dependencies>
 
-  <!-- =========================================================== -->
-  <!-- Plugins -->
-  <!-- =========================================================== -->
+		<dependency>
+			<groupId>virtuoso</groupId>
+			<artifactId>virt_jena</artifactId>
+			<version>2.6.2</version>
+		</dependency>
+		<dependency>
+			<groupId>virtuoso</groupId>
+			<artifactId>virtjdbc4</artifactId>
+			<version>4</version>
+		</dependency>
 
+		<!-- ======== LogBack Dependencies ========== -->
 
-    <build>
-        <!-- Maven will append the version to the finalName (which is the name 
-            given to the generated war, and hence the context root) -->
-        <finalName>${project.artifactId}</finalName>
-        <plugins>
-            <!-- Compiler plugin enforces Java 1.6 compatibility and activates annotation 
-                processors -->
-            <plugin>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>${version.compiler.plugin}</version>
-                <configuration>
-                    <source>${maven.compiler.source}</source>
-                    <target>${maven.compiler.target}</target>
-                </configuration>
-            </plugin>
-            <plugin>
-                <artifactId>maven-war-plugin</artifactId>
-                <version>${version.war.plugin}</version>
-                <configuration>
-                    <!-- Java EE 6 doesn't require web.xml, Maven needs to catch up! -->
-                    <failOnMissingWebXml>false</failOnMissingWebXml>
-                </configuration>
-            </plugin>
-            <!-- The JBoss AS plugin deploys your war to a local JBoss AS container -->
-            <!-- To use, run: mvn package jboss-as:deploy -->
-            <plugin>
-                <groupId>org.jboss.as.plugins</groupId>
-                <artifactId>jboss-as-maven-plugin</artifactId>
-                <version>${version.jboss.maven.plugin}</version>
-            </plugin>
-        </plugins>
-    </build>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<!-- <version>1.0.11</version>  -->
+			<version>1.1.1</version>
+		</dependency>
 
+		<!-- ========javamelody (monitoring) dependency ========== -->
+		<dependency>
+			<groupId>net.bull.javamelody</groupId>
+			<artifactId>javamelody-core</artifactId>
+			<version>1.45.0</version>
+		</dependency>
 
-  <!-- =========================================================== -->
-  <!-- profiles -->
-  <!-- =========================================================== -->
+		<!-- ========privacy and security dependencies ========== -->
 
-    <profiles>
-        <profile>
-            <!-- The default profile skips all tests, though you can tune it to run 
-                just unit tests based on a custom pattern -->
-            <!-- Separate profiles are provided for running all tests, including Arquillian 
-                tests that execute in the specified container -->
-            <id>default</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <artifactId>maven-surefire-plugin</artifactId>
-                        <version>${version.surefire.plugin}</version>
-                        <configuration>
-                            <skip>true</skip>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
+		<dependency>
+			<groupId>org.openiot</groupId>
+			<artifactId>security.client</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+
+		<!-- ======== lsm-light.client must come after security.client for class loading issues! ========== -->
+		<dependency>
+			<groupId>org.openiot</groupId>
+			<artifactId>lsm-light.client</artifactId>
+			<version>0.0.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.7.1</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>1.7.1</version>
+			<scope>test</scope>
+		</dependency>
+
+	</dependencies>
+
+	<!-- =========================================================== -->
+	<!-- Plugins -->
+	<!-- =========================================================== -->
 
 
-        <profile>
-            <!-- When built in OpenShift the 'openshift' profile will be used when 
-                invoking mvn. -->
-            <!-- Use this profile for any OpenShift specific customization your app 
-                will need. -->
-            <!-- By default that is to put the resulting archive into the 'deployments' 
-                folder. -->
-            <!-- http://maven.apache.org/guides/mini/guide-building-for-different-environments.html -->
-            <id>openshift</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <artifactId>maven-war-plugin</artifactId>
-                        <version>${version.war.plugin}</version>
-                        <configuration>
-                            <outputDirectory>deployments</outputDirectory>
-                            <warName>ROOT</warName>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
+	<build>
+		<!-- Maven will append the version to the finalName (which is the name given to the generated war, and hence the context root) -->
+		<finalName>${project.artifactId}</finalName>
+		<plugins>
+			<!-- Compiler plugin enforces Java 1.6 compatibility and activates annotation processors -->
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>${version.compiler.plugin}</version>
+				<configuration>
+					<source>${maven.compiler.source}</source>
+					<target>${maven.compiler.target}</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>${version.war.plugin}</version>
+				<configuration>
+					<!-- Java EE 6 doesn't require web.xml, Maven needs to catch up! -->
+					<failOnMissingWebXml>false</failOnMissingWebXml>
+				</configuration>
+			</plugin>
+			<!-- The JBoss AS plugin deploys your war to a local JBoss AS container -->
+			<!-- To use, run: mvn package jboss-as:deploy -->
+			<plugin>
+				<groupId>org.jboss.as.plugins</groupId>
+				<artifactId>jboss-as-maven-plugin</artifactId>
+				<version>${version.jboss.maven.plugin}</version>
+			</plugin>
+		</plugins>
+	</build>
 
-    </profiles>
-    
-    
-  <!-- =========================================================== -->
-  <!-- Repositories -->
-  <!-- =========================================================== -->
 
- <repositories>
-  		<!-- In Project repository -->
+	<!-- =========================================================== -->
+	<!-- profiles -->
+	<!-- =========================================================== -->
+
+	<profiles>
+		<profile>
+			<!-- The default profile skips all tests, though you can tune it to run just unit tests based on a custom pattern -->
+			<!-- Separate profiles are provided for running all tests, including Arquillian tests that execute in the specified container -->
+			<id>default</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-surefire-plugin</artifactId>
+						<version>2.16</version>
+						<configuration>
+							<printSummary>true</printSummary>
+							<!-- If you want to run the tests from command line add -DskipTests=false to the command -->
+							<skipTests>${skipTests}</skipTests>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+
+
+		<profile>
+			<!-- When built in OpenShift the 'openshift' profile will be used when invoking mvn. -->
+			<!-- Use this profile for any OpenShift specific customization your app will need. -->
+			<!-- By default that is to put the resulting archive into the 'deployments' folder. -->
+			<!-- http://maven.apache.org/guides/mini/guide-building-for-different-environments.html -->
+			<id>openshift</id>
+			<build>
+				<plugins>
+					<plugin>
+						<artifactId>maven-war-plugin</artifactId>
+						<version>${version.war.plugin}</version>
+						<configuration>
+							<outputDirectory>deployments</outputDirectory>
+							<warName>ROOT</warName>
+						</configuration>
+					</plugin>
+
+				</plugins>
+			</build>
+		</profile>
+
+	</profiles>
+
+
+	<!-- =========================================================== -->
+	<!-- Repositories -->
+	<!-- =========================================================== -->
+
+	<repositories>
+		<!-- In Project repository -->
 		<repository>
 			<id>in-project</id>
 			<name>In Project Repo</name>
 			<url>file://${project.basedir}/libs</url>
 		</repository>
-  </repositories>
+	</repositories>
 
-  <pluginRepositories>
-  </pluginRepositories>
+	<pluginRepositories>
+	</pluginRepositories>
 </project>
