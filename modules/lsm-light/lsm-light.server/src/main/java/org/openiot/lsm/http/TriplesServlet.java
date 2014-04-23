@@ -35,13 +35,13 @@ import javax.servlet.http.HttpServletResponse;
 import org.openiot.lsm.beans.Sensor;
 import org.openiot.lsm.manager.SensorManager;
 import org.openiot.lsm.utils.ConstantsUtil;
-import org.openiot.lsm.utils.PermissionsUtil;
 /**
  * 
  * @author Hoan Nguyen Mau Quoc
  * 
  */
 import org.openiot.lsm.utils.SecurityUtil;
+import org.openiot.security.client.PermissionsUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

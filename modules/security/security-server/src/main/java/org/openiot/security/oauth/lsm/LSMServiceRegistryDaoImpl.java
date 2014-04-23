@@ -75,11 +75,11 @@ public class LSMServiceRegistryDaoImpl implements ServiceRegistryDao {
 	public List<RegisteredService> load() {
 		log.info("Reloading registered services ...");
 		List<RegisteredService> services = manager.getAllRegisteredServices();
-		if (services.isEmpty() && initializeOnStartup) {
-			log.info("Initializing the graph ...");
-			SecurityModuleInitializer.initialize();
-			services = manager.getAllRegisteredServices();
-		}
+//		if (services.isEmpty() && initializeOnStartup) {
+//			log.info("Initializing the graph ...");
+//			SecurityModuleInitializer.initialize();
+//			services = manager.getAllRegisteredServices();
+//		}
 		return services;
 	}
 

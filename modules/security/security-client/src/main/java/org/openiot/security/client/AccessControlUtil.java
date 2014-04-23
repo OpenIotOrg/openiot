@@ -230,7 +230,7 @@ public abstract class AccessControlUtil {
 		return clientRealm;
 	}
 
-	protected BaseOAuth20Client<?> getClient() {
+	public BaseOAuth20Client<?> getClient() {
 		if (client == null) {
 			client = (BaseOAuth20Client<?>) getCasOAuthClientRealm().getClients().findAllClients().get(0);
 			logger.debug("Client is of type {}", client.getClass().getName());

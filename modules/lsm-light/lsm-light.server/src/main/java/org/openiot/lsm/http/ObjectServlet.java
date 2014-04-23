@@ -41,9 +41,9 @@ import org.openiot.lsm.manager.TriplesDataRetriever;
 import org.openiot.lsm.pooling.ConnectionManager;
 import org.openiot.lsm.utils.ConstantsUtil;
 import org.openiot.lsm.utils.NumberUtil;
-import org.openiot.lsm.utils.PermissionsUtil;
 import org.openiot.lsm.utils.SecurityUtil;
 import org.openiot.lsm.utils.VirtuosoConstantUtil;
+import org.openiot.security.client.PermissionsUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -2,6 +2,8 @@ package org.openiot.lsm.utils;
 
 import javax.servlet.ServletContext;
 
+import org.openiot.commons.util.PropertyManagement;
+import org.openiot.lsm.http.SecurityInitializer;
 import org.openiot.security.client.AccessControlUtil;
 import org.openiot.security.client.AccessTokenExpiredException;
 import org.openiot.security.client.OAuthorizationCredentials;
@@ -18,9 +20,16 @@ public class SecurityUtil {
 	private static Logger logger = LoggerFactory.getLogger(SecurityUtil.class);
 	private static final String CREDENTIALS = "OAuthCredentials";
 	private static final int EXPIRY_CHECK_INTERVAL = 5 * 60 * 1000; // some sample value
-	private static String username = "nmqhoan";
-	private static String password = "nmqhoan";
-	private static AccessControlUtil acUtil = AccessControlUtil.getRestInstance(); private static long lastExpiryCheck = 0;
+	private static String username;
+	private static String password;
+	private static AccessControlUtil acUtil = AccessControlUtil.getRestInstance();
+	private static long lastExpiryCheck = 0;
+
+	static {
+		PropertyManagement props = new PropertyManagement();
+		username = props.getProperty(SecurityInitializer.LSM_SERVER_USERNAME, "lsmuser");
+		password = props.getProperty(SecurityInitializer.LSM_SERVER_PASSWORD, "lsmuserpass");
+	}
 
 	public static boolean hasPermission(String perm, ServletContext context, String accessToken, String clientId) {
 		return hasPermission(perm, context, accessToken, clientId, true);
@@ -56,21 +65,23 @@ public class SecurityUtil {
 				else
 					hasPermission = acUtil.hasPermission(perm, clientId, credentialsToTest);
 
-				// check if the LSM access token has expired (this step should be done only if
-				// caching is enabled)
-				if (System.currentTimeMillis() - lastExpiryCheck > EXPIRY_CHECK_INTERVAL) {
-					logger.debug("Checking if LSM access token is expired");
-					String expiredAT = acUtil.getExpiredAccessToken(credentialsToTest);
-					lastExpiryCheck = System.currentTimeMillis();
-					if (credentials.getAccessToken().equals(expiredAT)) {
-						// LSM access token has expired
-						logger.debug("LSM access token has expired. Attempting to log in CAS.");
-						context.setAttribute(CREDENTIALS, null);
-						return hasPermission(perm, context, accessToken, clientId);
-					} else if (accessToken.equals(expiredAT)) {
-						// The access token of the requester is expired
-						logger.debug("The access token of the requester has expired: {} ", expiredAT);
-						return false;
+				if (acUtil.getAuthorizationManager().isCachingEnabled()) {
+					// check if the LSM access token has expired (this step should be done only if
+					// caching is enabled)
+					if (System.currentTimeMillis() - lastExpiryCheck > EXPIRY_CHECK_INTERVAL) {
+						logger.debug("Checking if LSM access token is expired");
+						String expiredAT = acUtil.getExpiredAccessToken(credentialsToTest);
+						lastExpiryCheck = System.currentTimeMillis();
+						if (credentials.getAccessToken().equals(expiredAT)) {
+							// LSM access token has expired
+							logger.debug("LSM access token has expired. Attempting to log in CAS.");
+							context.setAttribute(CREDENTIALS, null);
+							return hasPermission(perm, context, accessToken, clientId);
+						} else if (accessToken.equals(expiredAT)) {
+							// The access token of the requester is expired
+							logger.debug("The access token of the requester has expired: {} ", expiredAT);
+							return false;
+						}
 					}
 				}
 

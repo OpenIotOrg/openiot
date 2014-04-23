@@ -31,6 +31,7 @@ public final class ContextListener implements ServletContextListener {
  
     public void contextInitialized(ServletContextEvent sce) {
         ConnectionManager.init();
+        SecurityInitializer.init();
     }
  
     public void contextDestroyed(ServletContextEvent sce) {
