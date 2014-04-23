@@ -35,11 +35,15 @@ import javax.servlet.http.HttpServletResponse;
 import org.openiot.lsm.beans.Sensor;
 import org.openiot.lsm.manager.SensorManager;
 import org.openiot.lsm.utils.ConstantsUtil;
+import org.openiot.lsm.utils.PermissionsUtil;
 /**
  * 
  * @author Hoan Nguyen Mau Quoc
  * 
  */
+import org.openiot.lsm.utils.SecurityUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -48,7 +52,7 @@ import org.openiot.lsm.utils.ConstantsUtil;
 @WebServlet("/TriplesServlet")
 public class TriplesServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-       
+	final static Logger logger = LoggerFactory.getLogger(TriplesServlet.class);
     /**
      * @see HttpServlet#HttpServlet()
      */
@@ -83,15 +87,17 @@ public class TriplesServlet extends HttpServlet {
 		    String graphURL = request.getHeader("graphURL");
 	        String api = request.getHeader("api");	      
 	        String apiType = request.getHeader("apiType");	
+	        String token = request.getHeader("token");
+	        String clientId = request.getHeader("clientId");
 	        if(!apiType.equals("get")){
 	        	String infos = (String) object;
-	        	String result = returnXMLFunction(api,infos,graphURL);      
+	        	String result = processRequestImpl(api,infos,graphURL,clientId,token);      
 	        	response.setContentType("text/xml");
 	            response.setHeader("Pragma", "no-cache"); // HTTP 1.0
 	            response.setHeader("Cache-Control", "no-cache"); // HTTP 1.1
 	            response.getWriter().print(result);
 	        }else{
-	        	Sensor sensor = returnObjectFunction(api,(String)object,graphURL);
+	        	Sensor sensor = processObjectRequestImpl(api,(String)object,graphURL,clientId,token);
 	        	response.setContentType("application/x-java-serialized-object");
 	        	OutputStream outputStream = response.getOutputStream();
 	        	ObjectOutputStream objOutStr = new ObjectOutputStream(outputStream);
@@ -113,7 +119,7 @@ public class TriplesServlet extends HttpServlet {
 	}
 	
 
-	private Sensor returnObjectFunction(String api, String sensorInfo, String graphURL) {
+	private Sensor processObjectRequestImpl(String api, String sensorInfo, String graphURL,String clientId,String token) {
 		// TODO Auto-generated method stub		
 		Sensor sensor = null;
 		try {
@@ -121,12 +127,12 @@ public class TriplesServlet extends HttpServlet {
 			 sensorManager.setMetaGraph(graphURL);
 			 switch(api){			 	
 	        	case "5":
-	        		sensor = sensorManager.getSpecifiedSensorWithSensorId(sensorInfo);
-	        		System.out.println(sensor.getId());
-	        		break;
-	        	case "6":
-	        		sensor = sensorManager.getSpecifiedSensorWithSource(sensorInfo);
-	        		System.out.println(sensor.getId());
+	        		String permissionString = PermissionsUtil.GET_SENSOR;
+	        		if(SecurityUtil.hasPermission(permissionString, getServletContext(), token, clientId)){
+	        			sensor = sensorManager.getSpecifiedSensorWithSensorId(sensorInfo);
+	        			logger.info(sensor.getId());
+	        		}else
+			 			logger.info("You don't have permmison to operate this funtion");
 	        		break;
 	        	default:
 	        		break;
@@ -137,23 +143,28 @@ public class TriplesServlet extends HttpServlet {
 		return sensor;
 	}
 
-	private String returnXMLFunction(String api,String infos,String graphURL){  
+	private String processRequestImpl(String api,String infos,String graphURL,String clientId,String token){  
 		String result="Your request processed successfully";
 		try {
 			 SensorManager sensorManager = new SensorManager();				
-			 switch(api){
-	        	case "1":
-	        		sensorManager.insertTriplesToGraph(graphURL, infos);
-	        		sensorManager.runSpatialIndex();
-	        		break;
-	        	case "2":
-	        		sensorManager.insertTriplesToGraph(graphURL, infos);
-	        		break;
+			 switch(api){	        	
 	        	case "3":
-	        		sensorManager.sensorDelete(graphURL,infos);
+	        		String permissionString = PermissionsUtil.DEL_SENSOR;
+	        		if(SecurityUtil.hasPermission(permissionString, getServletContext(), token, clientId)){
+	        			sensorManager.sensorDelete(graphURL,infos);
+	        		}else{
+			 			result ="You don't have permmison to operate this funtion";
+			 			logger.info(result);
+			 		}
 	        		break;
 			 	case "4":
-	        		sensorManager.deleteAllReadings(graphURL,infos);
+			 		permissionString = PermissionsUtil.DEL_READING;
+			 		if(SecurityUtil.hasPermission(permissionString, getServletContext(), token, clientId)){
+			 			sensorManager.deleteAllReadings(graphURL,infos);
+			 		}else{
+			 			result ="You don't have permmison to operate this funtion";
+			 			logger.info(result);
+			 		}
 	        		break;
 	        	default:
 	        		break;

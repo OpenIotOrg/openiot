@@ -30,7 +30,7 @@ public class Observation implements java.io.Serializable {
 	private String id;	
 	private Date times;	
 	private String sensorId;
-	private String featureOfInterest; 
+	private String featureOfInterest=""; 
 	private ArrayList<ObservedProperty> readings;
 	private String metaGraph;
 	private String dataGraph;

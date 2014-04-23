@@ -12,11 +12,11 @@
 	<xsl:param name="prefix"/>
 	
 	<xsl:param name="sensorId"/>
-	<xsl:param name="sourceURL"/>
-	<xsl:param name="sourceType"/>
+<!-- 	<xsl:param name="sourceURL"/> -->
+<!-- 	<xsl:param name="sourceType"/> -->
 	<xsl:param name="sensortype"/>
 	<xsl:param name="name"/>
-	<xsl:param name="owner"/>
+	<xsl:param name="author"/>
 	
 	<xsl:param name="placeId"/>
 	<xsl:param name="lat"/>
@@ -26,7 +26,7 @@
 	<xsl:param name="country"/>
 	<xsl:param name="province"/>
 	<xsl:param name="continent"/>
-	<xsl:param name="foi"/>
+<!-- 	<xsl:param name="foi"/> -->
 	
 	<xsl:variable name="cityId" select="uuid:generateID()"/>
 	<xsl:variable name="provinceId" select="uuid:generateID()"/>
@@ -50,7 +50,7 @@
 	    			'&#60;','http://purl.org/net/provenance/ns#PerformedAt','&#62; ',
 	    			' &#34;',$utc-timestamp,'&#34;&#94;&#94;&#60;','http://www.w3.org/2001/XMLSchema#dateTime&#62;.'),	    	    	
 	    			concat('&#60;',$sensorId,'&#62; ',
-	    			'&#60;','http://www.w3.org/ns/prov#wasGeneratedBy','&#62; ','&#60;',$owner,'&#62;','.'),
+	    			'&#60;','http://www.w3.org/ns/prov#wasGeneratedBy','&#62; ','&#60;',$author,'&#62;','.'),
 	    			concat('&#60;',$sensorId,'&#62; ',
 	    			'&#60;','http://www.w3.org/2000/01/rdf-schema#label','&#62; ','&#34;',$name,'&#34;','.')   			
            			" separator="&#10;"/>

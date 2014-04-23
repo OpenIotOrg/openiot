@@ -99,22 +99,22 @@ public class TriplesDataRetriever {
 	public static String getSensorTripleMetadata(Sensor s,String sensorTypeId){
 		String triples = "";
 		String xsltPath = XSLTMapFile.sensormeta2xslt;
-//		xsltPath = ConstantsUtil.realPath + xsltPath;
-		xsltPath = "src/main/webapp/WEB-INF" + xsltPath;
+		xsltPath = ConstantsUtil.realPath + xsltPath;
+//		xsltPath = "src/main/webapp/WEB-INF" + xsltPath;
 		TransformerFactory tFactory = TransformerFactory.newInstance();
 		String prefix = propertyManagement.getOpeniotResourceNamespace();
         String xml = "";
         try {
         	Place place = s.getPlace();
-        	String foi = propertyManagement.getOpeniotResourceNamespace()+ 
-					Double.toString(place.getLat()).replace(".", "").replace("-", "")+
-					Double.toString(place.getLng()).replace(".", "").replace("-", "");
+//        	String foi = propertyManagement.getOpeniotResourceNamespace()+ 
+//					Double.toString(place.getLat()).replace(".", "").replace("-", "")+
+//					Double.toString(place.getLng()).replace(".", "").replace("-", "");
         	
             Transformer transformer = tFactory.newTransformer(new StreamSource(new File(xsltPath)));
             transformer.setParameter("sensorId", s.getId());
-            transformer.setParameter("sourceType", s.getSourceType());
+//            transformer.setParameter("sourceType", s.getSourceType());
             transformer.setParameter("prefix", prefix);
-            transformer.setParameter("sourceURL", s.getSource());
+//            transformer.setParameter("sourceURL", s.getSource());
             transformer.setParameter("placeId", place.getId());
             transformer.setParameter("geonameId", place.getGeonameid());
             transformer.setParameter("city", place.getCity());
@@ -125,7 +125,8 @@ public class TriplesDataRetriever {
             transformer.setParameter("lng", place.getLng());
 //            transformer.setParameter("foi", foi);
             transformer.setParameter("name", s.getName());
-          
+            transformer.setParameter("author", s.getAuthor());
+            
             xml="<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\" ?><root></root>";          
             xml = xml.trim().replaceFirst("^([\\W]+)<","<");
             
@@ -150,9 +151,10 @@ public class TriplesDataRetriever {
             	observesTriples+= "\n<" + s.getId() + "> <http://purl.oclc.org/NET/ssnx/ssn#observes> <" + instanceId +">.\n";
             	observesTriples+= "<" + instanceId + "> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <" + classURL + ">.\n";
 //            	observesTriples+= "<" + instanceId + "> <http://purl.oclc.org/NET/ssnx/ssn#isPropertyOf> <" + foi + ">.\n";
-            }
-            
+            }            
             triples+=observesTriples;
+            triples+= "<" + place.getId() +"> <http://www.w3.org/2003/01/geo/wgs84_pos#geometry> \"POINT("+place.getLng()+" "+place.getLat()+
+            			")\"^^<http://www.openlinksw.com/schemas/virtrdf#Geometry>.\n";
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -250,11 +252,8 @@ public class TriplesDataRetriever {
 				+ Hex.encodeHexString(SerializationUtils.serialize(ticketGrant.getServices())) + "\"^^<http://www.w3.org/2001/XMLSchema#hexBinary>.\n";
 //		System.out.println(Hex.encodeHexString(SerializationUtils.serialize(ticketGrant.getAuthentication())));
 		if (ticketGrant.getGrantingTicket() != null) {
-			triples += "<"+ prefix + id + ">  <http://openiot.eu/ontology/ns/grants> <http://lsm.deri.ie/resource/"
+			triples += "<"+ prefix + id + ">  <http://openiot.eu/ontology/ns/grants> <"+prefix
 					+ ticketGrant.getGrantingTicket().getId() + ">.\n";
-			// triples+="<http://lsm.deri.ie/resource/"+id+">  <http://openiot.eu/ontology/ns/grants> \""+
-			// Hex.encodeHexString(SerializationUtils.serialize(ticketGrant.getGrantingTicket()))
-			// +"\"^^<http://www.w3.org/2001/XMLSchema#hexBinary>.\n";
 			triples += ticketSchedulerToRDF((LSMTicketGrantingTicketImpl) ticketGrant.getGrantingTicket());
 		}
 		if (ticketGrant.isExpired())
@@ -293,10 +292,6 @@ public class TriplesDataRetriever {
 			triples += "<" + servicePrefix + id + ">  <http://openiot.eu/ontology/ns/ssoStatus> <http://openiot.eu/ontology/ns/SSOStatusEnabled>.\n";
 		else
 			triples += "<" + servicePrefix + id + ">  <http://openiot.eu/ontology/ns/ssoStatus> <http://openiot.eu/ontology/ns/SSOStatusDisabled>.\n";
-		// if(service.isAllowedToProxy())
-		// triples+="<"+servicePrefix+id+">  <http://openiot.eu/ontology/ns/ssoStatus> <http://openiot.eu/ontology/ns/SSOStatusEnabled>.\n";
-		// else
-		// triples+="<"+servicePrefix+id+">  <http://openiot.eu/ontology/ns/ssoStatus> <http://openiot.eu/ontology/ns/SSOStatusDisabled>.\n";
 
 		if (service.getTheme() != null)
 			triples += "<" + servicePrefix + id + "> <http://openiot.eu/ontology/ns/theme> \"" + service.getTheme() + "\".\n";
@@ -306,7 +301,7 @@ public class TriplesDataRetriever {
 				+ "> <http://openiot.eu/ontology/ns/addressId> \"" + service.getServiceId() + "\".\n";
 		for (String att_name : service.getAllowedAttributes()) {
 			String att_id = id + att_name;
-			triples += "<" + servicePrefix + id + ">  <http://openiot.eu/ontology/ns/attribute> <http://lsm.deri.ie/resource/" + att_id + ">.\n"
+			triples += "<" + servicePrefix + id + ">  <http://openiot.eu/ontology/ns/attribute> <"+prefix + att_id + ">.\n"
 					+ "<"+ prefix + att_id
 					+ "> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://openiot.eu/ontology/ns/ServiceAttribute>.\n"
 					+ "<"+ prefix + att_id + ">  <http://www.w3.org/2000/01/rdf-schema#label> \"" + att_name + "\".\n"
@@ -322,10 +317,10 @@ public class TriplesDataRetriever {
 		sensor.setId("http://services.openiot.eu/resource/8a82919d3264f4ac013264f4e14501c0");
 		sensor.setName("hello");
 		sensor.setAuthor("admin");
-		// sensor.setSensorType("bikehire");
-		sensor.setSourceType("sdfg");
+		sensor.setSensorType("bikehire");
+//		sensor.setSourceType("sdfg");
 		sensor.setInfor("asfdfs");
-		sensor.setSource("affag");
+//		sensor.setSource("affag");
 		sensor.setTimes(new Date());
 		Place place = new Place();
 		place.setLat(32325);

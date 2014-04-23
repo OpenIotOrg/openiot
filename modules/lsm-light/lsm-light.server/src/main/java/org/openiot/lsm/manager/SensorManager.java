@@ -39,6 +39,7 @@ import org.jasig.cas.authentication.Authentication;
 import org.jasig.cas.authentication.principal.Service;
 import org.jasig.cas.services.RegisteredService;
 import org.jasig.cas.ticket.ExpirationPolicy;
+import org.openiot.commons.util.PropertyManagement;
 import org.openiot.lsm.beans.Observation;
 import org.openiot.lsm.beans.Place;
 import org.openiot.lsm.beans.Sensor;
@@ -65,6 +66,7 @@ public class SensorManager {
 	private String dataGraph;
 	private String metaGraph;
 	final static Logger logger = LoggerFactory.getLogger(SensorManager.class);
+	static PropertyManagement propertyManagement = new PropertyManagement();
 	
 	public SensorManager(){
 		if(ConnectionManager.getConnectionPool()==null)
@@ -119,11 +121,12 @@ public class SensorManager {
 		Connection conn = null;
 		try{
 			logger.info("insert triples into graph "+graphName);
+			logger.info("triples:\n" + triples);
 			conn = ConnectionManager.getConnectionPool().getConnection();
 			String sql = "sparql insert into graph <" + graphName + ">{" + triples +"}";
 			PreparedStatement ps = conn.prepareStatement(sql);
 			boolean i = ps.execute(sql);
-			logger.info("Insert triples to graph "+graphName +"successfully");
+			logger.info("Insert triples to graph "+graphName +" successfully");
 			ConnectionManager.attemptClose(ps);
 			ConnectionManager.attemptClose(conn);
 		}catch(Exception e){
@@ -169,6 +172,7 @@ public class SensorManager {
 			conn = ConnectionManager.getConnectionPool().getConnection();
 			String sql = "sparql delete from <" + graphName + "> {"+triples+"}";
 			logger.info("Start deleting triples ");
+			logger.info("executing query:\n"+sql);
 			PreparedStatement ps = conn.prepareStatement(sql);
 			boolean i = ps.execute(sql);
 			System.out.println("Remove triples of graph "+graphName);
@@ -205,6 +209,7 @@ public class SensorManager {
 			conn = ConnectionManager.getConnectionPool().getConnection();
 			logger.info("execute query:"+sql);
 			PreparedStatement ps = conn.prepareStatement(sql);
+			logger.info("executing query:\n"+sql);
 			ps.executeQuery();					
 			logger.info("All triples were deleted");
 			ConnectionManager.attemptClose(ps);
@@ -263,7 +268,7 @@ public class SensorManager {
 		try{
 			conn = ConnectionManager.getConnectionPool().getConnection();
 			PreparedStatement ps = conn.prepareStatement(sql);
-			logger.info("execute query:"+sql);
+			logger.info("executing query:"+sql);
 			ps.executeQuery();	
 			logger.info("All triples were deleted");
 			ConnectionManager.attemptClose(ps);
@@ -305,7 +310,7 @@ public class SensorManager {
 			if(conn.isClosed())
 				conn = ConnectionManager.getConnectionPool().getConnection();			
 			PreparedStatement ps = conn.prepareStatement(sql);
-			logger.info("execute query:"+sql);
+			logger.info("executing query:"+sql);
 			ResultSet rs = ps.executeQuery();		
 			while(rs.next()){
 				l1.add(rs.getString(1));
@@ -328,72 +333,33 @@ public class SensorManager {
 			
 		
 	//**********************sensor table***************************/
-	public Sensor getSpecifiedSensorWithSource(String source){
-		PlaceManager placeManager = new PlaceManager(metaGraph,dataGraph);
-		Connection conn = null;
-		Sensor sensor = null;
-		String sql = "sparql select ?sensor ?sensorType ?sourceType ?place "+
-				" from <"+ metaGraph +"> \n" +
-					"where{ "+
-					   "?sensor <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://purl.oclc.org/NET/ssnx/ssn#Sensor>."+
-					   "?sensor <http://purl.org/net/provenance/ns#PerformedBy> <"+source+">."+
-					   "?sensor <http://www.loa-cnr.it/ontologies/DUL.owl#hasLocation> ?place."+
-					   "?sensor <http://lsm.deri.ie/ont/lsm.owl#hasSensorType> ?typeId."+
-					   "?typeId <http://www.w3.org/2000/01/rdf-schema#label> ?sensorType."+
-					   "?sensor <http://lsm.deri.ie/ont/lsm.owl#hasSourceType> ?sourceType."+
-					"}";			 
-			try{
-				conn = ConnectionManager.getConnectionPool().getConnection();				
-				Statement st = conn.createStatement();
-				if(st.execute(sql)){
-					ResultSet rs = st.getResultSet();
-					while(rs.next()){
-						sensor = new Sensor();
-						sensor.setId(rs.getString("sensor"));
-						sensor.setSensorType(rs.getString("sensorType"));
-						sensor.setSource(source);
-						sensor.setSourceType(rs.getString("sourceType"));
-						Place place = placeManager.getPlaceWithPlaceId(rs.getString("place"));
-						sensor.setPlace(place);
-						sensor.setProperties(getObservesListOfSensor(rs.getString("sensor")));
-					}
-					ConnectionManager.attemptClose(rs);				
-				}
-				ConnectionManager.attemptClose(st);
-				ConnectionManager.attemptClose(conn);
-			}catch(Exception e){
-				e.printStackTrace();
-				ConnectionManager.attemptClose(conn);
-			}		
-			return sensor;
-	}
-	
 	@SuppressWarnings("unchecked")
 	public Sensor getSpecifiedSensorWithPlaceId(String placeId){
 		Sensor sensor = null;
 		Connection conn = null;
 		PlaceManager placeManager = new PlaceManager(metaGraph,dataGraph);		
-		String sql = "sparql select ?sensor ?sensorType ?source ?sourceType ?place "+
+		String sql = "sparql select ?sensor ?sensorType ?author  ?place "+
 				" from <"+ metaGraph +"> \n" +
 				"where{ "+
 				   "?sensor <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://purl.oclc.org/NET/ssnx/ssn#Sensor>."+
-				   "?sensor <http://purl.org/net/provenance/ns#PerformedBy> ?source."+
+				   "?sensor <http://www.w3.org/ns/prov#wasGeneratedBy> ?author."+
 				   "?sensor <http://www.loa-cnr.it/ontologies/DUL.owl#hasLocation> <"+placeId+">."+
 				   "?sensor <http://lsm.deri.ie/ont/lsm.owl#hasSensorType> ?typeId."+
 				   "?typeId <http://www.w3.org/2000/01/rdf-schema#label> ?sensorType."+
-				   "?sensor <http://lsm.deri.ie/ont/lsm.owl#hasSourceType> ?sourceType."+	  
+//				   "?sensor <http://lsm.deri.ie/ont/lsm.owl#hasSourceType> ?sourceType."+	  
 				"}";			 
 		try{
 			conn = ConnectionManager.getConnectionPool().getConnection();			
 			Statement st = conn.createStatement();
+			logger.info("executing query:\n"+sql);
 			if(st.execute(sql)){
 				ResultSet rs = st.getResultSet();
 				while(rs.next()){
 					sensor = new Sensor();					
 					sensor.setId(rs.getString("sensor"));
-					sensor.setSource(rs.getString("source"));
+					sensor.setAuthor(rs.getString("author"));
 					sensor.setSensorType(rs.getString("sensorType"));
-					sensor.setSourceType(rs.getString("sourceType"));
+//					sensor.setSourceType(rs.getString("sourceType"));
 					Place place = placeManager.getPlaceWithPlaceId(placeId);
 					sensor.setPlace(place);								
 					sensor.setProperties(getObservesListOfSensor(rs.getString("sensor")));
@@ -413,29 +379,30 @@ public class SensorManager {
 	public Sensor getSpecifiedSensorWithSensorId(String id){		
 		Sensor sensor = null;
 		Connection conn = null;
-		String sql = "sparql select ?name ?sensorType ?source ?sourceType ?place  "+
+		String sql = "sparql select ?name ?sensorType ?author  ?place  "+
 				" from <"+ metaGraph +"> \n" +
 				"where{ "+
 				   "<"+id+"> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://purl.oclc.org/NET/ssnx/ssn#Sensor>."+
-				   "<"+id+"> <http://purl.org/net/provenance/ns#PerformedBy> ?source."+
+				   "<"+id+"> <http://www.w3.org/ns/prov#wasGeneratedBy> ?author."+
 				   "<"+id+"> <http://www.loa-cnr.it/ontologies/DUL.owl#hasLocation> ?place."+
 				   "<"+id+"> <http://www.w3.org/2000/01/rdf-schema#label> ?name."+
 				   "<"+id+"> <http://lsm.deri.ie/ont/lsm.owl#hasSensorType> ?typeId."+
 				   "?typeId <http://www.w3.org/2000/01/rdf-schema#label> ?sensorType."+
-				   "<"+id+"> <http://lsm.deri.ie/ont/lsm.owl#hasSourceType> ?sourceType."+	  
+//				   "<"+id+"> <http://lsm.deri.ie/ont/lsm.owl#hasSourceType> ?sourceType."+	  
 				"}";			 
 		try{
 			conn = ConnectionManager.getConnectionPool().getConnection();			
 			PlaceManager placeManager = new PlaceManager(metaGraph,dataGraph);		
 			Statement st = conn.createStatement();
+			logger.info("executing query:\n"+sql);
 			if(st.execute(sql)){
 				ResultSet rs = st.getResultSet();
 				while(rs.next()){
 					sensor = new Sensor();					
 					sensor.setId(id);
-					sensor.setSource(rs.getString("source"));
+					sensor.setAuthor(rs.getString("author"));
 					sensor.setSensorType(rs.getString("sensorType"));
-					sensor.setSourceType(rs.getString("sourceType"));
+//					sensor.setSourceType(rs.getString("sourceType"));
 					sensor.setName(rs.getString("name"));
 					Place place = placeManager.getPlaceWithPlaceId(rs.getString("place"));
 					sensor.setPlace(place);
@@ -457,15 +424,15 @@ public class SensorManager {
 		Sensor sensor = null;
 		Connection conn = null;
 //		String sql = "sparql select ?sensor ?source ?sourceType ?place "+
-		String sql = "sparql select ?sensor ?sensorType ?source ?sourceType ?place "+
+		String sql = "sparql select ?sensor ?sensorType ?author  ?place "+
 				" from <"+ metaGraph +"> \n" +
 				"where{ "+
 				   "?sensor <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://purl.oclc.org/NET/ssnx/ssn#Sensor>."+
-				   "?sensor <http://purl.org/net/provenance/ns#PerformedBy> ?source."+
+				   "?sensor <http://www.w3.org/ns/prov#wasGeneratedBy> ?author."+
 				   "?sensor <http://www.loa-cnr.it/ontologies/DUL.owl#hasLocation> ?place."+
 				   "?sensor <http://lsm.deri.ie/ont/lsm.owl#hasSensorType> ?typeId."+
 				   "?typeId <http://www.w3.org/2000/01/rdf-schema#label> ?sensorType."+
-				   "?sensor <http://lsm.deri.ie/ont/lsm.owl#hasSourceType> ?sourceType."+				  
+//				   "?sensor <http://lsm.deri.ie/ont/lsm.owl#hasSourceType> ?sourceType."+				  
 				   "?place <http://www.w3.org/2003/01/geo/wgs84_pos#lat> "+lat+";" +
 				   "<http://www.w3.org/2003/01/geo/wgs84_pos#long> "+lng+"." +
 				"}";			 
@@ -473,14 +440,15 @@ public class SensorManager {
 			conn = ConnectionManager.getConnectionPool().getConnection();
 			PlaceManager placeManager = new PlaceManager(metaGraph,dataGraph);
 			Statement st = conn.createStatement();
+			logger.info("executing query:\n"+sql);
 			if(st.execute(sql)){
 				ResultSet rs = st.getResultSet();
 				while(rs.next()){
 					sensor = new Sensor();
 					sensor.setId(rs.getString("sensor"));
-					sensor.setSource(rs.getString("source"));
+					sensor.setAuthor(rs.getString("author"));
 					sensor.setSensorType(rs.getString("sensorType"));
-					sensor.setSourceType(rs.getString("sourceType"));
+//					sensor.setSourceType(rs.getString("sourceType"));
 					Place place = placeManager.getPlaceWithPlaceId(rs.getString("place"));
 					sensor.setPlace(place);
 					sensor.setProperties(getObservesListOfSensor(rs.getString("sensor")));
@@ -508,6 +476,7 @@ public class SensorManager {
 		try{
 			conn = ConnectionManager.getConnectionPool().getConnection();			
 			Statement st = conn.createStatement();
+			logger.info("executing query:\n"+sql);
 			if(st.execute(sql)){
 				ResultSet rs = st.getResultSet();
 				while(rs.next()){
@@ -539,6 +508,7 @@ public class SensorManager {
 		try{
 			conn = ConnectionManager.getConnectionPool().getConnection();			
 			Statement st = conn.createStatement();
+			logger.info("executing query:\n"+sql);
 			if(st.execute(sql)){
 				ResultSet rs = st.getResultSet();
 				while(rs.next()){
@@ -585,6 +555,7 @@ public class SensorManager {
 		try{
 			conn = ConnectionManager.getConnectionPool().getConnection();
 			Statement st = conn.createStatement();
+			logger.info("executing query:\n"+sql);
 			if(st.execute(sql)){
 				ResultSet rs = st.getResultSet();
 				while(rs.next()){
@@ -615,6 +586,7 @@ public class SensorManager {
 		try{
 			conn = ConnectionManager.getConnectionPool().getConnection();			
 			Statement st = conn.createStatement();
+			logger.info("executing query:\n"+sql);
 			if(st.execute(sql)){
 				ResultSet rs = st.getResultSet();
 				while(rs.next()){
@@ -728,6 +700,7 @@ public class SensorManager {
 		try{
 			conn = ConnectionManager.getConnectionPool().getConnection();	
 			Statement st = conn.createStatement();
+			logger.info("executing query:\n"+sql);
 			if(st.execute(sql)){
 				ResultSet rs = st.getResultSet();
 				while(rs.next()){
@@ -755,30 +728,31 @@ public class SensorManager {
 		Sensor sensor = null;
 		Connection conn = null;
 		PlaceManager placeManager = new PlaceManager(metaGraph,dataGraph);
-		String sql = "sparql select ?sensor ?source ?sourceType ?sensorType ?place "+
+		String sql = "sparql select ?sensor ?author  ?sensorType ?place "+
 				" from <"+ metaGraph +"> " +
 				"where{ "+
 				   "{select ?sensor from <"+dataGraph +"> " +
 				   " where{ <"+obsId+"> <http://purl.oclc.org/NET/ssnx/ssn#observedBy> ?sensor.}"+
 				   "}"+
 				   "?sensor <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://purl.oclc.org/NET/ssnx/ssn#Sensor>."+
-				   "?sensor <http://purl.org/net/provenance/ns#PerformedBy> ?source."+
+				   "?sensor <http://www.w3.org/ns/prov#wasGeneratedBy> ?author."+
 				   "?sensor <http://www.loa-cnr.it/ontologies/DUL.owl#hasLocation> ?place."+
 				   "?sensor <http://lsm.deri.ie/ont/lsm.owl#hasSensorType> ?typeId."+
 				   "?typeId <http://www.w3.org/2000/01/rdf-schema#label> ?sensorType."+
-				   "?sensor <http://lsm.deri.ie/ont/lsm.owl#hasSourceType> ?sourceType."+		  
+//				   "?sensor <http://lsm.deri.ie/ont/lsm.owl#hasSourceType> ?sourceType."+		  
 				"}";			 
 		try{
 			conn = ConnectionManager.getConnectionPool().getConnection();
 			Statement st = conn.createStatement();
+			logger.info("executing query:\n"+sql);
 			if(st.execute(sql)){
 				ResultSet rs = st.getResultSet();
 				while(rs.next()){
 					sensor = new Sensor();
 					sensor.setId(rs.getString("sensor"));
-					sensor.setSource(rs.getString("source"));
+					sensor.setAuthor(rs.getString("author"));
 					sensor.setSensorType(rs.getString("sensorType"));
-					sensor.setSourceType(rs.getString("sourceType"));
+//					sensor.setSourceType(rs.getString("sourceType"));
 					Place place = placeManager.getPlaceWithPlaceId(rs.getString("place"));
 					sensor.setPlace(place);
 				}
@@ -820,6 +794,7 @@ public class SensorManager {
 			conn = ConnectionManager.getConnectionPool().getConnection();			
 			Statement st = conn.createStatement();
 			String sign = "";
+			logger.info("executing query:\n"+query);
 			if(st.execute(query)){
 				ResultSet rs = st.getResultSet();
 				while(rs.next()){				
@@ -855,6 +830,8 @@ public class SensorManager {
 		try{
 			conn = ConnectionManager.getConnectionPool().getConnection();		
 			Statement st = conn.createStatement();
+			logger.info("deleting sensor "+sensorURL+"\n");
+			logger.info("executing query:\n"+sql);
 			st.execute(sql);
 			ConnectionManager.attemptClose(st);
 			ConnectionManager.attemptClose(conn);
@@ -878,6 +855,7 @@ public class SensorManager {
 		try{
 			conn = ConnectionManager.getConnectionPool().getConnection();							
 			Statement st = conn.createStatement();
+			logger.info("executing query:\n"+sql);
 			if(st.execute(sql)){
 				ResultSet rs = st.getResultSet();
 				while(rs.next()){
@@ -916,6 +894,8 @@ public class SensorManager {
 		try{
 			conn = ConnectionManager.getConnectionPool().getConnection();			
 			Statement st = conn.createStatement();
+			logger.info("get Role by Id\n");
+			logger.info("executing query:\n"+sql);
 			if(st.execute(sql)){
 				ResultSet rs = st.getResultSet();
 				while(rs.next()){
@@ -959,6 +939,8 @@ public class SensorManager {
 			//delete Role
 			conn = ConnectionManager.getConnectionPool().getConnection();			
 			Statement st = conn.createStatement();
+			logger.info("deleting role by id \n");
+			logger.info("executing query:\n"+sql);
 			st.execute(sql);
 			ConnectionManager.attemptClose(st);
 			ConnectionManager.attemptClose(conn);
@@ -982,6 +964,8 @@ public class SensorManager {
 		try{
 			conn = ConnectionManager.getConnectionPool().getConnection();			
 			Statement st = conn.createStatement();
+			logger.info("get permissions for role\n");
+			logger.info("executing query:\n"+sql);
 			if(st.execute(sql)){
 				ResultSet rs = st.getResultSet();
 				permissions = new ArrayList<Permission>();
@@ -1035,6 +1019,8 @@ public class SensorManager {
 		try{
 			conn = ConnectionManager.getConnectionPool().getConnection();			
 			Statement st = conn.createStatement();
+			logger.info("deleting role from user \n");
+			logger.info("executing query:\n"+sql);
 			st.execute(sql);
 			ConnectionManager.attemptClose(st);
 			ConnectionManager.attemptClose(conn);
@@ -1064,6 +1050,8 @@ public class SensorManager {
 		try{
 			conn = ConnectionManager.getConnectionPool().getConnection();			
 			Statement st = conn.createStatement();
+			logger.info("get permission by id\n");
+			logger.info("executing query:\n"+sql);
 			if(st.execute(sql)){
 				ResultSet rs = st.getResultSet();
 				while(rs.next()){
@@ -1107,6 +1095,8 @@ public class SensorManager {
 			//delete permission
 			conn = ConnectionManager.getConnectionPool().getConnection();			
 			Statement st = conn.createStatement();
+			logger.info("deleting permission by id \n");
+			logger.info("executing query:\n"+sql);
 			st.execute(sql);					
 			ConnectionManager.attemptClose(st);
 			ConnectionManager.attemptClose(conn);
@@ -1130,6 +1120,8 @@ public class SensorManager {
 		try{
 			conn = ConnectionManager.getConnectionPool().getConnection();			
 			Statement st = conn.createStatement();
+			logger.info("deleting permission from roles\n");
+			logger.info("executing query:\n"+sql);
 			st.execute(sql);
 			ConnectionManager.attemptClose(st);
 			ConnectionManager.attemptClose(conn);
@@ -1156,6 +1148,8 @@ public class SensorManager {
 		try{
 			conn = ConnectionManager.getConnectionPool().getConnection();			
 			Statement st = conn.createStatement();
+			logger.info("deleting permission from role\n");
+			logger.info("executing query:\n"+sql);
 			st.execute(sql);
 			ConnectionManager.attemptClose(st);
 			ConnectionManager.attemptClose(conn);
@@ -1183,6 +1177,8 @@ public class SensorManager {
 		try{
 			conn = ConnectionManager.getConnectionPool().getConnection();			
 			Statement st = conn.createStatement();
+			logger.info("getting OAuthUser by id \n");
+			logger.info("executing query:\n"+sql);
 			if(st.execute(sql)){
 				ResultSet rs = st.getResultSet();
 				if(rs.next()){
@@ -1222,6 +1218,8 @@ public class SensorManager {
 		try{
 			conn = ConnectionManager.getConnectionPool().getConnection();			
 			Statement st = conn.createStatement();
+			logger.info("getting user's roles\n");
+			logger.info("executing query:\n"+sql);
 			if(st.execute(sql)){
 				ResultSet rs = st.getResultSet();
 				while(rs.next()){
@@ -1257,6 +1255,8 @@ public class SensorManager {
 		try{
 			conn = ConnectionManager.getConnectionPool().getConnection();			
 			Statement st = conn.createStatement();
+			logger.info("deleting user by id \n");
+			logger.info("executing query:\n"+sql);
 			st.execute(sql);				
 			ConnectionManager.attemptClose(st);
 			ConnectionManager.attemptClose(conn);
@@ -1295,6 +1295,8 @@ public class SensorManager {
 		try{
 			conn = ConnectionManager.getConnectionPool().getConnection();			
 			Statement st = conn.createStatement();
+			logger.info("getting service by id \n");
+			logger.info("executing query:\n"+sql);
 			if(st.execute(sql)){
 				ResultSet rs = st.getResultSet();			
 				while(rs.next()){
@@ -1350,6 +1352,8 @@ public class SensorManager {
 			deleteAllowedAttributesForService(serviceURL);
 			conn = ConnectionManager.getConnectionPool().getConnection();			
 			Statement st = conn.createStatement();
+			logger.info("deleting service by id \n");
+			logger.info("executing query:\n"+sql);
 			st.execute(sql);				
 			ConnectionManager.attemptClose(st);
 			ConnectionManager.attemptClose(conn);
@@ -1379,6 +1383,8 @@ public class SensorManager {
 		try{
 			conn = ConnectionManager.getConnectionPool().getConnection();			
 			Statement st = conn.createStatement();
+			logger.info("getting allowed attributes for service\n");
+			logger.info("executing query:\n"+sql);
 			if(st.execute(sql)){
 				ResultSet rs = st.getResultSet();			
 				while(rs.next()){
@@ -1413,6 +1419,8 @@ public class SensorManager {
 		try{
 			conn = ConnectionManager.getConnectionPool().getConnection();			
 			Statement st = conn.createStatement();
+			logger.info("deleting allowed attributes for service\n");
+			logger.info("executing query:\n"+sql);
 			st.execute(sql);
 			ConnectionManager.attemptClose(st);
 			ConnectionManager.attemptClose(conn);
@@ -1428,7 +1436,7 @@ public class SensorManager {
 	public LSMTicketGrantingTicketImpl getTicketSchedulerById(String sche_Id){
 		Connection conn = null;
 		LSMTicketGrantingTicketImpl sche  = null;
-		String prefix = "http://lsm.deri.ie/resource/";
+		String prefix = propertyManagement.getOpeniotResourceNamespace();
 		String schedulerURL = prefix + sche_Id;
 		if(sche_Id.contains(prefix)){
 			schedulerURL = sche_Id;
@@ -1451,6 +1459,8 @@ public class SensorManager {
 		try{
 			conn = ConnectionManager.getConnectionPool().getConnection();			
 			Statement st = conn.createStatement();
+			logger.info("getting tiket scheduler by id\n");
+			logger.info("executing query:\n"+sql);
 			if(st.execute(sql)){
 				ResultSet rs = st.getResultSet();			
 				while(rs.next()){
@@ -1484,7 +1494,7 @@ public class SensorManager {
 	
 	public boolean deleteTicketSchedulerById(String sche_Id){
 		Connection conn = null;
-		String prefix = "http://lsm.deri.ie/resource/";
+		String prefix = propertyManagement.getOpeniotResourceNamespace();
 		String schedulerURL = prefix + sche_Id;
 		if(sche_Id.contains(prefix)){
 			schedulerURL = sche_Id;
@@ -1498,6 +1508,8 @@ public class SensorManager {
 		try{
 			conn = ConnectionManager.getConnectionPool().getConnection();			
 			Statement st = conn.createStatement();
+			logger.info("deleting tiket scheduler by id\n");
+			logger.info("executing query:\n"+sql);
 			st.execute(sql);
 			ConnectionManager.attemptClose(st);
 			ConnectionManager.attemptClose(conn);
@@ -1512,7 +1524,7 @@ public class SensorManager {
 	public LSMServiceTicketImpl getTicketById(String ticketId){
 		Connection conn = null;
 		LSMServiceTicketImpl ticket  = null;
-		String prefix = "http://lsm.deri.ie/resource/";
+		String prefix = propertyManagement.getOpeniotResourceNamespace();
 		String ticketURL = prefix + ticketId;
 		if(ticketId.contains(prefix)){
 			ticketURL = ticketId;
@@ -1534,6 +1546,8 @@ public class SensorManager {
 		try{
 			conn = ConnectionManager.getConnectionPool().getConnection();			
 			Statement st = conn.createStatement();
+			logger.info("getting tiket by id\n");
+			logger.info("executing query:\n"+sql);
 			if(st.execute(sql)){
 				ResultSet rs = st.getResultSet();			
 				while(rs.next()){
@@ -1564,7 +1578,7 @@ public class SensorManager {
 	
 	public boolean deleteTicketById(String ticketId){
 		Connection conn = null;
-		String prefix = "http://lsm.deri.ie/resource/";
+		String prefix = propertyManagement.getOpeniotResourceNamespace();
 		String ticketURL = prefix + ticketId;
 		if(ticketId.contains(prefix)){
 			ticketURL = ticketId;
@@ -1578,6 +1592,8 @@ public class SensorManager {
 		try{
 			conn = ConnectionManager.getConnectionPool().getConnection();			
 			Statement st = conn.createStatement();
+			logger.info("deleting tiket by id\n");
+			logger.info("executing query:\n"+sql);
 			st.execute(sql);
 			ConnectionManager.attemptClose(st);
 			ConnectionManager.attemptClose(conn);
@@ -1591,7 +1607,7 @@ public class SensorManager {
 	
 	public List<LSMServiceTicketImpl> getAllServiceTicketsOfTicketGrantingTicket(String grantId) {
 		Connection conn = null;
-		String prefix = "http://lsm.deri.ie/resource/";
+		String prefix = propertyManagement.getOpeniotResourceNamespace();
 		String grantURL = prefix + grantId;
 		if(grantId.contains(prefix)){
 			grantURL = grantId;
@@ -1607,6 +1623,8 @@ public class SensorManager {
 		try{
 			conn = ConnectionManager.getConnectionPool().getConnection();			
 			Statement st = conn.createStatement();
+			logger.info("getting all service tiket\n");
+			logger.info("executing query:\n"+sql);
 			if(st.execute(sql)){
 				ResultSet rs = st.getResultSet();	
 				ticketList = new ArrayList<LSMServiceTicketImpl>();
@@ -1642,6 +1660,8 @@ public class SensorManager {
 		try{
 			conn = ConnectionManager.getConnectionPool().getConnection();			
 			Statement st = conn.createStatement();
+			logger.info("getting all tiket granting ticket\n");
+			logger.info("executing query:\n"+sql);
 			if(st.execute(sql)){
 				ResultSet rs = st.getResultSet();	
 				grantList = new ArrayList<LSMTicketGrantingTicketImpl>();
@@ -1677,6 +1697,8 @@ public class SensorManager {
 		try{
 			conn = ConnectionManager.getConnectionPool().getConnection();			
 			Statement st = conn.createStatement();
+			logger.info("getting all service tikets\n");
+			logger.info("executing query:\n"+sql);
 			if(st.execute(sql)){
 				ResultSet rs = st.getResultSet();	
 				ticketList = new ArrayList<LSMServiceTicketImpl>();
@@ -1713,6 +1735,8 @@ public class SensorManager {
 		try{
 			conn = ConnectionManager.getConnectionPool().getConnection();			
 			Statement st = conn.createStatement();
+			logger.info("getting all registered services\n");
+			logger.info("executing query:\n"+sql);
 			if(st.execute(sql)){
 				ResultSet rs = st.getResultSet();	
 				serviceList = new ArrayList<RegisteredService>();

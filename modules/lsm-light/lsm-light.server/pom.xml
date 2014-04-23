@@ -66,16 +66,7 @@
                 <version>${version.jboss.bom}</version>
                 <type>pom</type>
                 <scope>import</scope>
-            </dependency>
-            <!-- 
-            <dependency>
-                   <groupId>org.jboss.bom</groupId>
-                   <artifactId>jboss-javaee-6.0-with-resteasy</artifactId>
-                   <version>${version.jboss.bom}</version>
-                   <type>pom</type>
-                   <scope>import</scope>
-           </dependency>               
- 			-->
+            </dependency> 
         </dependencies>
     </dependencyManagement>
     
@@ -114,133 +105,107 @@
             <scope>provided</scope>
         </dependency>
 
-
-                <!-- ======== JBoss RestEasy JAX-RS with JAXB support Dependencies ========== -->
-
-
-
-                <!-- ====== org.eclipse.persistence.jaxb.JAXBContextFactory Dependencies -->
-                 
-                <dependency>
-                        <groupId>org.eclipse.persistence</groupId>
-                        <artifactId>eclipselink</artifactId>
-                        <version>2.5.0</version>
-                </dependency>
+        <!-- ====== org.eclipse.persistence.jaxb.JAXBContextFactory Dependencies -->
+         
+        <dependency>
+                <groupId>org.eclipse.persistence</groupId>
+                <artifactId>eclipselink</artifactId>
+                <version>2.5.0</version>
+        </dependency>
 
         <!-- ======== jUnit Dependencies ========== -->
 
         <!-- Needed for running tests  -->
-<!--         <dependency> -->
-<!--             <groupId>junit</groupId> -->
-<!--             <artifactId>junit</artifactId> -->
-<!--             <scope>test</scope> -->
-<!--         </dependency> -->
+			<dependency>
+				<groupId>junit</groupId>
+				<artifactId>junit</artifactId>
+				<version>4.11</version>
+				<scope>compile</scope>
+			</dependency>
 
 
-                <!-- ======== LSM API Dependencies ========== -->
+        <!-- ======== LSM API Dependencies ========== -->
 
-       <dependency>
-					<groupId>com.hp.hpl.jena</groupId>
-					<artifactId>jena</artifactId>
-					<version>2.6.4</version>
-				</dependency>	
+ 		<dependency>
+			<groupId>com.hp.hpl.jena</groupId>
+			<artifactId>jena</artifactId>
+			<version>2.6.4</version>
+		</dependency>	
 
-				<dependency>
-					<groupId>dom4j</groupId>
-					<artifactId>dom4j</artifactId>
-					<version>1.6.1</version>
-				</dependency>    
+		<dependency>
+			<groupId>dom4j</groupId>
+			<artifactId>dom4j</artifactId>
+			<version>1.6.1</version>
+		</dependency>    
 
-				<dependency>
-					<groupId>com.jolbox</groupId>
-					<artifactId>bonecp</artifactId>
-					<version>0.7.1.RELEASE</version>
-				</dependency>  
+		<dependency>
+			<groupId>com.jolbox</groupId>
+			<artifactId>bonecp</artifactId>
+			<version>0.7.1.RELEASE</version>
+		</dependency>  
 
-				<dependency>
-					<groupId>javax.servlet</groupId>
-					<artifactId>javax.servlet-api</artifactId>
-					<version>3.0.1</version>
-				</dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<version>3.0.1</version>
+		</dependency>
 
-				<dependency>
-					<groupId>net.sf.saxon</groupId>
-					<artifactId>Saxon-HE</artifactId>
-					<version>9.5.1-1</version>
-				</dependency>
+		<dependency>
+			<groupId>net.sf.saxon</groupId>
+			<artifactId>Saxon-HE</artifactId>
+			<version>9.5.1-1</version>
+		</dependency>
 
-				<dependency>
-					<groupId>org.json</groupId>
-					<artifactId>json</artifactId>
-					<version>20090211</version>
-				</dependency>
+		<dependency>
+			<groupId>org.json</groupId>
+			<artifactId>json</artifactId>
+			<version>20090211</version>
+		</dependency>
 
-			    <dependency>
-			      <groupId>junit</groupId>
-			      <artifactId>junit</artifactId>
-			      <version>3.8.1</version>
-			      <scope>test</scope>
-			    </dependency>
+	    <dependency>
+        	<groupId>virtuoso</groupId>
+        	<artifactId>virt_jena</artifactId>
+        	<version>2.6.2</version>
+    	</dependency> 
+    	<dependency>
+        	<groupId>virtuoso</groupId>
+        	<artifactId>virtjdbc4</artifactId>
+        	<version>4</version>
+    	</dependency>
+             
+         <!-- ======== LogBack Dependencies ========== -->
 
-			    <dependency>
-		        	<groupId>virtuoso</groupId>
-		        	<artifactId>virt_jena</artifactId>
-		        	<version>2.6.2</version>
-		    	</dependency> 
-		    	<dependency>
-		        	<groupId>virtuoso</groupId>
-		        	<artifactId>virtjdbc4</artifactId>
-		        	<version>4</version>
-		    	</dependency>
-               
-                <!-- ======== LogBack Dependencies ========== -->
+         <dependency>
+                 <groupId>ch.qos.logback</groupId>
+                 <artifactId>logback-classic</artifactId>
+                 <version>1.0.11</version>
+         </dependency>
 
-                <dependency>
-                        <groupId>ch.qos.logback</groupId>
-                        <artifactId>logback-classic</artifactId>
-                        <version>1.0.11</version>
-                </dependency>
-     
 
-                <!-- ========javamelody (monitoring) dependency ==========-->
-                <dependency>
-                        <groupId>net.bull.javamelody</groupId>
-                        <artifactId>javamelody-core</artifactId>
-                        <version>1.45.0</version>
-                </dependency>
-                
-                <!-- ========privacy and security dependencies ==========-->
-<!--                 <dependency> -->
-<!--                         <groupId>org.jasig.cas</groupId> -->
-<!--                         <artifactId>cas-server-webapp</artifactId> -->
-<!--                         <version>${cas.version}</version> -->
-<!--                         <type>war</type> -->
-<!--                         <scope>runtime</scope> -->
-<!--                 </dependency> -->
-
-                <dependency>
-                        <groupId>org.jasig.cas</groupId>
-                        <artifactId>cas-server-support-oauth</artifactId>
-                        <version>${cas.version}</version>
-                        <scope>runtime</scope>
-                </dependency>
-
-                <dependency>
-                        <groupId>org.jasig.cas</groupId>
-                        <artifactId>cas-server-support-jdbc</artifactId>
-                        <version>${cas.version}</version>
-                </dependency>
-
-                <dependency>
-                	<groupId>org.openiot</groupId>
-                	<artifactId>lsm-light.client</artifactId>
-                	<version>0.0.1</version>
-                </dependency>
-                <dependency>
-                	<groupId>org.openiot</groupId>
-                	<artifactId>security.client</artifactId>
-                	<version>0.0.1-SNAPSHOT</version>
-                </dependency>
+         <!-- ========javamelody (monitoring) dependency ==========-->
+         <dependency>
+             <groupId>net.bull.javamelody</groupId>
+             <artifactId>javamelody-core</artifactId>
+             <version>1.45.0</version>
+         </dependency>
+         
+         <!-- ========privacy and security dependencies ==========-->
+         <dependency>
+         	<groupId>org.openiot</groupId>
+         	<artifactId>lsm-light.client</artifactId>
+         	<version>0.0.1</version>
+         </dependency>
+         <dependency>
+         	<groupId>org.openiot</groupId>
+         	<artifactId>security.client</artifactId>
+         	<version>0.0.1-SNAPSHOT</version>
+         </dependency>
+              
+		<dependency>
+			<groupId>org.scribe</groupId>
+			<artifactId>scribe-up</artifactId>
+			<version>1.2.0</version>
+		</dependency>
     </dependencies>
 
   <!-- =========================================================== -->

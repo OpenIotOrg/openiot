@@ -226,7 +226,7 @@ public class LSMSchema {
         String serverHost = "http://lsm.deri.ie/lsm-light.server/";
         LSMTripleStore lsmStore = new LSMTripleStore(serverHost);
 //        lsmStore.pushRDF("http://lsm.deri.ie/OpenIoT/sensordata", schema.exportToTriples("N-TRIPLE"));
-        lsmStore.uploadSchema(schema, "example.owl");
+        lsmStore.uploadSchema(schema, "example.owl","","");
 	}
 
 }

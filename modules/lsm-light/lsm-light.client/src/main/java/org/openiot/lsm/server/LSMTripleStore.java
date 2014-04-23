@@ -45,7 +45,6 @@ public class LSMTripleStore implements LSMServer {
 	String RDFServletURL;
 	String ObjectServletURL;
     String UPLOAD_URL;
-    
     private String openiot_ServerHost;
     
   //logger
@@ -67,103 +66,9 @@ public class LSMTripleStore implements LSMServer {
 		}    	
     }
 	
-    
-	@Override
-	public void sensorAdd(String triples,String graphURL) {
-		// TODO Auto-generated method stub
-		HttpURLConnection conn = null;  
-		ObjectOutputStream dos = null;  
-        String api = "1";
-        String urlString = RDFServletURL;
-        try{  
-            URL url = new URL(urlString);  
-
-      // Open a HTTP connection to the URL  
-
-         conn = (HttpURLConnection) url.openConnection();  
-         conn.setDoInput(true);  
-         conn.setDoOutput(true);  
-         conn.setUseCaches(false);  
-
-         // Use a post method.  
-         conn.setRequestMethod("POST");  
-         conn.setRequestProperty("api", api);
-         conn.setRequestProperty("apiType", "insert");
-         conn.setRequestProperty("Connection", "Keep-Alive");  
-         conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");  
-         conn.setRequestProperty("graphURL", graphURL);
-         
-         dos = new ObjectOutputStream( conn.getOutputStream() );         
-         dos.writeObject(triples);  
-         dos.flush();  
-         dos.close();  
-         
-      // always check HTTP response code from server
-	     int responseCode = conn.getResponseCode();
-	     if (responseCode == HttpURLConnection.HTTP_OK) {
-	            // reads server's response
-	    	 BufferedReader reader = new BufferedReader(new InputStreamReader(
-	                    conn.getInputStream()));
-	         String response = reader.readLine();
-	         logger.info(response);
-	         logger.info("your sensor was added");
-//	         System.out.println(response);	        
-	     } else {
-	    	 logger.error("Server returned non-OK code: " + responseCode);
-	     }
-        }catch (Exception ex) {  
-        	logger.error("sensorAdd returns error",ex);   
-        }  
-    }
 
 	@Override
-	public void sensorDataUpdate(String triples,String graphURL){
-		HttpURLConnection conn = null;  
-        ObjectOutputStream dos = null;  
-        String api = "2";
-        String urlString = RDFServletURL;
-        try{  
-            URL url = new URL(urlString);  
-
-      // Open a HTTP connection to the URL  
-
-         conn = (HttpURLConnection) url.openConnection();  
-         conn.setDoInput(true);  
-         conn.setDoOutput(true);  
-         conn.setUseCaches(false);  
-
-         // Use a post method.  
-         conn.setRequestMethod("POST");  
-         conn.setRequestProperty("api", api);
-         conn.setRequestProperty("apiType", "update");
-         conn.setRequestProperty("Connection", "Keep-Alive");  
-         conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");  
-         conn.setRequestProperty("graphURL", graphURL);
-         
-         dos = new ObjectOutputStream( conn.getOutputStream() );         
-         dos.writeObject(triples);  
-         dos.flush();  
-         dos.close();  
-         
-         int responseCode = conn.getResponseCode();
-	     if (responseCode == HttpURLConnection.HTTP_OK) {
-	            // reads server's response
-	    	 BufferedReader reader = new BufferedReader(new InputStreamReader(
-	                    conn.getInputStream()));
-	         String response = reader.readLine();
-	         logger.info(response);
-	         logger.info("Your sensor data is updated successfully");
-//	         System.out.println(response);	        
-	     } else {
-	    	 logger.error("Server returned non-OK code: " + responseCode);
-	     }
-        }catch (Exception ex) {  
-        	logger.error("sensorDataUpdate returns error",ex);  
-        }
-	}
-
-	@Override
-	public void sensorDelete(String sensorURL,String graphURL) {
+	public void sensorDelete(String sensorURL,String graphURL,String clientId, String token) {
 		// TODO Auto-generated method stub
 		HttpURLConnection conn = null;  
         ObjectOutputStream dos = null;  
@@ -186,6 +91,8 @@ public class LSMTripleStore implements LSMServer {
          conn.setRequestProperty("Connection", "Keep-Alive");  
          conn.setRequestProperty("Content-Type", "text/html");  
          conn.setRequestProperty("graphURL", graphURL);
+         conn.setRequestProperty("clientId", clientId);
+         conn.setRequestProperty("token", token);
          
          dos = new ObjectOutputStream( conn.getOutputStream() );  
          dos.writeObject(sensorURL);  
@@ -198,7 +105,7 @@ public class LSMTripleStore implements LSMServer {
 	    	 BufferedReader reader = new BufferedReader(new InputStreamReader(
 	                    conn.getInputStream()));
 	         String response = reader.readLine();
-	         logger.info("Sensor is deleted successfully");    
+	         logger.info(response);    
 	     } else {
 	    	 logger.error("Server returned non-OK code: " + responseCode);
 	     }
@@ -208,7 +115,7 @@ public class LSMTripleStore implements LSMServer {
 	}
 	
 	@Override
-	public void deleteAllReadings(String sensorURL,String graphURL) {
+	public void deleteAllReadings(String sensorURL,String graphURL,String clientId, String token) {
 		// TODO Auto-generated method stub
 		HttpURLConnection conn = null;  
 		ObjectOutputStream dos = null;  
@@ -231,6 +138,8 @@ public class LSMTripleStore implements LSMServer {
          conn.setRequestProperty("Connection", "Keep-Alive");  
          conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");  
          conn.setRequestProperty("graphURL", graphURL);
+         conn.setRequestProperty("clientId", clientId);
+         conn.setRequestProperty("token", token);
          
          dos = new ObjectOutputStream( conn.getOutputStream() );
          dos.writeObject(sensorURL);  
@@ -254,7 +163,7 @@ public class LSMTripleStore implements LSMServer {
 
 	@Override
 	public void deleteAllReadings(String sensorURL, String graphURL,String dateOperator,
-			Date fromTime, Date toTime) {
+			Date fromTime, Date toTime,String clientId, String token) {
 		// TODO Auto-generated method stub
 				HttpURLConnection conn = null;  
 		        ObjectOutputStream dos = null;  
@@ -279,6 +188,8 @@ public class LSMTripleStore implements LSMServer {
 		         conn.setRequestProperty("dateOperator", dateOperator);
 		         conn.setRequestProperty("fromTime", fromTime.toString());
 		         conn.setRequestProperty("toTime", toTime.toString());
+		         conn.setRequestProperty("clientId", clientId);
+		         conn.setRequestProperty("token", token);
 		         
 		         dos = new ObjectOutputStream( conn.getOutputStream() );  
 		         dos.writeObject(sensorURL);  
@@ -302,7 +213,7 @@ public class LSMTripleStore implements LSMServer {
 	}
 
 	@Override
-	public Sensor getSensorById(String sensorURL,String graphURL) {
+	public Sensor getSensorById(String sensorURL,String graphURL,String clientId, String token) {
 		// TODO Auto-generated method stub
 		HttpURLConnection conn = null;  
 		ObjectOutputStream dos = null;  
@@ -326,6 +237,8 @@ public class LSMTripleStore implements LSMServer {
          conn.setRequestProperty("Connection", "Keep-Alive");  
          conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");  
          conn.setRequestProperty("graphURL", graphURL);
+         conn.setRequestProperty("clientId", clientId);
+         conn.setRequestProperty("token", token);
          
          dos = new ObjectOutputStream( conn.getOutputStream() );  
          dos.writeObject(sensorURL);  
@@ -348,57 +261,12 @@ public class LSMTripleStore implements LSMServer {
 		return sensor;
 	}
 
-	@Override
-	public Sensor getSensorBySource(String sensorsource,String graphURL) {
-		// TODO Auto-generated method stub		
-		HttpURLConnection conn = null;  
-		ObjectOutputStream dos = null;  
-        String api = "6";
-        String urlString = RDFServletURL;
-        Sensor sensor = null;
-        try{  
-            URL url = new URL(urlString);  
-      // Open a HTTP connection to the URL  
-
-         conn = (HttpURLConnection) url.openConnection();  
-         conn.setDoInput(true);  
-         conn.setDoOutput(true);  
-         conn.setUseCaches(false);  
-
-         // Use a post method.  
-         conn.setRequestMethod("POST");  
-         conn.setRequestProperty("api", api);
-         conn.setRequestProperty("apiType", "get");
-         conn.setRequestProperty("Connection", "Keep-Alive");  
-         conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");  
-         conn.setRequestProperty("graphURL", graphURL);
-         
-         dos = new ObjectOutputStream( conn.getOutputStream() );  
-         dos.writeObject(sensorsource);  
-         dos.flush();  
-         dos.close();  
-         
-         int responseCode = conn.getResponseCode();
-	     if (responseCode == HttpURLConnection.HTTP_OK) {
-	    	 ObjectInputStream outputFromServlet =new ObjectInputStream(conn.getInputStream());
-	    	 sensor = (Sensor) outputFromServlet .readObject();
-	    	 logger.info("sensor Id return:"+sensor.getId());
-	     }else {
-	         logger.error("Server returned non-OK code: " + responseCode);
-	     }                  
-        }catch (Exception ex) {  
-//        	ex.printStackTrace();
-        	logger.error("getSensorBySource returns error",ex);     
-        }
-		return sensor;
-	}
-
 	/**
 	 * add new Sensor
 	 *
 	 */
 	@Override
-	public String sensorAdd(Sensor sensor) {
+	public String sensorAdd(Sensor sensor, String clientId, String token) {
 		// TODO Auto-generated method stub
 		HttpURLConnection conn = null;  
         ObjectOutputStream dos = null;  
@@ -422,7 +290,9 @@ public class LSMTripleStore implements LSMServer {
          conn.setRequestProperty("apiType", "insert");
          conn.setRequestProperty("Connection", "Keep-Alive");  
          conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");  
-        
+         conn.setRequestProperty("clientId", clientId);
+         conn.setRequestProperty("token", token);
+         
          dos = new ObjectOutputStream( conn.getOutputStream() ); 
          dos.writeObject(sensor);  
          dos.flush();  
@@ -445,9 +315,9 @@ public class LSMTripleStore implements LSMServer {
         }
         return idReturn;
 	}
-
+	
 	@Override
-	public void sensorDataUpdate(Observation observation){
+	public void sensorDataUpdate(Observation observation,String clientId, String token){
 		// TODO Auto-generated method stub
 			HttpURLConnection conn = null;  
 	        ObjectOutputStream dos = null;  
@@ -469,7 +339,9 @@ public class LSMTripleStore implements LSMServer {
 	         conn.setRequestProperty("apiType", "insert");
 	         conn.setRequestProperty("Connection", "Keep-Alive");  
 	         conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");  
-	        
+	         conn.setRequestProperty("clientId", clientId);
+	         conn.setRequestProperty("token", token);
+	         
 	         dos = new ObjectOutputStream( conn.getOutputStream() );  
 //	         System.out.println(observation.getId());
 	         dos.writeObject(observation);  
@@ -493,9 +365,8 @@ public class LSMTripleStore implements LSMServer {
 	        }
 	}
 	
-	
 	@Override
-	public boolean pushRDF(String graphURL,String triples) {
+	public boolean pushRDF(String graphURL,String triples, String clientId, String token) {
 		// TODO Auto-generated method stub
 		HttpURLConnection conn = null;  
         ObjectOutputStream dos = null;  
@@ -518,6 +389,8 @@ public class LSMTripleStore implements LSMServer {
          conn.setRequestProperty("Connection", "Keep-Alive");  
          conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");  
          conn.setRequestProperty("graphURL", graphURL);
+         conn.setRequestProperty("clientId", clientId);
+         conn.setRequestProperty("token", token);
          
          RDFTuple tuple = new RDFTuple(graphURL,triples);
          dos = new ObjectOutputStream( conn.getOutputStream() );
@@ -541,9 +414,10 @@ public class LSMTripleStore implements LSMServer {
         }
         return false;
 	}
-
+	
+	
 	@Override
-	public void deleteTriples(String graphURL, String triples) {
+	public void deleteTriples(String graphURL, String triples,String clientId, String token) {
 		// TODO Auto-generated method stub
 		HttpURLConnection conn = null;  
         ObjectOutputStream dos = null;  
@@ -589,7 +463,7 @@ public class LSMTripleStore implements LSMServer {
 	}
 
 	@Override
-	public void deleteTriples(String graphURL) {
+	public void deleteTriples(String graphURL,String clientId, String token) {
 		// TODO Auto-generated method stub
 		HttpURLConnection conn = null;  
         ObjectOutputStream dos = null;  
@@ -634,7 +508,7 @@ public class LSMTripleStore implements LSMServer {
 	}
 
 	@Override
-	public void uploadSchema(LSMSchema schema,String name) {
+	public void uploadSchema(LSMSchema schema,String name,String clientId, String token) {
 		// TODO Auto-generated method stub
 		try{
 			URL url = new URL(UPLOAD_URL);
@@ -671,7 +545,7 @@ public class LSMTripleStore implements LSMServer {
 	}
 
 	@Override
-	public void updateTriples(String graphURL, String newTriplePatterns, String oldTriplePatterns) {
+	public void updateTriples(String graphURL, String newTriplePatterns, String oldTriplePatterns,String clientId, String token) {
 		// TODO Auto-generated method stub
 		// TODO Auto-generated method stub
 		HttpURLConnection conn = null;  

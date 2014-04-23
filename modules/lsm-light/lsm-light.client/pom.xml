@@ -102,5 +102,30 @@
 			<artifactId>utils.commons</artifactId>
 			<version>0.0.1</version>
 		</dependency>
+		
+		<dependency>
+            	<groupId>org.openiot</groupId>
+            	<artifactId>security.client</artifactId>
+            	<version>0.0.1-SNAPSHOT</version>
+        </dependency>
+        
+        <dependency>
+	       	<groupId>org.slf4j</groupId>
+	       	<artifactId>slf4j-api</artifactId>
+	       	<version>1.7.1</version>
+	       	<scope>test</scope>
+       </dependency>
+       <dependency>
+	       	<groupId>org.slf4j</groupId>
+	       	<artifactId>slf4j-log4j12</artifactId>
+	       	<version>1.7.1</version>
+	       	<scope>test</scope>
+       </dependency>
+       
+       <dependency>
+			<groupId>org.scribe</groupId>
+			<artifactId>scribe-up</artifactId>
+			<version>1.2.0</version>
+		</dependency>
  </dependencies>   
 </project>
