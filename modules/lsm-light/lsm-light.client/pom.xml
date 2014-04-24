@@ -85,7 +85,12 @@
 			<groupId>org.jasig.cas</groupId>
 			<artifactId>cas-server-support-oauth</artifactId>
 			<version>${cas.version}</version>
-			<!-- <scope>runtime</scope> -->
+			<exclusions>
+				<exclusion>
+					<groupId>org.scribe</groupId>
+					<artifactId>scribe-up</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 
 		<dependency>
