@@ -34,6 +34,8 @@ import java.util.Map;
 
 public class LSMSensorMetaData {
 
+	public final static String KEY_SENSOR_ID = "sensorID";
+	public final static String KEY_IS_REGISTERED = "registered";
 	private static final transient Logger logger = Logger.getLogger(LSMSensorMetaData.class);
 
 	private String sensorName;
@@ -184,19 +186,19 @@ public class LSMSensorMetaData {
 		this.setSourceType(conf.getString("sourceType"));
 		this.setSource(conf.getString("source"));
 
-		if (conf.hasPath("sensorID")) {
-			this.setSensorID(conf.getString("sensorID"));
+		if (conf.hasPath(KEY_SENSOR_ID)) {
+			this.setSensorID(conf.getString(KEY_SENSOR_ID));
 		} else {
 			if (!allowMissingSensorId) {
 				// This will throw an exception.
-				conf.getString("sensorID");
+				conf.getString(KEY_SENSOR_ID);
 			}
 		}
 
 		this.setLatitude(conf.getDouble("latitude"));
 		this.setLongitude(conf.getDouble("longitude"));
 
-		/*String registeredToLSMString = PropertiesReader.readProperty(fileName, "registered");
+		/*String registeredToLSMString = PropertiesReader.readProperty(fileName, KEY_IS_REGISTERED);
 		 if (registeredToLSMString.equalsIgnoreCase("true"))
 		 registeredToLSM = true;
 		 else
@@ -241,11 +243,15 @@ public class LSMSensorMetaData {
 	}
 
 	public boolean updateSensorIDInConfigFile(String fileName, String sensorID) {
-		return PropertiesReader.writeProperty(fileName, "sensorID", sensorID);
+		// TODO: these methods break the reading of the file by com.typesafe.config
+		// if there are urls in it (because of improper escaping of the ':')
+		return PropertiesReader.writeProperty(fileName, KEY_SENSOR_ID, sensorID);
 	}
 
 	public boolean setSensorAsRegistered(String fileName) {
-		return PropertiesReader.writeProperty(fileName, "registered", "true");
+		// TODO: these methods break the reading of the file by com.typesafe.config
+		// if there are urls in it (because of improper escaping of the ':')
+		return PropertiesReader.writeProperty(fileName, KEY_IS_REGISTERED, "true");
 	}
 
 	public String[] getProperties() {

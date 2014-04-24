@@ -23,7 +23,6 @@
 package org.openiot.gsn.http.restapi;
 
 import com.typesafe.config.Config;
-import com.typesafe.config.ConfigException;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileWriter;
@@ -53,6 +52,12 @@ import com.typesafe.config.ConfigValueFactory;
 public class VSManagerService {
 
 	private static final transient Logger logger = LoggerFactory.getLogger(VSManagerService.class);
+	private static final String KEY_DELETE_FROM_LSM = "deleteFromLSM";
+	private static final Config DEFAULT_DELETE_CONFIG = ConfigFactory.empty();
+
+	static {
+		DEFAULT_DELETE_CONFIG.withValue(KEY_DELETE_FROM_LSM, ConfigValueFactory.fromAnyRef(false));
+	}
 
 	//public VSManagerService() { super(VSManagerService.class); }
 	@POST
@@ -122,8 +127,8 @@ public class VSManagerService {
 			LSMSensorMetaData lsmmd = new LSMSensorMetaData();
 
 			Config configData = ConfigFactory.parseFile(new File(filePath));
-			if (configData.hasPath("sensorID")) {
-				sensorIdOld = configData.getString("sensorID");
+			if (configData.hasPath(LSMSensorMetaData.KEY_SENSOR_ID)) {
+				sensorIdOld = configData.getString(LSMSensorMetaData.KEY_SENSOR_ID);
 			}
 			lsmmd.init(configData, true);
 			sensorId = MetadataCreator.addSensorToLSM(lsmmd);
@@ -131,8 +136,9 @@ public class VSManagerService {
 			if (sensorIdOld == null || sensorId.compareTo(sensorIdOld) != 0) {
 				logger.info("SensorId has changed from {} to {}.", sensorIdOld, sensorId);
 				lsmmd.setSensorID(sensorId);
-				Config configDataNew = configData.withValue("sensorID", ConfigValueFactory.fromAnyRef(sensorId));
-				String metadataNew = configDataNew.root().render(ConfigRenderOptions.defaults().setJson(false).setComments(false));
+				Config configDataNew = configData.withValue(LSMSensorMetaData.KEY_SENSOR_ID, ConfigValueFactory.fromAnyRef(sensorId));
+				configDataNew = configDataNew.withValue(LSMSensorMetaData.KEY_SENSOR_ID, ConfigValueFactory.fromAnyRef(sensorId));
+				String metadataNew = configDataNew.root().render(ConfigRenderOptions.defaults().setJson(false).setOriginComments(false));
 				fw = new FileWriter(filePath, false);
 				IOUtils.write(metadataNew, fw);
 				fw.close();
@@ -140,9 +146,56 @@ public class VSManagerService {
 
 		} catch (Exception e) {
 			logger.error("Unable to load metadata for sensor", e);
-			throw new VSensorConfigException("Unable to load metadata for sensor. ", e);
+			throw new VSensorConfigException("Unable to load metadata for sensor.", e);
 		}
 		return Response.ok(sensorId).build();
+	}
+
+	@POST
+	@Path("/{vsname}/delete")
+	public Response deleteVS(InputStream data, @PathParam("vsname") String vsname) {
+		logger.info("Deleting sensor {}.", vsname);
+		try {
+			Config configData = ConfigFactory.parseString(IOUtils.toString(data, "UTF-8"));
+			Config config = configData.withFallback(DEFAULT_DELETE_CONFIG);
+
+			String vsFilePath = VSensorLoader.getVSConfigurationFilePath(vsname);
+			File vsFile = new File(vsFilePath);
+
+			if (config.getBoolean(KEY_DELETE_FROM_LSM)) {
+				String vsMetaPath = vsFilePath.replace(".xml", ".metadata");
+				File vsMetaFile = new File(vsMetaPath);
+				if (vsMetaFile.exists()) {
+					Config sensorConfig = ConfigFactory.parseFile(vsMetaFile);
+					if (sensorConfig.hasPath(LSMSensorMetaData.KEY_SENSOR_ID)) {
+						String sensorId = sensorConfig.getString(LSMSensorMetaData.KEY_SENSOR_ID);
+						logger.info("Deleting sensor {} from LSM. SensorId: {}.", vsname, sensorId);
+						logger.warn("Deleting sensors from LSM currently not supported.");
+
+						// TODO: Add LSM delete code.
+						if (!vsMetaFile.delete()) {
+							logger.error("Failed to delete sensor metadata file.");
+						}
+					} else {
+						logger.info("Can not delete sensor {} from LSM, sensorId not found in metadata file.", vsname);
+					}
+				}
+			}
+
+			if (!vsFile.delete()) {
+				throw new VSensorConfigException("Failed to unload sensor.");
+			}
+
+		} catch (IOException e) {
+			logger.warn("Could not parse options.", e);
+			throw new VSensorConfigException("Could not parse options.", e);
+		}
+		return Response.ok(vsname).build();
+	}
+
+	private synchronized boolean unloadVirtualSensor(String name) {
+		File vsConfigurationFile = new File(VSensorLoader.getVSConfigurationFilePath(name));
+		return vsConfigurationFile.delete();
 	}
 }
 
