@@ -23,6 +23,12 @@ org.eclipse.m2e.core.prefs
 .pmd
 
 
+# Netbeans Settings #
+#####################
+**/jboss-web.xml
+**/nb-configuration.xml
+
+
 
 
 # Maven Generated #

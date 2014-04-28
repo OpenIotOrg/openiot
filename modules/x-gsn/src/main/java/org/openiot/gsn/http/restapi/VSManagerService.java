@@ -47,6 +47,7 @@ import org.slf4j.LoggerFactory;
 import com.typesafe.config.ConfigFactory;
 import com.typesafe.config.ConfigRenderOptions;
 import com.typesafe.config.ConfigValueFactory;
+import org.openiot.gsn.metadata.LSM.LSMRepository;
 
 @Path("/vsensor")
 public class VSManagerService {
@@ -165,19 +166,21 @@ public class VSManagerService {
 			if (config.getBoolean(KEY_DELETE_FROM_LSM)) {
 				String vsMetaPath = vsFilePath.replace(".xml", ".metadata");
 				File vsMetaFile = new File(vsMetaPath);
+
 				if (vsMetaFile.exists()) {
 					Config sensorConfig = ConfigFactory.parseFile(vsMetaFile);
-					if (sensorConfig.hasPath(LSMSensorMetaData.KEY_SENSOR_ID)) {
+
+					if (!sensorConfig.hasPath(LSMSensorMetaData.KEY_SENSOR_ID)) {
+						logger.info("Can not delete sensor {} from LSM, sensorId not found in metadata file.", vsname);
+					} else {
+
 						String sensorId = sensorConfig.getString(LSMSensorMetaData.KEY_SENSOR_ID);
 						logger.info("Deleting sensor {} from LSM. SensorId: {}.", vsname, sensorId);
-						logger.warn("Deleting sensors from LSM currently not supported.");
+						MetadataCreator.deleteSensorFromLSM(sensorId);
 
-						// TODO: Add LSM delete code.
 						if (!vsMetaFile.delete()) {
 							logger.error("Failed to delete sensor metadata file.");
 						}
-					} else {
-						logger.info("Can not delete sensor {} from LSM, sensorId not found in metadata file.", vsname);
 					}
 				}
 			}
@@ -185,17 +188,14 @@ public class VSManagerService {
 			if (!vsFile.delete()) {
 				throw new VSensorConfigException("Failed to unload sensor.");
 			}
+			LSMRepository lsm=LSMRepository.getInstance();
+			lsm.unloadMetaData(vsname);
 
 		} catch (IOException e) {
 			logger.warn("Could not parse options.", e);
 			throw new VSensorConfigException("Could not parse options.", e);
 		}
 		return Response.ok(vsname).build();
-	}
-
-	private synchronized boolean unloadVirtualSensor(String name) {
-		File vsConfigurationFile = new File(VSensorLoader.getVSConfigurationFilePath(name));
-		return vsConfigurationFile.delete();
 	}
 }
 

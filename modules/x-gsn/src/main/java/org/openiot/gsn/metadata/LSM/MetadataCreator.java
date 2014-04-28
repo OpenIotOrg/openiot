@@ -1,6 +1,6 @@
 /**
 *    Copyright (c) 2011-2014, OpenIoT
-*   
+*
 *    This file is part of OpenIoT.
 *
 *    OpenIoT is free software: you can redistribute it and/or modify
@@ -40,13 +40,13 @@ public class MetadataCreator {
 	}
 
     public static String addSensorToLSM(LSMSensorMetaData md){
-    	return addSensorToLSM(lsmSchema.getMetaGraph(),lsmSchema.getDataGraph(), 
-    			md.getSensorName(), md.getAuthor(), md.getSourceType(), 
-    			md.getSensorType(), md.getInformation(), md.getSource(), 
+    	return addSensorToLSM(lsmSchema.getMetaGraph(),lsmSchema.getDataGraph(),
+    			md.getSensorName(), md.getAuthor(), md.getSourceType(),
+    			md.getSensorType(), md.getInformation(), md.getSource(),
     			md.getProperties(), md.getLatitude(), md.getLongitude());
     }
-    
-	
+
+
     public static String addSensorToLSM(String metaGraph,String dataGraph,
                                         String sensorName,String sensorAuthor,
                                         String sourceType,String sensorType,
@@ -74,7 +74,7 @@ public class MetadataCreator {
             sensor.setTimes(new Date());
             sensor.setMetaGraph(metaGraph);
             sensor.setDataGraph(dataGraph);
-         
+
             // set sensor location information (latitude, longitude, city, country, continent...)
             Place place = new Place();
             place.setLat(latitude);
@@ -84,7 +84,7 @@ public class MetadataCreator {
             // create LSMTripleStore instance
             logger.info("Connecting to LSM: "+lsmSchema.getLsmServerUrl());
             LSMTripleStore lsmStore = new LSMTripleStore(lsmSchema.getLsmServerUrl());
-            sensorID=lsmStore.sensorAdd(sensor);           
+            sensorID=lsmStore.sensorAdd(sensor);
 
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -93,7 +93,7 @@ public class MetadataCreator {
         return sensorID;
     }
 
-	
+
 	public static void addRdfMetadatatoLSM(SensorMetadata metadata){
         LSMTripleStore lsmStore = new LSMTripleStore(lsmSchema.getLsmServerUrl());
         logger.info("Connecting to LSM: "+lsmSchema.getLsmServerUrl());
@@ -101,9 +101,20 @@ public class MetadataCreator {
         lsmStore.pushRDF(lsmSchema.getMetaGraph(),metadata.serializeRDF());
 
 	}
-	
+
+	/**
+	 * Deletes the sensor and all sensor readings from the LSM data store.
+	 *
+	 * @param sensorId The sensorId of the sensor for which to delete all data.
+	 */
+	public static void deleteSensorFromLSM(String sensorId) {
+		LSMTripleStore lsmStore = new LSMTripleStore(lsmSchema.getLsmServerUrl());
+		lsmStore.deleteAllReadings(sensorId, lsmSchema.getDataGraph());
+		lsmStore.sensorDelete(sensorId, lsmSchema.getMetaGraph());
+	}
+
 	public static void main(String[] args) throws FileNotFoundException {
-		
+
 		if (args.length < 1) {
 			System.out.println("Error: Metadata file is missing.\n");
 			System.exit(-1);
@@ -111,7 +122,7 @@ public class MetadataCreator {
 	    String metadataFileName = args[0];
 	    logger.info("Using metadata file: " + metadataFileName);
 		//properties file
-		if (args.length==1){	        
+		if (args.length==1){
 			LSMSensorMetaData metaData = new LSMSensorMetaData();
 			try{
 		    metaData.initFromConfigFile(metadataFileName);
@@ -123,7 +134,7 @@ public class MetadataCreator {
 		    schema.initFromConfigFile(metadataFileName);
 		    String SID = addSensorToLSM(metaData);
 		    logger.info("Sensor registered to LSM with ID: " + SID);
-			
+
 		}
 		//rdf file
 		else if (args[1].equals("-rdf")){
@@ -144,5 +155,5 @@ public class MetadataCreator {
 
       System.exit(0);
 
-	}    
+	}
 }

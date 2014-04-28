@@ -1,6 +1,6 @@
 /**
 *    Copyright (c) 2011-2014, OpenIoT
-*   
+*
 *    This file is part of OpenIoT.
 *
 *    OpenIoT is free software: you can redistribute it and/or modify
@@ -86,18 +86,18 @@ public class LSMRepository {
             logger.warn("Virtual sensor " + Utils.identify(vsConfig) + " already in lsmSensorsMetaData lookup table");
             return lsmSensorsMetaDataLookupTable.get(vsName);
         }
-        
+
         String metadataFile = vsConfig.getFileName().replace(".xml", METADATA_FILE_SUFFIX);
         String rdfFile = vsConfig.getFileName().replace(".xml",RDFTURTLE_FILE_SUFFIX);
         if (new File(metadataFile).exists()){
         	// load metadata for virtual sensor specified by vsConfig
         	LSMSensorMetaData lsmSensorMetaData = new LSMSensorMetaData();
-	        lsmSensorMetaData.initFromConfigFile(metadataFile); 
+	        lsmSensorMetaData.initFromConfigFile(metadataFile);
 	        // add metadata to lookup table
 	        lsmSensorsMetaDataLookupTable.put(vsName, lsmSensorMetaData);
 	    	return lsmSensorMetaData;
         }
-        
+
         else if (new File(rdfFile).exists()){
         	SensorMetadata md = new SensorMetadata();
         	md.loadFromFile(rdfFile);
@@ -107,7 +107,17 @@ public class LSMRepository {
         }
         else throw new IllegalStateException("No metadata available for Virtual Sensor "+vsName);
     }
-    
+
+	/**
+	 * Remove the given virtual sensor from the cache so a new sensor with the
+	 * same name does not re-use the old data.
+	 *
+	 * @param vsName The name of the sensor that needs to be removed.
+	 */
+	public void unloadMetaData(String vsName) {
+		lsmSensorsMetaDataLookupTable.remove(vsName);
+	}
+
     /*
     This method announces a virtual sensor identified by vsConfig to LSM
     It first checks if the virtual sensor already exists in the metadata lookup table. If not, it will add it.
@@ -123,7 +133,7 @@ public class LSMRepository {
     public boolean announceSensor(VSensorConfig vsConfig) throws FileNotFoundException {
         String metadataFile = vsConfig.getFileName() + METADATA_FILE_SUFFIX;
 
-    	LSMSensorMetaData lsmSensorMetaData = loadMetadata(vsConfig);    	
+    	LSMSensorMetaData lsmSensorMetaData = loadMetadata(vsConfig);
         logger.info(lsmSensorMetaData);
         if (lsmSensorMetaData==null) return false;
 
@@ -170,7 +180,7 @@ public class LSMRepository {
         /*if (lsmSensorMetaData.isRegisteredToLSM()) {
             logger.info("Sensor " + lsmSensorMetaData.getSensorName() + " already registered to LSM with id " + lsmSensorMetaData.getSensorID() + ". No need to register it again.");
             return true;
-        }*/        
+        }*/
 
         // announce sensor to LSM
         String sensorID = MetadataCreator.addSensorToLSM(lsmSensorMetaData);
@@ -207,7 +217,7 @@ public class LSMRepository {
         success = utils.updateSensorDataOnLSM(
                 lsmSchema.getMetaGraph(),
                 lsmSchema.getDataGraph(),
-                lsmSensorsMetaData.getSensorID(),                
+                lsmSensorsMetaData.getSensorID(),
                 lsmField.getLsmPropertyName(),
                 value,
                 lsmField.getLsmUnit(),
