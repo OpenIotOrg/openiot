@@ -54,7 +54,7 @@ public class SesameSPARQLClient
 			therepository.initialize();
 		} 
 		catch (RepositoryException e){			
-			logger.error("init sparql repository -http://lsm.deri.ie/sparql- error",e);
+			logger.error("init sparql repository  -"+propertyManagement.getSchedulerLsmSparqlEndPoint()+"-  error",e);
 			throw e;
 		}
 	}
