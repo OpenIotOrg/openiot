@@ -51,6 +51,7 @@ public class LSMSDUMHttpManager {
 	public LSMSDUMHttpManager() {
 		PropertyManagement props = new PropertyManagement();
 		String server = props.getLSMClientConnectionServerHost();
+//		String server = "http://services.openiot.eu:8080/lsm-light.server/";
 		String funcGraphURL = props.getSdumLsmFunctionalGraph();
 		init(funcGraphURL, server);
 	}

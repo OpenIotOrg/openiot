@@ -39,9 +39,9 @@ public class Main
 		sdum.addOSDSPecBean(bean);
 //		sdum.deleteOSDSPecBean(bean.getId());
 		
-		osdSpec = loadFromFile("src/test/resources/spec3.xml");		
-		bean = SchedulerOps_V04.registerService_V4(osdSpec);		
-		bean.setId("http://lsm.deri.ie/resource/123456");
-		sdum.updateOSDSPecBean(bean);
+//		osdSpec = loadFromFile("src/test/resources/spec3.xml");		
+//		bean = SchedulerOps_V04.registerService_V4(osdSpec);		
+//		bean.setId("http://lsm.deri.ie/resource/123456");
+//		sdum.updateOSDSPecBean(bean);
 	}
 }//class
