@@ -35,30 +35,14 @@ public interface LSMServer {
 	 * add new Sensor
 	 *
 	 */
-<<<<<<< HEAD
-	
-	public String sensorAdd(Sensor sensor);
-	public void sensorAdd(String triple,String graphURL);
-	public void sensorDelete(String sensorURL,String graphURL);
-	public Sensor getSensorById(String sensorURL,String graphURL);
-	public Sensor getSensorBySource(String sensorsource,String graphURL);
-=======
 
 	public void sensorDelete(String sensorURL,String graphURL,String clientId, String token);
 	public Sensor getSensorById(String sensorURL,String graphURL,String clientId, String token);
->>>>>>> b3d75264e4d20574aee65295733c46234ae5da49
 	
 	public void sensorDataUpdate(Observation observation,String clientId, String token);
 	public void deleteAllReadings(String sensorURL,String graphURL,String clientId, String token);
 	public void deleteAllReadings(String sensorURL, String graphURL,String dateOperator, Date fromTime, Date toTime,String clientId, String token);
 	
-<<<<<<< HEAD
-	public boolean pushRDF(String graphURL,String triples);
-	public void deleteTriples(String graphURL, String triples);
-	public void deleteTriples(String graphURL);
-	public void updateTriples(String graphURL, String newTriplePatterns, String oldTriplePatterns);
-	public void uploadSchema(LSMSchema schema,String name);
-=======
 	public void deleteTriples(String graphURL, String triples,String clientId, String token);
 	public void deleteTriples(String graphURL,String clientId, String token);
 	public void updateTriples(String graphURL, String newTriplePatterns, String oldTriplePatterns,String clientId, String token);
@@ -67,5 +51,4 @@ public interface LSMServer {
 	boolean pushRDF(String graphURL, String triples, String clientId,
 			String token);
 
->>>>>>> b3d75264e4d20574aee65295733c46234ae5da49
 }

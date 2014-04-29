@@ -34,11 +34,7 @@ import org.openiot.security.client.OAuthorizationCredentials;
  */
 
 public class TestServer {
-<<<<<<< HEAD
-	public static LSMTripleStore lsmStore = new LSMTripleStore("http://lsm.deri.ie/lsm-light.server/");
-=======
 	public static LSMTripleStore lsmStore = new LSMTripleStore("http://localhost:8080/lsm-light.server/");
->>>>>>> b3d75264e4d20574aee65295733c46234ae5da49
 	public static Observation updateData(){
 		
 	/*
@@ -59,11 +55,7 @@ public class TestServer {
 	 */
 	ObservedProperty obvTem = new ObservedProperty();
 	obvTem.setObservationId(obs.getId());
-<<<<<<< HEAD
-	obvTem.setPropertyType(ObsConstant.MACHINE_UTIL);
-=======
 	obvTem.setPropertyType(ObsConstant.TEMPERATURE);
->>>>>>> b3d75264e4d20574aee65295733c46234ae5da49
 	obvTem.setValue(1);
 	obvTem.setUnit("%");
 	obs.addReading(obvTem);

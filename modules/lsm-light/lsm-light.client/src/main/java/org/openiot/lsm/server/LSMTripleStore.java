@@ -28,7 +28,6 @@ import java.net.URL;
 import java.util.Date;
 import java.util.HashMap;
 
-import org.openiot.commons.util.PropertyManagement;
 import org.openiot.lsm.beans.Observation;
 import org.openiot.lsm.beans.RDFTuple;
 import org.openiot.lsm.beans.Sensor;
@@ -46,18 +45,10 @@ public class LSMTripleStore implements LSMServer {
 	String RDFServletURL;
 	String ObjectServletURL;
     String UPLOAD_URL;
-<<<<<<< HEAD
-    
-=======
->>>>>>> b3d75264e4d20574aee65295733c46234ae5da49
     private String openiot_ServerHost;
     
   //logger
     final static Logger logger = LoggerFactory.getLogger(LSMTripleStore.class);    
-<<<<<<< HEAD
-    public final static PropertyManagement propertyManagement = new PropertyManagement();
-=======
->>>>>>> b3d75264e4d20574aee65295733c46234ae5da49
     
     public String getOpeniot_ServerHost() {
 		return openiot_ServerHost;
@@ -75,103 +66,6 @@ public class LSMTripleStore implements LSMServer {
 		}    	
     }
 	
-<<<<<<< HEAD
-    
-	@Override
-	public void sensorAdd(String triples,String graphURL) {
-		// TODO Auto-generated method stub
-		HttpURLConnection conn = null;  
-		ObjectOutputStream dos = null;  
-        String api = "1";
-        String urlString = RDFServletURL;
-        try{  
-            URL url = new URL(urlString);  
-
-      // Open a HTTP connection to the URL  
-
-         conn = (HttpURLConnection) url.openConnection();  
-         conn.setDoInput(true);  
-         conn.setDoOutput(true);  
-         conn.setUseCaches(false);  
-
-         // Use a post method.  
-         conn.setRequestMethod("POST");  
-         conn.setRequestProperty("api", api);
-         conn.setRequestProperty("apiType", "insert");
-         conn.setRequestProperty("Connection", "Keep-Alive");  
-         conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");  
-         conn.setRequestProperty("graphURL", graphURL);
-         
-         dos = new ObjectOutputStream( conn.getOutputStream() );         
-         dos.writeObject(triples);  
-         dos.flush();  
-         dos.close();  
-         
-      // always check HTTP response code from server
-	     int responseCode = conn.getResponseCode();
-	     if (responseCode == HttpURLConnection.HTTP_OK) {
-	            // reads server's response
-	    	 BufferedReader reader = new BufferedReader(new InputStreamReader(
-	                    conn.getInputStream()));
-	         String response = reader.readLine();
-	         logger.info(response);
-	         logger.info("your sensor was added");
-//	         System.out.println(response);	        
-	     } else {
-	    	 logger.error("Server returned non-OK code: " + responseCode);
-	     }
-        }catch (Exception ex) {  
-        	logger.error("sensorAdd returns error",ex);   
-        }  
-    }
-
-	@Override
-	public void sensorDataUpdate(String triples,String graphURL){
-		HttpURLConnection conn = null;  
-        ObjectOutputStream dos = null;  
-        String api = "2";
-        String urlString = RDFServletURL;
-        try{  
-            URL url = new URL(urlString);  
-
-      // Open a HTTP connection to the URL  
-
-         conn = (HttpURLConnection) url.openConnection();  
-         conn.setDoInput(true);  
-         conn.setDoOutput(true);  
-         conn.setUseCaches(false);  
-
-         // Use a post method.  
-         conn.setRequestMethod("POST");  
-         conn.setRequestProperty("api", api);
-         conn.setRequestProperty("apiType", "update");
-         conn.setRequestProperty("Connection", "Keep-Alive");  
-         conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");  
-         conn.setRequestProperty("graphURL", graphURL);
-         
-         dos = new ObjectOutputStream( conn.getOutputStream() );         
-         dos.writeObject(triples);  
-         dos.flush();  
-         dos.close();  
-         
-         int responseCode = conn.getResponseCode();
-	     if (responseCode == HttpURLConnection.HTTP_OK) {
-	            // reads server's response
-	    	 BufferedReader reader = new BufferedReader(new InputStreamReader(
-	                    conn.getInputStream()));
-	         String response = reader.readLine();
-	         logger.info(response);
-	         logger.info("Your sensor data is updated successfully");
-//	         System.out.println(response);	        
-	     } else {
-	    	 logger.error("Server returned non-OK code: " + responseCode);
-	     }
-        }catch (Exception ex) {  
-        	logger.error("sensorDataUpdate returns error",ex);  
-        }
-	}
-=======
->>>>>>> b3d75264e4d20574aee65295733c46234ae5da49
 
 	@Override
 	public void sensorDelete(String sensorURL,String graphURL,String clientId, String token) {
@@ -472,11 +366,7 @@ public class LSMTripleStore implements LSMServer {
 	}
 	
 	@Override
-<<<<<<< HEAD
-	public boolean pushRDF(String graphURL,String triples) {
-=======
 	public boolean pushRDF(String graphURL,String triples, String clientId, String token) {
->>>>>>> b3d75264e4d20574aee65295733c46234ae5da49
 		// TODO Auto-generated method stub
 		HttpURLConnection conn = null;  
         ObjectOutputStream dos = null;  

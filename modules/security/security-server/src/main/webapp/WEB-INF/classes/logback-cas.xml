@@ -11,7 +11,7 @@
 
 	<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
 		<!-- Rollover at the first day of each week.  -->
-		<fileNamePattern>${jboss.server.log.dir}/cas-%d{yyyy-ww}.%i.log</fileNamePattern>
+		<fileNamePattern>cas-%d{yyyy-ww}.%i.log</fileNamePattern>
 		<timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
 			<!-- or whenever the file size reaches 100MB -->
 			<maxFileSize>10MB</maxFileSize>
@@ -28,7 +28,7 @@
 
 	<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
 		<!-- Rollover at the first day of each week.  -->
-		<fileNamePattern>${jboss.server.log.dir}/cas-audit-%d{yyyy-ww}.%i.log</fileNamePattern>
+		<fileNamePattern>cas-audit-%d{yyyy-ww}.%i.log</fileNamePattern>
 		<timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
 			<!-- or whenever the file size reaches 100MB -->
 			<maxFileSize>10MB</maxFileSize>

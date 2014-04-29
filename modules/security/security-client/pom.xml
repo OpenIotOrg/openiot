@@ -150,7 +150,6 @@
 	</properties>
 
 	<repositories>
-	<!-- 
 		<repository>
 			<id>sonatype-nexus-snapshots</id>
 			<name>Sonatype Nexus Snapshots</name>
@@ -162,7 +161,7 @@
 				<enabled>true</enabled>
 			</snapshots>
 		</repository>
- -->
+
 		<repository>
 			<id>deluan.repo</id>
 			<name>Deluan's Projects Repository</name>

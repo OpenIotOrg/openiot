@@ -1,57 +1,42 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<groupId>org.openiot</groupId>
-	<artifactId>lsm-light.client</artifactId>
-	<version>0.0.1</version>
-	<packaging>jar</packaging>
-	<name>OpenIoT LSM-light Client</name>
-	<description>A LSM OpenIoT api for clients</description>
-	<url>https://github.com/OpenIotOrg/openiot</url>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.openiot</groupId>
+  <artifactId>lsm-light.client</artifactId>
+  <version>0.0.1</version>
+  <packaging>jar</packaging>
+  <name>OpenIoT LSM-light Client</name>
+  <description>A LSM OpenIoT api for clients</description>
+  <url>https://github.com/OpenIotOrg/openiot</url>
 
 
-	<licenses>
-		<license>
-			<name>GNU Lesser General Public License, version 2.1</name>
-			<distribution>repo</distribution>
-			<url>http://www.gnu.org/licenses/lgpl-2.1.html</url>
-		</license>
+	 <licenses>
+	        <license>
+	            <name>GNU Lesser General Public License, version 2.1</name>
+	            <distribution>repo</distribution>
+	            <url>http://www.gnu.org/licenses/lgpl-2.1.html</url>
+	        </license>
 	</licenses>
 
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<version>2.16</version>
-				<configuration>
-					<printSummary>true</printSummary>
-					<!-- If you want to run the tests from command line add -DskipTests=false to the command -->
-					<skipTests>${skipTests}</skipTests>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
+  <!-- =========================================================== -->
+  <!-- Properties -->
+  <!-- =========================================================== -->
+    <properties>
+        <!-- Explicitly declaring the source encoding eliminates the following 
+            message: [WARNING] Using platform encoding (UTF-8 actually) to copy filtered 
+            resources, i.e. build is platform dependent!
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding> -->
+        
 
-	<!-- =========================================================== -->
-	<!-- Properties -->
-	<!-- =========================================================== -->
-	<properties>
-		<!-- Explicitly declaring the source encoding eliminates the following message: [WARNING] Using platform encoding (UTF-8 actually) 
-			to copy filtered resources, i.e. build is platform dependent! <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding> -->
+        <!-- other plugin versions -->
+        <version.compiler.plugin>2.3.2</version.compiler.plugin>
 
-
-		<!-- other plugin versions -->
-		<version.compiler.plugin>2.3.2</version.compiler.plugin>
-
-		<!-- maven-compiler-plugin -->
-		<maven.compiler.target>1.7</maven.compiler.target>
-		<maven.compiler.source>1.7</maven.compiler.source>
-		<cas.version>3.5.2</cas.version>
-		<skipTests>true</skipTests>
-	</properties>
-
-	<dependencies>
+        <!-- maven-compiler-plugin -->
+        <maven.compiler.target>1.7</maven.compiler.target>
+        <maven.compiler.source>1.7</maven.compiler.source>
+        <cas.version>3.5.2</cas.version>
+    </properties>
+    
+ <dependencies>
 
 		<!-- ====== org.eclipse.persistence.jaxb.JAXBContextFactory Dependencies -->
 
@@ -60,75 +45,51 @@
 			<artifactId>eclipselink</artifactId>
 			<version>2.5.0</version>
 		</dependency>
-		<!-- ======== LSM API Dependencies ========== -->
+		<!-- ======== LSM API Dependencies ========== -->       
 		<dependency>
 			<groupId>com.hp.hpl.jena</groupId>
 			<artifactId>jena</artifactId>
 			<version>2.6.4</version>
-		</dependency>
+		</dependency>	
 
 		<dependency>
 			<groupId>com.hp.hpl.jena</groupId>
 			<artifactId>arq</artifactId>
 			<version>2.8.3</version>
 		</dependency>
-
+		
 		<dependency>
 			<groupId>dom4j</groupId>
 			<artifactId>dom4j</artifactId>
 			<version>1.6.1</version>
-<<<<<<< HEAD
 		</dependency>       
 
 <!-- 		<dependency> -->
 <!--             <groupId>ch.qos.logback</groupId> -->
 <!--             <artifactId>logback-classic</artifactId> -->
 <!--             <version>1.0.13</version> -->
-<!--         </dependency> -->		
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>javax.servlet-api</artifactId>
-			<version>3.0.1</version>
-=======
->>>>>>> b3d75264e4d20574aee65295733c46234ae5da49
-		</dependency>
-
-		<!-- ======== Privacy and Security API Dependencies ========== -->
-
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>3.8.1</version>
-			<scope>test</scope>
-		</dependency>	
+<!--         </dependency> -->
+<!-- ======== Privacy and Security API Dependencies ========== -->  
 		
-		<!-- ======== Privacy and Security API Dependencies ========== -->  		
 		<dependency>
 			<groupId>org.jasig.cas</groupId>
 			<artifactId>cas-server-support-oauth</artifactId>
 			<version>${cas.version}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.scribe</groupId>
-					<artifactId>scribe-up</artifactId>
-				</exclusion>
-			</exclusions>
+		<!--	<scope>runtime</scope> -->
 		</dependency>
 
 		<dependency>
-<<<<<<< HEAD
 			<groupId>org.jasig.cas</groupId>
 			<artifactId>cas-server-support-jdbc</artifactId>
 			<version>${cas.version}</version>
 		</dependency>
 		
-=======
+		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>javax.servlet-api</artifactId>
 			<version>3.0.1</version>
 		</dependency>
 
->>>>>>> b3d75264e4d20574aee65295733c46234ae5da49
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
@@ -141,45 +102,30 @@
 			<artifactId>utils.commons</artifactId>
 			<version>0.0.1</version>
 		</dependency>
-<<<<<<< HEAD
 		
-		<!-- ======== Sesame Dependencies ========== -->
 		<dependency>
-			<groupId>org.openrdf.sesame</groupId>
-			<artifactId>sesame-query</artifactId>
-			<version>2.7.0</version>
+            	<groupId>org.openiot</groupId>
+            	<artifactId>security.client</artifactId>
+            	<version>0.0.1-SNAPSHOT</version>
+        </dependency>
+        
+        <dependency>
+	       	<groupId>org.slf4j</groupId>
+	       	<artifactId>slf4j-api</artifactId>
+	       	<version>1.7.1</version>
+	       	<scope>test</scope>
+       </dependency>
+       <dependency>
+	       	<groupId>org.slf4j</groupId>
+	       	<artifactId>slf4j-log4j12</artifactId>
+	       	<version>1.7.1</version>
+	       	<scope>test</scope>
+       </dependency>
+       
+       <dependency>
+			<groupId>org.scribe</groupId>
+			<artifactId>scribe-up</artifactId>
+			<version>1.2.0</version>
 		</dependency>
-		<dependency>
-			<groupId>org.openrdf.sesame</groupId>
-			<artifactId>sesame-queryresultio-sparqlxml</artifactId>
-			<version>2.7.0</version>
-		</dependency>
-		<dependency>
-			<groupId>org.openrdf.sesame</groupId>
-			<artifactId>sesame-repository-sparql</artifactId>
-			<version>2.7.0</version>
-		</dependency>
-    </dependencies>   
-=======
-
-		<dependency>
-			<groupId>org.openiot</groupId>
-			<artifactId>security.client</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-			<version>1.7.1</version>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-log4j12</artifactId>
-			<version>1.7.1</version>
-			<scope>test</scope>
-		</dependency>
-
-	</dependencies>
->>>>>>> b3d75264e4d20574aee65295733c46234ae5da49
+ </dependencies>   
 </project>
