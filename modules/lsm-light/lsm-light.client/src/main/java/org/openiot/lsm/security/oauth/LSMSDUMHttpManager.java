@@ -28,7 +28,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 import org.openiot.commons.util.PropertyManagement;
-import org.openiot.commons.util.Tuple2;
 import org.openiot.lsm.functionalont.model.beans.OSDSpecBean;
 import org.openiot.lsm.security.oauth.mgmt.Permission;
 import org.openiot.lsm.security.oauth.mgmt.Role;
