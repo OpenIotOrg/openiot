@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<osd:OSDSpec xmlns:res="http://www.w3.org/2007/SPARQL/results#"
+ xmlns:osd="urn:openiot:osdspec:xsd:1"
+ xmlns:prt="http://www.w3.org/2007/SPARQL/protocol-types#"
+ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="urn:openiot:osdspec:xsd:1 file:/C:/Development/Eclipse_Worksp/Eclipse_Worksp4.2.2/OpenIoT/GitHub/ait-develop/openiot/utils/utils.commons/src/main/resources/OSDSpec.xsd" userID="nodeID://b46876">
+    <osd:OAMO id="OpenIoTApplicationModelObject1ID" name="OpenIoTApplicationModelObject1Name">
+        <osd:description>OpenIoTApplicationModelObject1Descreption</osd:description>
+        <osd:graphMeta>><![CDATA[Here You Will Adde The Request Definition Meta Data]]></osd:graphMeta>
+        <osd:OSMO id="http://www.oxygenxml.com/" name="only_one_oamo_test_osmo_name">
+            <osd:description>only one oamo test osmo_description</osd:description>
+            <osd:queryControls>
+                <osd:QuerySchedule>
+                    <osd:second>second0</osd:second>
+                    <osd:minute>minute0</osd:minute>
+                    <osd:hour>hour0</osd:hour>
+                    <osd:dayOfMonth>dayOfMonth0</osd:dayOfMonth>
+                    <osd:month>month0</osd:month>
+                    <osd:dayOfWeek>dayOfWeek0</osd:dayOfWeek>
+                </osd:QuerySchedule>
+                <osd:trigger>http://www.triger.com/</osd:trigger>
+                <osd:initialRecordTime>2006-05-04T18:13:51.0Z</osd:initialRecordTime>
+                <osd:reportIfEmpty>true</osd:reportIfEmpty>
+            </osd:queryControls>
+            <osd:requestPresentation>
+                <osd:widget widgetID="nodeID://b44801">
+                    <osd:presentationAttr name="widget b44801 attr1" value="widget b44801 value1"/>
+					<osd:presentationAttr name="widget b44801 attr2" value="widget b44801 value2"/>
+                </osd:widget>
+				<osd:widget widgetID="nodeID://b44790">
+                    <osd:presentationAttr name="widget b44790 attr1" value="widget b44790 value1"/>
+					<osd:presentationAttr name="widget b44790 attr2" value="widget b44790 value2"/>
+                </osd:widget>
+            </osd:requestPresentation>
+            <prt:query-request>
+                <query><![CDATA[SELECT * FROM <peniot> WHERE {?s ?p ?o}]]></query>
+                <default-graph-uri>http://www.default-graph-uri.com/</default-graph-uri>
+                <named-graph-uri>http://www.named-graph-uri.com/</named-graph-uri>
+            </prt:query-request>
+            <osd:dynamicAttrMaxValue name="name1" value="valueofname1"/>
+			<osd:dynamicAttrMaxValue name="name2" value="valueofname2"/>
+			<osd:dynamicAttrMaxValue name="name3" value="valueofname3"/>
+			<osd:dynamicAttrMaxValue name="name4" value="valueofname4"/>
+        </osd:OSMO>
+    </osd:OAMO>
+</osd:OSDSpec>

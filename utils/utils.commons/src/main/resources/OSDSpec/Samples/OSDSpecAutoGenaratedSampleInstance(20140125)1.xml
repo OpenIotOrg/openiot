@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<osd:OSDSpec xmlns:st="http://www.w3.org/2007/SPARQL/protocol-types#"
+ xmlns:vbr="http://www.w3.org/2007/SPARQL/results#"
+ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+ xmlns:osd="http://www.openiot.eu/osdspec"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="http://www.openiot.eu/osdspec file:/C:/Development/Eclipse_Worksp/Eclipse_Worksp4.2.2/OpenIoT/GitHub/ait-sensap-develop/openiot/utils/utils.commons/src/main/resources/OSDSpec.xsd" userID="http://www.oxygenxml.com/">
+    <osd:OAMO name="name0">
+        <osd:OSMO name="name1">
+            <osd:queryControls>
+                <osd:QuerySchedule>
+                </osd:QuerySchedule>
+                <osd:reportIfEmpty>false</osd:reportIfEmpty>
+            </osd:queryControls>
+            <osd:requestPresentation>
+                <osd:widget widgetID="http://www.oxygenxml.com/">
+                    <osd:presentationAttr name="name2" value="value0"/>
+                    <osd:presentationAttr name="name3" value="value1"/>
+                </osd:widget>
+                <osd:widget widgetID="http://www.oxygenxml.com/">
+                    <osd:presentationAttr name="name4" value="value2"/>
+                    <osd:presentationAttr name="name5" value="value3"/>
+                </osd:widget>
+            </osd:requestPresentation>
+            <st:query-request>
+                <query>query0</query>
+            </st:query-request>
+            <st:query-request>
+                <query>query1</query>
+            </st:query-request>
+        </osd:OSMO>
+        <osd:OSMO name="name6">
+            <osd:queryControls>
+                <osd:QuerySchedule>
+                </osd:QuerySchedule>
+                <osd:reportIfEmpty>false</osd:reportIfEmpty>
+            </osd:queryControls>
+            <osd:requestPresentation>
+                <osd:widget widgetID="http://www.oxygenxml.com/">
+                    <osd:presentationAttr name="name7" value="value4"/>
+                    <osd:presentationAttr name="name8" value="value5"/>
+                </osd:widget>
+                <osd:widget widgetID="http://www.oxygenxml.com/">
+                    <osd:presentationAttr name="name9" value="value6"/>
+                    <osd:presentationAttr name="name10" value="value7"/>
+                </osd:widget>
+            </osd:requestPresentation>
+            <st:query-request>
+                <query>query2</query>
+            </st:query-request>
+            <st:query-request>
+                <query>query3</query>
+            </st:query-request>
+        </osd:OSMO>
+    </osd:OAMO>
+    <osd:OAMO name="name11">
+        <osd:OSMO name="name12">
+            <osd:queryControls>
+                <osd:QuerySchedule>
+                </osd:QuerySchedule>
+                <osd:reportIfEmpty>false</osd:reportIfEmpty>
+            </osd:queryControls>
+            <osd:requestPresentation>
+                <osd:widget widgetID="http://www.oxygenxml.com/">
+                    <osd:presentationAttr name="name13" value="value8"/>
+                    <osd:presentationAttr name="name14" value="value9"/>
+                </osd:widget>
+                <osd:widget widgetID="http://www.oxygenxml.com/">
+                    <osd:presentationAttr name="name15" value="value10"/>
+                    <osd:presentationAttr name="name16" value="value11"/>
+                </osd:widget>
+            </osd:requestPresentation>
+            <st:query-request>
+                <query>query4</query>
+            </st:query-request>
+            <st:query-request>
+                <query>query5</query>
+            </st:query-request>
+        </osd:OSMO>
+        <osd:OSMO name="name17">
+            <osd:queryControls>
+                <osd:QuerySchedule>
+                </osd:QuerySchedule>
+                <osd:reportIfEmpty>false</osd:reportIfEmpty>
+            </osd:queryControls>
+            <osd:requestPresentation>
+                <osd:widget widgetID="http://www.oxygenxml.com/">
+                    <osd:presentationAttr name="name18" value="value12"/>
+                    <osd:presentationAttr name="name19" value="value13"/>
+                </osd:widget>
+                <osd:widget widgetID="http://www.oxygenxml.com/">
+                    <osd:presentationAttr name="name20" value="value14"/>
+                    <osd:presentationAttr name="name21" value="value15"/>
+                </osd:widget>
+            </osd:requestPresentation>
+            <st:query-request>
+                <query>query6</query>
+            </st:query-request>
+            <st:query-request>
+                <query>query7</query>
+            </st:query-request>
+        </osd:OSMO>
+    </osd:OAMO>
+</osd:OSDSpec>
