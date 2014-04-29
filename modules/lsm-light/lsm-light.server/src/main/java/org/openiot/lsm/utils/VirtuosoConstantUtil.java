@@ -19,13 +19,16 @@ package org.openiot.lsm.utils;
 *     Contact: OpenIoT mailto: info@openiot.eu
 */
 import java.util.ArrayList;
+
+import org.openiot.commons.util.PropertyManagement;
 /**
  * 
  * @author Hoan Nguyen Mau Quoc
  * 
  */
 public class VirtuosoConstantUtil {
-	public final static String sensorObjectDataPrefix ="http://lsm.deri.ie/resource/";	
+	static PropertyManagement propertyManagement = new PropertyManagement();
+	
 	public final static String sensorHasPlacePrefix = "http://www.loa-cnr.it/ontologies/DUL.owl#hasLocation";
 	public final static String observationIsObservedBySensorPrefix = "http://purl.oclc.org/NET/ssnx/ssn#observedBy";
 	
@@ -36,9 +39,11 @@ public class VirtuosoConstantUtil {
 	/**
 	 * LSM Authentication prefix define
 	 */
-	public final static String CloudServicePrefix = "http://lsm.deri.ie/resource/service/";
-	public final static String RolePrefix = "http://lsm.deri.ie/resource/role/";
-	public final static String OAuthUserPrefix = "http://lsm.deri.ie/resource/user/";		
+	public final static String CloudServicePrefix = propertyManagement.getOpeniotResourceNamespace() + "service/";
+	public final static String RolePrefix = propertyManagement.getOpeniotResourceNamespace() + "role/";
+	public final static String PermissionPrefix = propertyManagement.getOpeniotResourceNamespace() + "permission/";
+	public final static String OAuthUserPrefix = propertyManagement.getOpeniotResourceNamespace() + "user/";		
+	
 	static{
 		initAuthorizedGraph();
 	}
@@ -54,5 +59,6 @@ public class VirtuosoConstantUtil {
 		authorizedGraphs.add("http://lsm.deri.ie/OpenIoT/test/sensordata#");
 		authorizedGraphs.add("http://lsm.deri.ie/OpenIoT/test/sensormeta#");
 	}
+
 	
 }

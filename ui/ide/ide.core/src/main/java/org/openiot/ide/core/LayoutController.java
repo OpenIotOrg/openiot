@@ -1,66 +1,58 @@
 package org.openiot.ide.core;
 
 /**
- * Copyright (c) 2011-2014, OpenIoT
+ *    Copyright (c) 2011-2014, OpenIoT
  *
- * This library is free software; you can redistribute it and/or
- * modify it either under the terms of the GNU Lesser General Public
- * License version 2.1 as published by the Free Software Foundation
- * (the "LGPL"). If you do not alter this
- * notice, a recipient may use your version of this file under the LGPL.
+ *    This file is part of OpenIoT.
  *
- * You should have received a copy of the LGPL along with this library
- * in the file COPYING-LGPL-2.1; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ *    OpenIoT is free software: you can redistribute it and/or modify
+ *    it under the terms of the GNU Lesser General Public License as published by
+ *    the Free Software Foundation, version 3 of the License.
  *
- * This software is distributed on an "AS IS" basis, WITHOUT WARRANTY
- * OF ANY KIND, either express or implied. See the LGPL  for
- * the specific language governing rights and limitations.
+ *    OpenIoT is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *    GNU Lesser General Public License for more details.
  *
- * Contact: OpenIoT mailto: info@openiot.eu
+ *    You should have received a copy of the GNU Lesser General Public License
+ *    along with OpenIoT.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *     Contact: OpenIoT mailto: info@openiot.eu
  */
 
-import java.io.IOException;
-import java.io.Serializable;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
-import java.net.URL;
-import java.util.HashMap;
+import org.omnifaces.cdi.ViewScoped;
+import org.primefaces.model.menu.DefaultMenuModel;
 
 import javax.annotation.PostConstruct;
-import javax.enterprise.context.SessionScoped;
+import javax.inject.Inject;
 import javax.inject.Named;
+import java.io.Serializable;
 
 /**
  * @author Chris Georgoulis e-mail: cgeo@ait.edu.gr
- * 
  */
 
 @Named("layout")
-@SessionScoped
+@ViewScoped
 public class LayoutController implements Serializable {
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 6629499890720592580L;
-
-	private HashMap<String, Boolean> map;
-
-	public LayoutController() {
-	}
-
-	@PostConstruct
-	public void init() {
-		navigation = "welcome.jsf";
-		map = new HashMap<String, Boolean>();
-	}
 
 	private String navigation;
 
-	public String getNavigation() {
+	@Inject
+	private MenuFactory menuFactory;
 
+	private DefaultMenuModel menu;
+
+	@PostConstruct
+	public void init() {
+
+
+		menu = menuFactory.createMainMenu();
+
+		navigation = "welcome.jsf";
+	}
+
+	public String getNavigation() {
 		return navigation;
 	}
 
@@ -68,36 +60,35 @@ public class LayoutController implements Serializable {
 		this.navigation = navigation;
 	}
 
+	public DefaultMenuModel getMenu() {
+		return menu;
+	}
+
 	/**
 	 * Checks if the component exists / is Loaded in order to display the menu
 	 * link
-	 * 
+	 *
 	 * @return boolean
 	 */
-	public boolean isLoaded(String url) {
-
-		Boolean b = true;
-
-		if (map.containsKey(url)) {
-			b = map.get(url);
-		} else {
-			try {
-				URL u = new URL(url);
-				HttpURLConnection huc = (HttpURLConnection) u.openConnection();
-				huc.setRequestMethod("HEAD");
-				huc.connect();
-				b = Boolean.valueOf(huc.getResponseCode() == HttpURLConnection.HTTP_OK);
-				map.put(url, b);
-			} catch (MalformedURLException e) {
-				// e.printStackTrace();
-			} catch (ProtocolException e) {
-				// e.printStackTrace();
-			} catch (IOException e) {
-				// e.printStackTrace();
-			}
-		}
-		
-		return b.booleanValue();
-	}
-
+//	public boolean isLoaded(String url) {
+//
+//		Boolean b = true;
+//
+//		if (map.containsKey(url)) {
+//			b = map.get(url);
+//		} else {
+//			try {
+//				URL u = new URL(url);
+//				HttpURLConnection huc = (HttpURLConnection) u.openConnection();
+//				huc.setRequestMethod("HEAD");
+//				huc.connect();
+//				b = huc.getResponseCode() == HttpURLConnection.HTTP_OK;
+//				map.put(url, b);
+//			} catch (IOException e) {
+//				// e.printStackTrace();
+//			}
+//		}
+//
+//		return b;
+//	}
 }

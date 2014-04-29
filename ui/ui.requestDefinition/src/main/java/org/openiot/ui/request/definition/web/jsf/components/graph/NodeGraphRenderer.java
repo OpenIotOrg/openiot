@@ -1,22 +1,23 @@
-/*******************************************************************************
- * Copyright (c) 2011-2014, OpenIoT
- *  
- *  This library is free software; you can redistribute it and/or
- *  modify it either under the terms of the GNU Lesser General Public
- *  License version 2.1 as published by the Free Software Foundation
- *  (the "LGPL"). If you do not alter this
- *  notice, a recipient may use your version of this file under the LGPL.
- *  
- *  You should have received a copy of the LGPL along with this library
- *  in the file COPYING-LGPL-2.1; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- *  
- *  This software is distributed on an "AS IS" basis, WITHOUT WARRANTY
- *  OF ANY KIND, either express or implied. See the LGPL  for
- *  the specific language governing rights and limitations.
- *  
- *  Contact: OpenIoT mailto: info@openiot.eu
- ******************************************************************************/
+/**
+ *    Copyright (c) 2011-2014, OpenIoT
+ *   
+ *    This file is part of OpenIoT.
+ *
+ *    OpenIoT is free software: you can redistribute it and/or modify
+ *    it under the terms of the GNU Lesser General Public License as published by
+ *    the Free Software Foundation, version 3 of the License.
+ *
+ *    OpenIoT is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *    GNU Lesser General Public License for more details.
+ *
+ *    You should have received a copy of the GNU Lesser General Public License
+ *    along with OpenIoT.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *     Contact: OpenIoT mailto: info@openiot.eu
+ */
+
 package org.openiot.ui.request.definition.web.jsf.components.graph;
 
 import java.io.IOException;
@@ -99,6 +100,7 @@ public class NodeGraphRenderer extends CoreRenderer {
 
         // Render a node for each graphNode
         for (GraphNode node : model.getNodes()) {
+        	
             GraphNodePosition position = model.lookupGraphNodePosition(node.getUID());
 
             // Count endpoints on each side
@@ -107,6 +109,9 @@ public class NodeGraphRenderer extends CoreRenderer {
             int bottomEndpoints = 0;
             int leftEndpoints = 0;
             for (GraphNodeEndpoint endpoint : node.getEndpointDefinitions()) {
+            	if( !endpoint.isVisible()){
+            		continue;
+            	}
 
                 switch (endpoint.getAnchor()) {
                     case Top:
@@ -175,6 +180,10 @@ public class NodeGraphRenderer extends CoreRenderer {
                 int bottomEndpoints = 0;
                 int leftEndpoints = 0;
                 for (GraphNodeEndpoint endpoint : node.getEndpointDefinitions()) {
+                	
+                	if( !endpoint.isVisible()){
+                		continue;
+                	}
 
                     switch (endpoint.getAnchor()) {
                         case Top:
@@ -203,6 +212,11 @@ public class NodeGraphRenderer extends CoreRenderer {
                 double leftPosition = 1.0 / (2.0 * (double) leftEndpoints);
 
                 for (GraphNodeEndpoint endpoint : node.getEndpointDefinitions()) {
+                	// Ignore invisible endpoints
+                	if( !endpoint.isVisible()){
+                		continue;
+                	}
+
                     double labelX = 0;
                     double labelY = 0;
                     double anchorXPos = 0;

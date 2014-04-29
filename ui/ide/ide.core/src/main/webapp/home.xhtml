@@ -1,148 +1,66 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:p="http://primefaces.org/ui"
-	xmlns:pe="http://primefaces.org/ui/extensions">
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:pe="http://primefaces.org/ui/extensions">
 
 <h:head>
-	<h:outputStylesheet library="css" name="style.css" target="body" />
-	<title>OpenIOT IDE</title>
+    <h:outputStylesheet library="css" name="style.css"/>
+    <title>OpenIOT IDE</title>
 </h:head>
 
 <h:body>
-	<pe:layout id="page" fullPage="true">
+    <pe:layout id="page" fullPage="true">
 
-		<!-- North -->
-		<pe:layoutPane position="north" size="10%" closable="true"
-			resizable="false">
-			<ui:param name="logoNav" value="#{nav.welcomePage}" />
-			<p:commandLink actionListener="#{layout.setNavigation(logoNav)}"
-				update=":centerPanel">
-				<p:graphicImage value="/resources/img/openiotlogo_left_IDE.jpg"
-					style="max-width: 100% !important; max-height:100% !important; margin-left: 10px" />
-			</p:commandLink>
-		</pe:layoutPane>
+        <!-- North -->
+        <pe:layoutPane position="north" size="10%" closable="true"
+                       resizable="false">
+            <h:form>
+                <p:commandLink actionListener="#{layout.setNavigation(nav.welcomePage)}"
+                               update=":centerPanel">
+                    <p:graphicImage value="/resources/img/openiotlogo_left_IDE.jpg"
+                                    style="max-width: 100% !important; max-height:100% !important; margin-left: 10px"/>
+                </p:commandLink>
+            </h:form>
+        </pe:layoutPane>
 
-		<!-- West -->
-		<pe:layoutPane id="westPane" position="west" size="220"
-			collapsible="true" effect="slide" resizable="false" spacingClosed="6"
-			spacingOpen="6" styleClassHeader="menuBar">
-			<f:facet name="header">Menu</f:facet>
-			<h:form id="form1" prependId="false">
-				<p:panelMenu
-					style="background: none; border: none; width: 100% !important; maxWidth: 100% !important">
+        <!-- West -->
+        <pe:layoutPane id="westPane" position="west" size="220" effect="slide"
+                       resizable="false" spacingClosed="6" spacingOpen="6"
+                       styleClassHeader="menuBar">
+            <f:facet name="header">Menu</f:facet>
+            <h:form id="menuForm" prependId="false">
+                <p:menu model="#{layout.menu}"/>
 
-					<p:submenu label="Components" style="font-size: 10px !important;">
+                <br/>
+                <p:commandButton value="Refresh Menu"
+                                 actionListener="#{layout.init}"
+                                 update=":centerPanel @form"/>
+            </h:form>
+        </pe:layoutPane>
 
-						<!-- Request Definition Tool -->
-						<ui:param name="rqDefTool" value="#{nav.requestDefinition}" />
-						<p:menuitem value="Request Definition Tool" update=":centerPanel"
-							icon="ui-icon-triangle-1-e"
-							actionListener="#{layout.setNavigation(rqDefTool)}"
-							rendered="#{layout.isLoaded(rqDefTool)}" />
+        <!-- Center -->
+        <pe:layoutPane id="center" position="center" maskContents="true"
+                       resizable="false">
 
-						<!-- Request Presentation Tool -->
-						<ui:param name="rqPresTool" value="#{nav.requestPresentation}" />
-						<p:menuitem value="Request Presentation Tool" update=":centerPanel"
-							icon="ui-icon-triangle-1-e"
-							actionListener="#{layout.setNavigation(rqPresTool)}"
-							rendered="#{layout.isLoaded(rqPresTool)}" />
-					</p:submenu>
+            <h:panelGroup id="centerPanel" layout="block">
+                <iframe id="navigation" src="#{layout.navigation}" onload="hideDialog()"
+                        class="centerPanel">
+                </iframe>
+            </h:panelGroup>
+        </pe:layoutPane>
 
-					<p:submenu label="Monitors" style="font-size: 10px !important;">
-
-						<!-- Request Definition Monitor -->
-						<ui:param name="rqDefMon" value="#{nav.requestDefinitionMonitor}" />
-						<p:menuitem value="Request Definition Monitor"
-							update=":centerPanel" icon="ui-icon-triangle-1-e"
-							actionListener="#{layout.setNavigation(rqDefMon)}"
-							rendered="#{layout.isLoaded(rqDefMon)}" />
-
-						<!-- Request Presentation Monitor -->
-						<ui:param name="rqPresMon"
-							value="#{nav.requestPresentationMonitor}" />
-						<p:menuitem value="Request Presentation Monitor"
-							update=":centerPanel" icon="ui-icon-triangle-1-e"
-							actionListener="#{layout.setNavigation(rqPresMon)}"
-							rendered="#{layout.isLoaded(rqPresMon)}" />
-
-						<!-- IDE Monitor -->
-						<ui:param name="ideMon" value="#{nav.ideMonitor}" />
-						<p:menuitem value="IDE Monitor" update=":centerPanel"
-							icon="ui-icon-triangle-1-e"
-							actionListener="#{layout.setNavigation(ideMon)}"
-							rendered="#{layout.isLoaded(ideMon)}" />
-
-						<!-- SDUM Monitor -->
-						<ui:param name="sdumMon" value="#{nav.sdumMonitor}" />
-						<p:menuitem value="SDUM Monitor" update=":centerPanel"
-							icon="ui-icon-triangle-1-e"
-							actionListener="#{layout.setNavigation(sdumMon)}"
-							rendered="#{layout.isLoaded(sdumMon)}" />
-
-						<!-- Scheduler Monitor -->
-						<ui:param name="schedMon" value="#{nav.schedulerMonitor}" />
-						<p:menuitem value="Scheduler Monitor" update=":centerPanel"
-							icon="ui-icon-triangle-1-e"
-							actionListener="#{layout.setNavigation(schedMon)}"
-							rendered="#{layout.isLoaded(schedMon)}" />
-					</p:submenu>
+    </pe:layout>
 
 
-				</p:panelMenu>
-				<p:commandButton value="Refresh Menu"
-					actionListener="#{layout.init}" update=":centerPanel @form" />
-			</h:form>
-		</pe:layoutPane>
+    <p:ajaxStatus onstart="start()"/>
 
-		<!-- Center -->
-		<pe:layoutPane id="center" position="center" maskContents="true"
-			resizable="false">
+    <p:dialog widgetVar="statusDialog" resizable="false" showHeader="false"
+              draggable="false" closable="false">
+        <p:graphicImage value="/resources/img/progress.gif"/>
+    </p:dialog>
 
-			<h:panelGroup id="centerPanel" layout="block">
-				<iframe id="navigation" src="#{layout.navigation}"
-					onload="hideDialog()"
-					style="position: absolute; top: 0px; left: 0px; bottom: 0px; right: 0px; width: 100%; height: 100%; border: none; margin: 0; padding: 0; overflow: hidden; z-index: 999999;">
-				</iframe>
-			</h:panelGroup>
-		</pe:layoutPane>
-
-	</pe:layout>
-
-
-	<p:ajaxStatus onstart="start()" />
-
-	<p:dialog widgetVar="statusDialog" resizable="false" showHeader="false"
-		draggable="false" closable="false">
-		<p:graphicImage value="/resources/img/progress.gif" />
-	</p:dialog>
-
-	<script>
-		var hasLoaded = false;
-
-		function start() {
-			hasLoaded = false;
-			setTimeout("showDialog();", 700);
-			//statusDialog.show();
-		}
-
-		function hideDialog() {
-			hasLoaded = true;
-			if (statusDialog != undefined)
-				statusDialog.hide();
-		}
-
-		function showDialog() {
-			//alert("has loaded = " + hasLoaded);
-			if (!hasLoaded)
-				statusDialog.show();
-		}
-	</script>
-
-
+    <h:outputScript name="js/script.js"/>
 </h:body>
 </html>

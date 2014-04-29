@@ -2,8 +2,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.apache.commons.codec.binary.Hex;
-import org.apache.commons.lang.SerializationUtils;
 import org.jasig.cas.authentication.ImmutableAuthentication;
 import org.jasig.cas.authentication.principal.Service;
 import org.jasig.cas.authentication.principal.SimplePrincipal;
@@ -17,11 +15,7 @@ import org.openiot.lsm.security.oauth.mgmt.Permission;
 import org.openiot.lsm.security.oauth.mgmt.Role;
 import org.openiot.lsm.security.oauth.mgmt.User;
 
-import com.hp.hpl.jena.query.ARQ;
-import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryExecution;
-import com.hp.hpl.jena.query.QueryExecutionFactory;
-import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.query.QuerySolution;
 import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.sparql.engine.http.QueryEngineHTTP;
@@ -44,38 +38,38 @@ public class TestLSMOAuthentication {
 		Role role = new Role();
 		role.setDescription("Administrator role");
 		role.setName("admin");
+		role.setServiceId(1L);
 
 		Permission per = new Permission();
 		per.setDescription("Create new users");
 		per.setName("admin:create_user");
-		role.addPermissionForService((long) 2, per);
+		per.setServiceId(1L);
+		role.addPermission(per);
 
 		Permission per2 = new Permission();
 		per2.setDescription("Delete stream s1");
 		per2.setName("admin:delete_sensor:s1");
-		role.addPermissionForService((long) 2, per2);
+		per.setServiceId(1L);
+		role.addPermission(per2);
 
 		Permission per3 = new Permission();
 		per3.setDescription("Delete existing users");
 		per3.setName("admin:delete_user");
-		role.addPermissionForService((long) 1, per3);
+		per.setServiceId(1L);
+		role.addPermission(per3);
 
 		return role;
 	}
 
 	public static User generateOAuthUser() {
 		Role role = generateRole();
-		List<Role> roles = new ArrayList();
+		List<Role> roles = new ArrayList<Role>();
 		roles.add(role);
 
-		Permission per = new Permission();
-		per.setDescription("Query stream s2");
-		per.setName("sensor:query:s2");
+		Permission per = new Permission("sensor:query:s2", "Query stream s2", 3L);
 
-		Role role2 = new Role();
-		role2.setDescription("guest role");
-		role2.setName("guest");
-		role2.addPermissionForService((long) 3, per);
+		Role role2 = new Role("guest", "guest role", 3L);
+		role2.addPermission(per);
 		roles.add(role2);
 
 		User user = new User();

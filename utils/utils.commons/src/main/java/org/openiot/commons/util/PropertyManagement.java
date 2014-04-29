@@ -3,7 +3,7 @@ package org.openiot.commons.util;
 
 /**
  *    Copyright (c) 2011-2014, OpenIoT
- *    
+ *
  *    This file is part of OpenIoT.
  *
  *    OpenIoT is free software: you can redistribute it and/or modify
@@ -22,6 +22,7 @@ package org.openiot.commons.util;
  */
 
 
+<<<<<<< HEAD
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -29,18 +30,23 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
+=======
+>>>>>>> b3d75264e4d20574aee65295733c46234ae5da49
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.*;
+import java.util.HashMap;
+import java.util.Properties;
+
 /**
  * @author Nikos Kefalakis (nkef) e-mail: nkef@ait.edu.gr
- * 
  */
 public class PropertyManagement {
-	
+
 	final static Logger logger = LoggerFactory.getLogger(PropertyManagement.class);
-	
-	
+
+
 //	// reading proeprty LSM_META_GRAPH
 //	String schedulerLsmMetaGraph = "";
 //
@@ -66,23 +72,32 @@ public class PropertyManagement {
 
 
 	private static final String PROPERTIES_FILE = "openiot.properties";
-	
+
 	//==============Scheduler====================
-	
+
 	private static final String SCHEDULER_LSM_META_GRAPH = "scheduler.core.lsm.openiotMetaGraph";
 	private static final String SCHEDULER_LSM_DATA_GRAPH = "scheduler.core.lsm.openiotDataGraph";
 	private static final String SCHEDULER_LSM_FUNCTIONAL_GRAPH = "scheduler.core.lsm.openiotFunctionalGraph";
 	private static final String SCHEDULER_LSM_USER_NAME = "scheduler.core.lsm.access.username";
 	private static final String SCHEDULER_LSM_PASSWORD = "scheduler.core.lsm.access.password";
 	private static final String SCHEDULER_LSM_SPARQL_END_POINT = "scheduler.core.lsm.sparql.endpoint";
+<<<<<<< HEAD
 	private static final String SCHEDULER_LSM_REMOTE_SERVER="scheduler.core.lsm.remote.server";
 	
+=======
+	private static final String SCHEDULER_LSM_REMOTE_SERVER = "scheduler.core.lsm.remote.server";
+>>>>>>> b3d75264e4d20574aee65295733c46234ae5da49
 
 	//==============SD&UM====================
 	private static final String SDUM_LSM_FUNCTIONAL_GRAPH = "sdum.core.lsm.openiotFunctionalGraph";
 	private static final String SDUM_LSM_SPARQL_END_POINT = "sdum.core.lsm.sparql.endpoint";
+<<<<<<< HEAD
 	private static final String SDUM_LSM_REMOTE_SERVER="sdum.core.lsm.remote.server";
 	
+=======
+	private static final String SDUM_LSM_REMOTE_SERVER = "sdum.core.lsm.remote.server";
+
+>>>>>>> b3d75264e4d20574aee65295733c46234ae5da49
 
 	//==============LSM-LIGHT====================
 	private static final String LSM_CONNECTION_DRIVER = "lsm-light.server.connection.driver_class";
@@ -97,18 +112,33 @@ public class PropertyManagement {
 	private static final String LSM_CLIENT_CONNECTION_SERVER_HOST = "lsm-light.client.connection.server";
 	private static final String OPENIOT_ONTOLOGY_NAMESPACE = "lsm-light.client.openiot.ontology.namespace";
 	private static final String OPENIOT_RESOURCE_NAMESPACE = "lsm-light.client.openiot.resource.namespace";
+<<<<<<< HEAD
 
+=======
+	
+>>>>>>> b3d75264e4d20574aee65295733c46234ae5da49
 	// ==============Security&Privacy====================
 	private static final String SECURITY_LSM_SPARQL_END_POINT = "security.lsm.sparql.endpoint";
 	private static final String SECURITY_LSM_GRAPH = "security.lsm.graphURL";
 
+<<<<<<< HEAD
+=======
+
+	// ==============REQUEST COMMONS ====================
+	private static final String REQUEST_COMMONS_SCHEDULER_CORE_HOST_URL = "request.definition.scheduler.core.host.url";
+	private static final String REQUEST_COMMONS_SDUM_CORE_HOST_URL = "request.definition.sdum.core.host.url";
+
+
+	private static final String IDE_CORE_NAVIGATION_PREFIX = "ide.core.navigation";
+
+>>>>>>> b3d75264e4d20574aee65295733c46234ae5da49
 	private Properties props = null;
-	
+
 
 	public PropertyManagement() {
 		initializeProperties();
 	}
-	
+
 	/**
 	 * Initialize the Properties
 	 */
@@ -135,7 +165,11 @@ public class PropertyManagement {
 		// trying to find the file in the classpath
 		if (fis == null) {
 			fis = getClass().getClassLoader().getResourceAsStream(PROPERTIES_FILE);
+<<<<<<< HEAD
 			if(fis == null)
+=======
+			if (fis == null)
+>>>>>>> b3d75264e4d20574aee65295733c46234ae5da49
 				logger.error("Unable to find file in the classpath: " + PROPERTIES_FILE);
 		}
 
@@ -148,8 +182,13 @@ public class PropertyManagement {
 		}
 
 	}
+<<<<<<< HEAD
 	
 	public String getProperty(String key, String defaultValue){
+=======
+
+	public String getProperty(String key, String defaultValue) {
+>>>>>>> b3d75264e4d20574aee65295733c46234ae5da49
 		return props.getProperty(key, defaultValue);
 	}
 
@@ -181,6 +220,14 @@ public class PropertyManagement {
 		return props.getProperty(SCHEDULER_LSM_REMOTE_SERVER);
 	}
 
+	public String getSchedulerLsmSparqlEndPoint() {
+		return props.getProperty(SCHEDULER_LSM_SPARQL_END_POINT);
+	}
+
+	public String getSchedulerLsmRemoteServer() {
+		return props.getProperty(SCHEDULER_LSM_REMOTE_SERVER);
+	}
+
 	public String getSdumLsmFunctionalGraph() {
 		return props.getProperty(SDUM_LSM_FUNCTIONAL_GRAPH);
 	}
@@ -193,69 +240,104 @@ public class PropertyManagement {
 		return props.getProperty(SDUM_LSM_REMOTE_SERVER);
 	}
 
-	public String getLsmServerConnectionDriver(){
+	public String getSdumLsmRemoteServer() {
+		return props.getProperty(SDUM_LSM_REMOTE_SERVER);
+	}
+
+	public String getRequestCommonsSdumHostUrl() {
+		return REQUEST_COMMONS_SDUM_CORE_HOST_URL;
+	}
+
+	public String getRequestCommonsSchedulerHostUrl() {
+		return props.getProperty(REQUEST_COMMONS_SCHEDULER_CORE_HOST_URL);
+	}
+
+	public String getLsmServerConnectionDriver() {
 		return props.getProperty(LSM_CONNECTION_DRIVER);
 	}
 
-	public String getLsmServerConnectionURL(){
+	public String getLsmServerConnectionURL() {
 		return props.getProperty(LSM_CONNECTION_URL);
 	}
-	
-	public String getLsmServerUserName(){
+
+	public String getLsmServerUserName() {
 		return props.getProperty(LSM_CONNECTION_USERNAME);
 	}
 
-	public String getLsmServerPass(){
+	public String getLsmServerPass() {
 		return props.getProperty(LSM_CONNECTION_PASS);
 	}
 
 	public String getSecurityLsmSparqlEndPoint() {
 		return props.getProperty(SECURITY_LSM_SPARQL_END_POINT);
 	}
+<<<<<<< HEAD
 	
 	public String getSecurityLsmGraphURL() {
 		return props.getProperty(SECURITY_LSM_GRAPH);
 	}
 
+=======
+
+	public String getSecurityLsmGraphURL() {
+		return props.getProperty(SECURITY_LSM_GRAPH);
+	}
+
+	
+>>>>>>> b3d75264e4d20574aee65295733c46234ae5da49
 	public int getLsmMinConnection() {
 		try {
 			return Integer.parseInt(props.getProperty(LSM_MIN_CONNECTION));
-		}catch(Exception e){
-			logger.error("Invalid input value",e);
+		} catch (Exception e) {
+			logger.error("Invalid input value", e);
 		}
 		return -99;
 	}
-	
-	public int getLsmMaxConnection(){
-		try{
+
+	public int getLsmMaxConnection() {
+		try {
 			return Integer.parseInt(props.getProperty(LSM_MAX_CONNECTION));
-		}catch(Exception e){
-			logger.error("Invalid input value",e);
+		} catch (Exception e) {
+			logger.error("Invalid input value", e);
 		}
 		return -99;
 	}
-	
-	public int getLsmRetryAttempts(){
-		try{
+
+	public int getLsmRetryAttempts() {
+		try {
 			return Integer.parseInt(props.getProperty(LSM_RETRY_ATTEMPTS));
-		}catch(Exception e){
-			logger.error("Invalid input value",e);
+		} catch (Exception e) {
+			logger.error("Invalid input value", e);
 		}
 		return -99;
 	}
-	
-	public String getLSMLocalMetaGraph(){
+
+	public HashMap<String, String> getIdeNavigationSettings() {
+		HashMap<String, String> navigationMap = new HashMap<String, String>();
+
+		for (String key : props.stringPropertyNames()) {
+			if (key.startsWith(IDE_CORE_NAVIGATION_PREFIX)) {
+				navigationMap.put(key, props.getProperty(key));
+			}
+		}
+		return navigationMap;
+	}
+
+	public String getLSMLocalMetaGraph() {
 		return props.getProperty(LSM_LOCAL_METAGRAPH);
 	}
-	
-	public String getLSMLocalDataGraph(){
+
+	public String getLSMLocalDataGraph() {
 		return props.getProperty(LSM_LOCAL_DATAGRAPH);
 	}
 
 	public String getLSMClientConnectionServerHost() {
 		return props.getProperty(LSM_CLIENT_CONNECTION_SERVER_HOST);
 	}
+<<<<<<< HEAD
 
+=======
+>>>>>>> b3d75264e4d20574aee65295733c46234ae5da49
 	public String getOpeniotOntologyNamespace() {
 		return props.getProperty(OPENIOT_ONTOLOGY_NAMESPACE);
 	}
@@ -263,6 +345,9 @@ public class PropertyManagement {
 	public String getOpeniotResourceNamespace() {
 		return props.getProperty(OPENIOT_RESOURCE_NAMESPACE);
 	}
+<<<<<<< HEAD
 	
 	
+=======
+>>>>>>> b3d75264e4d20574aee65295733c46234ae5da49
 }

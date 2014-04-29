@@ -1,22 +1,23 @@
-/*******************************************************************************
- * Copyright (c) 2011-2014, OpenIoT
- *  
- *  This library is free software; you can redistribute it and/or
- *  modify it either under the terms of the GNU Lesser General Public
- *  License version 2.1 as published by the Free Software Foundation
- *  (the "LGPL"). If you do not alter this
- *  notice, a recipient may use your version of this file under the LGPL.
- *  
- *  You should have received a copy of the LGPL along with this library
- *  in the file COPYING-LGPL-2.1; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- *  
- *  This software is distributed on an "AS IS" basis, WITHOUT WARRANTY
- *  OF ANY KIND, either express or implied. See the LGPL  for
- *  the specific language governing rights and limitations.
- *  
- *  Contact: OpenIoT mailto: info@openiot.eu
- ******************************************************************************/
+/**
+ *    Copyright (c) 2011-2014, OpenIoT
+ *   
+ *    This file is part of OpenIoT.
+ *
+ *    OpenIoT is free software: you can redistribute it and/or modify
+ *    it under the terms of the GNU Lesser General Public License as published by
+ *    the Free Software Foundation, version 3 of the License.
+ *
+ *    OpenIoT is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *    GNU Lesser General Public License for more details.
+ *
+ *    You should have received a copy of the GNU Lesser General Public License
+ *    along with OpenIoT.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *     Contact: OpenIoT mailto: info@openiot.eu
+ */
+
 package org.openiot.ui.request.commons.models;
 
 import java.io.Serializable;
@@ -64,7 +65,11 @@ public class ObservableMap<K, V> extends Observable implements Map<K, V>, Serial
     public V remove(Object key) {
         V val = wrappedMap.remove(key);
         setChanged();
-        notifyObservers();
+        try{
+        	notifyObservers();
+        }catch(Throwable ex){
+        	ex.printStackTrace();
+        }
 
         return val;
     }
@@ -72,7 +77,11 @@ public class ObservableMap<K, V> extends Observable implements Map<K, V>, Serial
     public void clear() {
         wrappedMap.clear();
         setChanged();
-        notifyObservers();
+        try{
+        	notifyObservers();
+        }catch(Throwable ex){
+        	ex.printStackTrace();
+        }
     }
 
     public Set<K> keySet() {
@@ -97,7 +106,7 @@ public class ObservableMap<K, V> extends Observable implements Map<K, V>, Serial
 			V trimmedValue = (V) StringUtils.nullIfEmpty(entry.getValue());
             if ((originalValue == null && trimmedValue != null)
                     || (originalValue != null && trimmedValue == null)
-                    || (originalValue != null && trimmedValue != null && !originalValue.equals(trimmedValue))) {
+                    || (originalValue != null && trimmedValue != null && !originalValue.toString().equals(trimmedValue.toString()))) {
             } else {
                 // Nothing to modify
                 continue;
@@ -108,9 +117,10 @@ public class ObservableMap<K, V> extends Observable implements Map<K, V>, Serial
             modified = true;
         }
 
-        if (modified) {
-            setChanged();
-            notifyObservers();
+        try{
+        	notifyObservers();
+        }catch(Throwable ex){
+        	ex.printStackTrace();
         }
     }
 
@@ -122,7 +132,7 @@ public class ObservableMap<K, V> extends Observable implements Map<K, V>, Serial
 		V trimmedValue = (V) StringUtils.nullIfEmpty(valueIn);
         if ((originalValue == null && trimmedValue != null)
                 || (originalValue != null && trimmedValue == null)
-                || (originalValue != null && trimmedValue != null && !originalValue.equals(trimmedValue))) {
+                || (originalValue != null && trimmedValue != null && !originalValue.toString().equals(trimmedValue.toString()))) {
         } else {
             // Nothing to modify
             return valueIn;
@@ -131,7 +141,11 @@ public class ObservableMap<K, V> extends Observable implements Map<K, V>, Serial
         // Update map value and notify observers
         wrappedMap.put(key, valueIn);
         setChanged();
-        notifyObservers();
+        try{
+        	notifyObservers(key);
+        }catch(Throwable ex){
+        	ex.printStackTrace();
+        }
 
         return valueIn;
     }

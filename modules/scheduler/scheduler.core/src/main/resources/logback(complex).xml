@@ -68,12 +68,6 @@
 		<appender-ref ref="stdout" />
 		<appender-ref ref="Info" />
 	</logger>
-	<!-- 	
-	<logger name="org.fosstrak" level="DEBUG">
-		<appender-ref ref="FILE" />
-		<appender-ref ref="stdout" />
-		<appender-ref ref="Info" />
-	</logger>
-	 -->
+
 	<root level="ALL" />
 </configuration>

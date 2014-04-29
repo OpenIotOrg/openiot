@@ -1,63 +1,60 @@
-/*******************************************************************************
- * Copyright (c) 2011-2014, OpenIoT
- *  
- *  This library is free software; you can redistribute it and/or
- *  modify it either under the terms of the GNU Lesser General Public
- *  License version 2.1 as published by the Free Software Foundation
- *  (the "LGPL"). If you do not alter this
- *  notice, a recipient may use your version of this file under the LGPL.
- *  
- *  You should have received a copy of the LGPL along with this library
- *  in the file COPYING-LGPL-2.1; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- *  
- *  This software is distributed on an "AS IS" basis, WITHOUT WARRANTY
- *  OF ANY KIND, either express or implied. See the LGPL  for
- *  the specific language governing rights and limitations.
- *  
- *  Contact: OpenIoT mailto: info@openiot.eu
- ******************************************************************************/
+/**
+ *    Copyright (c) 2011-2014, OpenIoT
+ *   
+ *    This file is part of OpenIoT.
+ *
+ *    OpenIoT is free software: you can redistribute it and/or modify
+ *    it under the terms of the GNU Lesser General Public License as published by
+ *    the Free Software Foundation, version 3 of the License.
+ *
+ *    OpenIoT is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *    GNU Lesser General Public License for more details.
+ *
+ *    You should have received a copy of the GNU Lesser General Public License
+ *    along with OpenIoT.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *     Contact: OpenIoT mailto: info@openiot.eu
+ */
+
 package org.openiot.ui.request.presentation.web.scopes.controllers.pages;
 
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
 
-import javax.faces.application.Application;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.RequestScoped;
-import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 
 import org.openiot.commons.osdspec.model.OAMO;
-import org.openiot.commons.osdspec.model.OSDSpec;
 import org.openiot.commons.osdspec.model.OSMO;
 import org.openiot.commons.osdspec.model.PresentationAttr;
 import org.openiot.commons.sdum.serviceresultset.model.SdumServiceResultSet;
-import org.openiot.commons.sparql.protocoltypes.model.QueryResult;
-import org.openiot.commons.sparql.result.model.Binding;
-import org.openiot.commons.sparql.result.model.Literal;
-import org.openiot.commons.sparql.result.model.Result;
-import org.openiot.commons.sparql.result.model.Results;
-import org.openiot.commons.sparql.result.model.Sparql;
 import org.openiot.ui.request.commons.logging.LoggerService;
+import org.openiot.ui.request.commons.models.OAMOManager;
+import org.openiot.ui.request.commons.providers.SDUMAPIWrapper;
 import org.openiot.ui.request.commons.providers.SchedulerAPIWrapper;
 import org.openiot.ui.request.commons.providers.exceptions.APIException;
-import org.openiot.ui.request.presentation.web.model.nodes.impl.Gauge;
-import org.openiot.ui.request.presentation.web.model.nodes.impl.LineChart;
+import org.openiot.ui.request.commons.util.MarshalOSDspecUtils;
 import org.openiot.ui.request.presentation.web.model.nodes.interfaces.VisualizationWidget;
 import org.openiot.ui.request.presentation.web.scopes.application.ApplicationBean;
 import org.openiot.ui.request.presentation.web.scopes.session.SessionBean;
 import org.openiot.ui.request.presentation.web.scopes.session.context.pages.RequestPresentationPageContext;
 import org.openiot.ui.request.presentation.web.util.FaceletLocalization;
 import org.primefaces.component.dashboard.Dashboard;
+import org.primefaces.component.panel.Panel;
+import org.primefaces.event.map.StateChangeEvent;
 import org.primefaces.model.DashboardColumn;
 import org.primefaces.model.DashboardModel;
 import org.primefaces.model.DefaultDashboardColumn;
 import org.primefaces.model.DefaultDashboardModel;
+import org.primefaces.model.map.LatLng;
 
 /**
  * 
@@ -83,14 +80,26 @@ public class RequestPresentationPageController implements Serializable {
 
 	public RequestPresentationPageContext getContext() {
 		if (cachedContext == null) {
+			if (sessionBean.getUserId() == null) {
+				return null;
+			}
 			cachedContext = (RequestPresentationPageContext) (sessionBean == null ? ApplicationBean.lookupSessionBean() : sessionBean).getContext("requestPresentationPageContext");
 			if (cachedContext == null) {
 				cachedContext = new RequestPresentationPageContext();
-				
-				reloadServices();
+				try {
+					LoggerService.log(Level.INFO, MarshalOSDspecUtils.marshalOSDSpec(cachedContext.getAppManager().exportOSDSpec()));
+				} catch (Exception ex) {
+					LoggerService.log(ex);
+				}
 			}
 		}
 		return cachedContext;
+	}
+
+	public void doAccessControl() {
+		if (sessionBean.getUserId() == null) {
+			applicationBean.redirect("/pages/login.xhtml?faces-redirect=true");
+		}
 	}
 
 	// ------------------------------------
@@ -100,83 +109,88 @@ public class RequestPresentationPageController implements Serializable {
 	}
 
 	// ------------------------------------
-	// Dashboard
+	// Controllers for application management
 	// ------------------------------------
+	public void reloadApplications() {
+		RequestPresentationPageContext context = getContext();
+		if (context.getAppManager() == null) {
+			context.setAppManager(new OAMOManager());
+		}
 
-	public void updateDashboard() {
+		// Load services
+		try {
+			context.getAppManager().loadUserOAMOs(ApplicationBean.lookupSessionBean().getUserId());
+			if (!context.getAppManager().getAvailableOAMOs().isEmpty()) {
+				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, messages.getString("GROWL_INFO_HEADER"), FaceletLocalization.getLocalisedMessage(messages, "APPLICATIONS_LOADED_SUCCESSFULLY")));
+			}
+
+		} catch (APIException ex) {
+			LoggerService.log(ex);
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, messages.getString("GROWL_ERROR_HEADER"), FaceletLocalization.getLocalisedMessage(messages, "ERROR_CONNECTING_TO_REGISTRATION_SERVICE")));
+		}
+
+		context.clear();
+	}
+
+	public void loadApplication(String name) {
+		RequestPresentationPageContext context = getContext();
+		context.clear();
+
+		context.getAppManager().selectOAMOByName(name);
+		generateDashboardFromOAMO(context.getAppManager().getSelectedOAMO(), 2);
+	}
+
+	// ------------------------------------
+	// Dashboard management
+	// ------------------------------------
+	public Dashboard getDashboard() {
+		RequestPresentationPageContext context = getContext();
+
+		if (context != null) {
+			return context.getDashboard();
+		}
+		return null;
+	}
+
+	public void setDashboard(Dashboard dashboard) {
+		RequestPresentationPageContext context = getContext();
+
+		if (context != null) {
+			context.setDashboard(dashboard);
+		}
+	}
+
+	/**
+	 * Invoked by the UI to async update a specific dashboard
+	 */
+	public void updateWidget() {
+		Map<String, String> requestMap = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
+		String serviceId = (String) requestMap.get("serviceId");
+
 		RequestPresentationPageContext context = getContext();
 		if (context.getDashboard() == null) {
 			return;
 		}
 
-		// Simulate data retrieval
-		Double lastYValue = (Math.random() * 40.0);
-		for (Map.Entry<String, VisualizationWidget> entry : context.getServiceIdToWidgetMap().entrySet()) {
-			SdumServiceResultSet resultSet = new SdumServiceResultSet();
-			QueryResult qr = new QueryResult();
-			resultSet.setQueryResult(qr);
-
-			Sparql sparqlResult = new Sparql();
-			qr.setSparql(sparqlResult);
-			Results results = new Results();
-			sparqlResult.setResults(results);
-
-			Result result = new Result();
-			results.getResult().add(result);
-
-			Binding binding = new Binding();
-			Literal literal = new Literal();
-
-			// Bind the expected data
-			if (entry.getValue() instanceof LineChart) {				
-				binding.setName("y1");
-				literal.setContent(lastYValue.toString());
-			} else if (entry.getValue() instanceof Gauge) {
-				binding.setName("VALUE");
-				literal.setContent(lastYValue.toString());
-			}
-
-			binding.setLiteral(literal);
-			result.getBinding().add(binding);
-
-			entry.getValue().processData(resultSet);
+		if (serviceId == null || !context.getServiceIdToWidgetMap().containsKey(serviceId)) {
+			return;
 		}
-	}
 
-	public void activateOAMO(OAMO oamo) {
-		RequestPresentationPageContext context = getContext();
-		
-		generateDashboardFromOAMO(oamo, 2);
-		context.setSelectedOAMO(oamo);
-	}
-
-	public void reloadServices() {
-		RequestPresentationPageContext context = getContext();
-		
-		// Load services
+		// Fetch data
 		try {
-			OSDSpec osdSpec = SchedulerAPIWrapper.getAvailableServices(ApplicationBean.lookupSessionBean().getUserId());
-			context.setOsdSpec(osdSpec);
-
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, messages.getString("GROWL_INFO_HEADER"), FaceletLocalization.getLocalisedMessage(messages, "SERVICES_LOADED_SUCCESSFULLY")));
-			
+			SdumServiceResultSet resultSet = SDUMAPIWrapper.pollForReport(serviceId);
+			context.getServiceIdToWidgetMap().get(serviceId).processData(resultSet);
 		} catch (APIException ex) {
-			LoggerService.log(ex);
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, messages.getString("GROWL_ERROR_HEADER"), FaceletLocalization.getLocalisedMessage(messages, "ERROR_CONNECTING_TO_SCHEDULER_SERVICE")));
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, messages.getString("GROWL_ERROR_HEADER"), FaceletLocalization.getLocalisedMessage(messages, "ERROR_CONNECTING_TO_SDUM_SERVICE")));
 		}
-
-		context.setSelectedOAMO(null);
 	}
-	
+
 	// ------------------------------------
 	// Helpers
 	// ------------------------------------
 
 	private void generateDashboardFromOAMO(OAMO oamo, int columnCount) {
 		RequestPresentationPageContext context = getContext();
-		FacesContext fc = FacesContext.getCurrentInstance();
-		Application application = fc.getApplication();
-
 		context.getServiceIdToWidgetMap().clear();
 
 		Dashboard dashboard = context.getDashboard();
@@ -201,6 +215,7 @@ public class RequestPresentationPageController implements Serializable {
 					break;
 				}
 			}
+
 			if (widgetClass == null) {
 				continue;
 			}
@@ -215,7 +230,7 @@ public class RequestPresentationPageController implements Serializable {
 				context.getServiceIdToWidgetMap().put(serviceId, visualizationWidget);
 
 				// Instanciate renderer widget
-				UIComponent widgetView = visualizationWidget.createWidget(presentationAttributes);
+				Panel widgetView = visualizationWidget.createWidget(serviceId, presentationAttributes);
 
 				dashboard.getChildren().add(widgetView);
 				DashboardColumn column = dashboard.getModel().getColumn(nextColumn % columnCount);

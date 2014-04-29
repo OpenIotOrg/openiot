@@ -32,8 +32,8 @@ import org.openiot.commons.util.PropertyManagement;
 public class Sensor implements java.io.Serializable {
 	private String id="";
 	private String name = "";
-	private String source = "";
-	private String sourceType = "";
+//	private String source = "";
+//	private String sourceType = "";
 	private String sensorType = "";
 	private String infor = "";
 	private Date times = new Date();
@@ -77,19 +77,6 @@ public class Sensor implements java.io.Serializable {
 
 	public void setName(String name) {
 		this.name = name;
-	}
-
-	public String getSource() {
-		return source;
-	}
-	public void setSource(String source) {
-		this.source = source;
-	}
-	public String getSourceType() {
-		return sourceType;
-	}
-	public void setSourceType(String sourceType) {
-		this.sourceType = sourceType;
 	}
 	public Date getTimes() {
 		return times;
@@ -148,26 +135,12 @@ public class Sensor implements java.io.Serializable {
 		properties.remove(pro);
 	}
 	
-	@Override
-	public boolean equals(Object obj) {
-		if(obj == null || (obj instanceof Sensor)){
-			return false;
-		}
-		Sensor source = (Sensor)obj;
-		if( source.getSourceType().trim().equals(this.getSourceType().trim())
-				&& source.getSource().trim().equals(this.getSource().trim())){
-			return true;
-		}
-		
-		return false;
-	}
-
+	
 	@Override
 	public String toString() {
 		return 
 		  (sensorType.trim().equals("") ? "" : ("sensorType:"+sensorType + ", "))
-		+ (sourceType.trim().equals("") ? "" : ("sourceType:"+sourceType + ", ")) 
-		+ (source.trim().equals("") ? "" : ("source:"+source + ", ")) ;
+		;
 	}
 
 }

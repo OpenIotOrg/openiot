@@ -22,6 +22,8 @@ package org.openiot.lsm.beans;
 
 import java.util.Date;
 import java.util.HashMap;
+
+import org.openiot.commons.util.PropertyManagement;
 /**
  * 
  * @author Hoan Nguyen Mau Quoc
@@ -31,9 +33,7 @@ import java.util.HashMap;
 public class Sensor implements java.io.Serializable {
 	private String id;
 	private String name = "";
-	private String source = "";
 	private String sensorType="";
-	private String sourceType = "";
 	private String infor = "";
 	private Date times = new Date();
 	private String author="admin";
@@ -50,7 +50,8 @@ public class Sensor implements java.io.Serializable {
 		this.properties = properties;
 	}
 	public Sensor(){
-		id = "http://lsm.deri.ie/resource/"+System.nanoTime();
+		PropertyManagement proMgn = new PropertyManagement();
+		id = proMgn.getOpeniotResourceNamespace()+System.nanoTime();
 		properties = new HashMap<String,String>();
 	}
 	public String getId() {
@@ -75,18 +76,7 @@ public class Sensor implements java.io.Serializable {
 	public void setSensorType(String sensorType) {
 		this.sensorType = sensorType;
 	}
-	public String getSource() {
-		return source;
-	}
-	public void setSource(String source) {
-		this.source = source;
-	}
-	public String getSourceType() {
-		return sourceType;
-	}
-	public void setSourceType(String sourceType) {
-		this.sourceType = sourceType;
-	}
+	
 	public Date getTimes() {
 		return times;
 	}
@@ -144,26 +134,12 @@ public class Sensor implements java.io.Serializable {
 		properties.remove(pro);
 	}
 	
-	@Override
-	public boolean equals(Object obj) {
-		if(obj == null || (obj instanceof Sensor)){
-			return false;
-		}
-		Sensor source = (Sensor)obj;
-		if(source.getSourceType().trim().equals(this.getSourceType().trim())
-				&& source.getSource().trim().equals(this.getSource().trim())){
-			return true;
-		}
-		
-		return false;
-	}
-
+	
 	@Override
 	public String toString() {
 		return 
 		  (sensorType.trim().equals("") ? "" : ("sensorType:"+sensorType + ", "))
-		+ (sourceType.trim().equals("") ? "" : ("sourceType:"+sourceType + ", ")) 
-		+ (source.trim().equals("") ? "" : ("source:"+source + ", ")) ;
+		;
 	}
 
 }

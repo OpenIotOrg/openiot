@@ -1,22 +1,23 @@
-/*******************************************************************************
- * Copyright (c) 2011-2014, OpenIoT
- *  
- *  This library is free software; you can redistribute it and/or
- *  modify it either under the terms of the GNU Lesser General Public
- *  License version 2.1 as published by the Free Software Foundation
- *  (the "LGPL"). If you do not alter this
- *  notice, a recipient may use your version of this file under the LGPL.
- *  
- *  You should have received a copy of the LGPL along with this library
- *  in the file COPYING-LGPL-2.1; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- *  
- *  This software is distributed on an "AS IS" basis, WITHOUT WARRANTY
- *  OF ANY KIND, either express or implied. See the LGPL  for
- *  the specific language governing rights and limitations.
- *  
- *  Contact: OpenIoT mailto: info@openiot.eu
- ******************************************************************************/
+/**
+ *    Copyright (c) 2011-2014, OpenIoT
+ *   
+ *    This file is part of OpenIoT.
+ *
+ *    OpenIoT is free software: you can redistribute it and/or modify
+ *    it under the terms of the GNU Lesser General Public License as published by
+ *    the Free Software Foundation, version 3 of the License.
+ *
+ *    OpenIoT is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *    GNU Lesser General Public License for more details.
+ *
+ *    You should have received a copy of the GNU Lesser General Public License
+ *    along with OpenIoT.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *     Contact: OpenIoT mailto: info@openiot.eu
+ */
+
 package org.openiot.ui.request.commons.nodes.base;
 
 import java.io.Serializable;
@@ -49,8 +50,10 @@ public class DefaultGraphNodeEndpoint implements GraphNodeEndpoint, Serializable
     private String scope;
     private boolean isRequired;
     private String userData;
+    private boolean isVisible;
 
     public DefaultGraphNodeEndpoint() {
+    	this.isVisible = true;
     }
 
     public String getUID() {
@@ -116,6 +119,14 @@ public class DefaultGraphNodeEndpoint implements GraphNodeEndpoint, Serializable
     public void setConnectorType(ConnectorType type) {
         this.connectorType = type;
     }
+    
+    public boolean isVisible(){
+    	return isVisible;
+    }
+    
+	public void setVisible( boolean visible ){
+		this.isVisible = visible;
+	}
 
     public GraphNodeEndpoint getCopy() {
         GraphNodeEndpoint copy = new DefaultGraphNodeEndpoint();
@@ -127,6 +138,7 @@ public class DefaultGraphNodeEndpoint implements GraphNodeEndpoint, Serializable
         copy.setRequired(isRequired);
         copy.setType(type);
         copy.setUserData(userData);
+        copy.setVisible(isVisible);
         
         return copy;
     }
@@ -152,6 +164,7 @@ public class DefaultGraphNodeEndpoint implements GraphNodeEndpoint, Serializable
 			spec.put("scope", scope);
 			spec.put("isRequired", isRequired);
 			spec.put("userData", userData);
+			spec.put("isVisible", isVisible);
 			
 		}catch(JSONException ex){
 			LoggerService.log(ex);
@@ -169,10 +182,11 @@ public class DefaultGraphNodeEndpoint implements GraphNodeEndpoint, Serializable
 		setScope(spec.getString("scope"));
 		setRequired(spec.getBoolean("isRequired"));
 		setUserData(spec.optString("userData"));
+		setVisible(spec.optBoolean("isVisible", true));
 	}
     
     @Override
     public String toString() {
-        return "[type: " + getType() + ", anchor: " + anchor + ", label: " + getLabel() + ", javaType: " + getScope() + ", required: " + isRequired() + "]";
+        return "[type: " + getType() + ", anchor: " + anchor + ", label: " + getLabel() + ", javaType: " + getScope() + ", required: " + isRequired() + ", visible: " + isVisible + "]";
     }
 }

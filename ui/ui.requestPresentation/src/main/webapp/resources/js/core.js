@@ -48,3 +48,118 @@ PrimeFaces.widget.Growl = PrimeFaces.widget.Growl.extend({
 		}
 	}
 });
+
+function lineChartExtender() {
+	this.cfg.axes = {
+		xaxis : {
+			renderer : $.jqplot.CategoryAxisRenderer,
+			rendererOptions : {
+				tickRenderer : $.jqplot.CanvasAxisTickRenderer
+			},
+			labelOptions : {
+				fontFamily : 'Verdana',
+				fontSize : '8pt'
+			},
+			labelRenderer : $.jqplot.CanvasTextRenderer,
+			tickOptions : {
+				fontSize : '8pt',
+				fontFamily : 'Tahoma',
+				angle : 90
+			},
+			numberTicks : 15
+		}
+	};
+	this.cfg.axes.xaxis.ticks = this.cfg.categories;
+}
+
+// Update each widget using an ajax call
+function refreshAllWidgets() {
+	$('.widget').each(function() {
+		var widget = $(this);
+		// Widget is currently updating... ignore
+		if (widget.hasClass('updating')) {
+			return true;
+		}
+
+		var cls = $(this).attr('class');
+		var serviceId = cls.substr(cls.indexOf('service_') + 8);
+		widget.addClass('updating');
+		updateWidget([ {
+			name : 'serviceId',
+			value : serviceId
+		} ]);
+	});
+}
+
+function refreshClickedWidget() {
+	var widget = $(this).closest('.widget');
+	if (widget.length === 0) {
+		return;
+	}
+
+	var widget = $(this);
+	// Widget is currently updating... ignore
+	if (widget.hasClass('updating')) {
+		return true;
+	}
+
+	var cls = $(this).attr('class');
+	var serviceId = cls.substr(cls.indexOf('service_') + 8);
+	widget.addClass('updating');
+	updateWidget([ {
+		name : 'serviceId',
+		value : serviceId
+	} ]);
+}
+
+function clearMapOverlays(widget) {
+	if (typeof widget.cfg.circles !== 'undefined') {
+		for ( var ind = 0; ind < widget.cfg.circles.length; ind++) {
+			var marker = widget.cfg.circles[ind];
+			if (marker != null) {
+				marker.setMap(null);
+			}
+		}
+		widget.cfg.circles = [];
+	}
+
+	if (typeof widget.cfg.markers !== 'undefined') {
+		for ( var ind = 0; ind < widget.cfg.markers.length; ind++) {
+			var marker = widget.cfg.markers[ind];
+			if (marker != null) {
+				marker.setMap(null);
+			}
+		}
+		widget.cfg.markers = [];
+	}
+}
+function addMapMarker(widget, id, lat, lng) {
+	widget.cfg.markers = widget.cfg.markers || [];
+	var marker = new google.maps.Marker({
+		id : id,
+		position : new google.maps.LatLng(lat, lng),
+		map : widget.map
+	});
+	widget.cfg.markers.push(marker);
+}
+function addMapCircle(widget, id, lat, lng, radius, strokeColor, strokeOpacity, fillColor, fillOpacity) {
+	widget.cfg.circles = widget.cfg.circles || [];
+	var marker = new google.maps.Circle({
+		id : id,
+		center : new google.maps.LatLng(lat, lng),
+		radius : radius,
+		strokeColor : strokeColor,
+		strokeOpacity : strokeOpacity,
+		strokeWeight : 1,
+		fillColor : fillColor,
+		fillOpacity : fillOpacity,
+		map : widget.map
+	});
+	widget.cfg.circles.push(marker);
+}
+function addMapEventListeners(widget){
+	if(typeof widget.cfg.markers == 'undefined'){
+		return;
+	}
+	widget.configureMarkers();
+}
