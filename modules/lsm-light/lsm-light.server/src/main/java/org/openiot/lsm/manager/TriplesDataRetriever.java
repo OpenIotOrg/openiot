@@ -115,6 +115,7 @@ public class TriplesDataRetriever {
         	
             Transformer transformer = tFactory.newTransformer(new StreamSource(new File(xsltPath)));
             transformer.setParameter("sensorId", s.getId());
+            transformer.setParameter("utc-timestamp", DateUtil.date2StandardString(new Date()));
 //            transformer.setParameter("sourceType", s.getSourceType());
             transformer.setParameter("prefix", prefix);
 //            transformer.setParameter("sourceURL", s.getSource());

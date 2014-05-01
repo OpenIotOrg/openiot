@@ -8,7 +8,8 @@
    xmlns:yweather="http://xml.weather.yahoo.com/ns/rss/1.0">
 	<xsl:output method="text" media-type="text/plain"/>
 	
-	<xsl:variable name="utc-timestamp" select="current-dateTime()"/>
+<!-- 	<xsl:variable name="utc-timestamp" select="current-dateTime()"/> -->
+	<xsl:variable name="utc-timestamp"/>
 	<xsl:param name="prefix"/>
 	
 	<xsl:param name="sensorId"/>
