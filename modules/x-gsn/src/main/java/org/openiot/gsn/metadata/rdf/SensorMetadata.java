@@ -45,6 +45,14 @@ public class SensorMetadata {
   private final static String rdfs="http://www.w3.org/2000/01/rdf-schema#";
   private final static String qu="http://purl.oclc.org/NET/ssnx/qu/qu#";
   private final static String rr="http://www.w3.org/ns/r2rml#";
+
+  Resource ssnSensor=ResourceFactory.createResource(ssn+"Sensor");
+  Property rdfType=ResourceFactory.createProperty(rdf+"type");
+  Property rdfsLabel=ResourceFactory.createProperty(rdfs+"label");
+  Property ssnObserves=ResourceFactory.createProperty(ssn+"observes");
+  Property quUnit=ResourceFactory.createProperty(qu+"unit");
+  Property rrColumnName=ResourceFactory.createProperty(rr+"columnName");
+
   public void loadFromFile(String rdfFile) throws FileNotFoundException,TurtleParseException{
 	  FileInputStream fis = new FileInputStream(rdfFile);
 	  model.read(fis,null,"TURTLE");
@@ -52,12 +60,6 @@ public class SensorMetadata {
   
   public LSMSensorMetaData fillSensorMetadata(){
 	  LSMSensorMetaData md=new LSMSensorMetaData();
-	  Resource ssnSensor=ResourceFactory.createResource(ssn+"Sensor");
-	  Property rdfType=ResourceFactory.createProperty(rdf+"type");
-	  Property rdfsLabel=ResourceFactory.createProperty(rdfs+"label");
-	  Property ssnObserves=ResourceFactory.createProperty(ssn+"observes");
-	  Property quUnit=ResourceFactory.createProperty(qu+"unit");
-	  Property rrColumnName=ResourceFactory.createProperty(rr+"columnName");
 	  ResIterator ri=model.listSubjectsWithProperty(rdfType, ssnSensor);
 	  if (!ri.hasNext()){
 		  throw new IllegalArgumentException("The rdf graph contains no instance of: "+ssnSensor);
