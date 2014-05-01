@@ -20,6 +20,7 @@
 
 package org.openiot.security.oauth.lsm;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.jasig.cas.services.RegisteredService;
@@ -75,11 +76,15 @@ public class LSMServiceRegistryDaoImpl implements ServiceRegistryDao {
 	public List<RegisteredService> load() {
 		log.info("Reloading registered services ...");
 		List<RegisteredService> services = manager.getAllRegisteredServices();
-//		if (services.isEmpty() && initializeOnStartup) {
-//			log.info("Initializing the graph ...");
-//			SecurityModuleInitializer.initialize();
-//			services = manager.getAllRegisteredServices();
-//		}
+		// if (services.isEmpty() && initializeOnStartup) {
+		// log.info("Initializing the graph ...");
+		// SecurityModuleInitializer.initialize();
+		// services = manager.getAllRegisteredServices();
+		// }
+		if (services == null) {
+			services = Collections.<RegisteredService> emptyList();
+			log.warn("There was a problem loading services. Returning an empty list.");
+		}
 		return services;
 	}
 

@@ -67,8 +67,6 @@ public class OpenIoTServicesManagerImpl implements ReloadableServicesManager {
 	@NotNull
 	private ServiceRegistryDao serviceRegistryDao;
 
-	private boolean loadServicesOnStartup = false;
-
 	/** Map to store all services. */
 	private ConcurrentHashMap<Long, RegisteredService> services = new ConcurrentHashMap<Long, RegisteredService>();
 
@@ -93,8 +91,7 @@ public class OpenIoTServicesManagerImpl implements ReloadableServicesManager {
 		this.serviceRegistryDao = serviceRegistryDao;
 		this.disabledRegisteredService = constructDefaultRegisteredService(defaultAttributes);
 
-		if (loadServicesOnStartup)
-			load();
+		load();
 	}
 
 	@Transactional(readOnly = false)
@@ -193,14 +190,6 @@ public class OpenIoTServicesManagerImpl implements ReloadableServicesManager {
 		}
 
 		return r;
-	}
-
-	public boolean isLoadServicesOnStartup() {
-		return loadServicesOnStartup;
-	}
-
-	public void setLoadServicesOnStartup(boolean loadServicesOnStartup) {
-		this.loadServicesOnStartup = loadServicesOnStartup;
 	}
 
 }
