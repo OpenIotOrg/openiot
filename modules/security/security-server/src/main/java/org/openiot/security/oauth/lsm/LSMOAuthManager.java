@@ -407,7 +407,8 @@ public class LSMOAuthManager {
 				String serviceURL = soln.get("?service").toString();
 				String serviceId = serviceURL.substring(serviceURL.lastIndexOf("/") + 1);
 				LSMRegisteredServiceImpl t = getRegisteredService(Long.parseLong(serviceId));
-				serviceList.add(t);
+				if(t != null)
+					serviceList.add(t);
 			}
 			vqe.close();
 		} catch (Exception e) {
