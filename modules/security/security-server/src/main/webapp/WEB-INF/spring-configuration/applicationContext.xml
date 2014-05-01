@@ -51,7 +51,7 @@
 
     <bean
             id="servicesManager"
-            class="org.jasig.cas.services.DefaultServicesManagerImpl">
+            class="org.openiot.security.oauth.OpenIoTServicesManagerImpl" p:loadServicesOnStartup="${service.registry.manager.loadOnStartup:true}">
         <constructor-arg index="0" ref="serviceRegistryDao"/>
     </bean>
 
