@@ -9,7 +9,7 @@
 	<xsl:output method="text" media-type="text/plain"/>
 	
 <!-- 	<xsl:variable name="utc-timestamp" select="current-dateTime()"/> -->
-	<xsl:variable name="utc-timestamp"/>
+	<xsl:param name="utc-timestamp"/>
 	<xsl:param name="prefix"/>
 	
 	<xsl:param name="sensorId"/>
@@ -43,7 +43,6 @@
 	</xsl:template>
 	
 	<xsl:template name="information">	
-		<xsl:variable name="sensorTypeId" select="document('../xslt/SensorType.xml')/Root/sensors/sensor[label=$sensortype]/url"/>	
 		<xsl:value-of select="concat('&#10;','&#60;',$sensorId,'&#62; ',
 	    			'&#60;','http://www.w3.org/1999/02/22-rdf-syntax-ns#type','&#62; ',
 	    			'&#60;','http://purl.oclc.org/NET/ssnx/ssn#Sensor','&#62;. '),

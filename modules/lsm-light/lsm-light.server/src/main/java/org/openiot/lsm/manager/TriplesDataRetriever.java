@@ -102,8 +102,8 @@ public class TriplesDataRetriever {
 	public static String getSensorTripleMetadata(Sensor s,String sensorTypeId){
 		String triples = "";
 		String xsltPath = XSLTMapFile.sensormeta2xslt;
-		xsltPath = ConstantsUtil.realPath + xsltPath;
-//		xsltPath = "src/main/webapp/WEB-INF" + xsltPath;
+//		xsltPath = ConstantsUtil.realPath + xsltPath;
+		xsltPath = "src/main/webapp/WEB-INF" + xsltPath;
 		TransformerFactory tFactory = TransformerFactory.newInstance();
 		String prefix = propertyManagement.getOpeniotResourceNamespace();
         String xml = "";
