@@ -138,13 +138,13 @@ public class ObjectServlet extends HttpServlet {
 					String permissionString = PermissionsUtil.ADD_SENSOR;
 					
 					if(SecurityUtil.hasPermission(permissionString, getServletContext(), token, clientId)){
-				        String sensorTypeId = sensorManager.getSensorTypeId(sensor.getSensorType().toLowerCase());
-		        		triples = TriplesDataRetriever.getSensorTripleMetadata(sensor,sensorTypeId);
-//		        		logger.info(triples);
-		        		if((sensor.getMetaGraph()==null)||(sensor.getMetaGraph()==""))
+						if((sensor.getMetaGraph()==null)||(sensor.getMetaGraph()==""))
 		        			sensor.setMetaGraph(propertyManagement.getSchedulerLsmMetaGraph());
 		        		sensorManager.setDataGraph(sensor.getDataGraph());
 		        		sensorManager.setMetaGraph(sensor.getMetaGraph());
+				        String sensorTypeId = sensorManager.getSensorTypeId(sensor.getSensorType().toLowerCase());
+		        		triples = TriplesDataRetriever.getSensorTripleMetadata(sensor,sensorTypeId);
+//		        		logger.info(triples);		        		
 		        		sensorManager.insertTriplesToGraph(sensor.getMetaGraph(), triples);
 //		        		sensorManager.runSpatialIndex();
 		        		logger.info("Add new sensor");

@@ -45,6 +45,8 @@ import org.openiot.lsm.utils.ConstantsUtil;
 import org.openiot.lsm.utils.DateUtil;
 import org.openiot.lsm.utils.VirtuosoConstantUtil;
 import org.openiot.lsm.utils.XSLTMapFile;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 
@@ -55,6 +57,7 @@ import org.openiot.lsm.utils.XSLTMapFile;
 public class TriplesDataRetriever {
 
 	static PropertyManagement propertyManagement = new PropertyManagement();
+	final static Logger logger = LoggerFactory.getLogger(SensorManager.class);
 	
 	public static String getTripleDataHasUnit(String dataType,String name,String value,String unit,String observationId,String observedURL,Date time){
 		String triples = "";
@@ -156,7 +159,7 @@ public class TriplesDataRetriever {
             triples+= "<" + place.getId() +"> <http://www.w3.org/2003/01/geo/wgs84_pos#geometry> \"POINT("+place.getLng()+" "+place.getLat()+
             			")\"^^<http://www.openlinksw.com/schemas/virtrdf#Geometry>.\n";
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.info(e.toString());
         }
 		return triples;
 	}
