@@ -115,9 +115,9 @@ public class Repository {
             sensor.setName(s.getSensorName());
             sensor.setAuthor(s.getAuthor());
             sensor.setSensorType(s.getSensorType());
-            sensor.setSourceType(s.getSourceType());
+            //sensor.setSourceType(s.getSourceType());
             sensor.setInfor(s.getInformation());
-            sensor.setSource(s.getSource());
+            //sensor.setSource(s.getSource());
             sensor.setMetaGraph("http://lsm.deri.ie/OpenIoT/test/sensormeta#");
             sensor.setDataGraph("http://lsm.deri.ie/OpenIoT/test/sensordata#");
             sensor.setTimes(new Date());
@@ -141,7 +141,7 @@ public class Repository {
 
             System.out.printf(sensor.getId());
             //call sensorAdd method
-            lsmStore.sensorAdd(sensor);
+            //lsmStore.sensorAdd(sensor);
 
             System.out.printf(sensor.getId());
 
@@ -164,9 +164,9 @@ public class Repository {
         sensor.setName(s.getSensorName());
         sensor.setAuthor(s.getAuthor());
         sensor.setSensorType(s.getSensorType());
-        sensor.setSourceType(s.getSourceType());
+        //sensor.setSourceType(s.getSourceType());
         sensor.setInfor(s.getInformation());
-        sensor.setSource(s.getSource());
+        //sensor.setSource(s.getSource());
         sensor.setTimes(new Date());
 
 
@@ -227,8 +227,8 @@ public class Repository {
 
         logger.warn(sensorMetaData.getSensorID());
         // set SensorURL of observation
-        Sensor sensor2 = lsmStore.getSensorById(sensorMetaData.getSensorID(),"");
-        obs.setSensor(sensor2.getId());
+        //Sensor sensor2 = lsmStore.getSensorById(sensorMetaData.getSensorID(),"");
+        //obs.setSensor(sensor2.getId());
         //set time when the observation was observed. In this example, the time is current local time.
         obs.setTimes(observation.getTime());
 
@@ -239,7 +239,7 @@ public class Repository {
         obvTem.setValue(observation.getValue());
         obvTem.setUnit(observation.getUnit());
         obs.addReading(obvTem);
-        lsmStore.sensorDataUpdate(obs);
+        //lsmStore.sensorDataUpdate(obs);
     }
 
 

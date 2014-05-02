@@ -21,11 +21,15 @@
 package org.openiot.gsn.metadata.LSM;
 
 import org.apache.log4j.Logger;
+import org.openiot.gsn.utils.SecurityUtil;
 import org.openiot.lsm.beans.*;
 import org.openiot.lsm.server.LSMTripleStore;
 //import lsm.beans.*;
 //import lsm.server.LSMTripleStore;
 
+
+import org.openiot.lsm.utils.ObsConstant;
+import org.openiot.security.client.OAuthorizationCredentials;
 
 import java.util.Date;
 
@@ -34,6 +38,7 @@ public class utils {
     private static final transient Logger logger = Logger.getLogger(utils.class);
 
     private static LSMSchema lsmSchema=new LSMSchema();
+
 	static{
 		lsmSchema.initFromConfigFile(LSMRepository.LSM_CONFIG_PROPERTIES_FILE);
 	}
@@ -58,13 +63,17 @@ public class utils {
         logger.info("Properties: "+p);}
         try {
             // 1. Create an instance of Sensor class and set the sensor metadata
+        	
+        	
+        	
+        	
             Sensor sensor = new Sensor();
             sensor.setName(sensorName);
             sensor.setAuthor(sensorAuthor);
-            sensor.setSourceType(sourceType);
+            //sensor.setSourceType(sourceType);
             sensor.setSensorType(sensorType);
             sensor.setInfor(infor);
-            sensor.setSource(sensorSource);
+            //sensor.setSource(sensorSource);
             for (String p:properties){
             	sensor.addProperty(p);
             }
@@ -93,7 +102,11 @@ public class utils {
             //lsmStore.setUser(user);
 
             //call sensorAdd method
-            sensorID=lsmStore.sensorAdd(sensor);           
+            OAuthorizationCredentials cred=SecurityUtil.getTokenAndId();
+            
+            sensorID=lsmStore.sensorAdd(sensor,cred.getClientId(),cred.getAccessToken());
+
+            //sensorID=lsmStore.sensorAdd(sensor,"","");           
             //System.out.println(listSensor(sensor).toString());
 
         } catch (Exception ex) {
@@ -168,7 +181,8 @@ public class utils {
             obs.setDataGraph(dataGraph);
 
             obs.setSensor(sensorID);
-            lsmStore.sensorDataUpdate(obs);
+            OAuthorizationCredentials cred=SecurityUtil.getTokenAndId();
+            lsmStore.sensorDataUpdate(obs,cred.getClientId(),cred.getAccessToken());
 
         } catch (Exception ex) {
             success = false;
@@ -231,13 +245,11 @@ public class utils {
                 .append("\nauthor    : ").append(s.getAuthor())
                 .append("\ncode      : ").append(s.getCode())
                 .append("\ninfor     : ").append(s.getInfor())
-                .append("\nsource    : ").append(s.getSource())
                 .append("\ndatagraph : ").append(s.getDataGraph())
                 .append("\nid        : ").append(s.getId())
                 .append("\nmetagraph : ").append(s.getMetaGraph())
                 .append("\nname      : ").append(s.getName())
                 .append("\nsensortyp : ").append(s.getSensorType())
-                .append("\nsourcetyp : ").append(s.getSourceType())
                 .append("\nplace     : ").append(s.getPlace())
                 .append("\ntimes     : ").append(s.getTimes())
                 //.append("\nuser      : ").append(s.getUser())

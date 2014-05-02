@@ -26,6 +26,7 @@ import java.util.Date;
 
 
 
+
 import org.openiot.gsn.metadata.LSM.utils;
 //import lsm.beans.Place;
 //import lsm.beans.Sensor;
@@ -40,6 +41,7 @@ import org.openiot.lsm.beans.Sensor;
 import org.openiot.lsm.server.LSMTripleStore;
 import org.openiot.lsm.beans.Observation;
 import org.openiot.lsm.beans.ObservedProperty;
+import org.openiot.security.client.OAuthorizationCredentials;
 
 
 public class TestLSM {
@@ -99,7 +101,7 @@ public class TestLSM {
             obvTem.setUnit(fieldUnit);
             obs.addReading(obvTem);
 
-            lsmStore.sensorDataUpdate(obs);
+            lsmStore.sensorDataUpdate(obs,"","");
 
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -129,10 +131,10 @@ public class TestLSM {
             Sensor sensor = new Sensor();
             sensor.setName(sensorName);
             sensor.setAuthor(sensorAuthor);
-            sensor.setSourceType(sourceType);
+            //sensor.setSourceType(sourceType);
             sensor.setSensorType(sensorType);
             sensor.setInfor(infor);
-            sensor.setSource(sensorSource);
+            //sensor.setSource(sensorSource);
             for (String p : properties) {
 				sensor.addProperty(p);
 			}         
@@ -161,7 +163,9 @@ public class TestLSM {
             //lsmStore.setUser(user);
 
             //call sensorAdd method
-            lsmStore.sensorAdd(sensor);
+            OAuthorizationCredentials cred=SecurityUtil.getTokenAndId();
+            
+            lsmStore.sensorAdd(sensor,cred.getAccessToken(),cred.getClientId());
 
             sensorID = sensor.getId();
 
@@ -180,8 +184,8 @@ public class TestLSM {
 
     public static void main(String[] args) {
 
-    	register();    	
-    	//pushdata();
+    	//register();    	
+    	pushdata();
     	/*
     	  LSMTripleStore lsmStore = new LSMTripleStore();
           User user = new User();
@@ -259,7 +263,7 @@ public class TestLSM {
     	
     	utils.updateSensorDataOnLSM("sofiane", "sofiane", 
     			"http://lsm.deri.ie/OpenIoT/sensormeta#", "http://lsm.deri.ie/OpenIoT/sensordata#", 
-    			"http://lsm.deri.ie/resource/11015611079233", "http://lsm.deri.ie/ont/lsm.owl#AirTemperature", 9.877676, 
+    			"http://lsm.deri.ie/resource/16335769726980", "http://lsm.deri.ie/ont/lsm.owl#AirTemperature", 9.877676, 
     			"C", new Date());
     	
     	/*
@@ -297,13 +301,13 @@ public class TestLSM {
         System.out.println("author    : " + s.getAuthor());
         System.out.println("code      : " + s.getCode());
         System.out.println("infor     : " + s.getInfor());
-        System.out.println("source    : " + s.getSource());
+        //System.out.println("source    : " + s.getSource());
         System.out.println("datagraph : " + s.getDataGraph());
         System.out.println("id        : " + s.getId());
         System.out.println("metagraph : " + s.getMetaGraph());
         System.out.println("name : " + s.getName());
         System.out.println("sensortyp : " + s.getSensorType());
-        System.out.println("sourcetyp : " + s.getSourceType());
+        //System.out.println("sourcetyp : " + s.getSourceType());
         System.out.println("place : " + s.getPlace());
         System.out.println("times : " + s.getTimes());
         //System.out.println("user : " + s.getUser());
