@@ -104,7 +104,8 @@ public class TriplesDataRetriever {
 		String xsltPath = XSLTMapFile.sensormeta2xslt;
 		xsltPath = ConstantsUtil.realPath + xsltPath;
 //		xsltPath = "src/main/webapp/WEB-INF" + xsltPath;
-		TransformerFactory tFactory = TransformerFactory.newInstance();
+		TransformerFactory tFactory = new net.sf.saxon.TransformerFactoryImpl();
+//		TransformerFactory.newInstance();
 		String prefix = propertyManagement.getOpeniotResourceNamespace();
         String xml = "";
         try {
