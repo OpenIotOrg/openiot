@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet
    xmlns:uuid="uuid"
+   xmlns:xalan="http://xml.apache.org/xalan"
    xmlns:fn="http://www.w3.org/2005/xpath-functions"
    xmlns:xs = "http://www.w3.org/2001/XMLSchema"
    xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0"
@@ -8,7 +9,8 @@
    xmlns:yweather="http://xml.weather.yahoo.com/ns/rss/1.0">
 	<xsl:output method="text" media-type="text/plain"/>
 	
-	<xsl:variable name="utc-timestamp" select="current-dateTime()"/>
+<!-- 	<xsl:variable name="utc-timestamp" select="current-dateTime()"/> -->
+	<xsl:param name="utc-timestamp"/>
 	<xsl:param name="prefix"/>
 	
 	<xsl:param name="sensorId"/>
@@ -42,7 +44,6 @@
 	</xsl:template>
 	
 	<xsl:template name="information">	
-		<xsl:variable name="sensorTypeId" select="document('../xslt/SensorType.xml')/Root/sensors/sensor[label=$sensortype]/url"/>	
 		<xsl:value-of select="concat('&#10;','&#60;',$sensorId,'&#62; ',
 	    			'&#60;','http://www.w3.org/1999/02/22-rdf-syntax-ns#type','&#62; ',
 	    			'&#60;','http://purl.oclc.org/NET/ssnx/ssn#Sensor','&#62;. '),
