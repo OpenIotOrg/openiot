@@ -34,13 +34,18 @@ import org.openiot.commons.osdspec.model.OSMO;
 import org.openiot.commons.sdum.serviceresultset.model.SdumServiceResultSet;
 import org.openiot.commons.util.PropertyManagement;
 import org.openiot.sdum.core.api.impl.GetAvailableServiceIDs.GetAvailableServiceIDsImpl;
+import org.openiot.sdum.core.api.impl.GetAvailableServiceIDs.GetAvailableServiceIDsV2Impl;
 import org.openiot.sdum.core.api.impl.GetAvailableAppIDs.GetAvailableAppIDsImpl;
+import org.openiot.sdum.core.api.impl.GetAvailableAppIDs.GetAvailableAppIDsV2Impl;
 import org.openiot.sdum.core.api.impl.GetService.GetServiceImpl;
+import org.openiot.sdum.core.api.impl.GetService.GetServiceV2Impl;
 import org.openiot.sdum.core.api.impl.GetApplication.GetApplicationImpl;
+import org.openiot.sdum.core.api.impl.GetApplication.GetApplicationV2Impl;
 import org.openiot.sdum.core.api.impl.PollForReport.PollForReportImpl;
 
 
 
+import org.openiot.sdum.core.api.impl.PollForReport.PollForReportV2Impl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -111,7 +116,8 @@ public class ServiceDeliveryUtilityManagerRsControler {
 	@Path("/pollforreport")
 	public SdumServiceResultSet pollForReport(@QueryParam("serviceID") String applicationID) {
 
-		PollForReportImpl pollForReportImpl = new PollForReportImpl(applicationID);
+//		PollForReportImpl pollForReportImpl = new PollForReportImpl(applicationID);
+		PollForReportV2Impl pollForReportImpl = new PollForReportV2Impl(applicationID);
 
 		return pollForReportImpl.getSdumServiceResultSet();
 
@@ -129,7 +135,8 @@ public class ServiceDeliveryUtilityManagerRsControler {
 	@Path("/getApplication")
 	public OAMO getApplication(@QueryParam("applicationID") String applicationID) {
 
-		GetApplicationImpl application = new GetApplicationImpl(applicationID);		
+//		GetApplicationImpl application = new GetApplicationImpl(applicationID);
+		GetApplicationV2Impl application = new GetApplicationV2Impl(applicationID);
 
 		return application.getOAMO();
 	}	
@@ -145,7 +152,8 @@ public class ServiceDeliveryUtilityManagerRsControler {
 	@Path("/getService")
 	public OSMO getService(@QueryParam("serviceID") String serviceID) {
 
-		GetServiceImpl service =  new GetServiceImpl(serviceID);		
+//		GetServiceImpl service =  new GetServiceImpl(serviceID);
+		GetServiceV2Impl service =  new GetServiceV2Impl(serviceID);
 		
 		return service.getService();
 	}
@@ -163,7 +171,8 @@ public class ServiceDeliveryUtilityManagerRsControler {
 	@Path("/getAvailableAppIDs")
 	public DescreptiveIDs getAvailableAppIDs(@QueryParam("userID") String userID) {
 
-		GetAvailableAppIDsImpl availableAppIDs = new GetAvailableAppIDsImpl(userID);
+//		GetAvailableAppIDsImpl availableAppIDs = new GetAvailableAppIDsImpl(userID);
+		GetAvailableAppIDsV2Impl availableAppIDs = new GetAvailableAppIDsV2Impl(userID);
 
 		return availableAppIDs.getAvailableAppIDs();
 	}	
@@ -181,7 +190,8 @@ public class ServiceDeliveryUtilityManagerRsControler {
 	@Path("/getAvailableServiceIDs")
 	public DescreptiveIDs getAvailableServiceIDs(@QueryParam("applicationID") String applicationID) {
 
-		GetAvailableServiceIDsImpl availableServiceIDs = new GetAvailableServiceIDsImpl(applicationID);
+//		GetAvailableServiceIDsImpl availableServiceIDs = new GetAvailableServiceIDsImpl(applicationID);
+		GetAvailableServiceIDsV2Impl availableServiceIDs = new GetAvailableServiceIDsV2Impl(applicationID);
 		
 		return availableServiceIDs.getAvailableServiceIDs();
 	}

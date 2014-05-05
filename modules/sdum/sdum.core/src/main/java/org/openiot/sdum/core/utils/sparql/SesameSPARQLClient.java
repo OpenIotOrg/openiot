@@ -94,7 +94,7 @@ public class SesameSPARQLClient
 			}
 			
 		} catch (Exception e){
-			e.printStackTrace();
+			logger.error("sparqlToXml",e);
 		}
 		
 		return null;
@@ -114,7 +114,7 @@ public class SesameSPARQLClient
 				con.close();
 			}
 		} catch (Exception e) {
-			e.printStackTrace();			
+			logger.error("sparqlToQResult",e);
 		}
 		
 		return null;
