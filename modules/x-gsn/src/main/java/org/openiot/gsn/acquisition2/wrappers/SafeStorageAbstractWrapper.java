@@ -1,24 +1,24 @@
 /**
-* Copyright (c) 2011-2014, OpenIoT
+*    Copyright (c) 2011-2014, OpenIoT
 *
-* This file is part of OpenIoT.
+*    This file is part of OpenIoT.
 *
-* OpenIoT is free software: you can redistribute it and/or modify
-* it under the terms of the GNU Lesser General Public License as published by
-* the Free Software Foundation, version 3 of the License.
+*    OpenIoT is free software: you can redistribute it and/or modify
+*    it under the terms of the GNU Lesser General Public License as published by
+*    the Free Software Foundation, version 3 of the License.
 *
-* OpenIoT is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-* GNU Lesser General Public License for more details.
+*    OpenIoT is distributed in the hope that it will be useful,
+*    but WITHOUT ANY WARRANTY; without even the implied warranty of
+*    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+*    GNU Lesser General Public License for more details.
 *
-* You should have received a copy of the GNU Lesser General Public License
-* along with OpenIoT. If not, see <http://www.gnu.org/licenses/>.
+*    You should have received a copy of the GNU Lesser General Public License
+*    along with OpenIoT.  If not, see <http://www.gnu.org/licenses/>.
 *
-* Contact: OpenIoT mailto: info@openiot.eu
-* @author Timotee Maret
-* @author Ali Salehi
-* @author Mehdi Riahi
+*     Contact: OpenIoT mailto: info@openiot.eu
+ * @author Timotee Maret
+ * @author Ali Salehi
+ * @author Mehdi Riahi
 */
 
 package org.openiot.gsn.acquisition2.wrappers;
@@ -37,17 +37,17 @@ import org.apache.mina.filter.codec.ProtocolCodecFilter;
 import org.apache.mina.filter.codec.serialization.ObjectSerializationCodecFactory;
 import org.apache.mina.transport.socket.nio.NioSocketConnector;
 /**
-* Required parameters:
-* ss-port
-* ss-host
-* wrapper-name
-*
-*/
+ * Required parameters:
+ * ss-port
+ * ss-host
+ * wrapper-name
+ *
+ */
 public abstract class SafeStorageAbstractWrapper extends AbstractWrapper implements MessageHandler{
 
-private static final long CONNECTION_RETRY_TIME = 10000;
+	private static final long CONNECTION_RETRY_TIME = 10000;
 
-  private final transient Logger logger = Logger.getLogger ( SafeStorageAbstractWrapper.class );
+  private final transient Logger     logger                 = Logger.getLogger ( SafeStorageAbstractWrapper.class );
 
   public void dispose() {
     // TODO
@@ -72,22 +72,22 @@ private static final long CONNECTION_RETRY_TIME = 10000;
     return true;
   }
   public void run() {
-boolean connected = false;
-while (! connected) {
-connected = connect(ss_host,ss_port,wrapperDetails,this,key);
-if (! connected) {
-try {
-Thread.sleep(CONNECTION_RETRY_TIME);
-} catch (InterruptedException e) {
-logger.error(e.getMessage());
-}
-}
-}
+	  boolean connected = false;
+	  while (! connected) {
+		  connected = connect(ss_host,ss_port,wrapperDetails,this,key);
+		  if (! connected) {
+			  try {
+				Thread.sleep(CONNECTION_RETRY_TIME);
+			} catch (InterruptedException e) {
+				logger.error(e.getMessage());
+			}
+		  }
+	  }
   }
 
  /**
-* HELPER METHOD FOR CONNECTING TO STORAGE SERVER
-*/
+  * HELPER METHOD FOR CONNECTING TO STORAGE SERVER
+  */
   public boolean connect(String host,int port,AddressBean wrapperDetails,MessageHandler handler,String requester) {
     int CONNECT_TIMEOUT = 30; // seconds
     NioSocketConnector connector = new NioSocketConnector();
@@ -95,12 +95,12 @@ logger.error(e.getMessage());
     // when there's no connection to manage.
     //connector.setWorkerTimeout(1);
     // Configure the service.
-connector.setConnectTimeoutMillis(CONNECT_TIMEOUT*1000);
+	connector.setConnectTimeoutMillis(CONNECT_TIMEOUT*1000);
     ObjectSerializationCodecFactory oscf = new ObjectSerializationCodecFactory();
     oscf.setDecoderMaxObjectSize(oscf.getEncoderMaxObjectSize());
     //logger.debug("MINA Decoder MAX: " + oscf.getDecoderMaxObjectSize() + " MINA Encoder MAX: " + oscf.getEncoderMaxObjectSize());
-    connector.getFilterChain().addLast("codec", new ProtocolCodecFilter(oscf));
-connector.setHandler(new SafeStorageClientSessionHandler(wrapperDetails,handler,key ));
+    connector.getFilterChain().addLast("codec",   new ProtocolCodecFilter(oscf));
+	connector.setHandler(new SafeStorageClientSessionHandler(wrapperDetails,handler,key ));
     IoSession session = null;
     try {
       ConnectFuture future = connector.connect(new InetSocketAddress(host, port));
@@ -118,6 +118,6 @@ connector.setHandler(new SafeStorageClientSessionHandler(wrapperDetails,handler,
   }
 
   public void restartConnection () {
-run();
+	  run();
   }
 }

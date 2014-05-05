@@ -1,0 +1,17 @@
+sensorID="http://lsm.deri.ie/resource/61330620147099"
+sensorName=opensense_1
+source="http://planetdata.epfl.ch:22002/gsn?REQUEST=113&name=opensense_1"
+sourceType=lausanne
+sensorType=lausanne
+information=Air Quality Sensors from Lausanne station 1
+author=opensense
+feature="http://lsm.deri.ie/OpenIoT/opensensefeature"
+fields="humidity,temperature"
+field.temperature.propertyName="http://lsm.deri.ie/OpenIoT/Temperature"
+field.temperature.unit=C
+field.humidity.propertyName="http://lsm.deri.ie/OpenIoT/Humidity"
+field.humidity.unit=Percent
+field.co.propertyName="http://lsm.deri.ie/OpenIoT/CO"
+field.co.unit=PPM
+latitude=46.529838
+longitude=6.596818

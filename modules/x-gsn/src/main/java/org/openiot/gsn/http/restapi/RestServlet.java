@@ -95,6 +95,7 @@ public class RestServlet extends HttpServlet {
     }
 
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    	
         response.getWriter().write("REST POST" + "\n" + request.getRequestURI());
     }
 

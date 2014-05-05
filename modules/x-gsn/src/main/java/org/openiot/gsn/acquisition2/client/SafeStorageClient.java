@@ -1,23 +1,23 @@
 /**
-* Copyright (c) 2011-2014, OpenIoT
+*    Copyright (c) 2011-2014, OpenIoT
 *
-* This file is part of OpenIoT.
+*    This file is part of OpenIoT.
 *
-* OpenIoT is free software: you can redistribute it and/or modify
-* it under the terms of the GNU Lesser General Public License as published by
-* the Free Software Foundation, version 3 of the License.
+*    OpenIoT is free software: you can redistribute it and/or modify
+*    it under the terms of the GNU Lesser General Public License as published by
+*    the Free Software Foundation, version 3 of the License.
 *
-* OpenIoT is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-* GNU Lesser General Public License for more details.
+*    OpenIoT is distributed in the hope that it will be useful,
+*    but WITHOUT ANY WARRANTY; without even the implied warranty of
+*    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+*    GNU Lesser General Public License for more details.
 *
-* You should have received a copy of the GNU Lesser General Public License
-* along with OpenIoT. If not, see <http://www.gnu.org/licenses/>.
+*    You should have received a copy of the GNU Lesser General Public License
+*    along with OpenIoT.  If not, see <http://www.gnu.org/licenses/>.
 *
-* Contact: OpenIoT mailto: info@openiot.eu
-* @author Timotee Maret
-* @author Ali Salehi
+*     Contact: OpenIoT mailto: info@openiot.eu
+ * @author Timotee Maret
+ * @author Ali Salehi
 */
 
 package org.openiot.gsn.acquisition2.client;
@@ -41,7 +41,7 @@ public class SafeStorageClient {
 
   private static final int CONNECT_TIMEOUT = 30; // seconds
 
-  private static transient Logger logger = Logger.getLogger ( SafeStorageClient.class );
+  private static transient Logger                                logger                              = Logger.getLogger ( SafeStorageClient.class );
 
   public SafeStorageClient(String host, int port, AddressBean wrapperDetails) {
     NioSocketConnector connector = new NioSocketConnector();
