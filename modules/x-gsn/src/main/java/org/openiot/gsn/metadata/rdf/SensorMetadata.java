@@ -50,6 +50,7 @@ public class SensorMetadata {
   Property rdfType=ResourceFactory.createProperty(rdf+"type");
   Property rdfsLabel=ResourceFactory.createProperty(rdfs+"label");
   Property ssnObserves=ResourceFactory.createProperty(ssn+"observes");
+  Property ssnOfFeature=ResourceFactory.createProperty(ssn+"ofFeature");
   Property quUnit=ResourceFactory.createProperty(qu+"unit");
   Property rrColumnName=ResourceFactory.createProperty(rr+"columnName");
 
@@ -76,11 +77,16 @@ public class SensorMetadata {
 		  if (!units.hasNext())
 			  throw new IllegalArgumentException("The property "+prop+" has no unit");
 		  Resource unit=prop.getPropertyResourceValue(quUnit);
-		  String column=prop.listProperties(rrColumnName).next().getObject().toString();
+		  //String column=prop.listProperties(rrColumnName).next().getObject().toString();
 		  lsmField.setLsmPropertyName(prop.getURI());
 		  lsmField.setLsmUnit(unit.getURI());
-		  md.getFields().put(column, lsmField);
+		  md.getFields().put(prop.getURI(), lsmField);
 	  }
+	  Resource feature=sensor.getPropertyResourceValue(ssnOfFeature);
+	  if (feature!=null)
+	    md.setFeatureOfInterest(feature.getURI());
+	  else 
+		  md.setFeatureOfInterest("nofeature");
  	  md.setSensorName("");
  	  
       return md;

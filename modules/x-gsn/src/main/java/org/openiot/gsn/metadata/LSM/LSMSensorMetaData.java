@@ -160,8 +160,7 @@ public class LSMSensorMetaData {
     }
 
     public void init(Config conf){
-        logger.info("tripy "+conf.getString("author"));
-        
+     
     	this.setSensorName(conf.getString("sensorName"));
         this.setAuthor(conf.getString("author"));
         this.setInformation(conf.getString("information"));
@@ -189,40 +188,22 @@ public class LSMSensorMetaData {
             fields.put(fieldName, lsmFieldMetaData);
             logger.info(fields.get(fieldName));
         }
-        /*String [] props = new String[fieldNames.length];
-        int i=0;
-        for (LSMFieldMetaData field : fields.values()){
-        	props[i]=field.getLsmPropertyName();i++;
-        }
-        this.setProperties(props);*/
-
-    /*} catch (NullPointerException e) {
-        logger.warn("Error while reading properties file: " + fileName);
-        logger.warn(e);
-        return false;
-    }*/
-
-    //return true;
 
     }
     
     public void initFromConfigFile(String fileName) {
+    	logger.debug("Read file "+fileName);
+        Config conf = ConfigFactory.parseFile(new File(fileName));
+        init(conf);
+    }
 
-        //try {
-            //TODO: optimization: read properties file once, then scan for each field
-            logger.debug("Read file "+fileName);
-            
-            Config conf = ConfigFactory.parseFile(new File(fileName));
-            init(conf);
-            }
-
-    public boolean updateSensorIDInConfigFile(String fileName, String sensorID) {
+    /*public boolean updateSensorIDInConfigFile(String fileName, String sensorID) {
         return PropertiesReader.writeProperty(fileName, "sensorID", sensorID);
     }
 
     public boolean setSensorAsRegistered(String fileName) {
         return PropertiesReader.writeProperty(fileName, "registered", "true");
-    }
+    }*/
 
 	public String[] getProperties() {
 		String [] props = new String[fields.size()];

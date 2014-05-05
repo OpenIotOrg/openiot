@@ -92,6 +92,9 @@ import org.openiot.gsn.utils.ValidityTools;
 import org.openiot.gsn.vsensor.SQLValidatorIntegration;
 import org.openiot.gsn.wrappers.WrappersUtil;
 
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigFactory;
+
 /**
  * Web Service URLs : Microsoft SensorMap:
  * http://localhost:22001/services/Service?wsdl GSN:
@@ -310,10 +313,8 @@ public final class Main {
 			Main.getInstance();
 			// checks to see if dynamic sensor control is active
 			// and starts timer accordingly
-			boolean isTrueDynamicControl = Boolean
-					.parseBoolean(PropertiesReader.readProperty(
-							LSMRepository.LSM_CONFIG_PROPERTIES_FILE,
-							"dynamicControl").trim());
+			Config conf=ConfigFactory.load();
+			boolean isTrueDynamicControl = conf.getBoolean("dynamicControl");
 			if (isTrueDynamicControl)
 				DynamicControlTaskTimer.getInstance().startTimer();
 

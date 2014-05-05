@@ -26,21 +26,35 @@ import java.io.FileNotFoundException;
 import java.util.Date;
 
 import org.openiot.gsn.metadata.rdf.SensorMetadata;
+import org.openiot.gsn.utils.CASUtils;
+import org.openiot.lsm.beans.Observation;
+import org.openiot.lsm.beans.ObservedProperty;
 import org.openiot.lsm.beans.Place;
 import org.openiot.lsm.beans.Sensor;
 import org.openiot.lsm.server.LSMTripleStore;
+import org.openiot.security.client.OAuthorizationCredentials;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class MetadataCreator {
-    private static final transient Logger logger = LoggerFactory.getLogger(utils.class);
-    private static LSMSchema lsmSchema=new LSMSchema();
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigFactory;
+
+public class SensorAnnotator {
+    private static final transient Logger logger = LoggerFactory.getLogger(SensorAnnotator.class);
+    private static String lsmServer="";
+    private static String metaGraph="";
+    private static String dataGraph="";
+    //private static LSMSchema lsmSchema=new LSMSchema();
 	static{
-		lsmSchema.initFromConfigFile(LSMRepository.LSM_CONFIG_PROPERTIES_FILE);
+		Config conf=ConfigFactory.load();//LSMRepository.LSM_CONFIG_PROPERTIES_FILE);
+		metaGraph=conf.getString("metaGraph");
+		dataGraph=conf.getString("dataGraph");
+		lsmServer=conf.getString("lsm.server");
+		//lsmSchema.initFromConfigFile(LSMRepository.LSM_CONFIG_PROPERTIES_FILE);
 	}
 
     public static String addSensorToLSM(LSMSensorMetaData md){
-    	return addSensorToLSM(lsmSchema.getMetaGraph(),lsmSchema.getDataGraph(), 
+    	return addSensorToLSM(metaGraph,dataGraph, 
     			md.getSensorName(), md.getAuthor(), md.getSourceType(), 
     			md.getSensorType(), md.getInformation(), md.getSource(), 
     			md.getProperties(), md.getLatitude(), md.getLongitude());
@@ -64,10 +78,10 @@ public class MetadataCreator {
             Sensor sensor = new Sensor();
             sensor.setName(sensorName);
             sensor.setAuthor(sensorAuthor);
-            sensor.setSourceType(sourceType);
+            //sensor.setSourceType(sourceType);
             sensor.setSensorType(sensorType);
             sensor.setInfor(infor);
-            sensor.setSource(sensorSource);
+            //sensor.setSource(sensorSource);
             for (String p:properties){
             	sensor.addProperty(p);
             }
@@ -82,10 +96,10 @@ public class MetadataCreator {
             sensor.setPlace(place);
 
             // create LSMTripleStore instance
-            logger.info("Connecting to LSM: "+lsmSchema.getLsmServerUrl());
-            LSMTripleStore lsmStore = new LSMTripleStore(lsmSchema.getLsmServerUrl());
-            sensorID=lsmStore.sensorAdd(sensor);           
-
+            logger.info("Connecting to LSM: "+lsmServer);
+            LSMTripleStore lsmStore = new LSMTripleStore(lsmServer);
+            OAuthorizationCredentials cred=CASUtils.getTokenAndId();            
+            sensorID=lsmStore.sensorAdd(sensor,cred.getClientId(),cred.getAccessToken());                       
         } catch (Exception ex) {
             ex.printStackTrace();
             System.out.println("cannot send the data to server");
@@ -93,12 +107,70 @@ public class MetadataCreator {
         return sensorID;
     }
 
-	
+    public static boolean updateSensorDataOnLSM(String vsName, String fieldName, 
+    		String propertyUri,double value, Date date) {
+        boolean success = true;
+        
+        //String field = fieldName.toLowerCase();
+        LSMSensorMetaData lsmSensorsMetaData = LSMRepository.getInstance().getLsmSensorsMetaDataLookupTable().get(vsName);
+        if (!lsmSensorsMetaData.getFields().containsKey(propertyUri))
+          throw new IllegalArgumentException("The field "+fieldName+" in virtual sensor "+vsName+" has no associated metadata. PropertyUri: "+propertyUri);
+        LSMFieldMetaData lsmField= lsmSensorsMetaData.getFields().get(propertyUri);
+        success = updateSensorDataOnLSM(metaGraph, dataGraph,
+                lsmSensorsMetaData.getSensorID(), lsmField.getLsmPropertyName(),
+                value, lsmField.getLsmUnit(),
+                lsmSensorsMetaData.getFeatureOfInterest(), date);
+        return success;
+    }
+    
+    public static boolean updateSensorDataOnLSM(String metaGraph,String dataGraph,
+            String sensorID,String propertyType,
+            double fieldValue,String fieldUnit,
+            String feature,Date date) {
+
+    	boolean success = true;
+
+    	logger.debug("Update sensor data: "+sensorID +","+propertyType+","+metaGraph+","+dataGraph+","+feature+","+fieldValue);
+
+    	try {
+    		Sensor sensor = new Sensor();
+    		sensor.setId(sensorID);
+
+    		LSMTripleStore lsmStore = new LSMTripleStore(lsmServer);            
+
+    		//create an Observation object
+    		Observation obs = new Observation();
+    		obs.setTimes(date);
+
+    		obs.setFeatureOfInterest(feature);
+    		ObservedProperty obvTem = new ObservedProperty();
+    		obvTem.setObservationId(obs.getId());
+    		obvTem.setPropertyType(propertyType);
+    		obvTem.setValue(fieldValue);
+    		obvTem.setUnit(fieldUnit);            
+    		obs.addReading(obvTem);
+    		obs.setMetaGraph(metaGraph);
+    		obs.setDataGraph(dataGraph);
+
+    		obs.setSensor(sensorID);
+            OAuthorizationCredentials cred=CASUtils.getTokenAndId();
+    		lsmStore.sensorDataUpdate(obs,cred.getClientId(),cred.getAccessToken());
+
+    	} catch (Exception ex) {
+    		success = false;
+    		ex.printStackTrace();
+    		System.out.println("cannot send the data to server");
+    	}
+
+    	return success;
+
+    }
+    
 	public static void addRdfMetadatatoLSM(SensorMetadata metadata){
-        LSMTripleStore lsmStore = new LSMTripleStore(lsmSchema.getLsmServerUrl());
-        logger.info("Connecting to LSM: "+lsmSchema.getLsmServerUrl());
-        lsmSchema.getMetaGraph();
-        lsmStore.pushRDF(lsmSchema.getMetaGraph(),metadata.serializeRDF());
+        LSMTripleStore lsmStore = new LSMTripleStore(lsmServer);
+        logger.info("Connecting to LSM: "+lsmServer);
+        OAuthorizationCredentials cred=CASUtils.getTokenAndId();            
+        lsmStore.pushRDF(metaGraph,metadata.serializeRDF(),cred.getClientId(),cred.getAccessToken());
 
 	}
 	
@@ -119,8 +191,8 @@ public class MetadataCreator {
 				logger.error("Error loading metadata file: "+e.getMessage());
 				System.exit(0);
 			}
-		    LSMSchema schema = new LSMSchema();
-		    schema.initFromConfigFile(metadataFileName);
+		    //LSMSchema schema = new LSMSchema();
+		    //schema.initFromConfigFile(metadataFileName);
 		    String SID = addSensorToLSM(metaData);
 		    logger.info("Sensor registered to LSM with ID: " + SID);
 			

@@ -29,7 +29,6 @@ import org.apache.log4j.Logger;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -41,7 +40,6 @@ public class LSMRepository {
     public static final String METADATA_FILE_SUFFIX = ".metadata";
     public static final String RDFTURTLE_FILE_SUFFIX = ".ttl";
 
-    public static LSMSchema lsmSchema;
 
     public Map<String, LSMSensorMetaData> getLsmSensorsMetaDataLookupTable() {
         return lsmSensorsMetaDataLookupTable;
@@ -53,17 +51,6 @@ public class LSMRepository {
     private static LSMRepository singleton;
 
     private LSMRepository() {
-        lsmSchema = new LSMSchema();
-        //lsmUser = new LSMUser();
-
-        if (!lsmSchema.initFromConfigFile(LSM_CONFIG_PROPERTIES_FILE))
-            logger.warn("Couldn't initialize LSM schema. Check your file: " + LSM_CONFIG_PROPERTIES_FILE);
-
-        //if (!lsmUser.initFromConfigFile(LSM_CONFIG_PROPERTIES_FILE))
-        //    logger.warn("Couldn't initialize LSM user. Check your file: " + LSM_CONFIG_PROPERTIES_FILE);
-
-        logger.info("LSM Schema: " + lsmSchema);
-        //logger.info("LSM User: " + lsmUser);
     }
 
     /*
@@ -134,7 +121,7 @@ public class LSMRepository {
         }*/
 
         // announce sensor to LSM
-        String sensorID = MetadataCreator.addSensorToLSM(lsmSensorMetaData);
+        String sensorID = SensorAnnotator.addSensorToLSM(lsmSensorMetaData);
 
         // check returned sensor ID
         if (sensorID == "") {
@@ -145,6 +132,7 @@ public class LSMRepository {
         logger.info("Sensor " + Utils.identify(vsConfig) + " registered to LSM with sensorID: " + sensorID);
 
         // update sensor ID in metadata file (make change persistent)
+        /*
         if (!lsmSensorMetaData.updateSensorIDInConfigFile(metadataFile, sensorID)) {
             logger.warn("Couldn't write sensorID for sensor " + Utils.identify(vsConfig));
             return false;
@@ -153,7 +141,7 @@ public class LSMRepository {
         if (!lsmSensorMetaData.setSensorAsRegistered(metadataFile)) {
             logger.warn("Couldn't set LSM registration flag for sensor " + Utils.identify(vsConfig));
             return false;
-        }
+        }*/
 
         return true;
     }
@@ -173,7 +161,7 @@ public class LSMRepository {
         }*/        
 
         // announce sensor to LSM
-        String sensorID = MetadataCreator.addSensorToLSM(lsmSensorMetaData);
+        String sensorID = SensorAnnotator.addSensorToLSM(lsmSensorMetaData);
         // check returned sensor ID
         if (sensorID == "") {
             logger.warn("Couldn't register sensor " + lsmSensorMetaData.getSensorName() + " to LSM. Received empty sensor ID");
@@ -183,7 +171,7 @@ public class LSMRepository {
         logger.info("Sensor " + lsmSensorMetaData.getSensorName() + " registered to LSM with sensorID: " + sensorID);
 
         // update sensor ID in metadata file (make change persistent)
-        if (!lsmSensorMetaData.updateSensorIDInConfigFile(metadataFile, sensorID)) {
+        /*if (!lsmSensorMetaData.updateSensorIDInConfigFile(metadataFile, sensorID)) {
             logger.warn("Couldn't write sensorID for sensor " + lsmSensorMetaData.getSensorName());
             return false;
         }
@@ -191,29 +179,9 @@ public class LSMRepository {
         if (!lsmSensorMetaData.setSensorAsRegistered(metadataFile)) {
             logger.warn("Couldn't set LSM registration flag for sensor " + lsmSensorMetaData.getSensorName());
             return false;
-        }
+        }*/
 
         return true;
     }
 
-    public boolean publishSensorDataToLSM(String vsName, String field, double value, Date date) {
-        boolean success = true;
-        field = field.toLowerCase();
-
-        LSMSensorMetaData lsmSensorsMetaData = lsmSensorsMetaDataLookupTable.get(vsName);
-        if (!lsmSensorsMetaData.getFields().containsKey(field))
-          throw new IllegalArgumentException("The field "+field+" in virtual sensor "+vsName+" has no associated metadata.");
-        LSMFieldMetaData lsmField= lsmSensorsMetaData.getFields().get(field);
-        success = utils.updateSensorDataOnLSM(
-                lsmSchema.getMetaGraph(),
-                lsmSchema.getDataGraph(),
-                lsmSensorsMetaData.getSensorID(),                
-                lsmField.getLsmPropertyName(),
-                value,
-                lsmField.getLsmUnit(),
-                lsmSensorsMetaData.getFeatureOfInterest(),
-                date);
-
-        return success;
-    }
 }

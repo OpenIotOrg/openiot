@@ -7,7 +7,7 @@
             <param name="publish-to-lsm">true</param>
         </init-params>
         <output-structure>
-            <field name="temperature" type="double"  />
+            <field name="temperature" type="double" property="http://purl.oclc.org/NET/ssnx/meteo/aws#air_temperature" />
             <field name="humidity" type="double" />
         </output-structure>
     </processing-class>

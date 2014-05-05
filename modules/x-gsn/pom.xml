@@ -63,6 +63,11 @@
 					<target>1.7</target>
 				</configuration>
 			</plugin>
+			 <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+        <version>2.6</version>
+      </plugin>
 			<plugin>
 				<groupId>org.jibx</groupId>
 				<artifactId>maven-jibx-plugin</artifactId>
@@ -156,11 +161,11 @@
 			<version>7.1.0.v20100505</version>
 			<!-- <version>7.0.2.v20100331</version> -->
 		</dependency>
-		<dependency>
+		<!-- <dependency>
 			<groupId>org.apache.jena</groupId>
 			<artifactId>jena-core</artifactId>
 			<version>2.11.1</version>
-		</dependency>
+		</dependency>-->
 		<dependency>
 			<groupId>com.vividsolutions</groupId>
 			<artifactId>jts</artifactId>
@@ -385,6 +390,10 @@
                     <groupId>org.slf4j</groupId>
                     <artifactId>slf4j-log4j12</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>org.jboss.resteasy</groupId>
+                    <artifactId>resteasy-jaxrs</artifactId>
+                </exclusion>
              </exclusions>
 		</dependency>
 		<dependency>
@@ -422,17 +431,22 @@
 			<version>1.7.5</version>
 		</dependency>
 		<dependency>
-    <groupId>org.glassfish.jersey.containers</groupId>
-    <!-- if your container implements Servlet API older than 3.0, use "jersey-container-servlet-core"  -->
-    <artifactId>jersey-container-servlet-core</artifactId>
-    <version>2.7</version>
-</dependency>
-<!-- Required only when you are using JAX-RS Client -->
-<dependency>
-    <groupId>org.glassfish.jersey.core</groupId>
-    <artifactId>jersey-client</artifactId>
-    <version>2.7</version>
-</dependency>
+    		<groupId>org.glassfish.jersey.containers</groupId>    		
+    		<artifactId>jersey-container-servlet-core</artifactId>
+    		<version>2.7</version>
+		</dependency>
+		<!-- Required only when you are using JAX-RS Client -->
+		<!--<dependency>
+    		<groupId>org.glassfish.jersey.core</groupId>
+    		<artifactId>jersey-client</artifactId>
+    		<version>2.7</version>
+		</dependency>-->
+		<dependency>
+	 		<groupId>org.jboss.resteasy</groupId>
+			<artifactId>resteasy-jaxrs</artifactId>
+			<version>3.0.8.Final</version>
+		</dependency>
+            
 	</dependencies>
 
 </project>

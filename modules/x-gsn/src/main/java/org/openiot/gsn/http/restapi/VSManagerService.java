@@ -37,7 +37,7 @@ import org.apache.commons.io.IOUtils;
 import org.openiot.gsn.Main;
 import org.openiot.gsn.VSensorLoader;
 import org.openiot.gsn.metadata.LSM.LSMSensorMetaData;
-import org.openiot.gsn.metadata.LSM.MetadataCreator;
+import org.openiot.gsn.metadata.LSM.SensorAnnotator;
 import org.openiot.gsn.metadata.rdf.SensorMetadata;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -92,7 +92,7 @@ public class VSManagerService {
 				concat+=line;			
 			InputStream is=new ByteArrayInputStream(concat.getBytes());
 			meta.load(is);
-		    MetadataCreator.addRdfMetadatatoLSM(meta);
+		    SensorAnnotator.addRdfMetadatatoLSM(meta);
 			FileWriter fw = new FileWriter(filePath, true);			
 		    IOUtils.writeLines(lines, "\n", fw);
 	        fw.close();
@@ -117,7 +117,7 @@ public class VSManagerService {
 			LSMSensorMetaData lsmmd=new LSMSensorMetaData();
 			
 			lsmmd.init(ConfigFactory.parseFile(new File(filePath)));
-			sensorId=MetadataCreator.addSensorToLSM(lsmmd);
+			sensorId=SensorAnnotator.addSensorToLSM(lsmmd);
 			
 		} catch (Exception e) {
 			e.printStackTrace();

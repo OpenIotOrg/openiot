@@ -22,12 +22,16 @@
 
 package org.openiot.gsn.vsensor;
 
+import org.openiot.gsn.beans.DataField;
 import org.openiot.gsn.beans.StreamElement;
 import org.openiot.gsn.beans.VSensorConfig;
 import org.openiot.gsn.metadata.LSM.LSMRepository;
-import org.openiot.gsn.metadata.LSM.LSMSensorMetaData;
+import org.openiot.gsn.metadata.LSM.SensorAnnotator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigFactory;
 
 import java.util.*;
 
@@ -39,25 +43,28 @@ public class LSMExporter extends AbstractVirtualSensor {
     private String sensorName;
     private boolean allow_nulls = false;
     private boolean publish_to_lsm = false;
-
-    private LSMSensorMetaData loadMetadata(VSensorConfig vsConfig) throws Exception{
-    	LSMRepository lsm=LSMRepository.getInstance();
-    	return lsm.loadMetadata(vsConfig);
-    }
+    private Map<String,String> fieldUris=new HashMap<String,String>();
     
     public boolean initialize() {
 
+    	//Config prefixes=ConfigFactory.load().getConfig("prefixes");
+    	
         VSensorConfig vsensor = getVirtualSensorConfiguration();
-        try {
-        	loadMetadata(vsensor);
+        try {        	
+        	LSMRepository.getInstance().loadMetadata(vsensor);
         } catch (Exception e){
         	e.printStackTrace();
-        	logger.error("Could not load vsensor LSM metadata for "+vsensor.getName());
+        	logger.error("No LSM metadata available for loading vsensor "+vsensor.getName());
         	return false;
         }
         //publish_to_lsm = vsensor.getPublishToLSM();
         TreeMap<String, String> params = vsensor.getMainClassInitialParams();
         sensorName = vsensor.getName();        
+        
+        for (DataField df:vsensor.getOutputStructure()){
+        	logger.info("Property:"+ df.getName()+"--"+df.getProperty());
+        	fieldUris.put(df.getName().toUpperCase(), df.getProperty());
+        }
         
         String allow_nulls_str = params.get("allow-nulls");
         if (allow_nulls_str != null)
@@ -92,7 +99,7 @@ public class LSMExporter extends AbstractVirtualSensor {
                 return; // skipping null values if allow_nulls flag is not st to true
 
             if (publish_to_lsm) {
-                LSMRepository.getInstance().publishSensorDataToLSM(sensorName, fieldName, v, d);
+                SensorAnnotator.updateSensorDataOnLSM(sensorName, fieldName, fieldUris.get(fieldName), v, d);                
             }
 
             //dataProduced(data);
