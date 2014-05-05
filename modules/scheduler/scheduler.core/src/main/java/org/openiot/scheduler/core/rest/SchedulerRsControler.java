@@ -31,6 +31,13 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 
 
+
+
+
+
+
+
+
 import org.openiot.commons.osdspec.model.OAMO;
 import org.openiot.commons.osdspec.model.OSDSpec;
 import org.openiot.commons.osdspec.model.OSMO;
@@ -41,11 +48,17 @@ import org.openiot.commons.util.PropertyManagement;
 
 import org.openiot.scheduler.core.api.impl.DiscoverSensors.DiscoverSensorsImpl;
 import org.openiot.scheduler.core.api.impl.GetApplication.GetApplicationImpl;
+import org.openiot.scheduler.core.api.impl.GetApplication.GetApplicationV2Impl;
 import org.openiot.scheduler.core.api.impl.GetAvailableAppIDs.GetAvailableAppIDsImpl;
+import org.openiot.scheduler.core.api.impl.GetAvailableAppIDs.GetAvailableAppIDsV2Impl;
 import org.openiot.scheduler.core.api.impl.GetAvailableApps.GetAvailableAppsImpl;
+import org.openiot.scheduler.core.api.impl.GetAvailableApps.GetAvailableAppsV2Impl;
 import org.openiot.scheduler.core.api.impl.GetAvailableServiceIDs.GetAvailableServiceIDsImpl;
+import org.openiot.scheduler.core.api.impl.GetAvailableServiceIDs.GetAvailableServiceIDsV2Impl;
 import org.openiot.scheduler.core.api.impl.GetService.GetServiceImpl;
+import org.openiot.scheduler.core.api.impl.GetService.GetServiceV2Impl;
 import org.openiot.scheduler.core.api.impl.RegisterService.RegisterServiceImpl;
+import org.openiot.scheduler.core.api.impl.RegisterService.RegisterServiceV2Impl;
 import org.openiot.scheduler.core.api.impl.UserLogin.UserLoginImpl;
 import org.openiot.scheduler.core.api.impl.UserRegister.UserRegisterImpl;
 
@@ -198,7 +211,8 @@ public class SchedulerRsControler {
 
 		
 
-		RegisterServiceImpl registerServiceImpl = new RegisterServiceImpl(osdSpec);
+		RegisterServiceV2Impl registerServiceImpl = new RegisterServiceV2Impl(osdSpec);
+//		RegisterServiceImpl registerServiceImpl = new RegisterServiceImpl(osdSpec);
 		
 
 		return registerServiceImpl.replyMessage();
@@ -250,7 +264,8 @@ public class SchedulerRsControler {
 	@Path("/getApplication")
 	public OAMO getApplication(@QueryParam("applicationID") String applicationID) {
 
-		GetApplicationImpl application = new GetApplicationImpl(applicationID);		
+		GetApplicationV2Impl application = new GetApplicationV2Impl(applicationID);
+//		GetApplicationImpl application = new GetApplicationImpl(applicationID);
 
 		return application.getOAMO();
 	}
@@ -270,7 +285,8 @@ public class SchedulerRsControler {
 	@Path("/getService")
 	public OSMO getService(@QueryParam("serviceID") String serviceID) {
 
-		GetServiceImpl service =  new GetServiceImpl(serviceID);		
+		GetServiceV2Impl service =  new GetServiceV2Impl(serviceID);		
+//		GetServiceImpl service =  new GetServiceImpl(serviceID);
 		
 		return service.getService();
 	}
@@ -290,7 +306,8 @@ public class SchedulerRsControler {
 	@Path("/getAvailableAppIDs")
 	public DescreptiveIDs getAvailableAppIDs(@QueryParam("userID") String userID) {
 
-		GetAvailableAppIDsImpl availableAppIDs = new GetAvailableAppIDsImpl(userID);
+		GetAvailableAppIDsV2Impl availableAppIDs = new GetAvailableAppIDsV2Impl(userID);
+//		GetAvailableAppIDsImpl availableAppIDs = new GetAvailableAppIDsImpl(userID);
 
 		return availableAppIDs.getAvailableAppIDs();
 	}
@@ -310,7 +327,8 @@ public class SchedulerRsControler {
 	@Path("/getAvailableServiceIDs")
 	public DescreptiveIDs getAvailableServiceIDs(@QueryParam("applicationID") String applicationID) {
 
-		GetAvailableServiceIDsImpl availableServiceIDs = new GetAvailableServiceIDsImpl(applicationID);
+		GetAvailableServiceIDsV2Impl availableServiceIDs = new GetAvailableServiceIDsV2Impl(applicationID);
+//		GetAvailableServiceIDsImpl availableServiceIDs = new GetAvailableServiceIDsImpl(applicationID);
 				
 		return availableServiceIDs.getAvailableServiceIDs();
 	}
@@ -326,7 +344,7 @@ public class SchedulerRsControler {
 	@Path("/getAvailableApps")
 	public OSDSpec getAvailableApps(@QueryParam("userID") String userID) {
 
-		GetAvailableAppsImpl availableApps = new GetAvailableAppsImpl(userID); 
+		GetAvailableAppsV2Impl availableApps = new GetAvailableAppsV2Impl(userID); 
 
 		return availableApps.getAvailableApps();
 	}
