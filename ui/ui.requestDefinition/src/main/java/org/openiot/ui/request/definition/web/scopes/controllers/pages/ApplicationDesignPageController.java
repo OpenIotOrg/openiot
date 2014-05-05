@@ -280,6 +280,23 @@ public class ApplicationDesignPageController implements Serializable {
 
 		context.setGraphModel(graphModel);
 		context.clearAvailableSensors();
+		
+		List<OSMO> osmoList = context.getAppManager().getSelectedOAMO() != null ? context.getAppManager().getSelectedOAMO().getOSMO() : null;
+		StringBuilder queries=null;
+		if (osmoList != null) {
+			queries = new StringBuilder();
+			for (OSMO osmo : osmoList){
+				queries.append(osmo.getQueryRequest().get(0).getQuery());
+				queries.append("\n");
+			}
+			//remove last
+			if (queries !=null && queries.charAt(queries.length()-1)=='\n') {
+				queries.deleteCharAt(queries.length()-1);
+			}
+			
+			context.setGeneratedCode(queries.toString());
+		}
+		
 		applicationBean.redirect("/pages/applicationDesign.xhtml?faces-redirect=true");	
 	}
 
