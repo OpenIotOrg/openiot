@@ -1709,4 +1709,175 @@ public class SensorManager {
 		// TODO Auto-generated method stub
 
 	}
+	public boolean deleteOSDSpecById(String osdSpecId) {
+		// TODO Auto-generated method stub
+		Connection conn = null;
+		String prefix = "http://lsm.deri.ie/resource/";
+		String osdSpecURL = prefix + osdSpecId;
+		if(osdSpecId.contains(prefix)){
+			osdSpecURL = osdSpecId;
+		}
+		
+		List<String> oamos = getAllOAMOsOfOSDSpec(osdSpecId);
+		for(int i=0;i<oamos.size();i++){
+			deleteOSMOById(oamos.get(i));
+		}
+		
+		String sql = "sparql delete from <"+ metaGraph +"> {<"+osdSpecURL+"> ?p ?o.} \n"+
+				"where{ "+
+				   "<"+osdSpecURL+"> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://openiot.eu/ontology/ns/OSDSPEC>."+
+				   "<"+osdSpecURL+"> ?p ?o."+
+				"}";			 
+		try{
+			conn = ConnectionManager.getConnectionPool().getConnection();			
+			Statement st = conn.createStatement();
+			st.execute(sql);
+			
+			sql = "sparql delete from <"+ metaGraph +"> {?s ?p <"+osdSpecURL+">.} \n"+
+					"where{ "+					  
+					   "?s ?p <" + osdSpecURL+">."+
+					"}";
+			
+			st.execute(sql);
+			ConnectionManager.attemptClose(st);
+			ConnectionManager.attemptClose(conn);
+		}catch(Exception e){
+			e.printStackTrace();
+			ConnectionManager.attemptClose(conn);
+			return false;
+		}
+		return  true;
+	}
+	
+	public boolean deleteOAMOById(String oamoId) {
+		// TODO Auto-generated method stub
+		Connection conn = null;
+		String prefix = "http://lsm.deri.ie/resource/";
+		String oamoURL = prefix + oamoId;
+		if(oamoId.contains(prefix)){
+			oamoURL = oamoId;
+		}
+		
+		List<String> osmos = getAllOSMOsOfOAMO(oamoId);
+		for(int i=0;i<osmos.size();i++){
+			deleteOSMOById(osmos.get(i));
+		}
+		String sql = "sparql delete from <"+ metaGraph +"> {<"+oamoURL+"> ?p ?o.} \n"+
+				"where{ "+
+				   "<"+oamoURL+"> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://openiot.eu/ontology/ns/OAMO>."+
+				   "<"+oamoURL+"> ?p ?o."+
+				"}";			 
+		try{
+			conn = ConnectionManager.getConnectionPool().getConnection();			
+			Statement st = conn.createStatement();
+			st.execute(sql);
+			
+			sql = "sparql delete from <"+ metaGraph +"> {?s ?p <"+oamoURL+">.} \n"+
+					"where{ "+					  
+					   "?s ?p <" + oamoURL+">."+
+					"}";
+			st.execute(sql);			
+			
+			ConnectionManager.attemptClose(st);
+			ConnectionManager.attemptClose(conn);
+		}catch(Exception e){
+			e.printStackTrace();
+			ConnectionManager.attemptClose(conn);
+			return false;
+		}
+		return  true;
+	}
+	
+	public boolean deleteOSMOById(String osmoId) {
+		// TODO Auto-generated method stub
+		Connection conn = null;
+		String prefix = "http://lsm.deri.ie/resource/";
+		String osmoURL = prefix + osmoId;
+		if(osmoId.contains(prefix)){
+			osmoURL = osmoId;
+		}
+		String sql = "sparql delete from <"+ metaGraph +"> {<"+osmoURL+"> ?p ?o.} \n"+
+				"where{ "+
+				   "<"+osmoURL+"> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://openiot.eu/ontology/ns/OSMO>."+
+				   "<"+osmoURL+"> ?p ?o."+
+				"}";			 
+		try{
+			conn = ConnectionManager.getConnectionPool().getConnection();			
+			Statement st = conn.createStatement();
+			st.execute(sql);
+			
+			sql = "sparql delete from <"+ metaGraph +"> {?s ?p <"+osmoURL+">.} \n"+
+					"where{ "+					  
+					   "?s ?p <" + osmoURL+">."+
+					"}";
+			st.execute(sql);
+			ConnectionManager.attemptClose(st);
+			ConnectionManager.attemptClose(conn);
+		}catch(Exception e){
+			e.printStackTrace();
+			ConnectionManager.attemptClose(conn);
+			return false;
+		}
+		return  true;
+	}
+	
+	public List<String> getAllOSMOsOfOAMO(String oamoID){
+		Connection conn = null;
+		List<String> oasmList  = null;
+		String sql = "sparql select ?osmo"+
+				" from <"+ metaGraph +"> \n" +
+				"where{ "+
+				   "<" + oamoID +"> <http://openiot.eu/ontology/ns/oamoHasOSMO> ?osmo."+		
+				"}";			 
+		try{
+			conn = ConnectionManager.getConnectionPool().getConnection();			
+			Statement st = conn.createStatement();
+			if(st.execute(sql)){
+				ResultSet rs = st.getResultSet();	
+				oasmList = new ArrayList<String>();
+				while(rs.next()){
+					String osmoId = rs.getString("osmo");
+					oasmList.add(osmoId);
+				}
+				ConnectionManager.attemptClose(rs);				
+			}
+			ConnectionManager.attemptClose(st);
+			ConnectionManager.attemptClose(conn);
+		}catch(Exception e){
+			e.printStackTrace();
+			ConnectionManager.attemptClose(conn);
+			return null;
+		}
+		return  oasmList;
+	}
+	
+	public List<String> getAllOAMOsOfOSDSpec(String osdspecID){
+		Connection conn = null;
+		List<String> oasmList  = null;
+		String sql = "sparql select ?oamo"+
+				" from <"+ metaGraph +"> \n" +
+				"where{ "+
+				   "<" + osdspecID +"> <http://openiot.eu/ontology/ns/osdpsecHasOamo> ?oamo."+		
+				"}";			 
+		try{
+			conn = ConnectionManager.getConnectionPool().getConnection();			
+			Statement st = conn.createStatement();
+			if(st.execute(sql)){
+				ResultSet rs = st.getResultSet();	
+				oasmList = new ArrayList<String>();
+				while(rs.next()){
+					String osmoId = rs.getString("oamo");
+					oasmList.add(osmoId);
+				}
+				ConnectionManager.attemptClose(rs);				
+			}
+			ConnectionManager.attemptClose(st);
+			ConnectionManager.attemptClose(conn);
+		}catch(Exception e){
+			e.printStackTrace();
+			ConnectionManager.attemptClose(conn);
+			return null;
+		}
+		return  oasmList;
+	}
 }

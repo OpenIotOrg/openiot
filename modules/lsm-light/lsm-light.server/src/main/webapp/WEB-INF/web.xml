@@ -28,28 +28,46 @@
     <servlet-name>DownloadFileServlet</servlet-name>
     <servlet-class>org.openiot.lsm.http.DownloadFileServlet</servlet-class>
   </servlet>
-  <servlet>
-    <servlet-name>OauthServlet</servlet-name>
-    <servlet-class>org.openiot.lsm.http.OauthServlet</servlet-class>
+  <servlet>  	
+  	<servlet-name>OauthServlet</servlet-name>
+  	<servlet-class>org.openiot.lsm.http.OauthServlet</servlet-class>
   </servlet>
+  <servlet>
+  	<description>
+  	</description>
+  	<display-name>SDUMServlet</display-name>
+  	<servlet-name>SDUMServlet</servlet-name>
+  	<servlet-class>org.openiot.lsm.http.SDUMServlet</servlet-class>
+  </servlet>  
+  
+    				<!-- mapping for LSM -->
   <servlet-mapping>
     <servlet-name>TriplesServlet</servlet-name>
     <url-pattern>/rdfservlet</url-pattern>
   </servlet-mapping>
+  
   <servlet-mapping>
     <servlet-name>ObjectServlet</servlet-name>
     <url-pattern>/objservlet</url-pattern>
   </servlet-mapping>
+  
+  
   <servlet-mapping>
     <servlet-name>UploadFileServlet</servlet-name>
     <url-pattern>/upload</url-pattern>
   </servlet-mapping>
+  
   <servlet-mapping>
     <servlet-name>DownloadFileServlet</servlet-name>
     <url-pattern>/download</url-pattern>
   </servlet-mapping>
+  
   <servlet-mapping>
-    <servlet-name>OauthServlet</servlet-name>
-    <url-pattern>/oauth</url-pattern>
+  	<servlet-name>OauthServlet</servlet-name>
+  	<url-pattern>/oauth</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+  	<servlet-name>SDUMServlet</servlet-name>
+  	<url-pattern>/SDUMServlet</url-pattern>
   </servlet-mapping>
 </web-app>
