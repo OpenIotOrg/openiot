@@ -96,6 +96,7 @@ public class utils {
             //sensor.setUser(user);
 
             // create LSMTripleStore instance
+            logger.info("Connecting to LSM: "+lsmSchema.getLsmServerUrl());
             LSMTripleStore lsmStore = new LSMTripleStore(lsmSchema.getLsmServerUrl());
 
             //set user information for authentication

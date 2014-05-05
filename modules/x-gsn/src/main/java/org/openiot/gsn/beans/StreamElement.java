@@ -16,6 +16,12 @@
 *    along with OpenIoT.  If not, see <http://www.gnu.org/licenses/>.
 *
 *     Contact: OpenIoT mailto: info@openiot.eu
+ * @author rhietala
+ * @author Timotee Maret
+ * @author Sofiane Sarni
+ * @author Ali Salehi
+ * @author Mehdi Riahi
+ * @author Julien Eberle
 */
 
 package org.openiot.gsn.beans;

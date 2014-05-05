@@ -1,5 +1,7 @@
 /**
-* Copyright (c) 2011-2014, OpenIoT
+*    Copyright (c) 2011-2014, OpenIoT
+*   
+*    This file is part of OpenIoT.
 *
 * This file is part of OpenIoT.
 *

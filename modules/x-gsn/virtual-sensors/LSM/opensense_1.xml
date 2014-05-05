@@ -13,9 +13,6 @@
     <description>sensorscope station</description>
     <life-cycle pool-size="10"/>
     <addressing>
-        <predicate key="geographical">Sensorscope station 1057</predicate>
-        <predicate key="LATITUDE">46.529838</predicate>
-        <predicate key="LONGITUDE">6.596818</predicate>
     </addressing>
     <streams>
         <stream name="input1">
@@ -26,7 +23,7 @@
                     <predicate key="formats">timestamp(d/M/y H:m), numeric, numeric,numeric,numeric,numeric,numeric</predicate>
                     <predicate key="bad-values">NaN,6999,-6999,null</predicate>
                     <predicate key="timezone">Etc/GMT-2</predicate>
-                    <predicate key="sampling">5000</predicate>
+                    <predicate key="sampling">20000</predicate>
                     <predicate key="check-point-directory">csv-check-points</predicate>
                 </address>
                 <query>select * from wrapper
