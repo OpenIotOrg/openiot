@@ -50,7 +50,7 @@ public class GetApplicationV2Impl
 		public static class RootOAMOData 
 		{
 			private String oamoName;
-			private String userID;
+			private String specID;
 			private String oamoDesc;
 			private String oamoGraphMeta;
 
@@ -64,12 +64,12 @@ public class GetApplicationV2Impl
 				this.oamoName = oamoName;
 			}
 
-			public String getUserID() {
-				return userID;
+			public String getSpecID() {
+				return specID;
 			}
 
-			public void setUserID(String userID) {
-				this.userID = userID;
+			public void setSpecID(String userID) {
+				this.specID = userID;
 			}
 
 			public String getOamoDesc() {
@@ -142,18 +142,11 @@ public class GetApplicationV2Impl
 						String str = (b.getValue((String) n) == null) ? null : b.getValue((String) n).stringValue();
 						rootOAMOData.setOamoName(str);
 						logger.debug("oamoName: " + rootOAMOData.getOamoName());
-					} else if (((String) n).equalsIgnoreCase("userID")) {
+					} else if (((String) n).equalsIgnoreCase("specID")) {
 						String str = (b.getValue((String) n) == null) ? null : b.getValue((String) n).stringValue();
-						rootOAMOData.setUserID(str);
-						logger.debug("userID: " + rootOAMOData.getUserID());
+						rootOAMOData.setSpecID(str);
+						logger.debug("specID: " + rootOAMOData.getSpecID());
 					}
-					// else if(((String) n).equalsIgnoreCase("serviceID"))
-					// {
-					// String str = (b.getValue((String) n)==null) ? null :
-					// b.getValue((String) n).stringValue();
-					// rootOAMOData.setServiceID(str);
-					// System.out.print("serviceID: "+rootOAMOData.getServiceID());
-					// }
 					else if (((String) n).equalsIgnoreCase("oamoDesc")) {
 						String str = (b.getValue((String) n) == null) ? null : b.getValue((String) n).stringValue();
 						rootOAMOData.setOamoDesc(str);
@@ -229,17 +222,6 @@ public class GetApplicationV2Impl
 			query.append( "optional { <"+ oamoID + "> <http://openiot.eu/ontology/ns/oamoName> ?oamoName . } ");
 			query.append( "}");
 			
-//			SELECT ?oamoName ?oamoDesc ?oamoGraphMeta ?osmoID ?specID
-//					from <http://lsm.deri.ie/OpenIoT/guest/functionaldata#>
-//					WHERE
-//					{
-//					<nodeID://b15002> <http://openiot.eu/ontology/ns/oamoOfOSDSpec> ?specID.
-//					<nodeID://b15002> <http://openiot.eu/ontology/ns/oamoHasOSMO> ?osmoID .
-//					optional { ://o<nodeID://b15002> <httppeniot.eu/ontology/ns/oamoGraphMeta> ?oamoGraphMeta . }
-//					optional { <nodeID://b15002> <http://openiot.eu/ontology/ns/oamoDescription> ?oamoDesc . }
-//					optional { <nodeID://b15002> <http://openiot.eu/ontology/ns/oamoName> ?oamoName . }
-//					}
-			
 			return query.toString();
 		}
 
@@ -255,15 +237,6 @@ public class GetApplicationV2Impl
 			query.append( "optional { ?osmoID  <http://openiot.eu/ontology/ns/osmoDescription> ?osmoDesc . } ");
 			query.append( "optional { ?osmoID  <http://openiot.eu/ontology/ns/osmoName> ?osmoName . } ");
 			query.append( "}");
-
-//			SELECT ?osmoID ?osmoName ?osmoDesc
-//					from <http://lsm.deri.ie/OpenIoT/guest/functionaldata#>
-//					WHERE
-//					{
-//					?osmoID <http://openiot.eu/ontology/ns/osmoOfOAMO> <nodeID://b15002> . 
-//					optional { ?osmoID  <http://openiot.eu/ontology/ns/osmoDescription> ?osmoDesc . }
-//					optional { ?osmoID  <http://openiot.eu/ontology/ns/osmoName> ?osmoName . }
-//					}
 			
 			return query.toString();
 		}
@@ -313,7 +286,7 @@ public class GetApplicationV2Impl
 		Queries.RootOAMOData rootOAMODATA = Queries.parseOAMORootData(qres);
 
 		oamo.setName(rootOAMODATA.getOamoName());
-		oamo.setId(rootOAMODATA.getUserID());
+		oamo.setId(oamoID);
 		oamo.setDescription(rootOAMODATA.getOamoDesc());
 		oamo.setGraphMeta(rootOAMODATA.getOamoGraphMeta());
 
