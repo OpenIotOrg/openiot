@@ -36,6 +36,22 @@ import org.apache.commons.lang.SerializationUtils;
 import org.openiot.commons.util.PropertyManagement;
 import org.openiot.lsm.beans.Place;
 import org.openiot.lsm.beans.Sensor;
+import org.openiot.lsm.schema.LSMSchema;
+import org.openiot.lsm.sdum.model.beans.OAMOBean;
+import org.openiot.lsm.sdum.model.beans.OSDSpecBean;
+import org.openiot.lsm.sdum.model.beans.OSMOBean;
+import org.openiot.lsm.sdum.model.beans.PresentationAttrBean;
+import org.openiot.lsm.sdum.model.beans.QueryRequestBean;
+import org.openiot.lsm.sdum.model.beans.WidgetBean;
+import org.openiot.lsm.sdum.model.entities.OAMOEnt;
+import org.openiot.lsm.sdum.model.entities.OSDSpecEnt;
+import org.openiot.lsm.sdum.model.entities.OSMOEnt;
+import org.openiot.lsm.sdum.model.entities.PresentationAttrEnt;
+import org.openiot.lsm.sdum.model.entities.QueryControlsEnt;
+import org.openiot.lsm.sdum.model.entities.QueryRequestEnt;
+import org.openiot.lsm.sdum.model.entities.ReqPresentationEnt;
+import org.openiot.lsm.sdum.model.entities.UserEnt;
+import org.openiot.lsm.sdum.model.entities.WidgetEnt;
 import org.openiot.lsm.security.oauth.LSMRegisteredServiceImpl;
 import org.openiot.lsm.security.oauth.LSMServiceTicketImpl;
 import org.openiot.lsm.security.oauth.LSMTicketGrantingTicketImpl;
@@ -315,6 +331,123 @@ public class TriplesDataRetriever {
 		return triples;
 	}
 
+	public static String OSDSpecBeanToRDF(OSDSpecBean osdspecBean)
+	{
+
+		//////////////////////////////////////////////////////////////
+		
+		UserEnt usrEnt = new UserEnt();
+		usrEnt.setUserBean(osdspecBean.getUserBean());
+		//
+		usrEnt.createClassIdv();
+		
+			OSDSpecEnt specEnt1 = new OSDSpecEnt(osdspecBean,usrEnt);
+			//
+			specEnt1.createClassIdv();
+			specEnt1.createPosdpsecOfUser(); //linking osdspec with user
+		
+			for(OAMOBean oamoBean : osdspecBean.getOamoBeanList())
+			{
+				OAMOEnt oamoE = new OAMOEnt(oamoBean,specEnt1);
+				//
+				oamoE.createClassIdv();
+				oamoE.createPoamoDescription();
+				oamoE.createPoamoGraphMeta();
+				oamoE.createPoamoName();
+				oamoE.createPoamoOfOSDSpec();
+				
+					for(OSMOBean osmoBean : oamoBean.getOsmoBeanList())
+					{
+						OSMOEnt osmoE = new OSMOEnt(osmoBean,oamoE);
+						//
+						osmoE.createClassIdv();
+						osmoE.createPosmoDescription();
+						osmoE.createPosmoName();
+						osmoE.createPosmoOfOAMO();
+						
+						QueryControlsEnt qcEnt = new QueryControlsEnt(osmoBean.getQueryControlsBean(),osmoE);
+						//
+						qcEnt.createClassIdv();
+						qcEnt.createPquerycontrolsReportIfEmpty();
+
+						osmoE.setQueryControlsEnt(qcEnt);
+						osmoE.createPosmoHasQueryControlsAsString();
+						
+							for(QueryRequestBean qreqBean : osmoBean.getQueryRequestBean())
+							{
+								QueryRequestEnt qReqE = new QueryRequestEnt(qreqBean,osmoE);
+								//
+								qReqE.createAll();
+								
+								osmoE.getQueryRequestEntList().add(qReqE);
+							}
+							
+						osmoE.createPosmoHasQueryRequestAsString();
+						
+							ReqPresentationEnt reqPreE = new ReqPresentationEnt(osmoBean.getReqPresentationBean(),osmoE);
+							//
+							reqPreE.createClassIdv();
+							reqPreE.createPreqPresentationOfOSMO();
+							
+								for(WidgetBean wBean : osmoBean.getReqPresentationBean().getWidgetBeanLsit())
+								{
+									WidgetEnt wEnt = new WidgetEnt(wBean,reqPreE);
+									//
+									wEnt.createClassIdv();
+									wEnt.createPpresentationAttrName();
+									
+										for(PresentationAttrBean preAttrBean : wBean.getPresentationAttrBeanList())
+										{
+											PresentationAttrEnt preAttrEnt = new PresentationAttrEnt(preAttrBean,wEnt);
+											//
+											preAttrEnt.createAll();
+											
+											wEnt.getPresentationAttrEntList().add(preAttrEnt);
+										}
+											
+									wEnt.createPwidgetHasPresAttrAsString();
+									
+									reqPreE.getWidgetEntList().add(wEnt);
+								}
+								
+							reqPreE.createPreqPresentationHasWidgetAsString();
+							
+						osmoE.setReqPresentationEnt(reqPreE);
+						osmoE.createPosmoHasRequestpresentationAsString();
+						
+						oamoE.getOsmoList().add(osmoE);
+					}
+				oamoE.createPoamoHasOSMO();
+				
+				specEnt1.getOamoEntList().add(oamoE);
+			}
+		specEnt1.createPosdpsecHasOamo();	
+				
+		usrEnt.getSpecEnt().add(specEnt1);
+		usrEnt.createPuserHasSpec(); //linking user with osdspec 
+		
+		
+		LSMSchema rootModel = new  LSMSchema();
+		
+		rootModel.getBase().add(usrEnt.getClassIndividual().getOntModel().getBaseModel());
+		for(OSDSpecEnt specEnt : usrEnt.getSpecEnt())
+		{
+			rootModel.getBase().add(specEnt.getClassIndividual().getOntModel().getBaseModel());
+			for(OAMOEnt oamoEnt : specEnt.getOamoEntList())
+			{
+				rootModel.getBase().add(oamoEnt.getClassIndividual().getOntModel().getBaseModel());
+				for(OSMOEnt osmoEnt : oamoEnt.getOsmoList())
+				{
+					rootModel.getBase().add(osmoEnt.getClassIndividual().getOntModel().getBaseModel());
+				}
+			}
+		}				
+		//export
+		String triples = rootModel.exportToTriples("TURTLE");
+		System.out.println(triples);
+		return triples;
+	}
+	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		System.setProperty("javax.xml.transform.TransformerFactory", "net.sf.saxon.TransformerFactoryImpl");

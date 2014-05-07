@@ -32,6 +32,13 @@
     <servlet-name>OauthServlet</servlet-name>
     <servlet-class>org.openiot.lsm.http.OauthServlet</servlet-class>
   </servlet>
+  <servlet>
+  	<description>
+  	</description>
+  	<display-name>SDUMServlet</display-name>
+  	<servlet-name>SDUMServlet</servlet-name>
+  	<servlet-class>org.openiot.lsm.http.SDUMServlet</servlet-class>
+  </servlet>
   <servlet-mapping>
     <servlet-name>TriplesServlet</servlet-name>
     <url-pattern>/rdfservlet</url-pattern>
@@ -51,5 +58,9 @@
   <servlet-mapping>
     <servlet-name>OauthServlet</servlet-name>
     <url-pattern>/oauth</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+  	<servlet-name>SDUMServlet</servlet-name>
+  	<url-pattern>/SDUMServlet</url-pattern>
   </servlet-mapping>
 </web-app>
