@@ -1,0 +1,2 @@
+ curl -v http://localhost:22001/vs/vsensor/sens123/registerRdf -X POST --data-binary @virtual-sensors/LSM/opensense_1.ttl
+ curl -v http://localhost:22001/vs/vsensor/sens123/create -X POST --data-binary @virtual-sensors/LSM/opensense_1.xml

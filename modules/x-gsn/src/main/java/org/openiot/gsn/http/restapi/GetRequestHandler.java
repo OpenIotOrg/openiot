@@ -16,6 +16,10 @@
 *    along with OpenIoT.  If not, see <http://www.gnu.org/licenses/>.
 *
 *     Contact: OpenIoT mailto: info@openiot.eu
+ * @author Sofiane Sarni
+ * @author Ivo Dimitrov
+ * @author Milos Stojanovic
+ * @author Jean-Paul Calbimonte
 */
 
 package org.openiot.gsn.http.restapi;

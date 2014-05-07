@@ -45,6 +45,8 @@ import org.openiot.lsm.utils.ConstantsUtil;
 import org.openiot.lsm.utils.DateUtil;
 import org.openiot.lsm.utils.VirtuosoConstantUtil;
 import org.openiot.lsm.utils.XSLTMapFile;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 
@@ -55,6 +57,7 @@ import org.openiot.lsm.utils.XSLTMapFile;
 public class TriplesDataRetriever {
 
 	static PropertyManagement propertyManagement = new PropertyManagement();
+	final static Logger logger = LoggerFactory.getLogger(SensorManager.class);
 	
 	public static String getTripleDataHasUnit(String dataType,String name,String value,String unit,String observationId,String observedURL,Date time){
 		String triples = "";
@@ -101,7 +104,8 @@ public class TriplesDataRetriever {
 		String xsltPath = XSLTMapFile.sensormeta2xslt;
 		xsltPath = ConstantsUtil.realPath + xsltPath;
 //		xsltPath = "src/main/webapp/WEB-INF" + xsltPath;
-		TransformerFactory tFactory = TransformerFactory.newInstance();
+		TransformerFactory tFactory = new net.sf.saxon.TransformerFactoryImpl();
+//		TransformerFactory.newInstance();
 		String prefix = propertyManagement.getOpeniotResourceNamespace();
         String xml = "";
         try {
@@ -112,6 +116,7 @@ public class TriplesDataRetriever {
         	
             Transformer transformer = tFactory.newTransformer(new StreamSource(new File(xsltPath)));
             transformer.setParameter("sensorId", s.getId());
+            transformer.setParameter("utc-timestamp", DateUtil.date2StandardString(new Date()));
 //            transformer.setParameter("sourceType", s.getSourceType());
             transformer.setParameter("prefix", prefix);
 //            transformer.setParameter("sourceURL", s.getSource());
@@ -156,7 +161,7 @@ public class TriplesDataRetriever {
             triples+= "<" + place.getId() +"> <http://www.w3.org/2003/01/geo/wgs84_pos#geometry> \"POINT("+place.getLng()+" "+place.getLat()+
             			")\"^^<http://www.openlinksw.com/schemas/virtrdf#Geometry>.\n";
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.info(e.toString());
         }
 		return triples;
 	}

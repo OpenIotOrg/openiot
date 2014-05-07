@@ -15,7 +15,8 @@
 *    You should have received a copy of the GNU Lesser General Public License
 *    along with OpenIoT.  If not, see <http://www.gnu.org/licenses/>.
 *
-*     Contact: OpenIoT mailto: info@openiot.eu
+*    Contact: OpenIoT mailto: info@openiot.eu
+*    @author Sofiane Sarni
 */
 
 package org.openiot.gsn.metadata.LSM;
@@ -23,12 +24,31 @@ package org.openiot.gsn.metadata.LSM;
 import org.openiot.gsn.utils.PropertiesReader;
 import org.apache.log4j.Logger;
 
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigFactory;
+
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
 public class LSMSensorMetaData {
 
     private static final transient Logger logger = Logger.getLogger(LSMSensorMetaData.class);
+    
+    private String sensorName;
+    private String author;
+    private String sensorType;
+    private String information;
+    private String sourceType;
+    private String source;
+    private String featureOfInterest;
+    //private String[] properties;
+    //private boolean registeredToLSM;
+    private double latitude;
+    private double longitude;
+    //private String fieldNames[];
+    private Map<String, LSMFieldMetaData> fields = new HashMap<String, LSMFieldMetaData>();
+    String sensorID;
 
     public String getSensorName() {
         return sensorName;
@@ -50,15 +70,6 @@ public class LSMSensorMetaData {
         return sourceType;
     }
 
-    private String sensorName;
-    private String author;
-    private String sensorType;
-    private String information;
-    private String sourceType;
-    private String source;
-    private String[] properties;
-    private boolean registeredToLSM;
-
     public double getLatitude() {
         return latitude;
     }
@@ -75,32 +86,25 @@ public class LSMSensorMetaData {
         this.longitude = longitude;
     }
 
-    private double latitude;
-    private double longitude;
-
-    public String[] getFieldNames() {
+    /*public String[] getFieldNames() {
         return fieldNames;
     }
 
     public void setFieldNames(String[] fieldNames) {
         this.fieldNames = fieldNames;
-    }
-
-    private String fieldNames[];
-    private Map<String, LSMFieldMetaData> fields = new HashMap<String, LSMFieldMetaData>();
-
+    }*/
 
     public Map<String, LSMFieldMetaData> getFields() {
         return fields;
     }
-
+/*
     public void setFields(Map<String, LSMFieldMetaData> fields) {
         this.fields = fields;
     }
-
-    public boolean isRegisteredToLSM() {
+*/
+    /*public boolean isRegisteredToLSM() {
         return registeredToLSM;
-    }
+    }*/
 
     public String getSource() {
         return source;
@@ -110,7 +114,6 @@ public class LSMSensorMetaData {
         this.source = source;
     }
 
-
     public String getSensorID() {
         return sensorID;
     }
@@ -118,8 +121,6 @@ public class LSMSensorMetaData {
     public void setSensorID(String sensorID) {
         this.sensorID = sensorID;
     }
-
-    String sensorID;
 
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -132,8 +133,8 @@ public class LSMSensorMetaData {
                 .append("\nsource      =").append(source)
                 .append("\nsensorID    =").append(sensorID)
                 .append("\nfields =>\n");
-        for (int i=0;i<fieldNames.length;i++) {
-            sb.append("\t").append(fieldNames[i]).append(" : ").append(fields.get(fieldNames[i])).append("\n");
+        for (String fieldName:fields.keySet()) {
+            sb.append("\t").append(fieldName).append(" : ").append(fields.get(fieldName)).append("\n");
         }
         return sb.toString();
     }
@@ -158,69 +159,71 @@ public class LSMSensorMetaData {
         this.sourceType = sourceType;
     }
 
-    public boolean initFromConfigFile(String fileName) {
+    public void init(Config conf){
+     
+    	this.setSensorName(conf.getString("sensorName"));
+        this.setAuthor(conf.getString("author"));
+        this.setInformation(conf.getString("information"));
+        this.setSensorType(conf.getString("sensorType"));
+        this.setSourceType(conf.getString("sourceType"));
+        this.setSource(conf.getString("source"));
+        this.setSensorID(conf.getString("sensorID"));
+        this.setLatitude(conf.getDouble("latitude"));
+        this.setLongitude(conf.getDouble("longitude"));
 
-        try {
-            //TODO: optimization: read properties file once, then scan for each field
-            logger.debug("Read file "+fileName);
-            
-        	this.setSensorName(PropertiesReader.readProperty(fileName, "sensorName"));
-            this.setAuthor(PropertiesReader.readProperty(fileName, "author"));
-            this.setInformation(PropertiesReader.readProperty(fileName, "information"));
-            this.setSensorType(PropertiesReader.readProperty(fileName, "sensorType"));
-            this.setSourceType(PropertiesReader.readProperty(fileName, "sourceType"));
-            this.setSource(PropertiesReader.readProperty(fileName, "source"));
-            this.setSensorID(PropertiesReader.readProperty(fileName, "sensorID"));
-            this.setLatitude(Double.parseDouble(PropertiesReader.readProperty(fileName, "latitude")));
-            this.setLongitude(Double.parseDouble(PropertiesReader.readProperty(fileName, "longitude")));
-
-            String registeredToLSMString = PropertiesReader.readProperty(fileName, "registered");
-            if (registeredToLSMString.equalsIgnoreCase("true"))
-                registeredToLSM = true;
-            else
-                registeredToLSM = false;
-            String listOfFieldsString = PropertiesReader.readProperty(fileName, "fields");
-            fieldNames = listOfFieldsString.trim().split(",");
-            for (int i = 0; i < fieldNames.length; i++) {
-                String fieldName = fieldNames[i];
-                logger.info(i + " : " + fieldName);
-                LSMFieldMetaData lsmFieldMetaData = new LSMFieldMetaData();
-                lsmFieldMetaData.setGsnFieldName(fieldName);
-                lsmFieldMetaData.setLsmPropertyName(PropertiesReader.readProperty(fileName, "field." + fieldName + "." + "propertyName"));
-                lsmFieldMetaData.setLsmUnit(PropertiesReader.readProperty(fileName, "field." + fieldName + "." + "unit"));
-                fields.put(fieldName, lsmFieldMetaData);
-                logger.info(fields.get(fieldName));
-            }
-            String [] props = new String[fieldNames.length];
-            int i=0;
-            for (LSMFieldMetaData field : fields.values()){
-            	props[i]=field.getLsmPropertyName();i++;
-            }
-            this.setProperties(props);
-
-        } catch (NullPointerException e) {
-            logger.warn("Error while reading properties file: " + fileName);
-            logger.warn(e);
-            return false;
+        /*String registeredToLSMString = PropertiesReader.readProperty(fileName, "registered");
+        if (registeredToLSMString.equalsIgnoreCase("true"))
+            registeredToLSM = true;
+        else
+            registeredToLSM = false;*/
+        String listOfFieldsString = conf.getString("fields");
+        String [] fieldNames = listOfFieldsString.trim().split(",");
+        for (int i = 0; i < fieldNames.length; i++) {
+            String fieldName = fieldNames[i];
+            logger.info(i + " : " + fieldName);
+            LSMFieldMetaData lsmFieldMetaData = new LSMFieldMetaData();
+            lsmFieldMetaData.setGsnFieldName(fieldName);
+            lsmFieldMetaData.setLsmPropertyName(conf.getString("field." + fieldName + "." + "propertyName"));
+            lsmFieldMetaData.setLsmUnit(conf.getString("field." + fieldName + "." + "unit"));
+            fields.put(fieldName, lsmFieldMetaData);
+            logger.info(fields.get(fieldName));
         }
 
-        return true;
+    }
+    
+    public void initFromConfigFile(String fileName) {
+    	logger.debug("Read file "+fileName);
+        Config conf = ConfigFactory.parseFile(new File(fileName));
+        init(conf);
     }
 
-    public boolean updateSensorIDInConfigFile(String fileName, String sensorID) {
+    /*public boolean updateSensorIDInConfigFile(String fileName, String sensorID) {
         return PropertiesReader.writeProperty(fileName, "sensorID", sensorID);
     }
 
     public boolean setSensorAsRegistered(String fileName) {
         return PropertiesReader.writeProperty(fileName, "registered", "true");
-    }
+    }*/
 
 	public String[] getProperties() {
-		return properties;
+		String [] props = new String[fields.size()];
+        int i=0;
+        for (LSMFieldMetaData field : fields.values()){
+        	props[i]=field.getLsmPropertyName();i++;
+        }
+		return props;
 	}
-
+/*
 	public void setProperties(String[] properties) {
 		this.properties = properties;
+	}
+*/
+	public String getFeatureOfInterest() {
+		return featureOfInterest;
+	}
+
+	public void setFeatureOfInterest(String featureOfInterest) {
+		this.featureOfInterest = featureOfInterest;
 	}
 
 }

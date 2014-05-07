@@ -16,6 +16,9 @@
 *    along with OpenIoT.  If not, see <http://www.gnu.org/licenses/>.
 *
 *     Contact: OpenIoT mailto: info@openiot.eu
+ * @author Ivo Dimitrov
+ * @author Sofiane Sarni
+ * @author Milos Stojanovic
 */
 
 package org.openiot.gsn.http.restapi;
@@ -92,6 +95,7 @@ public class RestServlet extends HttpServlet {
     }
 
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    	
         response.getWriter().write("REST POST" + "\n" + request.getRequestURI());
     }
 

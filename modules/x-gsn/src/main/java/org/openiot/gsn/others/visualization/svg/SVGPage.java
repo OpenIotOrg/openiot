@@ -16,6 +16,8 @@
 *    along with OpenIoT.  If not, see <http://www.gnu.org/licenses/>.
 *
 *     Contact: OpenIoT mailto: info@openiot.eu
+ * @author Ali Salehi
+ * @author Sofiane Sarni
 */
 
 package org.openiot.gsn.others.visualization.svg;

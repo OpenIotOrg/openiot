@@ -16,6 +16,11 @@
 *    along with OpenIoT.  If not, see <http://www.gnu.org/licenses/>.
 *
 *     Contact: OpenIoT mailto: info@openiot.eu
+ * @author Ali Salehi
+ * @author Timotee Maret
+ * @author Behnaz Bostanipour
+ * @author Sofiane Sarni
+ * @author Milos Stojanovic
 */
 
 package org.openiot.gsn.http;

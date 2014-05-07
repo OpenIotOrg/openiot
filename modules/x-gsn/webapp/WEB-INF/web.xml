@@ -60,7 +60,7 @@
         <display-name>GSN Main Menu</display-name>
         <servlet-class>org.openiot.gsn.http.MenuServlet</servlet-class>
     </servlet>
-
+<!-- 
     <servlet>
         <servlet-name>MyCreateGroupServlet</servlet-name>
         <display-name>MyCreateGroupServlet</display-name>
@@ -211,7 +211,7 @@
         <display-name>MyAccessRightsManagementServlet</display-name>
         <servlet-class>org.openiot.gsn.http.ac.MyAccessRightsManagementServlet</servlet-class>
     </servlet>
-
+-->
 
    <servlet>
        <servlet-name>GridDataServlet</servlet-name>
@@ -225,6 +225,15 @@
        <servlet-class>org.openiot.gsn.http.restapi.RestServlet</servlet-class>
    </servlet>
 
+   <servlet>
+       <servlet-name>VSServlet</servlet-name>
+       <display-name>VSServlet</display-name>
+       <servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
+       <init-param>
+         <param-name>javax.ws.rs.Application</param-name>
+         <param-value>org.openiot.gsn.http.restapi.VSManagerApplication</param-value>
+       </init-param>
+   </servlet>
 
 
    
@@ -271,13 +280,17 @@
     	<servlet-name>RestServlet</servlet-name>
     	<url-pattern>/rest/*</url-pattern>
     </servlet-mapping>
+    <servlet-mapping>
+    	<servlet-name>VSServlet</servlet-name>
+    	<url-pattern>/vs/*</url-pattern>
+    </servlet-mapping>
 
 
     <servlet-mapping>
         <servlet-name>MenuServlet</servlet-name>
         <url-pattern>/menu.jsp</url-pattern>
     </servlet-mapping>
-
+<!-- 
      <servlet-mapping>
             <servlet-name>MyCreateGroupServlet</servlet-name>
             <url-pattern>/gsn/MyCreateGroupServlet</url-pattern>
@@ -406,7 +419,7 @@
             <servlet-name>MyAccessRightsManagementServlet</servlet-name>
             <url-pattern>/gsn/MyAccessRightsManagementServlet</url-pattern>
      </servlet-mapping>
-
+-->
 
      
 
@@ -428,8 +441,8 @@
 
 
      <filter>
-        <display-name>MyControllerFilter</display-name>
         <filter-name>MyControllerFilter</filter-name>
+        <display-name>MyControllerFilter</display-name>
         <filter-class>org.openiot.gsn.http.ac.MyControllerFilter</filter-class>
          <init-param>
             <param-name>logIPs</param-name>
@@ -447,7 +460,10 @@
        <url-pattern>/griddata</url-pattern>
    </filter-mapping>
 
-      
+<context-param>
+    <param-name>resteasy.use.deployment.sensitive.factory</param-name>
+    <param-value>false</param-value>
+</context-param>
      
     <mime-mapping>
         <extension>inc</extension>
