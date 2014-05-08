@@ -55,7 +55,7 @@ public class MenuFactory implements Serializable {
 
 	/**
 	 * Creates the main menu according to the Injected Navigation map from Resources
-	 * */
+	 */
 	public DefaultMenuModel createMainMenu() {
 
 		DefaultMenuModel menu = new DefaultMenuModel();
@@ -129,6 +129,7 @@ public class MenuFactory implements Serializable {
 	 * Groups the navigation properties in a Linked Hashmap where
 	 * Key = the navigation group name e.g. Request Presentation
 	 * Values = a Hashmap with the group fields e.g. Url, Title, Active Monitoring
+	 *
 	 * @return
 	 */
 	private HashMap<String, HashMap<String, String>> createPropertyMap() {
@@ -168,6 +169,7 @@ public class MenuFactory implements Serializable {
 
 	/**
 	 * checks if the base Url ends with a '/' character and appends accordingly
+	 *
 	 * @param baseUrl
 	 * @return
 	 */
@@ -183,15 +185,16 @@ public class MenuFactory implements Serializable {
 	 */
 	private void validateUrls() {
 
+		//TODO Remove comments for old way
 		//Spawn a new Thread for each url Validation
-		List<Thread> threads = new ArrayList<>(propertyMap.size());
+//		List<Thread> threads = new ArrayList<>(propertyMap.size());
 
 		ExecutorService es = Executors.newFixedThreadPool(propertyMap.entrySet().size());
 
 
 		for (Map.Entry<String, HashMap<String, String>> entry : propertyMap.entrySet()) {
 			es.execute(new ValidatorRunnable(entry));
-			threads.add(new Thread(new ValidatorRunnable(entry)));
+//			threads.add(new Thread(new ValidatorRunnable(entry)));
 		}
 
 		es.shutdown();
@@ -201,6 +204,7 @@ public class MenuFactory implements Serializable {
 			e.printStackTrace();
 		}
 
+		//alternative way to do the above with threads
 //		for (Thread t : threads) {
 //			t.start();
 //		}
@@ -224,13 +228,13 @@ public class MenuFactory implements Serializable {
 		Map.Entry<String, HashMap<String, String>> entry;
 
 		private ValidatorRunnable(Map.Entry<String, HashMap<String, String>> entry) {
-			this.entry = entry;
+			ValidatorRunnable.this.entry = entry;
 		}
 
 		@Override
 		public void run() {
 			String url = entry.getValue().get(FIELD_URL);
-			boolean isUrlValid = isValid(entry.getValue().get(FIELD_URL));
+			boolean isUrlValid = isValid(url);
 
 			if (!isUrlValid) {
 				propertyMap.remove(entry.getKey());

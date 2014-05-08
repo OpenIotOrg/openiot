@@ -46,9 +46,7 @@ public class LayoutController implements Serializable {
 	@PostConstruct
 	public void init() {
 
-
 		menu = menuFactory.createMainMenu();
-
 		navigation = "welcome.jsf";
 	}
 
