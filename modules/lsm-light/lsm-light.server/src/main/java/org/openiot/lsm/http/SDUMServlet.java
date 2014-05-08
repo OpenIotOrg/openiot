@@ -11,7 +11,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.openiot.commons.osdspec.model.OSDSpec;
-import org.openiot.lsm.functionalont.ops.SchedulerOps;
 import org.openiot.lsm.manager.SensorManager;
 import org.openiot.lsm.manager.TriplesDataRetriever;
 import org.openiot.lsm.sdum.model.beans.OSDSpecBean;
