@@ -46,9 +46,7 @@ public class LayoutController implements Serializable {
 	@PostConstruct
 	public void init() {
 
-
 		menu = menuFactory.createMainMenu();
-
 		navigation = "welcome.jsf";
 	}
 
@@ -64,31 +62,4 @@ public class LayoutController implements Serializable {
 		return menu;
 	}
 
-	/**
-	 * Checks if the component exists / is Loaded in order to display the menu
-	 * link
-	 *
-	 * @return boolean
-	 */
-//	public boolean isLoaded(String url) {
-//
-//		Boolean b = true;
-//
-//		if (map.containsKey(url)) {
-//			b = map.get(url);
-//		} else {
-//			try {
-//				URL u = new URL(url);
-//				HttpURLConnection huc = (HttpURLConnection) u.openConnection();
-//				huc.setRequestMethod("HEAD");
-//				huc.connect();
-//				b = huc.getResponseCode() == HttpURLConnection.HTTP_OK;
-//				map.put(url, b);
-//			} catch (IOException e) {
-//				// e.printStackTrace();
-//			}
-//		}
-//
-//		return b;
-//	}
 }

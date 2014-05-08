@@ -197,6 +197,23 @@
 			<version>4</version>
 		</dependency>
 
+		<dependency>
+			<groupId>org.openrdf.sesame</groupId>
+			<artifactId>sesame-query</artifactId>
+			<version>2.7.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.openrdf.sesame</groupId>
+			<artifactId>sesame-queryresultio-sparqlxml</artifactId>
+			<version>2.7.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.openrdf.sesame</groupId>
+			<artifactId>sesame-repository-sparql</artifactId>
+			<version>2.7.0</version>
+		</dependency>
+
+
 		<!-- ======== LogBack Dependencies ========== -->
 
 		<dependency>

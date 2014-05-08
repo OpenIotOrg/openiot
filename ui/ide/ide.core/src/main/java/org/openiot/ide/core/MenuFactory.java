@@ -1,5 +1,25 @@
 package org.openiot.ide.core;
 
+/**
+ *    Copyright (c) 2011-2014, OpenIoT
+ *
+ *    This file is part of OpenIoT.
+ *
+ *    OpenIoT is free software: you can redistribute it and/or modify
+ *    it under the terms of the GNU Lesser General Public License as published by
+ *    the Free Software Foundation, version 3 of the License.
+ *
+ *    OpenIoT is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *    GNU Lesser General Public License for more details.
+ *
+ *    You should have received a copy of the GNU Lesser General Public License
+ *    along with OpenIoT.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *     Contact: OpenIoT mailto: info@openiot.eu
+ */
+
 import org.apache.commons.collections.map.MultiValueMap;
 import org.apache.commons.lang3.StringUtils;
 import org.omnifaces.util.Faces;
@@ -21,7 +41,7 @@ import java.util.concurrent.TimeUnit;
 
 
 /**
- * Created by Chris Georgoulis on 2/4/2014.
+ * @author Chris Georgoulis e-mail: cgeo@ait.edu.gr
  */
 @RequestScoped
 public class MenuFactory implements Serializable {
@@ -55,7 +75,7 @@ public class MenuFactory implements Serializable {
 
 	/**
 	 * Creates the main menu according to the Injected Navigation map from Resources
-	 * */
+	 */
 	public DefaultMenuModel createMainMenu() {
 
 		DefaultMenuModel menu = new DefaultMenuModel();
@@ -129,6 +149,7 @@ public class MenuFactory implements Serializable {
 	 * Groups the navigation properties in a Linked Hashmap where
 	 * Key = the navigation group name e.g. Request Presentation
 	 * Values = a Hashmap with the group fields e.g. Url, Title, Active Monitoring
+	 *
 	 * @return
 	 */
 	private HashMap<String, HashMap<String, String>> createPropertyMap() {
@@ -168,6 +189,7 @@ public class MenuFactory implements Serializable {
 
 	/**
 	 * checks if the base Url ends with a '/' character and appends accordingly
+	 *
 	 * @param baseUrl
 	 * @return
 	 */
@@ -183,15 +205,16 @@ public class MenuFactory implements Serializable {
 	 */
 	private void validateUrls() {
 
+		//TODO Remove comments for old way
 		//Spawn a new Thread for each url Validation
-		List<Thread> threads = new ArrayList<>(propertyMap.size());
+//		List<Thread> threads = new ArrayList<>(propertyMap.size());
 
 		ExecutorService es = Executors.newFixedThreadPool(propertyMap.entrySet().size());
 
 
 		for (Map.Entry<String, HashMap<String, String>> entry : propertyMap.entrySet()) {
 			es.execute(new ValidatorRunnable(entry));
-			threads.add(new Thread(new ValidatorRunnable(entry)));
+//			threads.add(new Thread(new ValidatorRunnable(entry)));
 		}
 
 		es.shutdown();
@@ -201,6 +224,7 @@ public class MenuFactory implements Serializable {
 			e.printStackTrace();
 		}
 
+		//alternative way to do the above with threads
 //		for (Thread t : threads) {
 //			t.start();
 //		}
@@ -224,13 +248,13 @@ public class MenuFactory implements Serializable {
 		Map.Entry<String, HashMap<String, String>> entry;
 
 		private ValidatorRunnable(Map.Entry<String, HashMap<String, String>> entry) {
-			this.entry = entry;
+			ValidatorRunnable.this.entry = entry;
 		}
 
 		@Override
 		public void run() {
 			String url = entry.getValue().get(FIELD_URL);
-			boolean isUrlValid = isValid(entry.getValue().get(FIELD_URL));
+			boolean isUrlValid = isValid(url);
 
 			if (!isUrlValid) {
 				propertyMap.remove(entry.getKey());
@@ -238,7 +262,7 @@ public class MenuFactory implements Serializable {
 		}
 
 		public boolean isValid(String url) {
-//
+
 			boolean isValid = true;
 
 			try {
