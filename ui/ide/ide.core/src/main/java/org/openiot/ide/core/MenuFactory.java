@@ -242,7 +242,7 @@ public class MenuFactory implements Serializable {
 		}
 
 		public boolean isValid(String url) {
-//
+
 			boolean isValid = true;
 
 			try {
