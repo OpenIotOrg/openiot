@@ -38,9 +38,12 @@ import org.openiot.lsm.beans.RDFTuple;
 import org.openiot.lsm.beans.Sensor;
 import org.openiot.lsm.manager.SensorManager;
 import org.openiot.lsm.manager.TriplesDataRetriever;
+import org.openiot.lsm.pooling.ConnectionManager;
 import org.openiot.lsm.utils.ConstantsUtil;
 import org.openiot.lsm.utils.NumberUtil;
+import org.openiot.lsm.utils.SecurityUtil;
 import org.openiot.lsm.utils.VirtuosoConstantUtil;
+import org.openiot.security.client.PermissionsUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -96,11 +99,13 @@ public class ObjectServlet extends HttpServlet {
 			String graphURL = request.getHeader("graphURL");
 	        String api = request.getHeader("api");	      
 	        String apiType = request.getHeader("apiType");
-//	        System.out.println(api);        
+//	        System.out.println(api); 
+	        String token = request.getHeader("token");
+	        String clientId = request.getHeader("clientId");
 	        logger.info("API function:"+api);
 	       
 	        if(NumberUtil.isInteger(api)){        
-		      	sb = processRequestImpl(api,object);
+		      	sb = processRequestImpl(api,object,clientId,token);
 		    }	
         	response.setContentType("text/xml");
             response.setHeader("Pragma", "no-cache"); // HTTP 1.0
@@ -117,29 +122,37 @@ public class ObjectServlet extends HttpServlet {
 	}
 
 
-	private String processRequestImpl(String api, Object object) {
+	private String processRequestImpl(String api, Object object,String clientId,String token) {
 		// TODO Auto-generated method stub
 		String result="Your request processed successfully";		
 		try {
 			 SensorManager sensorManager = new SensorManager();
-			 Sensor sensor = null;			 
+			 Sensor sensor = null;	
+			 String triples = "";
 			 switch(api){
 	        	case "21":	        		
 					if(object instanceof Sensor)
 						sensor = (Sensor) object;
 					else break;						
 					logger.info("add new sensor with id = "+sensor.getId()); 
-			        String sensorTypeId = sensorManager.getSensorTypeId(sensor.getSensorType().toLowerCase());
-	        		String triples = TriplesDataRetriever.getSensorTripleMetadata(sensor,sensorTypeId);
-//	        		System.out.println(triples);
-	        		if((sensor.getMetaGraph()==null)||(sensor.getMetaGraph()==""))
-	        			sensor.setMetaGraph(propertyManagement.getSchedulerLsmMetaGraph());
-	        		sensorManager.setDataGraph(sensor.getDataGraph());
-	        		sensorManager.setMetaGraph(sensor.getMetaGraph());
-	        		sensorManager.insertTriplesToGraph(sensor.getMetaGraph(), triples);
-	        		sensorManager.runSpatialIndex();
-	        		logger.info("Add new sensor");
-	        		logger.debug("Add new sensor");
+					String permissionString = PermissionsUtil.ADD_SENSOR;
+					
+					if(SecurityUtil.hasPermission(permissionString, getServletContext(), token, clientId)){
+						if((sensor.getMetaGraph()==null)||(sensor.getMetaGraph()==""))
+		        			sensor.setMetaGraph(propertyManagement.getSchedulerLsmMetaGraph());
+		        		sensorManager.setDataGraph(sensor.getDataGraph());
+		        		sensorManager.setMetaGraph(sensor.getMetaGraph());
+				        String sensorTypeId = sensorManager.getSensorTypeId(sensor.getSensorType().toLowerCase());
+		        		triples = TriplesDataRetriever.getSensorTripleMetadata(sensor,sensorTypeId);
+//		        		logger.info(triples);		        		
+		        		sensorManager.insertTriplesToGraph(sensor.getMetaGraph(), triples);
+//		        		sensorManager.runSpatialIndex();
+		        		logger.info("Add new sensor");
+//		        		logger.debug("Add new sensor");
+					}else{
+			 			result ="You don't have permmison to operate this funtion";
+			 			logger.info(result);
+					}
 	        		break;
 	        	case "22":
 	        		Observation observation = null;
@@ -148,31 +161,43 @@ public class ObjectServlet extends HttpServlet {
 					else break;						
 				    logger.info("add Observation object with id = "+observation.getId());
 	        		triples = "";
-     		
-	        		if((observation.getMetaGraph()==null)||(observation.getMetaGraph()==""))
-	        			observation.setMetaGraph(propertyManagement.getLSMLocalMetaGraph());
-
-	        		sensorManager.setDataGraph(observation.getDataGraph());
-	        		sensorManager.setMetaGraph(observation.getMetaGraph());
-
-	        		sensor = sensorManager.getSpecifiedSensorWithSensorId(observation.getSensor());
-	        		String foi = VirtuosoConstantUtil.sensorObjectDataPrefix + 
-							Double.toString(sensor.getPlace().getLat()).replace(".", "").replace("-", "")+
-							Double.toString(sensor.getPlace().getLng()).replace(".", "").replace("-", "");					
-	        		triples+=TriplesDataRetriever.getObservationTripleData(observation.getId(), observation.getSensor(), foi, observation.getTimes());
-	        		
-	        		OntModel model = ModelFactory.createOntologyModel();	        		        		
-	        		for(ObservedProperty obv : observation.getReadings()){
-	        			OntClass cl = model.createClass(obv.getPropertyType());	
-	        			if(obv.getUnit().equals(""))
-	        				triples+=TriplesDataRetriever.getTripleDataHasNoUnit("http://purl.oclc.org/NET/ssnx/ssn#ObservationValue",cl.getLocalName(),obv.getValue(), 
-	        						observation.getId(),sensor.getProperties().get(obv.getPropertyType()), observation.getTimes());
-	        			else triples+=TriplesDataRetriever.getTripleDataHasUnit("http://purl.oclc.org/NET/ssnx/ssn#ObservationValue",cl.getLocalName(),obv.getValue(),obv.getUnit(),
-	        						observation.getId(),sensor.getProperties().get(obv.getPropertyType()), observation.getTimes());
-	        		}
-//	        		System.out.println(triples);	 
-	        		sensorManager.insertTriplesToGraph(observation.getDataGraph(), triples);
-	        		logger.info("Add new sensor data successfully");
+	        		permissionString = PermissionsUtil.UPDATE_SENSOR_DATA;
+	        		if(SecurityUtil.hasPermission(permissionString, getServletContext(), token, clientId)){
+		        		if((observation.getMetaGraph()==null)||(observation.getMetaGraph()==""))
+		        			observation.setMetaGraph(propertyManagement.getLSMLocalMetaGraph());
+	
+		        		sensorManager.setDataGraph(observation.getDataGraph());
+		        		sensorManager.setMetaGraph(observation.getMetaGraph());
+	
+		        		sensor = sensorManager.getSpecifiedSensorWithSensorId(observation.getSensor());
+		        		if(sensor==null){
+		        			result="Sensor "+observation.getSensor()+" has not been registered yet. Please register your sensor!";
+		        			return result;
+		        		}
+		        		String foi = "";
+		        		if(observation.getFeatureOfInterest().equals("")||observation.getFeatureOfInterest()==null)
+		        			foi = ConnectionManager.propertyManagement.getOpeniotResourceNamespace() + 
+								Double.toString(sensor.getPlace().getLat()).replace(".", "").replace("-", "")+
+								Double.toString(sensor.getPlace().getLng()).replace(".", "").replace("-", "");	
+		        		else foi = observation.getFeatureOfInterest();					
+		        		triples+=TriplesDataRetriever.getObservationTripleData(observation.getId(), observation.getSensor(), foi, observation.getTimes());
+		        		
+		        		OntModel model = ModelFactory.createOntologyModel();	        		        		
+		        		for(ObservedProperty obv : observation.getReadings()){
+		        			OntClass cl = model.createClass(obv.getPropertyType());	
+		        			if(obv.getUnit().equals(""))
+		        				triples+=TriplesDataRetriever.getTripleDataHasNoUnit("http://purl.oclc.org/NET/ssnx/ssn#ObservationValue",cl.getLocalName(),obv.getValue(), 
+		        						observation.getId(),sensor.getProperties().get(obv.getPropertyType()), observation.getTimes());
+		        			else triples+=TriplesDataRetriever.getTripleDataHasUnit("http://purl.oclc.org/NET/ssnx/ssn#ObservationValue",cl.getLocalName(),obv.getValue(),obv.getUnit(),
+		        						observation.getId(),sensor.getProperties().get(obv.getPropertyType()), observation.getTimes());
+		        		}
+	//	        		System.out.println(triples);	 
+		        		sensorManager.insertTriplesToGraph(observation.getDataGraph(), triples);
+		        		logger.info("Add new sensor data successfully");
+	        		}else{
+			 			result ="You don't have permmison to operate this funtion";
+			 			logger.info(result);
+					}
 	        		break;
 	        	case "23":	        		
 	        		RDFTuple tuple = null;
@@ -180,8 +205,14 @@ public class ObjectServlet extends HttpServlet {
 						tuple = (RDFTuple) object;
 					else break;						
 //				    System.out.println(tuple.getNtriple()); 
-	        		sensorManager.insertTriplesToGraph(tuple.getGraphURL(), tuple.getNtriple());
-	        		logger.info("Add triples to graph "+tuple.getGraphURL());
+					permissionString = PermissionsUtil.ADD_TRIPLES;
+					if(SecurityUtil.hasPermission(permissionString, getServletContext(), token, clientId)){
+		        		sensorManager.insertTriplesToGraph(tuple.getGraphURL(), tuple.getNtriple());
+		        		logger.info("Add triples to graph "+tuple.getGraphURL());
+					}else{
+			 			result ="You don't have permmison to operate this funtion";
+			 			logger.info(result);
+					}
 	        		break;
 	        	case "24":	        		
 	        		tuple = null;
@@ -189,19 +220,31 @@ public class ObjectServlet extends HttpServlet {
 						tuple = (RDFTuple) object;
 					else break;						
 //				    System.out.println(tuple.getNtriple()); 
-					if(tuple.getNtriple().equals("all")){
-						sensorManager.clearGraph(tuple.getGraphURL());
-						logger.info("Delete all triples of graph "+tuple.getGraphURL());
+					permissionString = PermissionsUtil.DEL_TRIPLES;
+					if(SecurityUtil.hasPermission(permissionString, getServletContext(), token, clientId)){
+						if(tuple.getNtriple().equals("all")){
+							sensorManager.clearGraph(tuple.getGraphURL());
+							logger.info("Delete all triples of graph "+tuple.getGraphURL());
+						}else{
+							sensorManager.deleteTriples(tuple.getGraphURL(), tuple.getNtriple());
+							logger.info("Delete triples patterns of graph "+tuple.getGraphURL());
+						}
 					}else{
-						sensorManager.deleteTriples(tuple.getGraphURL(), tuple.getNtriple());
-						logger.info("Delete triples patterns of graph "+tuple.getGraphURL());
+			 			result ="You don't have permmison to operate this funtion";
+			 			logger.info(result);
 					}
-	        		break;
+	        		break;					
 	        	case "25":
 	        		HashMap<String, String> patterns = null;
-	        		if(object instanceof HashMap<?,?>)
-	        			patterns = (HashMap<String, String>) object;
-	        		sensorManager.updateGraph(patterns.get("graph"),patterns.get("update"),patterns.get("delete"));
+	        		permissionString = PermissionsUtil.UPDATE_TRIPLES;
+					if(SecurityUtil.hasPermission(permissionString, getServletContext(), token, clientId)){
+		        		if(object instanceof HashMap<?,?>)
+		        			patterns = (HashMap<String, String>) object;
+		        		sensorManager.updateGraph(patterns.get("graph"),patterns.get("update"),patterns.get("delete"));
+					}else{
+			 			result ="You don't have permmison to operate this funtion";
+			 			logger.info(result);
+					}
 	        	default:
 	        		break;
 			 }		    			 

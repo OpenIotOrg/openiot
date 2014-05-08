@@ -33,8 +33,25 @@ import javax.xml.transform.stream.StreamSource;
 
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.lang.SerializationUtils;
+import org.openiot.commons.util.PropertyManagement;
 import org.openiot.lsm.beans.Place;
 import org.openiot.lsm.beans.Sensor;
+import org.openiot.lsm.schema.LSMSchema;
+import org.openiot.lsm.sdum.model.beans.OAMOBean;
+import org.openiot.lsm.sdum.model.beans.OSDSpecBean;
+import org.openiot.lsm.sdum.model.beans.OSMOBean;
+import org.openiot.lsm.sdum.model.beans.PresentationAttrBean;
+import org.openiot.lsm.sdum.model.beans.QueryRequestBean;
+import org.openiot.lsm.sdum.model.beans.WidgetBean;
+import org.openiot.lsm.sdum.model.entities.OAMOEnt;
+import org.openiot.lsm.sdum.model.entities.OSDSpecEnt;
+import org.openiot.lsm.sdum.model.entities.OSMOEnt;
+import org.openiot.lsm.sdum.model.entities.PresentationAttrEnt;
+import org.openiot.lsm.sdum.model.entities.QueryControlsEnt;
+import org.openiot.lsm.sdum.model.entities.QueryRequestEnt;
+import org.openiot.lsm.sdum.model.entities.ReqPresentationEnt;
+import org.openiot.lsm.sdum.model.entities.UserEnt;
+import org.openiot.lsm.sdum.model.entities.WidgetEnt;
 import org.openiot.lsm.security.oauth.LSMRegisteredServiceImpl;
 import org.openiot.lsm.security.oauth.LSMServiceTicketImpl;
 import org.openiot.lsm.security.oauth.LSMTicketGrantingTicketImpl;
@@ -44,6 +61,8 @@ import org.openiot.lsm.utils.ConstantsUtil;
 import org.openiot.lsm.utils.DateUtil;
 import org.openiot.lsm.utils.VirtuosoConstantUtil;
 import org.openiot.lsm.utils.XSLTMapFile;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 
@@ -53,118 +72,113 @@ import org.openiot.lsm.utils.XSLTMapFile;
 
 public class TriplesDataRetriever {
 
-	public static String getTripleDataHasUnit(String dataType, String name, String value, String unit, String observationId, String observedURL, Date time) {
+	static PropertyManagement propertyManagement = new PropertyManagement();
+	final static Logger logger = LoggerFactory.getLogger(SensorManager.class);
+	
+	public static String getTripleDataHasUnit(String dataType,String name,String value,String unit,String observationId,String observedURL,Date time){
 		String triples = "";
 		long id = System.nanoTime();
-		triples += "<http://lsm.deri.ie/resource/" + id + "> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <" + dataType + ">.\n"
-				+ "<http://lsm.deri.ie/resource/" + id + "> <http://lsm.deri.ie/ont/lsm.owl#isObservedPropertyOf> <http://lsm.deri.ie/resource/"
-				+ observationId + ">.\n" + "<http://lsm.deri.ie/resource/" + id + "> <http://lsm.deri.ie/ont/lsm.owl#value> \"" + value
-				+ "\"^^<http://www.w3.org/2001/XMLSchema#double>.\n" + "<http://lsm.deri.ie/resource/" + id + "> <http://lsm.deri.ie/ont/lsm.owl#unit> \""
-				+ unit + "\".\n" + "<http://lsm.deri.ie/resource/" + id + "> <http://www.w3.org/2000/01/rdf-schema#label> \"" + name + "\".\n"
-				+ "<http://lsm.deri.ie/resource/" + id + "> <http://purl.oclc.org/NET/ssnx/ssn#observedProperty> <" + observedURL + ">.\n"
-				+ "<http://lsm.deri.ie/resource/" + id + "> <http://purl.oclc.org/NET/ssnx/ssn#observationResultTime> \"" + DateUtil.date2StandardString(time)
-				+ "\"^^<http://www.w3.org/2001/XMLSchema#dateTime>.\n";
+		String prefix = propertyManagement.getOpeniotResourceNamespace();
+		triples+="<"+prefix + id+"> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <"+dataType+">.\n"+ 
+				"<"+prefix+id+"> <http://lsm.deri.ie/ont/lsm.owl#isObservedPropertyOf> <"+prefix + observationId+">.\n"+
+				"<"+prefix+id+"> <http://lsm.deri.ie/ont/lsm.owl#value> \""+value+"\"^^<http://www.w3.org/2001/XMLSchema#double>.\n"+
+				"<"+prefix+id+"> <http://lsm.deri.ie/ont/lsm.owl#unit> \""+unit+"\".\n"+
+				"<"+prefix+id+"> <http://www.w3.org/2000/01/rdf-schema#label> \""+name+"\".\n"+
+				"<"+prefix+id+"> <http://purl.oclc.org/NET/ssnx/ssn#observedProperty> <"+observedURL+">.\n"+
+				"<"+prefix+id+"> <http://purl.oclc.org/NET/ssnx/ssn#observationResultTime> \""+DateUtil.date2StandardString(time)+"\"^^<http://www.w3.org/2001/XMLSchema#dateTime>.\n";
 		return triples;
 	}
-
-	public static String getTripleDataHasNoUnit(String dataType, String name, String value, String observationId, String observedURL, Date time) {
+	
+	
+	public static String getTripleDataHasNoUnit(String dataType,String name,String value,String observationId,String observedURL,Date time){
 		String triples = "";
 		long id = System.nanoTime();
-		triples += "<http://lsm.deri.ie/resource/" + id + "> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <" + dataType + ">.\n"
-				+ "<http://lsm.deri.ie/resource/" + id + "> <http://lsm.deri.ie/ont/lsm.owl#isObservedPropertyOf> <http://lsm.deri.ie/resource/"
-				+ observationId + ">.\n" + "<http://lsm.deri.ie/resource/" + id + "> <http://lsm.deri.ie/ont/lsm.owl#value> \"" + value + "\".\n"
-				+ "<http://lsm.deri.ie/resource/" + id + "> <http://www.w3.org/2000/01/rdf-schema#label> \"" + name + "\".\n" + "<http://lsm.deri.ie/resource/"
-				+ id + "> <http://purl.oclc.org/NET/ssnx/ssn#observedProperty> <" + observedURL + ">.\n"
-				+
-				// "<"+observedURL+"> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://purl.oclc.org/NET/ssnx/ssn#Property>.\n"+
-				"<http://lsm.deri.ie/resource/" + id + "> <http://purl.oclc.org/NET/ssnx/ssn#observationResultTime> \"" + DateUtil.date2StandardString(time)
-				+ "\"^^<http://www.w3.org/2001/XMLSchema#dateTime>.\n";
+		String prefix = propertyManagement.getOpeniotResourceNamespace();
+		triples+=
+				"<"+prefix+id+"> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <"+dataType+">.\n"+ 
+				"<"+prefix+id+"> <http://lsm.deri.ie/ont/lsm.owl#isObservedPropertyOf> <"+ prefix + observationId+">.\n"+
+				"<"+prefix+id+"> <http://lsm.deri.ie/ont/lsm.owl#value> \""+value+"\".\n"+
+				"<"+prefix+id+"> <http://www.w3.org/2000/01/rdf-schema#label> \""+name+"\".\n"+
+				"<"+prefix+id+"> <http://purl.oclc.org/NET/ssnx/ssn#observedProperty> <"+observedURL+">.\n"+
+//				"<"+observedURL+"> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://purl.oclc.org/NET/ssnx/ssn#Property>.\n"+
+				"<"+prefix+id+"> <http://purl.oclc.org/NET/ssnx/ssn#observationResultTime> \""+DateUtil.date2StandardString(time)+"\"^^<http://www.w3.org/2001/XMLSchema#dateTime>.\n";
 		return triples;
 	}
-
-	public static String getObservationTripleData(String obsId, String sensorId, String featureOfInterest, Date time) {
-		String triples = "";
-		triples += "<http://lsm.deri.ie/resource/" + obsId
-				+ "> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://purl.oclc.org/NET/ssnx/ssn#Observation>.\n" + "<http://lsm.deri.ie/resource/"
-				+ obsId + "> <http://purl.oclc.org/NET/ssnx/ssn#observedBy> <" + sensorId + ">.\n" + "<http://lsm.deri.ie/resource/" + obsId
-				+ "> <http://purl.oclc.org/NET/ssnx/ssn#featureOfInterest> <" + featureOfInterest + ">.\n" + "<http://lsm.deri.ie/resource/" + obsId
-				+ "> <http://purl.oclc.org/NET/ssnx/ssn#observationResultTime> \"" + DateUtil.date2StandardString(time)
-				+ "\"^^<http://www.w3.org/2001/XMLSchema#dateTime>.\n";
+	
+	public static String getObservationTripleData(String obsId,String sensorId,String featureOfInterest,Date time){
+		String triples = "";		
+		String prefix = propertyManagement.getOpeniotResourceNamespace();
+		triples+="<"+prefix+obsId+"> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://purl.oclc.org/NET/ssnx/ssn#Observation>.\n"+ 
+				"<"+prefix+obsId+"> <http://purl.oclc.org/NET/ssnx/ssn#observedBy> <"+sensorId+">.\n"+				
+				"<"+prefix+obsId+"> <http://purl.oclc.org/NET/ssnx/ssn#featureOfInterest> <"+featureOfInterest+">.\n"+
+				"<"+prefix+obsId+"> <http://purl.oclc.org/NET/ssnx/ssn#observationResultTime> \""+DateUtil.date2StandardString(time)+"\"^^<http://www.w3.org/2001/XMLSchema#dateTime>.\n";
 		return triples;
 	}
-
-	public static String getTripleComplexTypeData(String dataType, String name, String value, String unit, String observationId, String observedURL, Date time) {
-		String triples = "";
-		long id = System.nanoTime();
-		triples += "<http://lsm.deri.ie/resource/" + id + "> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <" + dataType + ">.\n"
-				+ "<http://lsm.deri.ie/resource/" + id + "> <http://lsm.deri.ie/ont/lsm.owl#isObservedPropertyOf> <http://lsm.deri.ie/resource/"
-				+ observationId + ">.\n" + "<http://lsm.deri.ie/resource/" + id + "> <http://lsm.deri.ie/ont/lsm.owl#value> \"" + value + "\".\n"
-				+ "<http://lsm.deri.ie/resource/" + id + "> <http://lsm.deri.ie/ont/lsm.owl#unit> \"" + unit + "\".\n" + "<http://lsm.deri.ie/resource/" + id
-				+ "> <http://www.w3.org/2000/01/rdf-schema#label> \"" + name + "\".\n" + "<http://lsm.deri.ie/resource/" + id
-				+ "> <http://purl.oclc.org/NET/ssnx/ssn#observedProperty> <" + observedURL + ">.\n" + "<http://lsm.deri.ie/resource/" + id
-				+ "> <http://purl.oclc.org/NET/ssnx/ssn#observationResultTime> \"" + DateUtil.date2StandardString(time)
-				+ "\"^^<http://www.w3.org/2001/XMLSchema#dateTime>.\n";
-		return triples;
-	}
-
-	public static String getSensorTripleMetadata(Sensor s, String sensorTypeId) {
+	
+	public static String getSensorTripleMetadata(Sensor s,String sensorTypeId){
 		String triples = "";
 		String xsltPath = XSLTMapFile.sensormeta2xslt;
 		xsltPath = ConstantsUtil.realPath + xsltPath;
-		// xsltPath = "webapp/WEB-INF" + xsltPath;
-		TransformerFactory tFactory = TransformerFactory.newInstance();
-		String xml = "";
-		try {
-			Place place = s.getPlace();
-			String foi = VirtuosoConstantUtil.sensorObjectDataPrefix + Double.toString(place.getLat()).replace(".", "").replace("-", "")
-					+ Double.toString(place.getLng()).replace(".", "").replace("-", "");
-
-			Transformer transformer = tFactory.newTransformer(new StreamSource(new File(xsltPath)));
-			transformer.setParameter("sensorId", s.getId());
-			transformer.setParameter("sourceType", s.getSourceType());
-			// transformer.setParameter("sensortype", s.getSensorType());
-			transformer.setParameter("sourceURL", s.getSource());
-			transformer.setParameter("placeId", place.getId());
-			transformer.setParameter("geonameId", place.getGeonameid());
-			transformer.setParameter("city", place.getCity());
-			transformer.setParameter("province", place.getProvince());
-			transformer.setParameter("country", place.getCountry());
-			transformer.setParameter("continent", place.getContinent());
-			transformer.setParameter("lat", place.getLat());
-			transformer.setParameter("lng", place.getLng());
-			transformer.setParameter("foi", foi);
-			transformer.setParameter("name", s.getName());
-
-			xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\" ?><root></root>";
-			xml = xml.trim().replaceFirst("^([\\W]+)<", "<");
-
-			InputStream inputStream = new ByteArrayInputStream(xml.getBytes("UTF-8"));
-			Writer outWriter = new StringWriter();
-			StreamResult result = new StreamResult(outWriter);
-			transformer.transform(new StreamSource(inputStream), result);
-			triples = outWriter.toString().trim();
-
-			String sensorTypeTriples = "";
-			if (sensorTypeId == "")
-				sensorTypeId = "http://lsm.deri.ie/resource/" + System.nanoTime();
-			sensorTypeTriples = "\n<" + s.getId() + "> <http://lsm.deri.ie/ont/lsm.owl#hasSensorType> <" + sensorTypeId + ">.\n" + "<" + sensorTypeId
-					+ "> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://lsm.deri.ie/ont/lsm.owl#SensorType>.\n" + "<" + sensorTypeId
-					+ "> <http://www.w3.org/2000/01/rdf-schema#label> \"" + s.getSensorType() + "\".\n";
-			triples += sensorTypeTriples;
-
-			String observesTriples = "";
-			for (String classURL : s.getProperties().keySet()) {
-				String instanceId = "http://lsm.deri.ie/resource/" + System.nanoTime();
-				s.getProperties().put(classURL, instanceId);
-				observesTriples += "\n<" + s.getId() + "> <http://purl.oclc.org/NET/ssnx/ssn#observes> <" + instanceId + ">.\n";
-				observesTriples += "<" + instanceId + "> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <" + classURL + ">.\n";
-				observesTriples += "<" + instanceId + "> <http://purl.oclc.org/NET/ssnx/ssn#isPropertyOf> <" + foi + ">.\n";
-			}
-
-			triples += observesTriples;
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+//		xsltPath = "src/main/webapp/WEB-INF" + xsltPath;
+		TransformerFactory tFactory = new net.sf.saxon.TransformerFactoryImpl();
+//		TransformerFactory.newInstance();
+		String prefix = propertyManagement.getOpeniotResourceNamespace();
+        String xml = "";
+        try {
+        	Place place = s.getPlace();
+//        	String foi = propertyManagement.getOpeniotResourceNamespace()+ 
+//					Double.toString(place.getLat()).replace(".", "").replace("-", "")+
+//					Double.toString(place.getLng()).replace(".", "").replace("-", "");
+        	
+            Transformer transformer = tFactory.newTransformer(new StreamSource(new File(xsltPath)));
+            transformer.setParameter("sensorId", s.getId());
+            transformer.setParameter("utc-timestamp", DateUtil.date2StandardString(new Date()));
+//            transformer.setParameter("sourceType", s.getSourceType());
+            transformer.setParameter("prefix", prefix);
+//            transformer.setParameter("sourceURL", s.getSource());
+            transformer.setParameter("placeId", place.getId());
+            transformer.setParameter("geonameId", place.getGeonameid());
+            transformer.setParameter("city", place.getCity());
+            transformer.setParameter("province", place.getProvince());
+            transformer.setParameter("country", place.getCountry());
+            transformer.setParameter("continent", place.getContinent());
+            transformer.setParameter("lat", place.getLat());
+            transformer.setParameter("lng", place.getLng());
+//            transformer.setParameter("foi", foi);
+            transformer.setParameter("name", s.getName());
+            transformer.setParameter("author", s.getAuthor());
+            
+            xml="<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\" ?><root></root>";          
+            xml = xml.trim().replaceFirst("^([\\W]+)<","<");
+            
+            InputStream inputStream = new ByteArrayInputStream(xml.getBytes("UTF-8"));
+            Writer outWriter = new StringWriter();  
+            StreamResult result = new StreamResult( outWriter );            
+            transformer.transform(new StreamSource(inputStream),result);
+            triples = outWriter.toString().trim();       
+            
+            String sensorTypeTriples = "";
+            if(sensorTypeId=="")
+            	sensorTypeId = prefix+System.nanoTime();
+        	sensorTypeTriples="\n<" + s.getId() + "> <http://lsm.deri.ie/ont/lsm.owl#hasSensorType> <" + sensorTypeId +">.\n"
+        		+"<" + sensorTypeId + "> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://lsm.deri.ie/ont/lsm.owl#SensorType>.\n"
+        		+"<" + sensorTypeId + "> <http://www.w3.org/2000/01/rdf-schema#label> \"" + s.getSensorType()+"\".\n";
+        	triples+=sensorTypeTriples;
+            
+            String observesTriples = "";           
+            for(String classURL:s.getProperties().keySet()){
+            	String instanceId = prefix + System.nanoTime();
+            	s.getProperties().put(classURL, instanceId);
+            	observesTriples+= "\n<" + s.getId() + "> <http://purl.oclc.org/NET/ssnx/ssn#observes> <" + instanceId +">.\n";
+            	observesTriples+= "<" + instanceId + "> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <" + classURL + ">.\n";
+//            	observesTriples+= "<" + instanceId + "> <http://purl.oclc.org/NET/ssnx/ssn#isPropertyOf> <" + foi + ">.\n";
+            }            
+            triples+=observesTriples;
+            triples+= "<" + place.getId() +"> <http://www.w3.org/2003/01/geo/wgs84_pos#geometry> \"POINT("+place.getLng()+" "+place.getLat()+
+            			")\"^^<http://www.openlinksw.com/schemas/virtrdf#Geometry>.\n";
+        } catch (Exception e) {
+            logger.info(e.toString());
+        }
 		return triples;
 	}
 
@@ -214,25 +228,26 @@ public class TriplesDataRetriever {
 	public static String ticketToRDF(LSMServiceTicketImpl ticket) {
 		// TODO Auto-generated method stub
 		String triples = "";
+		String prefix = propertyManagement.getOpeniotResourceNamespace();
 		String id = ticket.getId();
-		triples += "<http://lsm.deri.ie/resource/" + id + "> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://openiot.eu/ontology/ns/Ticket>.\n"
-				+ "<http://lsm.deri.ie/resource/" + id + "> <http://openiot.eu/ontology/ns/timesUsed> \"" + ticket.getCountOfUses()
-				+ "\"^^<http://www.w3.org/2001/XMLSchema#integer>.\n" + "<http://lsm.deri.ie/resource/" + id
+		triples += "<"+ prefix + id + "> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://openiot.eu/ontology/ns/Ticket>.\n"
+				+ "<"+ prefix + id + "> <http://openiot.eu/ontology/ns/timesUsed> \"" + ticket.getCountOfUses()
+				+ "\"^^<http://www.w3.org/2001/XMLSchema#integer>.\n" + "<"+ prefix + id
 				+ ">  <http://openiot.eu/ontology/ns/creationTime> \"" + DateUtil.date2StandardString(new Date(ticket.getCreationTime()))
-				+ "\"^^<http://www.w3.org/2001/XMLSchema#dateTime>.\n" + "<http://lsm.deri.ie/resource/" + id
+				+ "\"^^<http://www.w3.org/2001/XMLSchema#dateTime>.\n" + "<"+ prefix + id
 				+ ">  <http://openiot.eu/ontology/ns/lastTimeUsed> \"" + DateUtil.date2StandardString(new Date(ticket.getLastTimeUsed()))
-				+ "\"^^<http://www.w3.org/2001/XMLSchema#dateTime>.\n" + "<http://lsm.deri.ie/resource/" + id
+				+ "\"^^<http://www.w3.org/2001/XMLSchema#dateTime>.\n" + "<"+ prefix + id
 				+ ">  <http://openiot.eu/ontology/ns/prevLastTimeUsed> \"" + DateUtil.date2StandardString(new Date(ticket.getPreviousTimeUsed()))
-				+ "\"^^<http://www.w3.org/2001/XMLSchema#dateTime>.\n" + "<http://lsm.deri.ie/resource/" + id
-				+ ">  <http://openiot.eu/ontology/ns/grantedBy> <http://lsm.deri.ie/resource/" + ticket.getGrantingTicket().getId() + ">.\n"
-				+ "<http://lsm.deri.ie/resource/" + id + ">  <http://openiot.eu/ontology/ns/serviceBinary> \""
+				+ "\"^^<http://www.w3.org/2001/XMLSchema#dateTime>.\n" + "<"+ prefix + id
+				+ ">  <http://openiot.eu/ontology/ns/grantedBy> <" + prefix + ticket.getGrantingTicket().getId() + ">.\n"
+				+ "<"+ prefix + id + ">  <http://openiot.eu/ontology/ns/serviceBinary> \""
 				+ Hex.encodeHexString(SerializationUtils.serialize(ticket.getService())) + "\"^^<http://www.w3.org/2001/XMLSchema#hexBinary>.\n"
-				+ "<http://lsm.deri.ie/resource/" + id + ">  <http://openiot.eu/ontology/ns/expirationPolicy> \""
+				+ "<"+ prefix + id + ">  <http://openiot.eu/ontology/ns/expirationPolicy> \""
 				+ Hex.encodeHexString(SerializationUtils.serialize(ticket.getExpirationPolicy())) + "\"^^<http://www.w3.org/2001/XMLSchema#hexBinary>.\n";
 		if (ticket.isFromNewLogin())
-			triples += "<http://lsm.deri.ie/resource/" + id + ">  <http://openiot.eu/ontology/ns/ticketFrom> <http://openiot.eu/ontology/ns/NewLogin>.\n";
+			triples += "<"+ prefix + id + ">  <http://openiot.eu/ontology/ns/ticketFrom> <http://openiot.eu/ontology/ns/NewLogin>.\n";
 		else
-			triples += "<http://lsm.deri.ie/resource/" + id + ">  <http://openiot.eu/ontology/ns/ticketFrom> <http://openiot.eu/ontology/ns/OldLogin>.\n";
+			triples += "<"+ prefix + id + ">  <http://openiot.eu/ontology/ns/ticketFrom> <http://openiot.eu/ontology/ns/OldLogin>.\n";
 		return triples;
 	}
 
@@ -240,35 +255,33 @@ public class TriplesDataRetriever {
 		// TODO Auto-generated method stub
 		String triples = "";
 		String id = ticketGrant.getId();
-		triples += "<http://lsm.deri.ie/resource/" + id
-				+ "> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://openiot.eu/ontology/ns/TicketScheduler>.\n" + "<http://lsm.deri.ie/resource/"
+		String prefix = propertyManagement.getOpeniotResourceNamespace();
+		triples += "<"+ prefix + id
+				+ "> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://openiot.eu/ontology/ns/TicketScheduler>.\n" + "<"+ prefix
 				+ id + "> <http://openiot.eu/ontology/ns/timesUsed> \"" + ticketGrant.getCountOfUses() + "\"^^<http://www.w3.org/2001/XMLSchema#integer>.\n"
-				+ "<http://lsm.deri.ie/resource/" + id + ">  <http://openiot.eu/ontology/ns/creationTime> \""
+				+ "<"+ prefix + id + ">  <http://openiot.eu/ontology/ns/creationTime> \""
 				+ DateUtil.date2StandardString(new Date(ticketGrant.getCreationTime())) + "\"^^<http://www.w3.org/2001/XMLSchema#dateTime>.\n"
-				+ "<http://lsm.deri.ie/resource/" + id + ">  <http://openiot.eu/ontology/ns/lastTimeUsed> \""
+				+ "<"+ prefix + id + ">  <http://openiot.eu/ontology/ns/lastTimeUsed> \""
 				+ DateUtil.date2StandardString(new Date(ticketGrant.getLastTimeUsed())) + "\"^^<http://www.w3.org/2001/XMLSchema#dateTime>.\n"
-				+ "<http://lsm.deri.ie/resource/" + id + ">  <http://openiot.eu/ontology/ns/prevLastTimeUsed> \""
+				+ "<"+ prefix + id + ">  <http://openiot.eu/ontology/ns/prevLastTimeUsed> \""
 				+ DateUtil.date2StandardString(new Date(ticketGrant.getPreviousTimeUsed())) + "\"^^<http://www.w3.org/2001/XMLSchema#dateTime>.\n"
-				+ "<http://lsm.deri.ie/resource/" + id + ">  <http://openiot.eu/ontology/ns/authenticatedBy> \""
+				+ "<"+ prefix + id + ">  <http://openiot.eu/ontology/ns/authenticatedBy> \""
 				+ Hex.encodeHexString(SerializationUtils.serialize(ticketGrant.getAuthentication())) + "\"^^<http://www.w3.org/2001/XMLSchema#hexBinary>.\n"
-				+ "<http://lsm.deri.ie/resource/" + id + ">  <http://openiot.eu/ontology/ns/expirationPolicy> \""
+				+ "<"+ prefix + id + ">  <http://openiot.eu/ontology/ns/expirationPolicy> \""
 				+ Hex.encodeHexString(SerializationUtils.serialize(ticketGrant.getExpirationPolicy())) + "\"^^<http://www.w3.org/2001/XMLSchema#hexBinary>.\n"
-				+ "<http://lsm.deri.ie/resource/" + id + ">  <http://openiot.eu/ontology/ns/servicesGranted> \""
+				+ "<"+ prefix + id + ">  <http://openiot.eu/ontology/ns/servicesGranted> \""
 				+ Hex.encodeHexString(SerializationUtils.serialize(ticketGrant.getServices())) + "\"^^<http://www.w3.org/2001/XMLSchema#hexBinary>.\n";
 //		System.out.println(Hex.encodeHexString(SerializationUtils.serialize(ticketGrant.getAuthentication())));
 		if (ticketGrant.getGrantingTicket() != null) {
-			triples += "<http://lsm.deri.ie/resource/" + id + ">  <http://openiot.eu/ontology/ns/grants> <http://lsm.deri.ie/resource/"
+			triples += "<"+ prefix + id + ">  <http://openiot.eu/ontology/ns/grants> <"+prefix
 					+ ticketGrant.getGrantingTicket().getId() + ">.\n";
-			// triples+="<http://lsm.deri.ie/resource/"+id+">  <http://openiot.eu/ontology/ns/grants> \""+
-			// Hex.encodeHexString(SerializationUtils.serialize(ticketGrant.getGrantingTicket()))
-			// +"\"^^<http://www.w3.org/2001/XMLSchema#hexBinary>.\n";
 			triples += ticketSchedulerToRDF((LSMTicketGrantingTicketImpl) ticketGrant.getGrantingTicket());
 		}
 		if (ticketGrant.isExpired())
-			triples += "<http://lsm.deri.ie/resource/" + id
+			triples += "<"+ prefix + id
 					+ ">  <http://openiot.eu/ontology/ns/validity> <http://openiot.eu/ontology/ns/TicketGrantingExpired>.\n";
 		else
-			triples += "<http://lsm.deri.ie/resource/" + id
+			triples += "<"+ prefix + id
 					+ ">  <http://openiot.eu/ontology/ns/validity> <http://openiot.eu/ontology/ns/TicketGrantingValid>.\n";
 		return triples;
 	}
@@ -276,7 +289,8 @@ public class TriplesDataRetriever {
 	public static String registeredServiceToRDF(LSMRegisteredServiceImpl service) {
 		// TODO Auto-generated method stub
 		String triples = "";
-		String servicePrefix = "http://lsm.deri.ie/resource/service/";
+		String prefix = propertyManagement.getOpeniotResourceNamespace();
+		String servicePrefix = VirtuosoConstantUtil.CloudServicePrefix;
 		long id = service.getId();
 		triples += "<" + servicePrefix + id + "> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://openiot.eu/ontology/ns/CloudService>.\n" + "<"
 				+ servicePrefix + id + "> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://openiot.eu/ontology/ns/ProxyCloudService>.\n";
@@ -299,10 +313,6 @@ public class TriplesDataRetriever {
 			triples += "<" + servicePrefix + id + ">  <http://openiot.eu/ontology/ns/ssoStatus> <http://openiot.eu/ontology/ns/SSOStatusEnabled>.\n";
 		else
 			triples += "<" + servicePrefix + id + ">  <http://openiot.eu/ontology/ns/ssoStatus> <http://openiot.eu/ontology/ns/SSOStatusDisabled>.\n";
-		// if(service.isAllowedToProxy())
-		// triples+="<"+servicePrefix+id+">  <http://openiot.eu/ontology/ns/ssoStatus> <http://openiot.eu/ontology/ns/SSOStatusEnabled>.\n";
-		// else
-		// triples+="<"+servicePrefix+id+">  <http://openiot.eu/ontology/ns/ssoStatus> <http://openiot.eu/ontology/ns/SSOStatusDisabled>.\n";
 
 		if (service.getTheme() != null)
 			triples += "<" + servicePrefix + id + "> <http://openiot.eu/ontology/ns/theme> \"" + service.getTheme() + "\".\n";
@@ -312,26 +322,143 @@ public class TriplesDataRetriever {
 				+ "> <http://openiot.eu/ontology/ns/addressId> \"" + service.getServiceId() + "\".\n";
 		for (String att_name : service.getAllowedAttributes()) {
 			String att_id = id + att_name;
-			triples += "<" + servicePrefix + id + ">  <http://openiot.eu/ontology/ns/attribute> <http://lsm.deri.ie/resource/" + att_id + ">.\n"
-					+ "<http://lsm.deri.ie/resource/" + att_id
+			triples += "<" + servicePrefix + id + ">  <http://openiot.eu/ontology/ns/attribute> <"+prefix + att_id + ">.\n"
+					+ "<"+ prefix + att_id
 					+ "> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://openiot.eu/ontology/ns/ServiceAttribute>.\n"
-					+ "<http://lsm.deri.ie/resource/" + att_id + ">  <http://www.w3.org/2000/01/rdf-schema#label> \"" + att_name + "\".\n"
-					+ "<http://lsm.deri.ie/resource/" + att_id + ">  <http://openiot.eu/ontology/ns/attributeFor> <" + servicePrefix + id + ">.\n";
+					+ "<"+ prefix + att_id + ">  <http://www.w3.org/2000/01/rdf-schema#label> \"" + att_name + "\".\n"
+					+ "<"+ prefix + att_id + ">  <http://openiot.eu/ontology/ns/attributeFor> <" + servicePrefix + id + ">.\n";
 		}
 		return triples;
 	}
 
+	public static String OSDSpecBeanToRDF(OSDSpecBean osdspecBean)
+	{
+
+		//////////////////////////////////////////////////////////////
+		
+		UserEnt usrEnt = new UserEnt();
+		usrEnt.setUserBean(osdspecBean.getUserBean());
+		//
+		usrEnt.createClassIdv();
+		
+			OSDSpecEnt specEnt1 = new OSDSpecEnt(osdspecBean,usrEnt);
+			//
+			specEnt1.createClassIdv();
+			specEnt1.createPosdpsecOfUser(); //linking osdspec with user
+		
+			for(OAMOBean oamoBean : osdspecBean.getOamoBeanList())
+			{
+				OAMOEnt oamoE = new OAMOEnt(oamoBean,specEnt1);
+				//
+				oamoE.createClassIdv();
+				oamoE.createPoamoDescription();
+				oamoE.createPoamoGraphMeta();
+				oamoE.createPoamoName();
+				oamoE.createPoamoOfOSDSpec();
+				
+					for(OSMOBean osmoBean : oamoBean.getOsmoBeanList())
+					{
+						OSMOEnt osmoE = new OSMOEnt(osmoBean,oamoE);
+						//
+						osmoE.createClassIdv();
+						osmoE.createPosmoDescription();
+						osmoE.createPosmoName();
+						osmoE.createPosmoOfOAMO();
+						
+						QueryControlsEnt qcEnt = new QueryControlsEnt(osmoBean.getQueryControlsBean(),osmoE);
+						//
+						qcEnt.createClassIdv();
+						qcEnt.createPquerycontrolsReportIfEmpty();
+
+						osmoE.setQueryControlsEnt(qcEnt);
+						osmoE.createPosmoHasQueryControlsAsString();
+						
+							for(QueryRequestBean qreqBean : osmoBean.getQueryRequestBean())
+							{
+								QueryRequestEnt qReqE = new QueryRequestEnt(qreqBean,osmoE);
+								//
+								qReqE.createAll();
+								
+								osmoE.getQueryRequestEntList().add(qReqE);
+							}
+							
+						osmoE.createPosmoHasQueryRequestAsString();
+						
+							ReqPresentationEnt reqPreE = new ReqPresentationEnt(osmoBean.getReqPresentationBean(),osmoE);
+							//
+							reqPreE.createClassIdv();
+							reqPreE.createPreqPresentationOfOSMO();
+							
+								for(WidgetBean wBean : osmoBean.getReqPresentationBean().getWidgetBeanLsit())
+								{
+									WidgetEnt wEnt = new WidgetEnt(wBean,reqPreE);
+									//
+									wEnt.createClassIdv();
+									wEnt.createPpresentationAttrName();
+									
+										for(PresentationAttrBean preAttrBean : wBean.getPresentationAttrBeanList())
+										{
+											PresentationAttrEnt preAttrEnt = new PresentationAttrEnt(preAttrBean,wEnt);
+											//
+											preAttrEnt.createAll();
+											
+											wEnt.getPresentationAttrEntList().add(preAttrEnt);
+										}
+											
+									wEnt.createPwidgetHasPresAttrAsString();
+									
+									reqPreE.getWidgetEntList().add(wEnt);
+								}
+								
+							reqPreE.createPreqPresentationHasWidgetAsString();
+							
+						osmoE.setReqPresentationEnt(reqPreE);
+						osmoE.createPosmoHasRequestpresentationAsString();
+						
+						oamoE.getOsmoList().add(osmoE);
+					}
+				oamoE.createPoamoHasOSMO();
+				
+				specEnt1.getOamoEntList().add(oamoE);
+			}
+		specEnt1.createPosdpsecHasOamo();	
+				
+		usrEnt.getSpecEnt().add(specEnt1);
+		usrEnt.createPuserHasSpec(); //linking user with osdspec 
+		
+		
+		LSMSchema rootModel = new  LSMSchema();
+		
+		rootModel.getBase().add(usrEnt.getClassIndividual().getOntModel().getBaseModel());
+		for(OSDSpecEnt specEnt : usrEnt.getSpecEnt())
+		{
+			rootModel.getBase().add(specEnt.getClassIndividual().getOntModel().getBaseModel());
+			for(OAMOEnt oamoEnt : specEnt.getOamoEntList())
+			{
+				rootModel.getBase().add(oamoEnt.getClassIndividual().getOntModel().getBaseModel());
+				for(OSMOEnt osmoEnt : oamoEnt.getOsmoList())
+				{
+					rootModel.getBase().add(osmoEnt.getClassIndividual().getOntModel().getBaseModel());
+				}
+			}
+		}				
+		//export
+		String triples = rootModel.exportToTriples("TURTLE");
+		System.out.println(triples);
+		return triples;
+	}
+	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		System.setProperty("javax.xml.transform.TransformerFactory", "net.sf.saxon.TransformerFactoryImpl");
 		Sensor sensor = new Sensor();
-		sensor.setId("http://lsm.deri.ie/resource/8a82919d3264f4ac013264f4e14501c0");
+		sensor.setId("http://services.openiot.eu/resource/8a82919d3264f4ac013264f4e14501c0");
 		sensor.setName("hello");
 		sensor.setAuthor("admin");
-		// sensor.setSensorType("bikehire");
-		sensor.setSourceType("sdfg");
+		sensor.setSensorType("bikehire");
+//		sensor.setSourceType("sdfg");
 		sensor.setInfor("asfdfs");
-		sensor.setSource("affag");
+//		sensor.setSource("affag");
 		sensor.setTimes(new Date());
 		Place place = new Place();
 		place.setLat(32325);

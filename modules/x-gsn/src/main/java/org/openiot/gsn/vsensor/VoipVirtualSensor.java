@@ -16,6 +16,9 @@
 *    along with OpenIoT.  If not, see <http://www.gnu.org/licenses/>.
 *
 *     Contact: OpenIoT mailto: info@openiot.eu
+ * @author sp3dy
+ * @author Ali Salehi
+ * @author Mehdi Riahi
 */
 
 /*

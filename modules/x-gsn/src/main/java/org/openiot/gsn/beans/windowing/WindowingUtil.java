@@ -16,6 +16,8 @@
 *    along with OpenIoT.  If not, see <http://www.gnu.org/licenses/>.
 *
 *     Contact: OpenIoT mailto: info@openiot.eu
+ * @author gsn_devs
+ * @author Timotee Maret
 */
 
 package org.openiot.gsn.beans.windowing;

@@ -16,10 +16,14 @@ public class SecurityModuleInitializer {
 	private static final long ID_TEST_SERVICE_2 = 4;
 	private static final long ID_SECURITY_MANAGEMENT = 5;
 
-	private static final String ADMIN_USERNAME = "security.lsm.initialize.admin.username";
-	private static final String ADMIN_PASSWORD = "security.lsm.initialize.admin.password";
-	private static final String ADMIN_EMAIL = "security.lsm.initialize.admin.email";
+	private static final String ADMIN_USERNAME = "security.initialize.admin.username";
+	private static final String ADMIN_PASSWORD = "security.initialize.admin.password";
+	private static final String ADMIN_EMAIL = "security.initialize.admin.email";
+	private static final String CAS_PREFIX = "security.initialize.cas.prefix";
+	private static final String MGMT_PREFIX = "security.initialize.management.prefix";
 
+	private static final PropertyManagement props = new PropertyManagement();
+	
 	public static void initialize() {
 		generateAuthorizationData();
 
@@ -41,7 +45,7 @@ public class SecurityModuleInitializer {
 
 	private static void generateAuthorizationData() {
 		LSMOAuthManager oM = LSMOAuthManager.getInstance();
-		PropertyManagement props = new PropertyManagement();
+		
 		User adminUser = generateUser("Administrator", props.getProperty(ADMIN_EMAIL, "admin@openiot.eu"), props.getProperty(ADMIN_USERNAME, "admin"),
 				props.getProperty(ADMIN_PASSWORD, "5ebe2294ecd0e0f08eab7690d2a6ee69"));
 
@@ -69,7 +73,10 @@ public class SecurityModuleInitializer {
 		defaultService.setEvaluationOrder(0);
 		defaultService.setIgnoreAttributes(true);
 		defaultService.setName("Service Manager");
-		defaultService.setServiceId("https://localhost:8443/openiot-cas/services/j_acegi_cas_security_check");
+		String casPrefix = props.getProperty(CAS_PREFIX, "https://localhost:8443/openiot-cas");
+		if(casPrefix.endsWith("/") && casPrefix.length() > 1)
+			casPrefix = casPrefix.substring(0, casPrefix.length() - 1);
+		defaultService.setServiceId(casPrefix + "/services/j_acegi_cas_security_check");
 		defaultService.setSsoEnabled(true);
 
 		LSMRegisteredServiceImpl httpService = new LSMRegisteredServiceImpl();
@@ -81,7 +88,7 @@ public class SecurityModuleInitializer {
 		httpService.setEvaluationOrder(0);
 		httpService.setIgnoreAttributes(true);
 		httpService.setName("HTTP");
-		httpService.setServiceId("https://localhost:8443/openiot-cas/oauth2.0/callbackAuthorize");
+		httpService.setServiceId(casPrefix + "/oauth2.0/callbackAuthorize");
 		httpService.setSsoEnabled(true);
 
 		LSMRegisteredServiceImpl oauthTestService1 = new LSMRegisteredServiceImpl();
@@ -119,7 +126,10 @@ public class SecurityModuleInitializer {
 		userManagementService.setEvaluationOrder(0);
 		userManagementService.setIgnoreAttributes(false);
 		userManagementService.setName("openiot-security-manager-app");
-		userManagementService.setServiceId("http://localhost:8080/security.management/callback?client_name=CasOAuthWrapperClient");
+		String mgmtAppPrefix = props.getProperty(MGMT_PREFIX, "http://localhost:8080/security.management");
+		if(mgmtAppPrefix.endsWith("/") && mgmtAppPrefix.length() > 1)
+			mgmtAppPrefix = mgmtAppPrefix.substring(0, mgmtAppPrefix.length() - 1);
+		userManagementService.setServiceId(mgmtAppPrefix + "/callback?client_name=CasOAuthWrapperClient");
 		userManagementService.setTheme("Manager");
 		userManagementService.setSsoEnabled(true);
 

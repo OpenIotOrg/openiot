@@ -73,6 +73,7 @@
         <value name="name"  field="name" style="attribute"/>
         <value name="type" field="type" style="attribute"/>
         <value field="description" style="text" usage="optional"/>
+        <value name="property" field="property" style="attribute" usage="optional"/>
     </mapping>
 
     <mapping name="command" class="org.openiot.gsn.beans.WebInput">

@@ -16,6 +16,13 @@
 *    along with OpenIoT.  If not, see <http://www.gnu.org/licenses/>.
 *
 *     Contact: OpenIoT mailto: info@openiot.eu
+ * @author Mehdi Riahi
+ * @author gsn_devs
+ * @author Sofiane Sarni
+ * @author Ali Salehi
+ * @author Mehdi Riahi
+ * @author Timotee Maret
+ * @author Julien Eberle
 */
 
 package org.openiot.gsn;
@@ -26,10 +33,10 @@ import org.openiot.gsn.beans.InputStream;
 import org.openiot.gsn.beans.Modifications;
 import org.openiot.gsn.beans.StreamSource;
 import org.openiot.gsn.beans.VSensorConfig;
-import org.openiot.gsn.metadata.LSM.LSMRepository;
-import org.openiot.gsn.utils.Utils;
 import org.openiot.gsn.wrappers.AbstractWrapper;
 import org.openiot.gsn.wrappers.WrappersUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.sql.SQLException;
@@ -39,7 +46,9 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.jibx.runtime.BindingDirectory;
+import org.jibx.runtime.IBindingFactory;
+import org.jibx.runtime.IUnmarshallingContext;
 import org.jibx.runtime.JiBXException;
 
 public class VSensorLoader extends Thread {
@@ -51,7 +60,7 @@ public class VSensorLoader extends Thread {
 
     public static final String                                     INPUT_STREAM                        = "INPUT-STREAM";
 
-    private static transient Logger                                logger                              = Logger.getLogger ( VSensorLoader.class );
+    private static transient Logger                                logger                              = LoggerFactory.getLogger ( VSensorLoader.class );
 
     /**
      * Mapping between the AddressBean and DataSources
@@ -117,7 +126,7 @@ public class VSensorLoader extends Thread {
 
     public void run ( ) {
         if ( Main.getStorage((VSensorConfig)null) == null || Main.getWindowStorage() == null ) { // Checks only if the default storage and the window storage are defined.
-            logger.fatal ( "The Storage Manager shouldn't be null, possible a BUG." );
+            logger.error( "The Storage Manager shouldn't be null, possible a BUG." );
             return;
         }
         while ( isActive ) {
@@ -129,19 +138,24 @@ public class VSensorLoader extends Thread {
         }
     }
 
-    public synchronized void loadVirtualSensor(String vsConfigurationFileContent, String fileName) throws Exception {
+    public void loadVirtualSensor(String vsConfigurationFileContent, String fileName) throws Exception {
+    	logger.info("Creating VS: "+fileName);
+
         String filePath = getVSConfigurationFilePath(fileName);
         File file = new File(filePath);
         if (!file.exists()) {
             try {
+            	logger.info("Creating VS at: "+filePath);
+                buildVSensorConfig(vsConfigurationFileContent);
                 // Create the VS configuration file
                 Writer fw = new BufferedWriter(new FileWriter(filePath, true));
                 fw.write(vsConfigurationFileContent);
-                fw.flush();
+                fw.flush();    
+                fw.close();
                 // Try to load it
-                if ( ! loadPlugin(fileName)) {
-                    throw new Exception("Failed to load the Virtual Sensor: " + fileName + " because there is syntax error in the configuration file. Please check the configuration file and try again.");
-                }
+                //if ( ! loadPlugin(fileName)) {
+                  //  throw new Exception("Failed to load the Virtual Sensor: " + fileName + " because there is syntax error in the configuration file. Please check the configuration file and try again.");
+                //}
             }
             catch (Exception e) {
                 logger.warn(e.getMessage(), e);
@@ -153,6 +167,32 @@ public class VSensorLoader extends Thread {
             throw new Exception("The configuration file:" + filePath + " already exist.");
         }
     }
+    
+    private VSensorConfig buildVSensorConfig(String fileContent) throws VirtualSensorInitializationFailedException{    	
+    	java.io.InputStream is = new ByteArrayInputStream(fileContent.getBytes());	
+		IUnmarshallingContext uctx;
+		try {
+			IBindingFactory bfact = BindingDirectory.getFactory( VSensorConfig.class );
+			uctx = bfact.createUnmarshallingContext( );
+		} catch ( JiBXException e1 ) {
+			logger.error( e1.getMessage( ) , e1 );
+			throw new VirtualSensorInitializationFailedException("Unable to create config parser: "+e1.getMessage());
+		}
+		VSensorConfig configuration;
+		try {
+			configuration = ( VSensorConfig ) uctx.unmarshalDocument( is , null );
+		} catch (JiBXException e) {
+			logger.error(e.getMessage());
+			e.printStackTrace();
+			throw new VirtualSensorInitializationFailedException("VS Malformed Configuration: "+e.getMessage());
+		}
+		//configuration.setFileName( file );
+		if ( !configuration.validate( ) ) 
+			throw new VirtualSensorInitializationFailedException("VS Configuration Invalid");
+
+		return configuration;
+    }
+    
 
     public static String getVSConfigurationFilePath(String fileName) {
         return Main.DEFAULT_VIRTUAL_SENSOR_DIRECTORY + File.separator + fileName + ".xml";
@@ -239,6 +279,7 @@ public class VSensorLoader extends Thread {
         logger.warn(new StringBuilder("adding : ").append(vs.getName()).append(" virtual sensor[").append(vs.getFileName()).append("]").toString());
 
         // Check if sensor needs to be announced to LSM
+        /*
         if (vs.getPublishToLSM()==true) {
             // Try to announce sensor to LSM
             boolean success = LSMRepository.getInstance().announceSensor(vs);
@@ -246,7 +287,7 @@ public class VSensorLoader extends Thread {
                 logger.warn("Failed to register sensor to LSM: " + Utils.identify(vs));
                 return false;
             }
-        }
+        }*/
 
         if (Mappings.addVSensorInstance(pool)) {
             try {
@@ -432,11 +473,11 @@ public class VSensorLoader extends Thread {
      * FIXME: COPIED_FOR_SAFE_STOAGE
      */
     public AbstractWrapper findWrapper(AddressBean addressBean) throws InstantiationException, IllegalAccessException {
-        if ( Main.getInstance().getWrapperClass ( addressBean.getWrapper ( ) ) == null ) {
+        if ( Main.getWrapperClass ( addressBean.getWrapper ( ) ) == null ) {
             logger.error ( "The wrapper >" + addressBean.getWrapper ( ) + "< is not defined in the >" + WrappersUtil.DEFAULT_WRAPPER_PROPERTIES_FILE + "< file." );
             return null;
         }
-        AbstractWrapper wrapper = ( AbstractWrapper ) Main.getInstance().getWrapperClass ( addressBean.getWrapper ( ) ).newInstance ( );
+        AbstractWrapper wrapper = ( AbstractWrapper ) Main.getWrapperClass ( addressBean.getWrapper ( ) ).newInstance ( );
         wrapper.setActiveAddressBean ( addressBean );
         boolean initializationResult = wrapper.initialize (  );
         if ( initializationResult == false )

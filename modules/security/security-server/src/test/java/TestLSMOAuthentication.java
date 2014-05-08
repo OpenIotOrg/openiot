@@ -116,10 +116,15 @@ public class TestLSMOAuthentication {
 //		for (Role role : roles)
 //			oM.addRole(role);
 
-//		for (User user : users)
-//			oM.addUser(user);
-//		oM.addPermission(allPerm5);
+		oM.addPermission(allPerm5);
+		oM.addPermission(createPermissionPerm5);
+		
 		oM.addRole(adminRole5);
+		
+		for (User user : users)
+			oM.addUser(user);
+//		oM.addPermission(allPerm5);
+//		oM.addRole(adminRole5);
 //		oM.addUser(adminUser);
 
 	}
@@ -281,7 +286,7 @@ public class TestLSMOAuthentication {
 //		 for(LSMRegisteredServiceImpl rs : createDefaultServices())
 //		 oM.addRegisteredService(rs);
 //		
-//		 generateAuthorizationData();
+		 generateAuthorizationData();
 		
 		User userByUsername = oM.getUserByUsername("admin");
 		System.out.println(userByUsername);

@@ -16,6 +16,10 @@
 *    along with OpenIoT.  If not, see <http://www.gnu.org/licenses/>.
 *
 *     Contact: OpenIoT mailto: info@openiot.eu
+ * @author Ali Salehi
+ * @author Timotee Maret
+ * @author Mehdi Riahi
+ * @author Julien Eberle
 */
 
 package org.openiot.gsn.storage;

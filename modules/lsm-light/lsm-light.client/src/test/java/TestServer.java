@@ -25,6 +25,8 @@ import org.openiot.lsm.beans.Place;
 import org.openiot.lsm.beans.Sensor;
 import org.openiot.lsm.server.LSMTripleStore;
 import org.openiot.lsm.utils.ObsConstant;
+import org.openiot.security.client.AccessControlUtil;
+import org.openiot.security.client.OAuthorizationCredentials;
 /**
  * 
  * @author Hoan Nguyen Mau Quoc
@@ -32,7 +34,7 @@ import org.openiot.lsm.utils.ObsConstant;
  */
 
 public class TestServer {
-	public static LSMTripleStore lsmStore = new LSMTripleStore("http://lsm.deri.ie/lsm-light.server/");
+	public static LSMTripleStore lsmStore = new LSMTripleStore("http://localhost:8080/lsm-light.server/");
 	public static Observation updateData(){
 		
 	/*
@@ -53,7 +55,7 @@ public class TestServer {
 	 */
 	ObservedProperty obvTem = new ObservedProperty();
 	obvTem.setObservationId(obs.getId());
-	obvTem.setPropertyType(ObsConstant.MACHINE_UTIL);
+	obvTem.setPropertyType(ObsConstant.TEMPERATURE);
 	obvTem.setValue(1);
 	obvTem.setUnit("%");
 	obs.addReading(obvTem);
@@ -75,14 +77,13 @@ public class TestServer {
 	 * @param args
 	 */
 	
-	public static Sensor addNewSensor(){
+	public static Sensor addNewSensor(String clientId, String token){
 	     Sensor sensor  = new Sensor();
 	     sensor.setName("lab_temp_hp");
 	     sensor.setAuthor("admin");
-		 sensor.setSourceType("peania");
 		 sensor.setSensorType("myweather");
 		 sensor.setInfor("Temperature sensor inside lab");
-		 sensor.setSource("http://www.ait.gr/sensor/test1");
+//		 sensor.setSource("http://www.ait.gr/sensor/test1");
 		 sensor.addProperty(ObsConstant.TEMPERATURE);
 		 sensor.addProperty(ObsConstant.HUMIDITY);
 		 sensor.setTimes(new Date());
@@ -95,22 +96,32 @@ public class TestServer {
 		 place.setLat(37.943267); 
 		 place.setLng(23.870287);
 		 sensor.setPlace(place);
-         lsmStore.sensorAdd(sensor);		
+         lsmStore.sensorAdd(sensor,clientId, token);		
          return sensor;
 	}
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub		        
         try{  
+        	AccessControlUtil accessControlUtil = AccessControlUtil.getRestInstance();
+    		OAuthorizationCredentials credential = accessControlUtil.login("lsm-light.client", "client.secret");
+    		accessControlUtil.getOAuthorizationCredentials();
+    		String token = credential.getAccessToken();
+    		String clientId = credential.getClientId();
+        	
+//        	String token = "hello";
+//    		String clientId = "client";
+    		
         	String triples = "<http://lsm.deri.ie/resource/1382370140521530000>	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://purl.oclc.org/NET/ssnx/ssn#Property>.";
+        	lsmStore.pushRDF("http://test/sensormeta#", triples, clientId,token);
+    		
+//        	lsmStore.sensorDelete("http://lsm.deri.ie/resource/1398244042563735000", "http://test/sensormeta#",clientId,token);
 //        	lsmStore.deleteTriples("http://test/sensormeta#");
-        	lsmStore.pushRDF("http://test/sensormeta#", triples);
-//        	lsmStore.sensorDelete("http://lsm.deri.ie/resource/1382370140521530000", "http://test/sensormeta#");
-        	Sensor sensor = addNewSensor();         
-//           
+        	
+        	Sensor sensor = addNewSensor(clientId, token);  
             Observation obs = TestServer.updateData();
 	        obs.setSensor(sensor.getId());
-	        lsmStore.sensorDataUpdate(obs);
+	        lsmStore.sensorDataUpdate(obs,clientId, token);
 	        
 //	        Sensor s = lsmStore.getSensorById("http://lsm.deri.ie/resource/1386253085149029000","http://test/sensormeta#");
 //	        System.out.println(s.getId());

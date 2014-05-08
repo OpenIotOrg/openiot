@@ -90,7 +90,9 @@ public class PropertyManagement {
 	private static final String LSM_LOCAL_METAGRAPH = "lsm-light.server.localMetaGraph";
 	private static final String LSM_LOCAL_DATAGRAPH = "lsm-light.server.localDataGraph";
 	private static final String LSM_CLIENT_CONNECTION_SERVER_HOST = "lsm-light.client.connection.server";
-
+	private static final String OPENIOT_ONTOLOGY_NAMESPACE = "lsm-light.client.openiot.ontology.namespace";
+	private static final String OPENIOT_RESOURCE_NAMESPACE = "lsm-light.client.openiot.resource.namespace";
+	
 	// ==============Security&Privacy====================
 	private static final String SECURITY_LSM_SPARQL_END_POINT = "security.lsm.sparql.endpoint";
 	private static final String SECURITY_LSM_GRAPH = "security.lsm.graphURL";
@@ -226,6 +228,7 @@ public class PropertyManagement {
 		return props.getProperty(SECURITY_LSM_GRAPH);
 	}
 
+	
 	public int getLsmMinConnection() {
 		try {
 			return Integer.parseInt(props.getProperty(LSM_MIN_CONNECTION));
@@ -274,5 +277,12 @@ public class PropertyManagement {
 
 	public String getLSMClientConnectionServerHost() {
 		return props.getProperty(LSM_CLIENT_CONNECTION_SERVER_HOST);
+	}
+	public String getOpeniotOntologyNamespace() {
+		return props.getProperty(OPENIOT_ONTOLOGY_NAMESPACE);
+	}
+
+	public String getOpeniotResourceNamespace() {
+		return props.getProperty(OPENIOT_RESOURCE_NAMESPACE);
 	}
 }

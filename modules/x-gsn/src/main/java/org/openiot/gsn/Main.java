@@ -16,6 +16,15 @@
  *    along with OpenIoT.  If not, see <http://www.gnu.org/licenses/>.
  *
  *     Contact: OpenIoT mailto: info@openiot.eu
+ * @author parobert
+ * @author cl3m
+ * @author Jerome Rousselot
+ * @author gsn_devs
+ * @author Mehdi Riahi
+ * @author Ali Salehi
+ * @author Behnaz Bostanipour
+ * @author Timotee Maret
+ * @author Julien Eberle
  */
 
 package org.openiot.gsn;
@@ -82,6 +91,9 @@ import org.openiot.gsn.utils.PropertiesReader;
 import org.openiot.gsn.utils.ValidityTools;
 import org.openiot.gsn.vsensor.SQLValidatorIntegration;
 import org.openiot.gsn.wrappers.WrappersUtil;
+
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigFactory;
 
 /**
  * Web Service URLs : Microsoft SensorMap:
@@ -301,10 +313,8 @@ public final class Main {
 			Main.getInstance();
 			// checks to see if dynamic sensor control is active
 			// and starts timer accordingly
-			boolean isTrueDynamicControl = Boolean
-					.parseBoolean(PropertiesReader.readProperty(
-							LSMRepository.LSM_CONFIG_PROPERTIES_FILE,
-							"dynamicControl").trim());
+			Config conf=ConfigFactory.load();
+			boolean isTrueDynamicControl = conf.getBoolean("dynamicControl");
 			if (isTrueDynamicControl)
 				DynamicControlTaskTimer.getInstance().startTimer();
 
@@ -592,4 +602,6 @@ public final class Main {
 	public static StorageManager getWindowStorage() {
 		return windowStorage;
 	}
+	
+	
 }

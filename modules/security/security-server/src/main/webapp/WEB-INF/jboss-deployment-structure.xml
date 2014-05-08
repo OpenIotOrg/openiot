@@ -12,5 +12,10 @@
 			<module name="org.slf4j.impl" />
 			<module name="org.apache.log4j" />
 		</exclusions>
+		<!-- 
+		<dependencies>
+			<module name="deployment.lsm-light.server.war" />
+		</dependencies>
+		 -->
 	</deployment>
 </jboss-deployment-structure>

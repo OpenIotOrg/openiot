@@ -13,7 +13,7 @@
 
 		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
 			<!-- Rollover at the first day of each month. -->
-			<fileNamePattern>security-management-%d{yyyy-MM}.%i.log</fileNamePattern>
+			<fileNamePattern>${jboss.server.log.dir}/security-management-%d{yyyy-MM}.%i.log</fileNamePattern>
 			<timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
 				<!-- or whenever the file size reaches 100MB -->
 				<maxFileSize>10MB</maxFileSize>

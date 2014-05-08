@@ -106,18 +106,20 @@
 			<artifactId>lsm-light.client</artifactId>
 			<version>0.0.1</version>
 		</dependency>
-		
-        <dependency>
-	        <groupId>org.openiot</groupId>
-	        <artifactId>utils.commons</artifactId>
-	        <version>0.0.1</version>
-        </dependency>
 
+		<dependency>
+			<groupId>org.openiot</groupId>
+			<artifactId>utils.commons</artifactId>
+			<version>0.0.1</version>
+		</dependency>
+
+		<dependency>
+			<artifactId>slf4j-log4j12</artifactId>
+			<groupId>org.slf4j</groupId>
+			<version>1.7.1</version>
+		</dependency>
 
 		<!-- MISC -->
-		<!-- <dependency> <groupId>org.jboss.spec</groupId> <artifactId>jboss-javaee-6.0</artifactId> <version>3.0.4.Final</version> 
-			<type>pom</type> <scope>provided</scope> </dependency> -->
-
 
 		<dependency>
 			<groupId>org.jboss.spec.javax.ejb</groupId>
@@ -125,8 +127,6 @@
 			<scope>provided</scope>
 		</dependency>
 
-
-		<!-- <dependency> <groupId>xalan</groupId> <artifactId>serializer</artifactId> <version>2.7.1.jbossorg-2</version> </dependency> -->
 
 		<dependency>
 			<groupId>org.openiot</groupId>
@@ -229,7 +229,7 @@
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
-			 <version>1.1.1</version> 
+			<version>1.1.1</version>
 			<!--<version>1.0.13</version> -->
 		</dependency>
 
