@@ -53,6 +53,7 @@ public class VirtuosoConstantUtil {
 		authorizedGraphs.add("http://lsm.deri.ie/OpenIoT/demo/sensormeta#");
 		authorizedGraphs.add("http://lsm.deri.ie/OpenIoT/test/sensordata#");
 		authorizedGraphs.add("http://lsm.deri.ie/OpenIoT/test/sensormeta#");
+		authorizedGraphs.add("http://lsm.deri.ie/OpenIoT/guest/functionaldata#");
 	}
 	
 }
