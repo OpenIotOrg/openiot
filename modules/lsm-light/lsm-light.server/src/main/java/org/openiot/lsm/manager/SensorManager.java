@@ -141,10 +141,10 @@ public class SensorManager {
 		Connection conn = null;
 		try{
 			logger.info("Check allowed graphs to be deleted");
-			if(!VirtuosoConstantUtil.authorizedGraphs.contains(graphName)){
-				logger.info("You do not have right to delete this graph "+graphName);
-				return;
-			}
+//			if(!VirtuosoConstantUtil.authorizedGraphs.contains(graphName)){
+//				logger.info("You do not have right to delete this graph "+graphName);
+//				return;
+//			}
 			conn = ConnectionManager.getConnectionPool().getConnection();
 			logger.info("Start clearing graph "+graphName);
 			String sql = "sparql clear graph <" + graphName + ">";
@@ -165,10 +165,10 @@ public class SensorManager {
 		Connection conn = null;
 		try{
 			logger.info("Check allowed graphs to be deleted");
-			if(!VirtuosoConstantUtil.authorizedGraphs.contains(graphName)){
-				logger.info("You do not have right to delete this graph "+graphName);
-				return;
-			}
+//			if(!VirtuosoConstantUtil.authorizedGraphs.contains(graphName)){
+//				logger.info("You do not have right to delete this graph "+graphName);
+//				return;
+//			}
 			conn = ConnectionManager.getConnectionPool().getConnection();
 			String sql = "sparql delete from <" + graphName + "> {"+triples+"}";
 			logger.info("Start deleting triples ");
@@ -189,10 +189,10 @@ public class SensorManager {
 		// TODO Auto-generated method stub
 		Connection conn = null;
 		logger.info("Check allowed graphs to be deleted");
-		if(!VirtuosoConstantUtil.authorizedGraphs.contains(graphURL)){
-			logger.info("You do not have right to delete this graph "+graphURL);
-			return;
-		}
+//		if(!VirtuosoConstantUtil.authorizedGraphs.contains(graphURL)){
+//			logger.info("You do not have right to delete this graph "+graphURL);
+//			return;
+//		}
 		String sql = "sparql delete from <"+graphURL+"> {?s ?p ?o} "+
 						"where{ "+
 							"{ "+
@@ -227,10 +227,10 @@ public class SensorManager {
 		String sql = "";				
 		Connection conn = null;
 		logger.info("Check allowed graphs to be deleted");
-		if(!VirtuosoConstantUtil.authorizedGraphs.contains(dataGraph)){
-			logger.info("You do not have right to delete this graph "+dataGraph);
-			return;
-		}
+//		if(!VirtuosoConstantUtil.authorizedGraphs.contains(dataGraph)){
+//			logger.info("You do not have right to delete this graph "+dataGraph);
+//			return;
+//		}
 		if(toTime!=null){
 			sql = "sparql delete from <"+ dataGraph+"> {?s ?p ?o} "+
 				"where{ "+

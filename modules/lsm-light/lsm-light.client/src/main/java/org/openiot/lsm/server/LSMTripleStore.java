@@ -355,7 +355,7 @@ public class LSMTripleStore implements LSMServer {
 		         String response = reader.readLine();
 		         logger.info(response);
 		         logger.info("Sensor data is updated successfully");
-		         logger.info("Please use LSM Sparql Endpoint http://lsm.deri.ie/sparql to check it");
+		         logger.info("Please use OpenIoT LSM Sparql Endpoint to check it");
 		     }else {
 			     logger.error("Server returned non-OK code: " + responseCode);
 			 }
@@ -404,7 +404,7 @@ public class LSMTripleStore implements LSMServer {
 	                    conn.getInputStream()));
 	         String response = reader.readLine();
 	         logger.info(response);
-	         logger.info("Please use LSM Sparql Endpoint http://lsm.deri.ie/sparql to check it");
+	         logger.info("Please use OpenIoT LSM Sparql Endpoint to check it");
 	         return true;
 	     }else {
 		     logger.error("Server returned non-OK code: " + responseCode);
@@ -440,6 +440,8 @@ public class LSMTripleStore implements LSMServer {
          conn.setRequestProperty("Connection", "Keep-Alive");  
          conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");  
          conn.setRequestProperty("graphURL", graphURL);
+         conn.setRequestProperty("clientId", clientId);
+         conn.setRequestProperty("token", token);
          
          RDFTuple tuple = new RDFTuple(graphURL,triples);
          dos = new ObjectOutputStream( conn.getOutputStream() );
@@ -485,6 +487,8 @@ public class LSMTripleStore implements LSMServer {
          conn.setRequestProperty("apiType", "insert");
          conn.setRequestProperty("Connection", "Keep-Alive");  
          conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");  
+         conn.setRequestProperty("clientId", clientId);
+         conn.setRequestProperty("token", token);
          
          RDFTuple tuple = new RDFTuple(graphURL,"all");
          dos = new ObjectOutputStream( conn.getOutputStream() );
@@ -519,6 +523,8 @@ public class LSMTripleStore implements LSMServer {
 	        // sets file name as a HTTP header
 	        httpConn.setRequestProperty("fileName", name);
 	        httpConn.setRequestProperty("project", "openiot");
+	        httpConn.setRequestProperty("clientId", clientId);
+	        httpConn.setRequestProperty("token", token);
 	        // opens output stream of the HTTP connection for writing data
 	        OutputStream outputStream = httpConn.getOutputStream();
 	 
@@ -567,6 +573,8 @@ public class LSMTripleStore implements LSMServer {
 		     conn.setRequestProperty("operator", "delete");
 	         conn.setRequestProperty("Connection", "Keep-Alive");  
 	         conn.setRequestProperty("Content-Type", "text/html"); 
+	         conn.setRequestProperty("clientId", clientId);
+	         conn.setRequestProperty("token", token);
 	         
 	         HashMap<String, String> patterns = new HashMap<String, String>();
 	         patterns.put("delete", oldTriplePatterns);
