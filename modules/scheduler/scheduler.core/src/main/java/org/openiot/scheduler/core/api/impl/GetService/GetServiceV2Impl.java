@@ -184,7 +184,7 @@ public class GetServiceV2Impl
 				    	getWidgetList().add(w);
 				    	
 				    	String[] kv = widget.split("\"id\":");
-				    	String[] id = kv[1].split("\"preAttrs\":"); w.setWidgetId(id[0]);
+				    	String[] id = kv[1].split("\"preAttrs\":"); w.setWidgetId(id[0].replace(",", ""));
 				    	
 				    	String[] preAttrs = id[1].replaceFirst("\\{", "").split("\"preAttr\":");
 				    			    	
