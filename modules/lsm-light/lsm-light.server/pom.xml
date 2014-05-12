@@ -124,7 +124,23 @@
 		<!-- <scope>test</scope> -->
 		<!-- </dependency> -->
 
-
+		<!-- ======== Sesame Dependencies ========== -->
+		<dependency>
+			<groupId>org.openrdf.sesame</groupId>
+			<artifactId>sesame-query</artifactId>
+			<version>2.7.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.openrdf.sesame</groupId>
+			<artifactId>sesame-queryresultio-sparqlxml</artifactId>
+			<version>2.7.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.openrdf.sesame</groupId>
+			<artifactId>sesame-repository-sparql</artifactId>
+			<version>2.7.0</version>
+		</dependency>
+		
 		<!-- ======== LSM API Dependencies ========== -->
 
 		<dependency>

@@ -83,27 +83,7 @@ public class OSDSpecEnt
 				return null;
 			}
 		}
-		
-//		private static String graph = "http://lsm.deri.ie/OpenIoT/testSchema#";
-		
-//		private static String getNamespaceDeclarations() 
-//		{
-//	        StringBuilder declarations = new StringBuilder();
-//	        declarations.append("PREFIX : <" + "http://openiot.eu/ontology/ns/" + "> \n");
-//	        //declarations.append("PREFIX spt: <" + "http://spitfire-project.eu/ontology/ns/" + "> \n");
-//	        declarations.append("PREFIX rdf: <" + RDF.getURI() + "> \n");//http://www.w3.org/1999/02/22-rdf-syntax-ns#
-//	        declarations.append("PREFIX rdfs: <" + RDFS.getURI() + "> \n");//http://www.w3.org/2000/01/rdf-schema#
-//	        declarations.append("PREFIX xsd: <" + XSD.getURI() + "> \n");
-//	        //declarations.append("PREFIX owl: <" + OWL.getURI() + "> \n");
-//	        //declarations.append("PREFIX ssn: <" + "http://purl.oclc.org/NET/ssnx/ssn#" + "> \n");
-//	        //declarations.append("PREFIX dul: <" + "http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#" + "> \n");
-//	        //declarations.append("PREFIX oiot: <" + "http://openiot.eu/ontology/ns/" + "> \n");
-//	        //declarations.append("base oiot: <" + "http://openiot.eu/ontology/ns/clouddb" + "> \n");	       
-//	        declarations.append("\n");
-//	        
-//	        return declarations.toString();
-//	    }
-		
+				
 		public static String selectOSDSpecByUser(String graph,UserBean user)
 		{
 			StringBuilder queryStr = new StringBuilder();

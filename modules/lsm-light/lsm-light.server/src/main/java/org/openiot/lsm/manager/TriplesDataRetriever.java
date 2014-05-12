@@ -20,11 +20,15 @@ package org.openiot.lsm.manager;
  *     Contact: OpenIoT mailto: info@openiot.eu
  */
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
@@ -59,10 +63,21 @@ import org.openiot.lsm.security.oauth.mgmt.Permission;
 import org.openiot.lsm.security.oauth.mgmt.Role;
 import org.openiot.lsm.utils.ConstantsUtil;
 import org.openiot.lsm.utils.DateUtil;
+import org.openiot.lsm.utils.ObsConstant;
 import org.openiot.lsm.utils.VirtuosoConstantUtil;
 import org.openiot.lsm.utils.XSLTMapFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
+import com.hp.hpl.jena.datatypes.xsd.XSDDateTime;
+import com.hp.hpl.jena.ontology.Individual;
+import com.hp.hpl.jena.ontology.OntClass;
+import com.hp.hpl.jena.ontology.OntModel;
+import com.hp.hpl.jena.ontology.OntModelSpec;
+import com.hp.hpl.jena.ontology.OntProperty;
+import com.hp.hpl.jena.ontology.impl.OntologyImpl;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
 
 /**
  * 
@@ -74,18 +89,53 @@ public class TriplesDataRetriever {
 
 	static PropertyManagement propertyManagement = new PropertyManagement();
 	final static Logger logger = LoggerFactory.getLogger(SensorManager.class);
+	static OntModel model = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM);
 	
+	
+	public static void init(){
+		model.createClass("http://purl.oclc.org/NET/ssnx/ssn#ObservationValue");
+		model.createClass("http://purl.oclc.org/NET/ssnx/ssn#Observation");
+		model.createClass("http://purl.oclc.org/NET/ssnx/ssn#Sensor");
+		
+		model.createClass("http://openiot.eu/ontology/ns/ClientPermission");
+		model.createClass("http://openiot.eu/ontology/ns/ClientRole");
+		model.createClass("http://openiot.eu/ontology/ns/User");
+		model.createClass("http://openiot.eu/ontology/ns/Ticket");
+		model.createClass("http://openiot.eu/ontology/ns/TicketScheduler");
+		model.createClass("http://openiot.eu/ontology/ns/CloudService");
+		model.createClass("http://openiot.eu/ontology/ns/ServiceAttribute");
+		model.createClass("");
+		model.createClass("");
+		model.createClass("");
+	}
 	public static String getTripleDataHasUnit(String dataType,String name,String value,String unit,String observationId,String observedURL,Date time){
 		String triples = "";
 		long id = System.nanoTime();
 		String prefix = propertyManagement.getOpeniotResourceNamespace();
-		triples+="<"+prefix + id+"> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <"+dataType+">.\n"+ 
-				"<"+prefix+id+"> <http://lsm.deri.ie/ont/lsm.owl#isObservedPropertyOf> <"+prefix + observationId+">.\n"+
-				"<"+prefix+id+"> <http://lsm.deri.ie/ont/lsm.owl#value> \""+value+"\"^^<http://www.w3.org/2001/XMLSchema#double>.\n"+
-				"<"+prefix+id+"> <http://lsm.deri.ie/ont/lsm.owl#unit> \""+unit+"\".\n"+
-				"<"+prefix+id+"> <http://www.w3.org/2000/01/rdf-schema#label> \""+name+"\".\n"+
-				"<"+prefix+id+"> <http://purl.oclc.org/NET/ssnx/ssn#observedProperty> <"+observedURL+">.\n"+
-				"<"+prefix+id+"> <http://purl.oclc.org/NET/ssnx/ssn#observationResultTime> \""+DateUtil.date2StandardString(time)+"\"^^<http://www.w3.org/2001/XMLSchema#dateTime>.\n";
+		
+		OntClass ontObservationValue = model.getOntClass("http://purl.oclc.org/NET/ssnx/ssn#ObservationValue");
+		OntModel idvModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM);
+		GregorianCalendar g = new GregorianCalendar();
+		g.setTime(time);
+		
+		Individual idvObservationValue = idvModel.createIndividual(prefix + id,ontObservationValue);
+		idvObservationValue.addProperty(idvModel.createProperty("http://lsm.deri.ie/ont/lsm.owl#isObservedPropertyOf"), idvModel.createResource(prefix+observationId));
+		idvObservationValue.addProperty(idvModel.createProperty("http://purl.oclc.org/NET/ssnx/ssn#observedProperty"),idvModel.createResource(dataType));
+		idvObservationValue.addProperty(idvModel.createProperty("http://lsm.deri.ie/ont/lsm.owl#value"),idvModel.createTypedLiteral(5.13));
+		idvObservationValue.addProperty(idvModel.createProperty("http://lsm.deri.ie/ont/lsm.owl#unit"),idvModel.createTypedLiteral(unit));		
+		idvObservationValue.addProperty(idvModel.createProperty("http://www.w3.org/2000/01/rdf-schema#label"),idvModel.createTypedLiteral(name));
+		idvObservationValue.addProperty(idvModel.createProperty("http://purl.oclc.org/NET/ssnx/ssn#observationResultTime"),model.createTypedLiteral(new XSDDateTime(g)));
+		
+		OutputStream out = new ByteArrayOutputStream();
+		idvModel.write(out,"N-TRIPLE");	
+		try {
+			out.close();
+			triples = out.toString();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		idvModel.close();
 		return triples;
 	}
 	
@@ -94,24 +144,57 @@ public class TriplesDataRetriever {
 		String triples = "";
 		long id = System.nanoTime();
 		String prefix = propertyManagement.getOpeniotResourceNamespace();
-		triples+=
-				"<"+prefix+id+"> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <"+dataType+">.\n"+ 
-				"<"+prefix+id+"> <http://lsm.deri.ie/ont/lsm.owl#isObservedPropertyOf> <"+ prefix + observationId+">.\n"+
-				"<"+prefix+id+"> <http://lsm.deri.ie/ont/lsm.owl#value> \""+value+"\".\n"+
-				"<"+prefix+id+"> <http://www.w3.org/2000/01/rdf-schema#label> \""+name+"\".\n"+
-				"<"+prefix+id+"> <http://purl.oclc.org/NET/ssnx/ssn#observedProperty> <"+observedURL+">.\n"+
-//				"<"+observedURL+"> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://purl.oclc.org/NET/ssnx/ssn#Property>.\n"+
-				"<"+prefix+id+"> <http://purl.oclc.org/NET/ssnx/ssn#observationResultTime> \""+DateUtil.date2StandardString(time)+"\"^^<http://www.w3.org/2001/XMLSchema#dateTime>.\n";
+		
+		OntClass ontObservationValue = model.getOntClass("http://purl.oclc.org/NET/ssnx/ssn#ObservationValue");
+		OntModel idvModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM);
+		GregorianCalendar g = new GregorianCalendar();
+		g.setTime(time);
+		
+		Individual idvObservationValue = idvModel.createIndividual(prefix + id,ontObservationValue);
+		idvObservationValue.addProperty(idvModel.createProperty("http://lsm.deri.ie/ont/lsm.owl#isObservedPropertyOf"), idvModel.createResource(prefix+observationId));
+		idvObservationValue.addProperty(idvModel.createProperty("http://purl.oclc.org/NET/ssnx/ssn#observedProperty"),idvModel.createResource(dataType));
+		idvObservationValue.addProperty(idvModel.createProperty("http://lsm.deri.ie/ont/lsm.owl#value"),idvModel.createTypedLiteral(5.13));	
+		idvObservationValue.addProperty(idvModel.createProperty("http://www.w3.org/2000/01/rdf-schema#label"),idvModel.createTypedLiteral(name));
+		idvObservationValue.addProperty(idvModel.createProperty("http://purl.oclc.org/NET/ssnx/ssn#observationResultTime"),model.createTypedLiteral(new XSDDateTime(g)));
+		
+		OutputStream out = new ByteArrayOutputStream();
+		idvModel.write(out,"N-TRIPLE");	
+		try {
+			out.close();
+			triples = out.toString();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		idvModel.close();
 		return triples;
 	}
 	
 	public static String getObservationTripleData(String obsId,String sensorId,String featureOfInterest,Date time){
 		String triples = "";		
 		String prefix = propertyManagement.getOpeniotResourceNamespace();
-		triples+="<"+prefix+obsId+"> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://purl.oclc.org/NET/ssnx/ssn#Observation>.\n"+ 
-				"<"+prefix+obsId+"> <http://purl.oclc.org/NET/ssnx/ssn#observedBy> <"+sensorId+">.\n"+				
-				"<"+prefix+obsId+"> <http://purl.oclc.org/NET/ssnx/ssn#featureOfInterest> <"+featureOfInterest+">.\n"+
-				"<"+prefix+obsId+"> <http://purl.oclc.org/NET/ssnx/ssn#observationResultTime> \""+DateUtil.date2StandardString(time)+"\"^^<http://www.w3.org/2001/XMLSchema#dateTime>.\n";
+		
+		GregorianCalendar g = new GregorianCalendar();
+		g.setTime(time);
+		
+		OntClass ontObservation = model.getOntClass("http://purl.oclc.org/NET/ssnx/ssn#Observation");
+		
+		OntModel idvModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM);
+		Individual idvObservation = idvModel.createIndividual(prefix+obsId,ontObservation);		
+		idvObservation.addProperty(idvModel.createProperty("http://purl.oclc.org/NET/ssnx/ssn#observedBy"),idvModel.createResource(sensorId));
+		idvObservation.addProperty(idvModel.createProperty("http://purl.oclc.org/NET/ssnx/ssn#featureOfInterest"),idvModel.createResource(featureOfInterest));
+		idvObservation.addProperty(idvModel.createProperty("http://purl.oclc.org/NET/ssnx/ssn#observationResultTime"),model.createTypedLiteral(new XSDDateTime(g)));
+		
+		OutputStream out = new ByteArrayOutputStream();
+		idvModel.write(out,"N-TRIPLE");	
+		try {
+			out.close();
+			triples = out.toString();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		idvModel.close();
 		return triples;
 	}
 	
@@ -182,108 +265,181 @@ public class TriplesDataRetriever {
 		return triples;
 	}
 
-	public static String permissionToRDF(Permission permission) {
+	public static OntModel permissionToRDF(Permission permission) {
 		// TODO Auto-generated method stub
-		String triples = "";
 		String id = Permission.toPermissionIdStr(permission);
-		triples += "<" + VirtuosoConstantUtil.PermissionPrefix + id
-				+ "> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://openiot.eu/ontology/ns/ClientPermission>.\n" + "<"
-				+ VirtuosoConstantUtil.PermissionPrefix + id + "> <http://www.w3.org/2000/01/rdf-schema#comment> \"" + permission.getDescription() + "\".\n";
-		return triples;
+		OntClass per_Class = model.getOntClass("http://openiot.eu/ontology/ns/ClientPermission");
+		OntModel idvModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM);
+		
+		Individual idvPermission = idvModel.createIndividual(VirtuosoConstantUtil.PermissionPrefix + id,per_Class);		
+		idvPermission.addProperty(idvModel.createProperty("http://www.w3.org/2000/01/rdf-schema#comment"),idvModel.createTypedLiteral(permission.getDescription()));
+		
+//		triples += "<" + VirtuosoConstantUtil.PermissionPrefix + id
+//				+ "> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://openiot.eu/ontology/ns/ClientPermission>.\n" + "<"
+//				+ VirtuosoConstantUtil.PermissionPrefix + id + "> <http://www.w3.org/2000/01/rdf-schema#comment> \"" + permission.getDescription() + "\".\n";
+		return idvModel;
 	}
 
-	public static String roleToRDF(Role role) {
+	public static OntModel roleToRDF(Role role) {
 		// TODO Auto-generated method stub
-		String triples = "";
 		String id = Role.toRoleIdStr(role);
-		triples += "<" + VirtuosoConstantUtil.RolePrefix + id
-				+ "> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://openiot.eu/ontology/ns/ClientRole>.\n" + "<" + VirtuosoConstantUtil.RolePrefix
-				+ id + "> <http://www.w3.org/2000/01/rdf-schema#comment> \"" + role.getDescription() + "\".\n";
+		
+		OntClass role_Class = model.getOntClass("http://openiot.eu/ontology/ns/ClientRole");
+		OntModel idvModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM);
+		
+		Individual idvRole = idvModel.createIndividual(VirtuosoConstantUtil.RolePrefix + id,role_Class);		
+		idvRole.addProperty(idvModel.createProperty("http://www.w3.org/2000/01/rdf-schema#comment"),idvModel.createTypedLiteral(role.getDescription()));
+		
+//		triples += "<" + VirtuosoConstantUtil.RolePrefix + id
+//				+ "> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://openiot.eu/ontology/ns/ClientRole>.\n" + "<" + VirtuosoConstantUtil.RolePrefix
+//				+ id + "> <http://www.w3.org/2000/01/rdf-schema#comment> \"" + role.getDescription() + "\".\n";
 
 		for (Permission permission : role.getPermissions()) {
 			String perId = VirtuosoConstantUtil.PermissionPrefix + Permission.toPermissionIdStr(permission);
-			triples += "<" + VirtuosoConstantUtil.RolePrefix + id + "> <http://openiot.eu/ontology/ns/forPermission> <" + perId + ">.\n";
-			triples += permissionToRDF(permission);
+			idvRole.addProperty(idvModel.createProperty("http://openiot.eu/ontology/ns/forPermission"),idvModel.createResource(perId));
+//			triples += "<" + VirtuosoConstantUtil.RolePrefix + id + "> <http://openiot.eu/ontology/ns/forPermission> <" + perId + ">.\n";
+			idvModel.add(permissionToRDF(permission));
 		}
-		return triples;
+		return idvModel;
 	}
 
-	public static String sec_UserToRDF(org.openiot.lsm.security.oauth.mgmt.User sec_user) {
+	public static OntModel sec_UserToRDF(org.openiot.lsm.security.oauth.mgmt.User sec_user) {
 		// TODO Auto-generated method stub
-		String triples = "";
+//		String triples = "";
 		String id = sec_user.getUsername();
-		triples += "<" + VirtuosoConstantUtil.OAuthUserPrefix + id
-				+ "> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://openiot.eu/ontology/ns/User>.\n" + "<" + VirtuosoConstantUtil.OAuthUserPrefix
-				+ id + "> <http://xmlns.com/foaf/0.1/nick> \"" + sec_user.getName() + "\".\n" + "<" + VirtuosoConstantUtil.OAuthUserPrefix + id
-				+ ">  <http://xmlns.com/foaf/0.1/mbox> \"" + sec_user.getEmail() + "\".\n" + "<" + VirtuosoConstantUtil.OAuthUserPrefix + id
-				+ ">  <http://openiot.eu/ontology/ns/password> \"" + sec_user.getPassword() + "\".\n";
+		
+		OntClass user_Class = model.getOntClass("http://openiot.eu/ontology/ns/User");
+		OntModel idvModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM);
+		
+		Individual idvUser = idvModel.createIndividual(VirtuosoConstantUtil.OAuthUserPrefix + id,user_Class);
+		idvUser.addProperty(idvModel.createProperty("http://xmlns.com/foaf/0.1/nick"),idvModel.createTypedLiteral(sec_user.getName()));
+		idvUser.addProperty(idvModel.createProperty("http://xmlns.com/foaf/0.1/mbox"),idvModel.createTypedLiteral(sec_user.getEmail()));
+		idvUser.addProperty(idvModel.createProperty("http://openiot.eu/ontology/ns/password"),idvModel.createTypedLiteral(sec_user.getPassword()));
+		
+//		triples += "<" + VirtuosoConstantUtil.OAuthUserPrefix + id
+//				+ "> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://openiot.eu/ontology/ns/User>.\n" + "<" + VirtuosoConstantUtil.OAuthUserPrefix
+//				+ id + "> <http://xmlns.com/foaf/0.1/nick> \"" + sec_user.getName() + "\".\n" + "<" + VirtuosoConstantUtil.OAuthUserPrefix + id
+//				+ ">  <http://xmlns.com/foaf/0.1/mbox> \"" + sec_user.getEmail() + "\".\n" + "<" + VirtuosoConstantUtil.OAuthUserPrefix + id
+//				+ ">  <http://openiot.eu/ontology/ns/password> \"" + sec_user.getPassword() + "\".\n";
+		
 		for (Role role : sec_user.getRoles()) {
-			triples += "<" + VirtuosoConstantUtil.OAuthUserPrefix + id + "> <http://openiot.eu/ontology/ns/role> <" + VirtuosoConstantUtil.RolePrefix
-					+ Role.toRoleIdStr(role) + ">.\n";
-			triples += roleToRDF(role);
+			idvUser.addProperty(idvModel.createProperty("http://openiot.eu/ontology/ns/role"),idvModel.createResource(VirtuosoConstantUtil.RolePrefix
+					+ Role.toRoleIdStr(role)));
+			idvModel.add(roleToRDF(role));
+//			triples += "<" + VirtuosoConstantUtil.OAuthUserPrefix + id + "> <http://openiot.eu/ontology/ns/role> <" + VirtuosoConstantUtil.RolePrefix
+//					+ Role.toRoleIdStr(role) + ">.\n";
+//			triples += roleToRDF(role);
 		}
-		return triples;
+		return idvModel;
 	}
 
-	public static String ticketToRDF(LSMServiceTicketImpl ticket) {
+	public static OntModel ticketToRDF(LSMServiceTicketImpl ticket) {
 		// TODO Auto-generated method stub
-		String triples = "";
+//		String triples = "";
 		String prefix = propertyManagement.getOpeniotResourceNamespace();
 		String id = ticket.getId();
-		triples += "<"+ prefix + id + "> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://openiot.eu/ontology/ns/Ticket>.\n"
-				+ "<"+ prefix + id + "> <http://openiot.eu/ontology/ns/timesUsed> \"" + ticket.getCountOfUses()
-				+ "\"^^<http://www.w3.org/2001/XMLSchema#integer>.\n" + "<"+ prefix + id
-				+ ">  <http://openiot.eu/ontology/ns/creationTime> \"" + DateUtil.date2StandardString(new Date(ticket.getCreationTime()))
-				+ "\"^^<http://www.w3.org/2001/XMLSchema#dateTime>.\n" + "<"+ prefix + id
-				+ ">  <http://openiot.eu/ontology/ns/lastTimeUsed> \"" + DateUtil.date2StandardString(new Date(ticket.getLastTimeUsed()))
-				+ "\"^^<http://www.w3.org/2001/XMLSchema#dateTime>.\n" + "<"+ prefix + id
-				+ ">  <http://openiot.eu/ontology/ns/prevLastTimeUsed> \"" + DateUtil.date2StandardString(new Date(ticket.getPreviousTimeUsed()))
-				+ "\"^^<http://www.w3.org/2001/XMLSchema#dateTime>.\n" + "<"+ prefix + id
-				+ ">  <http://openiot.eu/ontology/ns/grantedBy> <" + prefix + ticket.getGrantingTicket().getId() + ">.\n"
-				+ "<"+ prefix + id + ">  <http://openiot.eu/ontology/ns/serviceBinary> \""
-				+ Hex.encodeHexString(SerializationUtils.serialize(ticket.getService())) + "\"^^<http://www.w3.org/2001/XMLSchema#hexBinary>.\n"
-				+ "<"+ prefix + id + ">  <http://openiot.eu/ontology/ns/expirationPolicy> \""
-				+ Hex.encodeHexString(SerializationUtils.serialize(ticket.getExpirationPolicy())) + "\"^^<http://www.w3.org/2001/XMLSchema#hexBinary>.\n";
+		
+		OntClass ticket_Class = model.getOntClass("http://openiot.eu/ontology/ns/Ticket");
+		OntModel idvModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM);
+		
+		Individual idvTicket = idvModel.createIndividual(prefix + id,ticket_Class);
+		idvTicket.addProperty(idvModel.createProperty("http://openiot.eu/ontology/ns/timesUsed"),idvModel.createTypedLiteral(ticket.getCountOfUses()));
+		idvTicket.addProperty(idvModel.createProperty("http://openiot.eu/ontology/ns/creationTime"),
+				idvModel.createTypedLiteral(DateUtil.date2StandardString(new Date(ticket.getCreationTime())),XSDDatatype.XSDdateTime));
+		idvTicket.addProperty(idvModel.createProperty("http://openiot.eu/ontology/ns/lastTimeUsed"),
+				idvModel.createTypedLiteral(DateUtil.date2StandardString(new Date(ticket.getLastTimeUsed())),XSDDatatype.XSDdateTime));
+		idvTicket.addProperty(idvModel.createProperty("http://openiot.eu/ontology/ns/prevLastTimeUsed"),
+				idvModel.createTypedLiteral(DateUtil.date2StandardString(new Date(ticket.getPreviousTimeUsed())),XSDDatatype.XSDdateTime));
+		idvTicket.addProperty(idvModel.createProperty("http://openiot.eu/ontology/ns/grantedBy"),idvModel.createResource(prefix + ticket.getGrantingTicket().getId()));
+		idvTicket.addProperty(idvModel.createProperty("http://openiot.eu/ontology/ns/serviceBinary"),
+				idvModel.createTypedLiteral(Hex.encodeHexString(SerializationUtils.serialize(ticket.getService())),XSDDatatype.XSDhexBinary));
+		idvTicket.addProperty(idvModel.createProperty("http://openiot.eu/ontology/ns/expirationPolicy"),
+				idvModel.createTypedLiteral(Hex.encodeHexString(SerializationUtils.serialize(ticket.getExpirationPolicy())),XSDDatatype.XSDhexBinary));
 		if (ticket.isFromNewLogin())
-			triples += "<"+ prefix + id + ">  <http://openiot.eu/ontology/ns/ticketFrom> <http://openiot.eu/ontology/ns/NewLogin>.\n";
+			idvTicket.addProperty(idvModel.createProperty("http://openiot.eu/ontology/ns/ticketFrom"),idvModel.createResource("http://openiot.eu/ontology/ns/NewLogin"));
 		else
-			triples += "<"+ prefix + id + ">  <http://openiot.eu/ontology/ns/ticketFrom> <http://openiot.eu/ontology/ns/OldLogin>.\n";
-		return triples;
+			idvTicket.addProperty(idvModel.createProperty("http://openiot.eu/ontology/ns/ticketFrom"),idvModel.createResource("http://openiot.eu/ontology/ns/OldLogin"));
+		
+//		triples += "<"+ prefix + id + "> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://openiot.eu/ontology/ns/Ticket>.\n"
+//				+ "<"+ prefix + id + "> <http://openiot.eu/ontology/ns/timesUsed> \"" + ticket.getCountOfUses()
+//				+ "\"^^<http://www.w3.org/2001/XMLSchema#integer>.\n" + "<"+ prefix + id
+//				+ ">  <http://openiot.eu/ontology/ns/creationTime> \"" + DateUtil.date2StandardString(new Date(ticket.getCreationTime()))
+//				+ "\"^^<http://www.w3.org/2001/XMLSchema#dateTime>.\n" + "<"+ prefix + id
+//				+ ">  <http://openiot.eu/ontology/ns/lastTimeUsed> \"" + DateUtil.date2StandardString(new Date(ticket.getLastTimeUsed()))
+//				+ "\"^^<http://www.w3.org/2001/XMLSchema#dateTime>.\n" + "<"+ prefix + id
+//				+ ">  <http://openiot.eu/ontology/ns/prevLastTimeUsed> \"" + DateUtil.date2StandardString(new Date(ticket.getPreviousTimeUsed()))
+//				+ "\"^^<http://www.w3.org/2001/XMLSchema#dateTime>.\n" + "<"+ prefix + id
+//				+ ">  <http://openiot.eu/ontology/ns/grantedBy> <" + prefix + ticket.getGrantingTicket().getId() + ">.\n"
+//				+ "<"+ prefix + id + ">  <http://openiot.eu/ontology/ns/serviceBinary> \""
+//				+ Hex.encodeHexString(SerializationUtils.serialize(ticket.getService())) + "\"^^<http://www.w3.org/2001/XMLSchema#hexBinary>.\n"
+//				+ "<"+ prefix + id + ">  <http://openiot.eu/ontology/ns/expirationPolicy> \""
+//				+ Hex.encodeHexString(SerializationUtils.serialize(ticket.getExpirationPolicy())) + "\"^^<http://www.w3.org/2001/XMLSchema#hexBinary>.\n";
+//		if (ticket.isFromNewLogin())
+//			triples += "<"+ prefix + id + ">  <http://openiot.eu/ontology/ns/ticketFrom> <http://openiot.eu/ontology/ns/NewLogin>.\n";
+//		else
+//			triples += "<"+ prefix + id + ">  <http://openiot.eu/ontology/ns/ticketFrom> <http://openiot.eu/ontology/ns/OldLogin>.\n";
+		return idvModel;
 	}
 
-	public static String ticketSchedulerToRDF(LSMTicketGrantingTicketImpl ticketGrant) {
+	public static OntModel ticketSchedulerToRDF(LSMTicketGrantingTicketImpl ticketGrant) {
 		// TODO Auto-generated method stub
-		String triples = "";
+//		String triples = "";
 		String id = ticketGrant.getId();
 		String prefix = propertyManagement.getOpeniotResourceNamespace();
-		triples += "<"+ prefix + id
-				+ "> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://openiot.eu/ontology/ns/TicketScheduler>.\n" + "<"+ prefix
-				+ id + "> <http://openiot.eu/ontology/ns/timesUsed> \"" + ticketGrant.getCountOfUses() + "\"^^<http://www.w3.org/2001/XMLSchema#integer>.\n"
-				+ "<"+ prefix + id + ">  <http://openiot.eu/ontology/ns/creationTime> \""
-				+ DateUtil.date2StandardString(new Date(ticketGrant.getCreationTime())) + "\"^^<http://www.w3.org/2001/XMLSchema#dateTime>.\n"
-				+ "<"+ prefix + id + ">  <http://openiot.eu/ontology/ns/lastTimeUsed> \""
-				+ DateUtil.date2StandardString(new Date(ticketGrant.getLastTimeUsed())) + "\"^^<http://www.w3.org/2001/XMLSchema#dateTime>.\n"
-				+ "<"+ prefix + id + ">  <http://openiot.eu/ontology/ns/prevLastTimeUsed> \""
-				+ DateUtil.date2StandardString(new Date(ticketGrant.getPreviousTimeUsed())) + "\"^^<http://www.w3.org/2001/XMLSchema#dateTime>.\n"
-				+ "<"+ prefix + id + ">  <http://openiot.eu/ontology/ns/authenticatedBy> \""
-				+ Hex.encodeHexString(SerializationUtils.serialize(ticketGrant.getAuthentication())) + "\"^^<http://www.w3.org/2001/XMLSchema#hexBinary>.\n"
-				+ "<"+ prefix + id + ">  <http://openiot.eu/ontology/ns/expirationPolicy> \""
-				+ Hex.encodeHexString(SerializationUtils.serialize(ticketGrant.getExpirationPolicy())) + "\"^^<http://www.w3.org/2001/XMLSchema#hexBinary>.\n"
-				+ "<"+ prefix + id + ">  <http://openiot.eu/ontology/ns/servicesGranted> \""
-				+ Hex.encodeHexString(SerializationUtils.serialize(ticketGrant.getServices())) + "\"^^<http://www.w3.org/2001/XMLSchema#hexBinary>.\n";
-//		System.out.println(Hex.encodeHexString(SerializationUtils.serialize(ticketGrant.getAuthentication())));
+		
+		OntClass ticket_Class = model.getOntClass("http://openiot.eu/ontology/ns/TicketScheduler");
+		OntModel idvModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM);
+		
+		Individual idvTicket = idvModel.createIndividual(prefix + id,ticket_Class);
+		idvTicket.addProperty(idvModel.createProperty("http://openiot.eu/ontology/ns/timesUsed"),idvModel.createTypedLiteral(ticketGrant.getCountOfUses(),XSDDatatype.XSDinteger));
+		idvTicket.addProperty(idvModel.createProperty("http://openiot.eu/ontology/ns/creationTime"),
+				idvModel.createTypedLiteral(DateUtil.date2StandardString(new Date(ticketGrant.getCreationTime())),XSDDatatype.XSDdateTime));
+		idvTicket.addProperty(idvModel.createProperty("http://openiot.eu/ontology/ns/lastTimeUsed"),
+				idvModel.createTypedLiteral(DateUtil.date2StandardString(new Date(ticketGrant.getLastTimeUsed())),XSDDatatype.XSDdateTime));
+		idvTicket.addProperty(idvModel.createProperty("http://openiot.eu/ontology/ns/prevLastTimeUsed"),
+				idvModel.createTypedLiteral(DateUtil.date2StandardString(new Date(ticketGrant.getPreviousTimeUsed())),XSDDatatype.XSDdateTime));
+		idvTicket.addProperty(idvModel.createProperty("http://openiot.eu/ontology/ns/authenticatedBy"),
+				idvModel.createTypedLiteral(Hex.encodeHexString(SerializationUtils.serialize(ticketGrant.getAuthentication())),XSDDatatype.XSDhexBinary));
+		idvTicket.addProperty(idvModel.createProperty("http://openiot.eu/ontology/ns/expirationPolicy"),
+				idvModel.createTypedLiteral(Hex.encodeHexString(SerializationUtils.serialize(ticketGrant.getExpirationPolicy())),XSDDatatype.XSDhexBinary));
+		idvTicket.addProperty(idvModel.createProperty("http://openiot.eu/ontology/ns/servicesGranted"),
+				idvModel.createTypedLiteral(Hex.encodeHexString(SerializationUtils.serialize(ticketGrant.getServices())),XSDDatatype.XSDhexBinary));
 		if (ticketGrant.getGrantingTicket() != null) {
-			triples += "<"+ prefix + id + ">  <http://openiot.eu/ontology/ns/grants> <"+prefix
-					+ ticketGrant.getGrantingTicket().getId() + ">.\n";
-			triples += ticketSchedulerToRDF((LSMTicketGrantingTicketImpl) ticketGrant.getGrantingTicket());
+			idvTicket.addProperty(idvModel.createProperty("http://openiot.eu/ontology/ns/grants"),idvModel.createResource(prefix + ticketGrant.getGrantingTicket().getId()));
+			idvModel.add(ticketSchedulerToRDF((LSMTicketGrantingTicketImpl) ticketGrant.getGrantingTicket()));
 		}
 		if (ticketGrant.isExpired())
-			triples += "<"+ prefix + id
-					+ ">  <http://openiot.eu/ontology/ns/validity> <http://openiot.eu/ontology/ns/TicketGrantingExpired>.\n";
+			idvTicket.addProperty(idvModel.createProperty("http://openiot.eu/ontology/ns/validity"),idvModel.createResource("http://openiot.eu/ontology/ns/TicketGrantingExpired"));
 		else
-			triples += "<"+ prefix + id
-					+ ">  <http://openiot.eu/ontology/ns/validity> <http://openiot.eu/ontology/ns/TicketGrantingValid>.\n";
-		return triples;
+			idvTicket.addProperty(idvModel.createProperty("http://openiot.eu/ontology/ns/validity"),idvModel.createResource("http://openiot.eu/ontology/ns/TicketGrantingValid"));
+					
+//		triples += "<"+ prefix + id
+//				+ "> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://openiot.eu/ontology/ns/TicketScheduler>.\n" + "<"+ prefix
+//				+ id + "> <http://openiot.eu/ontology/ns/timesUsed> \"" + ticketGrant.getCountOfUses() + "\"^^<http://www.w3.org/2001/XMLSchema#integer>.\n"
+//				+ "<"+ prefix + id + ">  <http://openiot.eu/ontology/ns/creationTime> \""
+//				+ DateUtil.date2StandardString(new Date(ticketGrant.getCreationTime())) + "\"^^<http://www.w3.org/2001/XMLSchema#dateTime>.\n"
+//				+ "<"+ prefix + id + ">  <http://openiot.eu/ontology/ns/lastTimeUsed> \""
+//				+ DateUtil.date2StandardString(new Date(ticketGrant.getLastTimeUsed())) + "\"^^<http://www.w3.org/2001/XMLSchema#dateTime>.\n"
+//				+ "<"+ prefix + id + ">  <http://openiot.eu/ontology/ns/prevLastTimeUsed> \""
+//				+ DateUtil.date2StandardString(new Date(ticketGrant.getPreviousTimeUsed())) + "\"^^<http://www.w3.org/2001/XMLSchema#dateTime>.\n"
+//				+ "<"+ prefix + id + ">  <http://openiot.eu/ontology/ns/authenticatedBy> \""
+//				+ Hex.encodeHexString(SerializationUtils.serialize(ticketGrant.getAuthentication())) + "\"^^<http://www.w3.org/2001/XMLSchema#hexBinary>.\n"
+//				+ "<"+ prefix + id + ">  <http://openiot.eu/ontology/ns/expirationPolicy> \""
+//				+ Hex.encodeHexString(SerializationUtils.serialize(ticketGrant.getExpirationPolicy())) + "\"^^<http://www.w3.org/2001/XMLSchema#hexBinary>.\n"
+//				+ "<"+ prefix + id + ">  <http://openiot.eu/ontology/ns/servicesGranted> \""
+//				+ Hex.encodeHexString(SerializationUtils.serialize(ticketGrant.getServices())) + "\"^^<http://www.w3.org/2001/XMLSchema#hexBinary>.\n";
+//		if (ticketGrant.getGrantingTicket() != null) {
+//			triples += "<"+ prefix + id + ">  <http://openiot.eu/ontology/ns/grants> <"+prefix
+//					+ ticketGrant.getGrantingTicket().getId() + ">.\n";
+//			triples += ticketSchedulerToRDF((LSMTicketGrantingTicketImpl) ticketGrant.getGrantingTicket());
+//		}
+//		if (ticketGrant.isExpired())
+//			triples += "<"+ prefix + id
+//					+ ">  <http://openiot.eu/ontology/ns/validity> <http://openiot.eu/ontology/ns/TicketGrantingExpired>.\n";
+//		else
+//			triples += "<"+ prefix + id
+//					+ ">  <http://openiot.eu/ontology/ns/validity> <http://openiot.eu/ontology/ns/TicketGrantingValid>.\n";
+		return idvModel;
 	}
 
 	public static String registeredServiceToRDF(LSMRegisteredServiceImpl service) {
@@ -292,6 +448,33 @@ public class TriplesDataRetriever {
 		String prefix = propertyManagement.getOpeniotResourceNamespace();
 		String servicePrefix = VirtuosoConstantUtil.CloudServicePrefix;
 		long id = service.getId();
+		
+		OntClass ticket_Class = model.getOntClass("http://openiot.eu/ontology/ns/CloudService");
+		OntModel idvModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM);
+		
+		Individual idvTicket = idvModel.createIndividual(prefix + id,ticket_Class);
+		idvTicket.addProperty(idvModel.createProperty("http://openiot.eu/ontology/ns/timesUsed"),idvModel.createTypedLiteral(ticketGrant.getCountOfUses(),XSDDatatype.XSDinteger));
+		idvTicket.addProperty(idvModel.createProperty("http://openiot.eu/ontology/ns/creationTime"),
+				idvModel.createTypedLiteral(DateUtil.date2StandardString(new Date(ticketGrant.getCreationTime())),XSDDatatype.XSDdateTime));
+		idvTicket.addProperty(idvModel.createProperty("http://openiot.eu/ontology/ns/lastTimeUsed"),
+				idvModel.createTypedLiteral(DateUtil.date2StandardString(new Date(ticketGrant.getLastTimeUsed())),XSDDatatype.XSDdateTime));
+		idvTicket.addProperty(idvModel.createProperty("http://openiot.eu/ontology/ns/prevLastTimeUsed"),
+				idvModel.createTypedLiteral(DateUtil.date2StandardString(new Date(ticketGrant.getPreviousTimeUsed())),XSDDatatype.XSDdateTime));
+		idvTicket.addProperty(idvModel.createProperty("http://openiot.eu/ontology/ns/authenticatedBy"),
+				idvModel.createTypedLiteral(Hex.encodeHexString(SerializationUtils.serialize(ticketGrant.getAuthentication())),XSDDatatype.XSDhexBinary));
+		idvTicket.addProperty(idvModel.createProperty("http://openiot.eu/ontology/ns/expirationPolicy"),
+				idvModel.createTypedLiteral(Hex.encodeHexString(SerializationUtils.serialize(ticketGrant.getExpirationPolicy())),XSDDatatype.XSDhexBinary));
+		idvTicket.addProperty(idvModel.createProperty("http://openiot.eu/ontology/ns/servicesGranted"),
+				idvModel.createTypedLiteral(Hex.encodeHexString(SerializationUtils.serialize(ticketGrant.getServices())),XSDDatatype.XSDhexBinary));
+		if (ticketGrant.getGrantingTicket() != null) {
+			idvTicket.addProperty(idvModel.createProperty("http://openiot.eu/ontology/ns/grants"),idvModel.createResource(prefix + ticketGrant.getGrantingTicket().getId()));
+			idvModel.add(ticketSchedulerToRDF((LSMTicketGrantingTicketImpl) ticketGrant.getGrantingTicket()));
+		}
+		if (ticketGrant.isExpired())
+			idvTicket.addProperty(idvModel.createProperty("http://openiot.eu/ontology/ns/validity"),idvModel.createResource("http://openiot.eu/ontology/ns/TicketGrantingExpired"));
+		else
+			idvTicket.addProperty(idvModel.createProperty("http://openiot.eu/ontology/ns/validity"),idvModel.createResource("http://openiot.eu/ontology/ns/TicketGrantingValid"));
+		
 		triples += "<" + servicePrefix + id + "> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://openiot.eu/ontology/ns/CloudService>.\n" + "<"
 				+ servicePrefix + id + "> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://openiot.eu/ontology/ns/ProxyCloudService>.\n";
 		if (service.isAnonymousAccess())
@@ -465,6 +648,7 @@ public class TriplesDataRetriever {
 		place.setLng(324);
 		sensor.setPlace(place);
 		System.out.println(TriplesDataRetriever.getSensorTripleMetadata(sensor, ""));
+		
 	}
 
 	public static String addPermissionToRoleRDF(String roleId, String permId) {
