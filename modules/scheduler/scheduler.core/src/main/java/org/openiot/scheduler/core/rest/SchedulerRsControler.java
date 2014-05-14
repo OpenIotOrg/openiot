@@ -38,6 +38,7 @@ import javax.ws.rs.QueryParam;
 
 
 
+
 import org.openiot.commons.osdspec.model.OAMO;
 import org.openiot.commons.osdspec.model.OSDSpec;
 import org.openiot.commons.osdspec.model.OSMO;
@@ -59,6 +60,7 @@ import org.openiot.scheduler.core.api.impl.GetService.GetServiceImpl;
 import org.openiot.scheduler.core.api.impl.GetService.GetServiceV2Impl;
 import org.openiot.scheduler.core.api.impl.RegisterService.RegisterServiceImpl;
 import org.openiot.scheduler.core.api.impl.RegisterService.RegisterServiceV2Impl;
+import org.openiot.scheduler.core.api.impl.UpdateService.UpdateServiceImpl;
 import org.openiot.scheduler.core.api.impl.UserLogin.UserLoginImpl;
 import org.openiot.scheduler.core.api.impl.UserRegister.UserRegisterImpl;
 
@@ -162,6 +164,7 @@ public class SchedulerRsControler {
 	@Path("/userLogin")
 //	@Consumes("application/xml")
 //	@Produces("application/xml")
+	@Produces("text/plain")
 	public String userLogin(@QueryParam("userMail") String userMail,@QueryParam("userPaswrd") String userPaswrd  ) {
 		
 		UserLoginImpl userLogin = new UserLoginImpl(userMail,userPaswrd);	
@@ -248,8 +251,9 @@ public class SchedulerRsControler {
 	@Path("/updateApp")
 	public void updateApp(OSDSpec osdSpec) {
 
-		//TODO: Implement this functionality
-
+		UpdateServiceImpl updateServiceImpl = new UpdateServiceImpl(osdSpec);
+		
+		updateServiceImpl.replyMessage();
 	}	
 	
 	
