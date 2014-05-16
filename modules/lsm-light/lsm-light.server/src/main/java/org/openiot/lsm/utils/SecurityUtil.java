@@ -22,7 +22,7 @@ public class SecurityUtil {
 	private static final int EXPIRY_CHECK_INTERVAL = 5 * 60 * 1000; // some sample value
 	private static String username;
 	private static String password;
-	private static AccessControlUtil acUtil = AccessControlUtil.getRestInstance();
+	private static AccessControlUtil acUtil = AccessControlUtil.getRestInstance("lsm-server");
 	private static long lastExpiryCheck = 0;
 
 	static {

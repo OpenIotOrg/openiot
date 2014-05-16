@@ -137,6 +137,11 @@
         	<artifactId>resteasy-jaxb-provider</artifactId>
         </dependency>
 
+		<dependency>
+			<groupId>org.openiot</groupId>
+			<artifactId>utils.commons</artifactId>
+			<version>0.0.1</version>
+		</dependency>
 	</dependencies>
 
 	<properties>

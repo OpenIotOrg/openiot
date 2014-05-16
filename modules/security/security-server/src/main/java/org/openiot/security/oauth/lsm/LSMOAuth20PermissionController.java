@@ -163,7 +163,7 @@ public final class LSMOAuth20PermissionController extends AbstractController {
 		else {
 			userTicketGrantingTicket = (TicketGrantingTicket) this.ticketRegistry.getTicket(userAccessToken);
 			if (userTicketGrantingTicket == null || userTicketGrantingTicket.isExpired()) {
-				log.error("expired user accessToken : {}", accessToken);
+				log.error("expired user accessToken : {}", userAccessToken);
 				writeErrorMessage(response, OAuthConstants.EXPIRED_ACCESS_TOKEN + "_for_user");
 				return null;
 			}

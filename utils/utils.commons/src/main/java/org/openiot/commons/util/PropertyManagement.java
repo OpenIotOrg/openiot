@@ -96,6 +96,7 @@ public class PropertyManagement {
 	// ==============Security&Privacy====================
 	private static final String SECURITY_LSM_SPARQL_END_POINT = "security.lsm.sparql.endpoint";
 	private static final String SECURITY_LSM_GRAPH = "security.lsm.graphURL";
+	private static final String SECURITY_CLIENT_REST_NAME = "security.client.rest.ini.fileName";
 
 
 	// ==============REQUEST COMMONS ====================
@@ -284,5 +285,9 @@ public class PropertyManagement {
 
 	public String getOpeniotResourceNamespace() {
 		return props.getProperty(OPENIOT_RESOURCE_NAMESPACE);
+	}
+
+	public String getRestClientIniName() {
+		return props.getProperty(SECURITY_CLIENT_REST_NAME);
 	}
 }

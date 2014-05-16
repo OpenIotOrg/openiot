@@ -84,6 +84,17 @@ public abstract class AccessControlUtil {
 			instanceRest = new AccessControlUtilRest();
 		return instanceRest;
 	}
+	
+	/**
+	 * Returns a singleton instance of this class for RESTful applications.
+	 * 
+	 * @return
+	 */
+	public static AccessControlUtil getRestInstance(String moduleName) {
+		if (instanceRest == null)
+			instanceRest = new AccessControlUtilRest(moduleName);
+		return instanceRest;
+	}
 
 	/**
 	 * Authenticated the user and abtains a token. Should be used only for the REST client.

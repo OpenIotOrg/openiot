@@ -93,8 +93,8 @@ public class TicketResource extends Resource {
 			log.warn("Request for TGT from unknown client: {}", credentials.getClientId());
 			getResponse().setStatus(Status.CLIENT_ERROR_UNAUTHORIZED, "Request for TGT from unknown client");
 		} else if (!credentials.getSecret().equals(service.getDescription())) {
-			log.warn("Client secret [{}] deosn't match for client [{}]", credentials.getSecret(), credentials.getSecret());
-			getResponse().setStatus(Status.CLIENT_ERROR_BAD_REQUEST, "Client secret deosn't match");
+			log.warn("Client secret [{}] deosn't match for client [{}]", credentials.getSecret(), credentials.getClientId());
+			getResponse().setStatus(Status.CLIENT_ERROR_BAD_REQUEST, "Client secret doesn't match");
 		} else {
 
 			try {
