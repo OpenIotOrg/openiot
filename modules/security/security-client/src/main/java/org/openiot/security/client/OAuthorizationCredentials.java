@@ -25,6 +25,7 @@ import java.io.Serializable;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.openiot.commons.util.PropertyManagement;
 
 /**
  * This class represents a chain of OAuth credentials.
@@ -34,7 +35,13 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
  */
 public class OAuthorizationCredentials implements Serializable {
 
-	private static final String LSM_RESOURCE_USER = "http://lsm.deri.ie/resource/user/";
+	private static final String LSM_RESOURCE_USER;
+	private static final PropertyManagement props;
+	static {
+		props = new PropertyManagement();
+		String namespace = props.getOpeniotResourceNamespace();
+		LSM_RESOURCE_USER = namespace + (namespace.endsWith("/") ? "" : "/") + "user/";
+	}
 
 	private static final long serialVersionUID = 4880915177543108283L;
 

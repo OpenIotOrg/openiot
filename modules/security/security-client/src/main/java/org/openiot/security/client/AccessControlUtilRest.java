@@ -23,6 +23,10 @@ package org.openiot.security.client;
 import io.buji.pac4j.ClientToken;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.LinkOption;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -48,38 +52,43 @@ class AccessControlUtilRest extends AccessControlUtil {
 	AccessControlUtilRest() {
 		this(null);
 	}
-	
+
 	AccessControlUtilRest(String moduleName) {
 		String jbossConfigDir = System.getProperty("jboss.server.config.dir");
+		String key = null;
+		String secret = null;
 
 		IniSecurityManagerFactory factory = null;
 		if (moduleName != null && jbossConfigDir != null) {
 			PropertyManagement props = new PropertyManagement();
-			String fileName = props.getRestClientIniName();
-			if (fileName == null) {
-				logger.warn("The ini configuration file name is not configured in the global properties file");
+			String iniFilePath = jbossConfigDir + "/rest-client-" + moduleName + ".ini";
+			Path path = Paths.get(iniFilePath);
+			if (!Files.exists(path) || Files.isDirectory(path)) {
+				logger.warn("The configuration file {} is not found.", iniFilePath);
 			} else {
-				String key = props.getProperty("casOauthClient.key." + moduleName, null);
-				String secret = props.getProperty("casOauthClient.secret." + moduleName, null);
-				if (key != null && secret != null) {
-					factory = new IniSecurityManagerFactory("file:" + jbossConfigDir + "/" + fileName);
-					SecurityManager securityManager = factory.getInstance();
-					CasOAuthWrapperClientRest bean = (CasOAuthWrapperClientRest) factory.getBeans().get("casOauthClient");
-					bean.setKey(key);
-					bean.setSecret(secret);
-					SecurityUtils.setSecurityManager(securityManager);
-				} else {
-					logger.warn("casOauthClient.key.{} or/and casOauthClient.secret.{} is not set in the global properties file", moduleName, moduleName);
-				}
+				factory = new IniSecurityManagerFactory("file:" + iniFilePath);
 			}
+
+			key = props.getProperty("casOauthClient.key." + moduleName, null);
+			secret = props.getProperty("casOauthClient.secret." + moduleName, null);
 		}
 		if (factory == null) {
 			logger.info("Falling back to the rest-client.ini in the class path");
 			String confFilePath = "classpath:rest-client.ini";
 			factory = new IniSecurityManagerFactory(confFilePath);
-			SecurityManager securityManager = factory.getInstance();
-			SecurityUtils.setSecurityManager(securityManager);
 		}
+		
+		SecurityManager securityManager = factory.getInstance();
+		SecurityUtils.setSecurityManager(securityManager);
+
+		if (key != null && secret != null) {
+			CasOAuthWrapperClientRest bean = (CasOAuthWrapperClientRest) factory.getBeans().get("casOauthClient");
+			bean.setKey(key);
+			bean.setSecret(secret);
+		} else {
+			logger.warn("casOauthClient.key.{} or/and casOauthClient.secret.{} is not set in the global properties file", moduleName, moduleName);
+		}
+
 	}
 
 	public OAuthorizationCredentials login(String username, String password) {

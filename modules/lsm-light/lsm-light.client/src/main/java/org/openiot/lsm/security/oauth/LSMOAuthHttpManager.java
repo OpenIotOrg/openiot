@@ -32,6 +32,7 @@ import org.openiot.commons.util.Tuple2;
 import org.openiot.lsm.security.oauth.mgmt.Permission;
 import org.openiot.lsm.security.oauth.mgmt.Role;
 import org.openiot.lsm.security.oauth.mgmt.User;
+import static org.openiot.lsm.utils.OAuthUtil.*;
 
 /**
  * 
@@ -41,14 +42,6 @@ import org.openiot.lsm.security.oauth.mgmt.User;
 public class LSMOAuthHttpManager {
 	String LSMOauthURL;
 	private String lsmOauthGraphURL;
-	final static String OAUTH_PER = "Permission";
-	final static String OAUTH_ROLE = "Role";
-	final static String OAUTH_USER = "OAuthUser";
-	final static String OAUTH_SERVICE = "RegisteredService";
-	final static String OAUTH_TICKET = "ServiceTicket";
-	final static String OAUTH_TICKET_GRANTING = "TicketGranting";
-	final static String OAUTH_ROLE_PERMISSION_ADD = "Role_Permission_Add";
-	final static String OAUTH_ROLE_PERMISSION_DEL = "Role_Permission_Del";
 
 	public LSMOAuthHttpManager(String OAuthGraphURL, String serverAddress) {
 		init(OAuthGraphURL, serverAddress);

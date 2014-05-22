@@ -8,17 +8,9 @@ import org.openiot.lsm.security.oauth.LSMServiceTicketImpl;
 import org.openiot.lsm.security.oauth.LSMTicketGrantingTicketImpl;
 import org.openiot.lsm.security.oauth.mgmt.Permission;
 import org.openiot.lsm.security.oauth.mgmt.Role;
+import static org.openiot.lsm.utils.OAuthUtil.*;
 
 public class OauthServletHelper {
-
-	final static String OAUTH_PER = "Permission";
-	final static String OAUTH_ROLE = "Role";
-	final static String OAUTH_USER = "OAuthUser";
-	final static String OAUTH_SERVICE = "RegisteredService";
-	final static String OAUTH_TICKET = "ServiceTicket";
-	final static String OAUTH_TICKET_GRANTING = "TicketGranting";
-	final static String OAUTH_ROLE_PERMISSION_ADD = "Role_Permission_Add";
-	final static String OAUTH_ROLE_PERMISSION_DEL = "Role_Permission_Del";
 
 	public boolean feedToServer(Object object, String objectType, String graphURL) {
 		// TODO Auto-generated method stub

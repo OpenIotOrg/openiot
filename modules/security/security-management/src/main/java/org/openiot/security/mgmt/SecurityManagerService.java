@@ -23,6 +23,7 @@ package org.openiot.security.mgmt;
 import java.util.List;
 
 import org.jasig.cas.services.RegisteredService;
+import org.openiot.lsm.security.oauth.LSMRegisteredServiceImpl;
 import org.openiot.lsm.security.oauth.mgmt.Permission;
 import org.openiot.lsm.security.oauth.mgmt.Role;
 import org.openiot.lsm.security.oauth.mgmt.User;
@@ -78,5 +79,9 @@ public interface SecurityManagerService {
 	public abstract List<RegisteredService> getAllServices();
 
 	public abstract void removePermissionFromRole(Role role, Permission permission);
+
+	public abstract void deleteRegisteredService(long id);
+
+	public abstract LSMRegisteredServiceImpl addRegisteredService(LSMRegisteredServiceImpl service);
 
 }

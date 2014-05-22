@@ -13,6 +13,9 @@
 				<li><a href="roles.jsf">Manage roles</a></li>
 				<li class="active"><a href="users.jsf">Manage users</a></li>
 				<li><a href="perms.jsf">Manage permissions</a></li>
+				<openiot:hasPermission name="admin:add_services">
+					<li><a href="services.jsf">Manage services</a></li>
+				</openiot:hasPermission>
 			</openiot:hasPermission>
 		</ui:define>
 		<ui:define name="content">

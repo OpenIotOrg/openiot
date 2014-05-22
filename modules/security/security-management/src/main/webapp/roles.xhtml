@@ -9,14 +9,17 @@
 		<ui:define name="title">Manage Roles</ui:define>
 		<ui:define name="nav-links">
 			<li><a href="home.jsf">Home</a></li>
-			
+
 			<!-- Authorization JSF Tag -->
 			<openiot:hasPermission name="admin:user_mgmt_general">
 				<li class="active"><a href="roles.jsf">Manage roles</a></li>
 				<li><a href="users.jsf">Manage users</a></li>
 				<li><a href="perms.jsf">Manage permissions</a></li>
+				<openiot:hasPermission name="admin:add_services">
+					<li><a href="services.jsf">Manage services</a></li>
+				</openiot:hasPermission>
 			</openiot:hasPermission>
-		
+
 		</ui:define>
 		<ui:define name="content">
 			<openiot:hasPermission name="admin:user_mgmt_general">
@@ -37,7 +40,7 @@
 							<!-- Form must be inside layoutUnit otherwise strange behavior -->
 							<h:panelGrid columns="1" style="width:100%" cellpadding="5">
 								<h:panelGroup layout="block" style="width:100%">
-									<p:dataTable var="role" value="#{rolesController.roles}" rowKey="#{role.name}" id="rolesTable" resizableColumns="true" editable="true"
+									<p:dataTable var="role" value="#{rolesController.roles}" rowKey="#{role.name}" id="rolesTable" resizableColumns="true" editable="false"
 										selectionMode="single" selection="#{rolesController.selectedRole}" style="table-layout: fixed">
 
 										<p:ajax event="rowEdit" listener="#{rolesController.onEditRole}" update=":messages" />
@@ -52,7 +55,7 @@
 										</f:facet>
 
 										<p:column headerText="Name">
-											<p:cellEditor>
+											<!-- <p:cellEditor>
 												<f:facet name="output">
 													<h:outputText value="#{role.name}" />
 												</f:facet>
@@ -60,10 +63,12 @@
 													<p:inputText value="#{role.name}" style="width:100%" required="true" label="Role Name" />
 												</f:facet>
 											</p:cellEditor>
+											 -->
+											<h:outputText value="#{role.name}" />
 										</p:column>
 
 										<p:column headerText="Description">
-											<p:cellEditor>
+											<!--<p:cellEditor>
 												<f:facet name="output">
 													<h:outputText value="#{role.description}" />
 												</f:facet>
@@ -71,11 +76,15 @@
 													<p:inputText value="#{role.description}" style="width:100%" required="true" label="Role Description" />
 												</f:facet>
 											</p:cellEditor>
+											 -->
+											<h:outputText value="#{role.description}" />
 										</p:column>
 
+										<!-- 
 										<p:column headerText="Options" width="50">
 											<p:rowEditor />
 										</p:column>
+										 -->
 
 										<f:facet name="footer">
 											<openiot:hasPermission name="admin:create_role:#{rolesController.selectedServiceName}">

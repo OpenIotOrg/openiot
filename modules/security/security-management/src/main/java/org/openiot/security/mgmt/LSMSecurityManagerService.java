@@ -128,10 +128,43 @@ public class LSMSecurityManagerService implements Serializable, SecurityManagerS
 		final LSMRegisteredServiceImpl registeredService = lsmOAuthHttpManager.getRegisteredService(serviceId);
 		return registeredService;
 	}
-	
+
 	@Override
-	public void removePermissionFromRole(Role role, Permission permission){
+	public void removePermissionFromRole(Role role, Permission permission) {
 		lsmOAuthHttpManager.deletePermissionFromRole(Role.toRoleIdStr(role), Permission.toPermissionIdStr(permission));
+	}
+
+	@Override
+	public void deleteRegisteredService(long id) {
+		lsmOAuthHttpManager.deleteRegisteredService(id);
+	}
+
+	@Override
+	public LSMRegisteredServiceImpl addRegisteredService(LSMRegisteredServiceImpl registeredService) {
+		final boolean isNew = registeredService.getId() == -1;
+		LSMRegisteredServiceImpl lsmRegisteredServiceImpl;
+		if (registeredService instanceof LSMRegisteredServiceImpl)
+			lsmRegisteredServiceImpl = (LSMRegisteredServiceImpl) registeredService;
+		else {
+			lsmRegisteredServiceImpl = new LSMRegisteredServiceImpl();
+			lsmRegisteredServiceImpl.copyFrom(registeredService);
+		}
+
+		if (isNew) {
+			final List<RegisteredService> allRegisteredServices = getAllRegisteredServices();
+			long id = 1;
+			if (allRegisteredServices != null)
+				for (RegisteredService service : allRegisteredServices)
+					if (service.getId() >= id)
+						id = service.getId() + 1;
+			lsmRegisteredServiceImpl.setId(id);
+
+			lsmOAuthHttpManager.addRegisteredService(lsmRegisteredServiceImpl);
+		} else {
+			deleteRegisteredService(lsmRegisteredServiceImpl.getId());
+			lsmOAuthHttpManager.addRegisteredService(lsmRegisteredServiceImpl);
+		}
+		return getRegisteredService(lsmRegisteredServiceImpl.getId());
 	}
 
 	/**
@@ -262,8 +295,7 @@ public class LSMSecurityManagerService implements Serializable, SecurityManagerS
 	public List<User> getRoleUsers(Role role) {
 		List<User> userList = new ArrayList<User>();
 		String roleId = "http://lsm.deri.ie/resource/role/" + Role.toRoleIdStr(role);
-		String sparql = " select ?userId from <" + lSMOauthGraphURL + "> \n" + "where{ ?userId <http://openiot.eu/ontology/ns/role> <" + roleId
-				+ ">}";
+		String sparql = " select ?userId from <" + lSMOauthGraphURL + "> \n" + "where{ ?userId <http://openiot.eu/ontology/ns/role> <" + roleId + ">}";
 		try {
 			String service = sparqlEndPoint;
 			QueryExecution vqe = new QueryEngineHTTP(service, sparql);
@@ -368,44 +400,4 @@ public class LSMSecurityManagerService implements Serializable, SecurityManagerS
 		return filteredList;
 	}
 
-	// /********************************
-	// * To be retrieved from LSM *
-	// ********************************/
-	// public abstract User getUserById(Long userId);
-	//
-	// /********************************
-	// * To be retrieved from LSM *
-	// ********************************/
-	// public abstract List<Role> getAllRoles();
-	//
-	// /********************************
-	// * To be retrieved from LSM *
-	// ********************************/
-	// public abstract List<Permission> getAllPermissions();
-	//
-	// /********************************
-	// * To be retrieved from LSM *
-	// ********************************/
-	// public abstract boolean addRoleToUser(User user, Role role);
-	//
-	// /********************************
-	// * To be retrieved from LSM *
-	// ********************************/
-	// public abstract boolean addPermissionToRole(Role role, Permission permission, Long
-	// serviceId);
-	//
-	// /********************************
-	// * To be retrieved from LSM *
-	// ********************************/
-	// public abstract boolean saveUser(User user, char[] passwd);
-	//
-	// /********************************
-	// * To be retrieved from LSM *
-	// ********************************/
-	// public abstract boolean savePermission(Permission permission);
-	//
-	// /********************************
-	// * To be retrieved from LSM *
-	// ********************************/
-	// public abstract boolean saveRole(Role role);
 }

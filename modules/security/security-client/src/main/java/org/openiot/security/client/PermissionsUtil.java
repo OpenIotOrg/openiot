@@ -21,5 +21,8 @@ public class PermissionsUtil {
 	public final static String SEC_MGMT_DEL_ROLE = "admin:delete_role:";
 	public final static String SEC_MGMT_DEL_PERMISSION = "admin:delete_permission:";
 	public final static String SEC_MGMT_GRANT_ROLE = "admin:grant_role:";
+	public final static String SEC_MGMT_ALL = "admin:*:";
+	
+	public final static String SEC_MGMT_SERVICE_MGMT = "admin:service_mgmt:";
 	
 }

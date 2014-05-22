@@ -25,6 +25,8 @@ import static org.openiot.security.mgmt.Utils.EmptyRoleList;
 import static org.openiot.security.mgmt.Utils.EmptyUserList;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -107,6 +109,7 @@ public class PermissionsController extends AbstractController {
 			for (Permission permission : allPermissions)
 				if (permission.getServiceId().equals(selectedServiceId))
 					list.add(permission);
+			Collections.<Permission> sort(list, new PermissionComparator());
 			return list;
 		}
 		return EmptyPermissionList;
@@ -248,4 +251,20 @@ public class PermissionsController extends AbstractController {
 		return !permission.getName().matches(".*(\\s|__|/).*");
 	}
 
+	private final class PermissionComparator implements Comparator<Permission> {
+		@Override
+		public int compare(Permission p1, Permission p2) {
+			String end1;
+			String end2;
+			if (p1.getName().contains(":"))
+				end1 = p1.getName().substring(p1.getName().lastIndexOf(":"));
+			else
+				end1 = p1.getName();
+			if (p2.getName().contains(":"))
+				end2 = p2.getName().substring(p2.getName().lastIndexOf(":"));
+			else
+				end2 = p2.getName();
+			return end1.compareTo(end2);
+		}
+	}
 }

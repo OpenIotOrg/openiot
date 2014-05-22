@@ -13,6 +13,9 @@
 				<li><a href="roles.jsf">Manage roles</a></li>
 				<li><a href="users.jsf">Manage users</a></li>
 				<li class="active"><a href="perms.jsf">Manage permissions</a></li>
+				<openiot:hasPermission name="admin:add_services">
+					<li><a href="services.jsf">Manage services</a></li>
+				</openiot:hasPermission>
 			</openiot:hasPermission>
 		</ui:define>
 		<ui:define name="content">
@@ -33,6 +36,8 @@
 					<p:layoutUnit position="west" minSize="200" size="500" resizable="true">
 						<h:form id="rolesForm">
 							<!-- Form must be inside layoutUnit otherwise strange behavior -->
+							<!-- TODO: allow selecting multiple rows for deletion -->
+							<!-- TODO: Sort names based on the service name ending -->
 							<h:panelGrid columns="1" style="width:100%" cellpadding="5">
 								<h:panelGroup id="permissionsPanel" layout="block" style="width:100%">
 									<p:dataTable var="perm" value="#{permissionsController.permissions}" id="permissionsTable" tableStyle="width:100%;" selectionMode="single"

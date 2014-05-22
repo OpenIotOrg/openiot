@@ -1,0 +1,162 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html" xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:openiot="http://openiot.org/tags">
+
+<head />
+<body>
+	<ui:composition template="/WEB-INF/templates/main.xhtml">
+		<ui:define name="title">Manage Services</ui:define>
+		<ui:define name="nav-links">
+			<li><a href="home.jsf">Home</a></li>
+
+			<!-- Authorization JSF Tag -->
+			<openiot:hasPermission name="admin:user_mgmt_general">
+				<li><a href="roles.jsf">Manage roles</a></li>
+				<li><a href="users.jsf">Manage users</a></li>
+				<li><a href="perms.jsf">Manage permissions</a></li>
+				<openiot:hasPermission name="admin:add_services">
+					<li class="active"><a href="services.jsf">Manage services</a></li>
+				</openiot:hasPermission>
+			</openiot:hasPermission>
+
+		</ui:define>
+		<ui:define name="content">
+			<openiot:hasPermission name="admin:add_services">
+				<p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" />
+				<p:layout fullPage="false" id="layout" style="min-height:800px;">
+					<p:layoutUnit position="center" minSize="200" size="500" resizable="true">
+						<h:form id="servicesForm">
+							<!-- Form must be inside layoutUnit otherwise strange behavior -->
+							<h:panelGrid columns="1" style="width:100%" cellpadding="5">
+								<h:panelGroup layout="block" style="width:100%">
+									<p:dataTable var="service" value="#{serviceController.services}" rowKey="#{service.id}" id="serviceTable" resizableColumns="true"
+										style="table-layout: fixed" emptyMessage="Service list is emtpy">
+
+										<f:facet name="header">
+											<h:outputText value="Available Services" />
+										</f:facet>
+
+										<p:column headerText="key">
+											<h:outputText value="#{service.name}" />
+										</p:column>
+
+										<p:column headerText="Secret">
+											<h:outputText value="#{service.description}" />
+										</p:column>
+
+										<p:column headerText="URL">
+											<h:outputText value="#{service.serviceId}" />
+										</p:column>
+
+										<p:column headerText="Display name">
+											<h:outputText value="#{service.theme}" />
+										</p:column>
+
+										<p:column headerText="Options" width="10%">
+											<p:commandButton id="removeServiceBtn" icon="ui-icon-trash" title="Delete" actionListener="#{serviceController.removeService(service)}"
+												update="serviceTable" disabled="#{false}">
+												<p:confirm header="Confirmation" message="Are you sure you want to remove the service [#{service.name}]?" icon="ui-icon-alert" />
+											</p:commandButton>
+											<p:commandButton id="editRestServiceBtn" update=":addRestServiceDlgForm:addRestServiceDlg" icon="ui-icon-pencil" title="Edit REST Service"
+												oncomplete="PF('addRestServiceDlgVar').show(); return false;" rendered="#{serviceController.isRestful(service)}"
+												actionListener="#{serviceController.editing(service)}" immediate="true" />
+											<p:commandButton id="editServiceBtn" update=":addServiceDlgForm:addServiceDlg" icon="ui-icon-pencil" title="Edit Service"
+												oncomplete="PF('addServiceDlgVar').show(); return false;" rendered="#{!serviceController.isRestful(service)}"
+												actionListener="#{serviceController.editing(service)}" immediate="true" />
+										</p:column>
+
+										<f:facet name="footer">
+											<openiot:hasPermission name="admin:add_services">
+												<p:commandButton id="addServiceBtn" update=":addServiceDlgForm:addServiceDlg" title="New Service"
+													onclick="PF('addServiceDlgVar').show(); return false;" value="New Service" />
+												<p:commandButton id="addRestServiceBtn" update=":addRestServiceDlgForm:addRestServiceDlg" title="New Rest Service"
+													onclick="PF('addRestServiceDlgVar').show(); return false;" value="New Rest Service"/>
+											</openiot:hasPermission>
+										</f:facet>
+
+									</p:dataTable>
+								</h:panelGroup>
+							</h:panelGrid>
+						</h:form>
+					</p:layoutUnit>
+
+					<p:confirmDialog global="true" showEffect="fade" hideEffect="explode">
+						<p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+						<p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+					</p:confirmDialog>
+
+					<h:form id="addServiceDlgForm">
+						<p:dialog id="addServiceDlg" header="#{not serviceController.editing ? 'New Service' : 'Edit Service'}" widgetVar="addServiceDlgVar" modal="true" dynamic="true">
+							<p:ajax event="close" update="addServiceDlg" />
+							<h:panelGrid columns="2" style="margin-bottom:10px" cellpadding="5">
+								<!-- <p:messages for="addRoleDlg" id="addRoleDlg_messages" showDetail="true" autoUpdate="true" closable="true" />  -->
+								<h:outputLabel for="key" value="Key:" />
+								<p:inputText id="key" value="#{serviceController.newService.name}" required="true" requiredMessage="Service key must not be empty."
+									disabled="#{serviceController.editing}" />
+
+								<h:outputLabel for="secret" value="Secret:" />
+								<p:inputText id="secret" value="#{serviceController.newService.description}" required="true" requiredMessage="Secret must not be empty." />
+
+								<h:outputLabel for="url" value="URL:" />
+								<p:inputText id="url" value="#{serviceController.newService.serviceId}" required="true" requiredMessage="Service URL must not be empty." />
+
+
+								<h:outputLabel for="theme" value="Display name:" />
+								<p:inputText id="theme" value="#{serviceController.newService.theme}" required="true" requiredMessage="Display name must not be empty." />
+
+								<f:facet name="footer">
+									<p:commandButton id="addServiceDlg_addButton" value="Submit" actionListener="#{serviceController.addService}"
+										oncomplete="handleAddServiceRequest(xhr, status, args)" update=":servicesForm:serviceTable" />
+									<p:commandButton immediate="true" id="addServiceDlg_cancelButton" value="Cancel" actionListener="#{serviceController.cancelAddService}"
+										oncomplete="PF('addServiceDlgVar').hide()" />
+								</f:facet>
+							</h:panelGrid>
+						</p:dialog>
+					</h:form>
+					<h:form id="addRestServiceDlgForm">
+						<p:dialog id="addRestServiceDlg" header="#{not serviceController.editing ? 'New Rest Service' : 'Edit Rest Service'}" widgetVar="addRestServiceDlgVar" modal="true" dynamic="true">
+							<p:ajax event="close" update="addRestServiceDlg" />
+							<h:panelGrid columns="2" style="margin-bottom:10px" cellpadding="5">
+								<!-- <p:messages for="addRoleDlg" id="addRoleDlg_messages" showDetail="true" autoUpdate="true" closable="true" />  -->
+								<h:outputLabel for="key" value="Key:" />
+								<p:inputText id="key" value="#{serviceController.newService.name}" required="true" requiredMessage="Service key must not be empty."
+									disabled="#{serviceController.editing}" />
+								<h:outputLabel for="secret" value="Secret:" />
+								<p:inputText id="secret" value="#{serviceController.newService.description}" required="true" requiredMessage="Secret must not be empty." />
+
+								<f:facet name="footer">
+									<p:commandButton id="addRestServiceDlg_addButton" value="Submit" actionListener="#{serviceController.addRestService}"
+										oncomplete="handleAddRestServiceRequest(xhr, status, args)" update=":servicesForm:serviceTable" />
+									<p:commandButton immediate="true" id="addRestServiceDlg_cancelButton" value="Cancel" actionListener="#{serviceController.cancelAddService}"
+										oncomplete="PF('addRestServiceDlgVar').hide()" />
+								</f:facet>
+							</h:panelGrid>
+						</p:dialog>
+					</h:form>
+				</p:layout>
+				<script type="text/javascript">  
+    function handleAddServiceRequest(xhr, status, args) {  
+        if(args.validationFailed || !args.serviceAdded) {  
+            PF('addServiceDlgVar').jq.effect("shake", { times:5 }, 100);  
+        }   
+        else {  
+            PF('addServiceDlgVar').hide();  
+        }  
+    }
+
+    function handleAddRestServiceRequest(xhr, status, args) {  
+        if(args.validationFailed || !args.serviceAdded) {  
+            PF('addRestServiceDlgVar').jq.effect("shake", { times:5 }, 100);  
+        }   
+        else {  
+            PF('addRestServiceDlgVar').hide();  
+        }  
+    }  
+      
+</script>
+			</openiot:hasPermission>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

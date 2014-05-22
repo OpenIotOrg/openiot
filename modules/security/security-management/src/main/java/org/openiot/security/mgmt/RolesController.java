@@ -332,7 +332,7 @@ public class RolesController extends AbstractController {
 
 	public void addUser() {
 		if (selectedRole != null && selectedOtherUser != null) {
-			// TODO This is extremely dangerous, replace with addRoleToUser() method
+			// TODO This is extremely dangerous, replace with an addRoleToUser() method
 			if (selectedOtherUser.getRoles() == null)
 				selectedOtherUser.setRoles(new ArrayList<Role>());
 			selectedOtherUser.getRoles().add(selectedRole);

@@ -273,4 +273,16 @@ public class InMemorySecurityManagerService implements SecurityManagerService {
 		// TODO
 	}
 
+	@Override
+	public void deleteRegisteredService(long id) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public LSMRegisteredServiceImpl addRegisteredService(LSMRegisteredServiceImpl service) {
+		// TODO Auto-generated method stub
+		return null;	
+	}
+
 }
