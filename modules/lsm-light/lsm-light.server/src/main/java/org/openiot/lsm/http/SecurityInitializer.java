@@ -115,13 +115,31 @@ public class SecurityInitializer {
 		predefPermissions.add(new Permission(PermissionsUtil.SEC_MGMT_GRANT_ROLE + key, "Grant/revoke roles", ID_SECURITY_MANAGEMENT));
 
 		// Pre-defined permissions and roles for lsm-light.server
-		predefPermissions.add(new Permission(PermissionsUtil.ADD_SENSOR, "add new sensor to server", ID_LSM_SERVER));
-		predefPermissions.add(new Permission(PermissionsUtil.ADD_TRIPLES, "insert triples into server", ID_LSM_SERVER));
-		predefPermissions.add(new Permission(PermissionsUtil.UPDATE_SENSOR_DATA, "add new sensor reading", ID_LSM_SERVER));
-		predefPermissions.add(new Permission(PermissionsUtil.GET_SENSOR, "retrieve sensor", ID_LSM_SERVER));
-		predefPermissions.add(new Permission(PermissionsUtil.DEL_SENSOR, "delete sensor", ID_LSM_SERVER));
-		predefPermissions.add(new Permission(PermissionsUtil.DEL_READING, "delete sensor reading", ID_LSM_SERVER));
-		predefPermissions.add(new Permission(PermissionsUtil.DEL_TRIPLES, "delete triples", ID_LSM_SERVER));
+		predefPermissions.add(new Permission(PermissionsUtil.ADD_SENSOR_GUESS, "add new sensor to server", ID_LSM_SERVER));
+		predefPermissions.add(new Permission(PermissionsUtil.ADD_TRIPLES_GUESS, "insert triples into server", ID_LSM_SERVER));
+		predefPermissions.add(new Permission(PermissionsUtil.UPDATE_SENSOR_DATA_GUESS, "add new sensor reading", ID_LSM_SERVER));
+		predefPermissions.add(new Permission(PermissionsUtil.GET_SENSOR_GUESS, "retrieve sensor", ID_LSM_SERVER));
+		predefPermissions.add(new Permission(PermissionsUtil.DEL_SENSOR_GUESS, "delete sensor", ID_LSM_SERVER));
+		predefPermissions.add(new Permission(PermissionsUtil.DEL_READING_GUESS, "delete sensor reading", ID_LSM_SERVER));
+		predefPermissions.add(new Permission(PermissionsUtil.DEL_TRIPLES_GUESS, "delete triples", ID_LSM_SERVER));
+		
+		predefPermissions.add(new Permission(PermissionsUtil.ADD_SENSOR_DEMO, "add new sensor to server", ID_LSM_SERVER));
+		predefPermissions.add(new Permission(PermissionsUtil.ADD_TRIPLES_DEMO, "insert triples into server", ID_LSM_SERVER));
+		predefPermissions.add(new Permission(PermissionsUtil.UPDATE_SENSOR_DATA_DEMO, "add new sensor reading", ID_LSM_SERVER));
+		predefPermissions.add(new Permission(PermissionsUtil.GET_SENSOR_DEMO, "retrieve sensor", ID_LSM_SERVER));
+		predefPermissions.add(new Permission(PermissionsUtil.DEL_SENSOR_DEMO, "delete sensor", ID_LSM_SERVER));
+		predefPermissions.add(new Permission(PermissionsUtil.DEL_READING_DEMO, "delete sensor reading", ID_LSM_SERVER));
+		predefPermissions.add(new Permission(PermissionsUtil.DEL_TRIPLES_DEMO, "delete triples", ID_LSM_SERVER));
+		
+		predefPermissions.add(new Permission(PermissionsUtil.ADD_SENSOR_MAIN, "add new sensor to server", ID_LSM_SERVER));
+		predefPermissions.add(new Permission(PermissionsUtil.ADD_TRIPLES_MAIN, "insert triples into server", ID_LSM_SERVER));
+		predefPermissions.add(new Permission(PermissionsUtil.UPDATE_SENSOR_DATA_MAIN, "add new sensor reading", ID_LSM_SERVER));
+		predefPermissions.add(new Permission(PermissionsUtil.GET_SENSOR_MAIN, "retrieve sensor", ID_LSM_SERVER));
+		predefPermissions.add(new Permission(PermissionsUtil.DEL_SENSOR_MAIN, "delete sensor", ID_LSM_SERVER));
+		predefPermissions.add(new Permission(PermissionsUtil.DEL_READING_MAIN, "delete sensor reading", ID_LSM_SERVER));
+		predefPermissions.add(new Permission(PermissionsUtil.DEL_TRIPLES_MAIN, "delete triples", ID_LSM_SERVER));
+		predefPermissions.add(new Permission(PermissionsUtil.LSM_ALL, "all permissions", ID_LSM_SERVER));
+		
 		for (Permission permission : predefPermissions) {
 			addPermission(permission);
 		}

@@ -135,11 +135,19 @@ public class ObjectServlet extends HttpServlet {
 						sensor = (Sensor) object;
 					else break;						
 					logger.info("add new sensor with id = "+sensor.getId()); 
-					String permissionString = PermissionsUtil.ADD_SENSOR;
 					
-					if(SecurityUtil.hasPermission(permissionString, getServletContext(), token, clientId)){
-						if((sensor.getMetaGraph()==null)||(sensor.getMetaGraph()==""))
-		        			sensor.setMetaGraph(propertyManagement.getSchedulerLsmMetaGraph());
+					if((sensor.getMetaGraph()==null)||(sensor.getMetaGraph()==""))
+	        			sensor.setMetaGraph(propertyManagement.getSchedulerLsmMetaGraph());
+					
+					String permissionString = "";
+					if(PermissionsUtil.getUserType(sensor.getMetaGraph())==PermissionsUtil.GUESS_USER)
+						permissionString = PermissionsUtil.ADD_SENSOR_GUESS;
+					else if(PermissionsUtil.getUserType(sensor.getMetaGraph())==PermissionsUtil.DEMO_USER)
+						permissionString = PermissionsUtil.ADD_SENSOR_DEMO;
+					else permissionString = PermissionsUtil.ADD_SENSOR_MAIN;
+					
+					if(SecurityUtil.hasPermission(PermissionsUtil.LSM_ALL, getServletContext(), token, clientId)
+						||SecurityUtil.hasPermission(permissionString, getServletContext(), token, clientId)){						
 		        		sensorManager.setDataGraph(sensor.getDataGraph());
 		        		sensorManager.setMetaGraph(sensor.getMetaGraph());
 				        String sensorTypeId = sensorManager.getSensorTypeId(sensor.getSensorType().toLowerCase());
@@ -161,11 +169,17 @@ public class ObjectServlet extends HttpServlet {
 					else break;						
 				    logger.info("add Observation object with id = "+observation.getId());
 	        		triples = "";
-	        		permissionString = PermissionsUtil.UPDATE_SENSOR_DATA;
-	        		if(SecurityUtil.hasPermission(permissionString, getServletContext(), token, clientId)){
-		        		if((observation.getMetaGraph()==null)||(observation.getMetaGraph()==""))
-		        			observation.setMetaGraph(propertyManagement.getLSMLocalMetaGraph());
-	
+	        		if((observation.getMetaGraph()==null)||(observation.getMetaGraph()==""))
+	        			observation.setMetaGraph(propertyManagement.getLSMLocalMetaGraph());	        		
+	        		
+	        		if(PermissionsUtil.getUserType(observation.getMetaGraph())==PermissionsUtil.GUESS_USER)
+	        			permissionString = PermissionsUtil.UPDATE_SENSOR_DATA_GUESS;
+	        		else if(PermissionsUtil.getUserType(observation.getMetaGraph())==PermissionsUtil.DEMO_USER)
+	        			permissionString = PermissionsUtil.UPDATE_SENSOR_DATA_DEMO;
+	        		else permissionString = PermissionsUtil.UPDATE_SENSOR_DATA_MAIN;
+	        		
+	        		if(SecurityUtil.hasPermission(PermissionsUtil.LSM_ALL, getServletContext(), token, clientId)
+							||SecurityUtil.hasPermission(permissionString, getServletContext(), token, clientId)){
 		        		sensorManager.setDataGraph(observation.getDataGraph());
 		        		sensorManager.setMetaGraph(observation.getMetaGraph());
 	
@@ -204,9 +218,16 @@ public class ObjectServlet extends HttpServlet {
 					if(object instanceof RDFTuple)
 						tuple = (RDFTuple) object;
 					else break;						
-//				    System.out.println(tuple.getNtriple()); 
-					permissionString = PermissionsUtil.ADD_TRIPLES;
-					if(SecurityUtil.hasPermission(permissionString, getServletContext(), token, clientId)){
+//				    System.out.println(tuple.getNtriple()); 					
+					
+					if(PermissionsUtil.getUserType(tuple.getGraphURL())==PermissionsUtil.GUESS_USER)
+						permissionString = PermissionsUtil.ADD_TRIPLES_GUESS;
+					else if(PermissionsUtil.getUserType(tuple.getGraphURL())==PermissionsUtil.DEMO_USER)
+						permissionString = PermissionsUtil.ADD_TRIPLES_DEMO;
+					else permissionString = PermissionsUtil.ADD_TRIPLES_MAIN;
+						
+					if(SecurityUtil.hasPermission(PermissionsUtil.LSM_ALL, getServletContext(), token, clientId)
+							||SecurityUtil.hasPermission(permissionString, getServletContext(), token, clientId)){
 		        		sensorManager.insertTriplesToGraph(tuple.getGraphURL(), tuple.getNtriple());
 		        		logger.info("Add triples to graph "+tuple.getGraphURL());
 					}else{
@@ -220,8 +241,14 @@ public class ObjectServlet extends HttpServlet {
 						tuple = (RDFTuple) object;
 					else break;						
 //				    System.out.println(tuple.getNtriple()); 
-					permissionString = PermissionsUtil.DEL_TRIPLES;
-					if(SecurityUtil.hasPermission(permissionString, getServletContext(), token, clientId)){
+					if(PermissionsUtil.getUserType(tuple.getGraphURL())==PermissionsUtil.GUESS_USER)
+						permissionString = PermissionsUtil.DEL_TRIPLES_GUESS;
+					else if(PermissionsUtil.getUserType(tuple.getGraphURL())==PermissionsUtil.DEMO_USER)
+						permissionString = PermissionsUtil.DEL_TRIPLES_DEMO;
+					else permissionString = PermissionsUtil.DEL_TRIPLES_MAIN;
+					
+					if(SecurityUtil.hasPermission(PermissionsUtil.LSM_ALL, getServletContext(), token, clientId)
+							||SecurityUtil.hasPermission(permissionString, getServletContext(), token, clientId)){
 						if(tuple.getNtriple().equals("all")){
 							sensorManager.clearGraph(tuple.getGraphURL());
 							logger.info("Delete all triples of graph "+tuple.getGraphURL());
@@ -235,9 +262,16 @@ public class ObjectServlet extends HttpServlet {
 					}
 	        		break;					
 	        	case "25":
-	        		HashMap<String, String> patterns = null;
-	        		permissionString = PermissionsUtil.UPDATE_TRIPLES;
-					if(SecurityUtil.hasPermission(permissionString, getServletContext(), token, clientId)){
+	        		HashMap<String, String> patterns = null;	        		
+	        		
+	        		if(PermissionsUtil.getUserType(patterns.get("graph"))==PermissionsUtil.GUESS_USER)
+	        			permissionString = PermissionsUtil.UPDATE_TRIPLES_GUESS;
+					else if(PermissionsUtil.getUserType(patterns.get("graph"))==PermissionsUtil.DEMO_USER)
+						permissionString = PermissionsUtil.UPDATE_TRIPLES_DEMO;
+					else permissionString = PermissionsUtil.UPDATE_TRIPLES_MAIN;
+	        		
+	        		if(SecurityUtil.hasPermission(PermissionsUtil.LSM_ALL, getServletContext(), token, clientId)
+							||SecurityUtil.hasPermission(permissionString, getServletContext(), token, clientId)){
 		        		if(object instanceof HashMap<?,?>)
 		        			patterns = (HashMap<String, String>) object;
 		        		sensorManager.updateGraph(patterns.get("graph"),patterns.get("update"),patterns.get("delete"));
