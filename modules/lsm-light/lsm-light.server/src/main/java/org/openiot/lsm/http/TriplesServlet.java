@@ -126,9 +126,16 @@ public class TriplesServlet extends HttpServlet {
 			 SensorManager sensorManager = new SensorManager();			
 			 sensorManager.setMetaGraph(graphURL);
 			 switch(api){			 	
-	        	case "5":
-	        		String permissionString = PermissionsUtil.GET_SENSOR;
-	        		if(SecurityUtil.hasPermission(permissionString, getServletContext(), token, clientId)){
+	        	case "5":	        		
+	        		String permissionString = "";
+					if(PermissionsUtil.getUserType(graphURL)==PermissionsUtil.GUESS_USER)
+						permissionString = PermissionsUtil.GET_SENSOR_GUESS;
+					else if(PermissionsUtil.getUserType(graphURL)==PermissionsUtil.DEMO_USER)
+						permissionString = PermissionsUtil.GET_SENSOR_DEMO;
+					else permissionString = PermissionsUtil.GET_SENSOR_MAIN;
+					
+					if(SecurityUtil.hasPermission(PermissionsUtil.LSM_ALL, getServletContext(), token, clientId)
+							||SecurityUtil.hasPermission(permissionString, getServletContext(), token, clientId)){
 	        			sensor = sensorManager.getSpecifiedSensorWithSensorId(sensorInfo);
 	        			logger.info(sensor.getId());
 	        		}else
@@ -149,8 +156,16 @@ public class TriplesServlet extends HttpServlet {
 			 SensorManager sensorManager = new SensorManager();				
 			 switch(api){	        	
 	        	case "3":
-	        		String permissionString = PermissionsUtil.DEL_SENSOR;
-	        		if(SecurityUtil.hasPermission(permissionString, getServletContext(), token, clientId)){
+	        		String permissionString = "";
+	        		
+	        		if(PermissionsUtil.getUserType(graphURL)==PermissionsUtil.GUESS_USER)
+						permissionString = PermissionsUtil.DEL_SENSOR_GUESS;
+					else if(PermissionsUtil.getUserType(graphURL)==PermissionsUtil.DEMO_USER)
+						permissionString = PermissionsUtil.DEL_SENSOR_DEMO;
+					else permissionString = PermissionsUtil.DEL_SENSOR_MAIN;
+	        		
+	        		if(SecurityUtil.hasPermission(PermissionsUtil.LSM_ALL, getServletContext(), token, clientId)
+							||SecurityUtil.hasPermission(permissionString, getServletContext(), token, clientId)){
 	        			sensorManager.sensorDelete(graphURL,infos);
 	        		}else{
 			 			result ="You don't have permmison to operate this funtion";
@@ -158,8 +173,15 @@ public class TriplesServlet extends HttpServlet {
 			 		}
 	        		break;
 			 	case "4":
-			 		permissionString = PermissionsUtil.DEL_READING;
-			 		if(SecurityUtil.hasPermission(permissionString, getServletContext(), token, clientId)){
+			 		permissionString = "";
+			 		if(PermissionsUtil.getUserType(graphURL)==PermissionsUtil.GUESS_USER)
+						permissionString = PermissionsUtil.DEL_READING_GUESS;
+					else if(PermissionsUtil.getUserType(graphURL)==PermissionsUtil.DEMO_USER)
+						permissionString = PermissionsUtil.DEL_READING_DEMO;
+					else permissionString = PermissionsUtil.DEL_READING_MAIN;
+			 		
+			 		if(SecurityUtil.hasPermission(PermissionsUtil.LSM_ALL, getServletContext(), token, clientId)
+							||SecurityUtil.hasPermission(permissionString, getServletContext(), token, clientId)){
 			 			sensorManager.deleteAllReadings(graphURL,infos);
 			 		}else{
 			 			result ="You don't have permmison to operate this funtion";
