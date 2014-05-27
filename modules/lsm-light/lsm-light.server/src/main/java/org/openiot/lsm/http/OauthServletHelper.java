@@ -116,6 +116,9 @@ public class OauthServletHelper {
 			} else if (objectType.equals(OAUTH_ROLE_PERMISSION_DEL)) {
 				Tuple2<String, String> roleIdAndPermissionId = (Tuple2<String, String>) obj;
 				return sensorManager.deletePermissionFromRole(roleIdAndPermissionId.getItem1(), roleIdAndPermissionId.getItem2());
+			} else if (objectType.equals(OAUTH_CREATE_USER_SERVICES)) {
+				Tuple2<Long, String> userIdAndServiceURL = (Tuple2<Long, String>) obj;
+				return sensorManager.createDefaultUserServices(userIdAndServiceURL.getItem1(), userIdAndServiceURL.getItem2(), graphURL);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -32,6 +32,7 @@ import org.openiot.commons.util.Tuple2;
 import org.openiot.lsm.security.oauth.mgmt.Permission;
 import org.openiot.lsm.security.oauth.mgmt.Role;
 import org.openiot.lsm.security.oauth.mgmt.User;
+
 import static org.openiot.lsm.utils.OAuthUtil.*;
 
 /**
@@ -894,6 +895,51 @@ public class LSMOAuthHttpManager {
 
 			dos = new ObjectOutputStream(conn.getOutputStream());
 			dos.writeObject(reg_service);
+			dos.flush();
+			dos.close();
+
+			// always check HTTP response code from server
+			responseCode = conn.getResponseCode();
+			if (responseCode == HttpURLConnection.HTTP_OK) {
+				// reads server's response
+				BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+				String response = reader.readLine();
+				System.out.println("Server's response: " + response);
+			} else {
+				System.out.println("Server returned non-OK code: " + responseCode);
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			System.out.println("cannot send data to server");
+		}
+	}
+
+	public void createGuestServices(long userId, String serviceURL) {
+		HttpURLConnection conn = null;
+		ObjectOutputStream dos = null;
+		int responseCode = 0;
+		try {
+			URL url = new URL(LSMOauthURL);
+			String name = OAUTH_CREATE_USER_SERVICES;
+			// Open a HTTP connection to the URL
+
+			conn = (HttpURLConnection) url.openConnection();
+			conn.setDoInput(true);
+			conn.setDoOutput(true);
+			conn.setUseCaches(false);
+
+			// Use a post method.
+			conn.setRequestMethod("POST");
+			conn.setRequestProperty("objectType", name);
+			conn.setRequestProperty("OAuthGraphURL", lsmOauthGraphURL);
+			conn.setRequestProperty("operator", "update");
+			conn.setRequestProperty("project", "openiot");
+			conn.setRequestProperty("Connection", "Keep-Alive");
+			conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+
+			dos = new ObjectOutputStream(conn.getOutputStream());
+			Tuple2<Long, String> params = new Tuple2<>(userId, serviceURL);
+			dos.writeObject(params);
 			dos.flush();
 			dos.close();
 

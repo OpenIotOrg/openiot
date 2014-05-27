@@ -84,4 +84,6 @@ public interface SecurityManagerService {
 
 	public abstract LSMRegisteredServiceImpl addRegisteredService(LSMRegisteredServiceImpl service);
 
+	public abstract void createGuestServices(User user, String serviceURL);
+
 }

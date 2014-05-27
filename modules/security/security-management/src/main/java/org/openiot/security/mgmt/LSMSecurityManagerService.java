@@ -138,6 +138,11 @@ public class LSMSecurityManagerService implements Serializable, SecurityManagerS
 	public void deleteRegisteredService(long id) {
 		lsmOAuthHttpManager.deleteRegisteredService(id);
 	}
+	
+	@Override
+	public void createGuestServices(User user, String serviceURL) {
+		lsmOAuthHttpManager.createGuestServices(user.getId(), serviceURL);
+	}
 
 	@Override
 	public LSMRegisteredServiceImpl addRegisteredService(LSMRegisteredServiceImpl registeredService) {
@@ -399,5 +404,6 @@ public class LSMSecurityManagerService implements Serializable, SecurityManagerS
 		}
 		return filteredList;
 	}
+
 
 }
