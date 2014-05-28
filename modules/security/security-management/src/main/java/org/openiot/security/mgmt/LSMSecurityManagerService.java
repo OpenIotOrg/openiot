@@ -67,7 +67,7 @@ public class LSMSecurityManagerService implements Serializable, SecurityManagerS
 	private LSMOAuthHttpManager lsmOAuthHttpManager;
 
 	public LSMSecurityManagerService() {
-		PropertyManagement propertyManagement = new PropertyManagement();
+		PropertyManagement propertyManagement = Utils.getPropertyManagement();
 		sparqlEndPoint = propertyManagement.getSecurityLsmSparqlEndPoint();
 		lSMOauthGraphURL = propertyManagement.getSecurityLsmGraphURL();
 		lsmOAuthHttpManager = new LSMOAuthHttpManager(lSMOauthGraphURL);

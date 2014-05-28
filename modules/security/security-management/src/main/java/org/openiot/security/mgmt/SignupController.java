@@ -40,10 +40,6 @@ public class SignupController extends AbstractController {
 
 	private static final long serialVersionUID = -246517359642720816L;
 
-	private static final String USE_CAPTCHA_PROP = "security.signup.useCaptcha";
-
-	private static final String AUTOMATIC_SERVICE_SETUP = "security.automaticServiceSetup";
-
 	private User user;
 
 	private DefaultPasswordEncoder passwordEncoder;
@@ -63,11 +59,11 @@ public class SignupController extends AbstractController {
 		passwordEncoder = new DefaultPasswordEncoder("MD5");
 		passwordEncoder.setCharacterEncoding("UTF-8");
 
-		PropertyManagement props = new PropertyManagement();
-		String propValue = props.getProperty(USE_CAPTCHA_PROP, "false");
+		PropertyManagement props = Utils.getPropertyManagement();
+		String propValue = props.getProperty(Utils.USE_CAPTCHA_PROP, "false");
 		useCaptcha = propValue.equalsIgnoreCase("true") ? true : false;
 
-		propValue = props.getProperty(AUTOMATIC_SERVICE_SETUP, "false");
+		propValue = props.getProperty(Utils.AUTOMATIC_SERVICE_SETUP, "false");
 		automaticServiceSetup = propValue.equalsIgnoreCase("true") ? true : false;
 	}
 

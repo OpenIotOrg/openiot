@@ -235,14 +235,15 @@ public class ServiceController extends AbstractController {
 	}
 
 	public boolean isRestful(LSMRegisteredServiceImpl service) {
-		restfulService = service.getServiceId().toLowerCase().startsWith("rest");
+		restfulService = service.getServiceId().toLowerCase().startsWith("rest://");
 		return restfulService;
 	}
 
 	private boolean isURLValid(LSMRegisteredServiceImpl service, boolean isRest) {
 		if (isRest)
 			return true;
-		return service.getServiceId().toLowerCase().startsWith("http");
+		String serviceURLLowCase = service.getServiceId().toLowerCase();
+		return serviceURLLowCase.startsWith("http://") || serviceURLLowCase.startsWith("https://");
 	}
 
 	public boolean isServiceNameUnique(LSMRegisteredServiceImpl service) {

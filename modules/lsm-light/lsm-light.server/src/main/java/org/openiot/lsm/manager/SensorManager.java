@@ -1716,7 +1716,7 @@ public class SensorManager {
 	}
 
 	public boolean createDefaultUserServices(Long userId, String urlPrefix, String graphName) {
-		String defaultWebServicesProp = propertyManagement.getProperty("security.defaultWebappServices", "");
+		String defaultWebServicesProp = propertyManagement.getProperty("security.demoWebappServices", "");
 		String[] defaultServices = defaultWebServicesProp.split("\\]");
 		if (defaultServices.length > 0) {
 			while (urlPrefix.endsWith("/"))
