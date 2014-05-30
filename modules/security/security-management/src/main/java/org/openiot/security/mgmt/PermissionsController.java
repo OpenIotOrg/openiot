@@ -41,7 +41,6 @@ import org.jasig.cas.services.RegisteredService;
 import org.openiot.lsm.security.oauth.mgmt.Permission;
 import org.openiot.lsm.security.oauth.mgmt.Role;
 import org.openiot.lsm.security.oauth.mgmt.User;
-import org.openiot.security.client.AccessControlUtil;
 import org.primefaces.context.RequestContext;
 
 /**
@@ -90,7 +89,7 @@ public class PermissionsController extends AbstractController {
 			allServices = new HashMap<Long, RegisteredService>(services.size());
 			for (RegisteredService registeredService : services) {
 				String name = registeredService.getName();
-				if (AccessControlUtil.getInstance().hasPermission("admin:user_mgmt:" + name))
+				if (Utils.acUtil.hasPermission("admin:user_mgmt:" + name))
 					allServices.put(registeredService.getId(), registeredService);
 			}
 			permissionRoles = new HashMap<Permission, List<Role>>();
@@ -204,7 +203,7 @@ public class PermissionsController extends AbstractController {
 	}
 
 	public boolean hasPermissionDeletionPermission() {
-		return AccessControlUtil.getInstance().hasPermission("admin:delete_permission:" + getSelectedServiceName());
+		return Utils.acUtil.hasPermission("admin:delete_permission:" + getSelectedServiceName());
 	}
 
 	public Permission getNewPermission() {

@@ -27,6 +27,7 @@ import org.openiot.commons.util.PropertyManagement;
 import org.openiot.lsm.security.oauth.mgmt.Permission;
 import org.openiot.lsm.security.oauth.mgmt.Role;
 import org.openiot.lsm.security.oauth.mgmt.User;
+import org.openiot.security.client.AccessControlUtil;
 
 /**
  * @author Mehdi Riahi
@@ -50,7 +51,6 @@ public class Utils {
 	public static final List<Permission> EmptyPermissionList = (List<Permission>) emptyList;
 
 	
-
 	private static PropertyManagement props = new PropertyManagement();
 
 	public static PropertyManagement getPropertyManagement() {
@@ -62,5 +62,7 @@ public class Utils {
 		String propValue = props.getProperty(AUTOMATIC_SERVICE_SETUP, "false");
 		return propValue.equalsIgnoreCase("true") ? true : false;
 	}
+	
+	public static final AccessControlUtil acUtil = AccessControlUtil.getInstance();
 
 }

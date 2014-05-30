@@ -32,6 +32,16 @@
 		<param-value>6Lds7-sSAAAAABZ_jH5MMvZK6f_pAjxAP-lU5u8B</param-value>
 	</context-param>
 
+	<context-param>
+		<param-name>shiroEnvironmentClass</param-name>
+		<param-value>org.openiot.security.client.CustomIniWebEnvironment</param-value>
+	</context-param>
+
+	<context-param>
+		<param-name>module-name</param-name>
+		<param-value>security.management</param-value>
+	</context-param>
+
 	<!-- Welcome page -->
 	<welcome-file-list>
 		<welcome-file>home.xhtml</welcome-file>

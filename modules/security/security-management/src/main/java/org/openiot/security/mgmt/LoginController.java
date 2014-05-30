@@ -47,13 +47,12 @@ public class LoginController extends AbstractController {
 		logger.debug("Debut de la methode");
 		Subject subject = SecurityUtils.getSubject();
 		if (!subject.isAuthenticated()) {
-			AccessControlUtil accessControlUtil = AccessControlUtil.getInstance();
 			final ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
 			final HttpServletRequest req = (HttpServletRequest) externalContext.getRequest();
 			final HttpServletResponse resp = (HttpServletResponse) externalContext.getResponse();
 			try {
 				logger.debug("Redirecting to CAS login");
-				accessControlUtil.redirectToLogin(req, resp);
+				Utils.acUtil.redirectToLogin(req, resp);
 				logger.debug("Redirected to CAS login");
 				return "home";
 			} catch (IOException e) {
