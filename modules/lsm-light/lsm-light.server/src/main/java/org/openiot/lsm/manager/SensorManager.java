@@ -186,11 +186,6 @@ public class SensorManager {
 		// TODO Auto-generated method stub
 		Connection conn = null;
 		logger.info("Check allowed graphs to be deleted");
-<<<<<<< HEAD
-//		if(!VirtuosoConstantUtil.authorizedGraphs.contains(graphURL)){
-//			logger.info("You do not have right to delete this graph "+graphURL);
-//			return;
-//		}
 		String sql = "sparql delete from <"+graphURL+"> {?s ?p ?o} "+
 						"where{ "+
 							"{ "+
@@ -202,18 +197,8 @@ public class SensorManager {
 							"?s <http://purl.oclc.org/NET/ssnx/ssn#observedBy>  <"+sensorURL+">."+
 							"?s ?p  ?o."+
 						"}"+
-					"}";
-		try{
-=======
-		// if(!VirtuosoConstantUtil.authorizedGraphs.contains(graphURL)){
-		// logger.info("You do not have right to delete this graph "+graphURL);
-		// return;
-		// }
-		String sql = "sparql delete from <" + graphURL + "> {?s ?p ?o} " + "where{ " + "{ " + "?observation <http://purl.oclc.org/NET/ssnx/ssn#observedBy>  <"
-				+ sensorURL + ">." + "?s <http://lsm.deri.ie/ont/lsm.owl#isObservedPropertyOf> ?observation." + "?s ?p ?o." + "}" + "union{ "
-				+ "?s <http://purl.oclc.org/NET/ssnx/ssn#observedBy>  <" + sensorURL + ">." + "?s ?p  ?o." + "}" + "}";
+					"}";	
 		try {
->>>>>>> 67ea6c7c7f07686fe65647de5d9d3e010b077042
 			conn = ConnectionManager.getConnectionPool().getConnection();
 			logger.info("execute query:" + sql);
 			PreparedStatement ps = conn.prepareStatement(sql);
@@ -234,11 +219,6 @@ public class SensorManager {
 		String sql = "";
 		Connection conn = null;
 		logger.info("Check allowed graphs to be deleted");
-<<<<<<< HEAD
-//		if(!VirtuosoConstantUtil.authorizedGraphs.contains(dataGraph)){
-//			logger.info("You do not have right to delete this graph "+dataGraph);
-//			return;
-//		}
 		if(toTime!=null){
 			sql = "sparql delete from <"+ dataGraph+"> {?s ?p ?o} "+
 				"where{ "+
@@ -273,27 +253,8 @@ public class SensorManager {
 					"}"+
 				"}";					
 		}
-		try{
-=======
-		// if(!VirtuosoConstantUtil.authorizedGraphs.contains(dataGraph)){
-		// logger.info("You do not have right to delete this graph "+dataGraph);
-		// return;
-		// }
-		if (toTime != null) {
-			sql = "sparql delete from <" + dataGraph + "> {?s ?p ?o} " + "where{ " + "{ {" + "?observation <http://purl.oclc.org/NET/ssnx/ssn#observedBy>  <"
-					+ sensorURL + ">." + "?observation <http://purl.oclc.org/NET/ssnx/ssn#observationResultTime> ?time." + "filter( ?time " + dateOperator
-					+ " \"" + DateUtil.date2StandardString(fromTime) + "\"^^xsd:dateTime && " + "?time <= \"" + DateUtil.date2StandardString(toTime)
-					+ "\"^^xsd:dateTime)." + "}" + "?s <http://lsm.deri.ie/ont/lsm.owl#isObservedPropertyOf> ?observation." + "?s ?p ?o." + "}" + "union{ "
-					+ "?s <http://purl.oclc.org/NET/ssnx/ssn#observedBy>  <" + sensorURL + ">." + "?s ?p  ?o." + "}" + "}";
-		} else {
-			sql = "sparql delete from <" + dataGraph + "> {?s ?p ?o} " + "where{ " + "{ {" + "?observation <http://purl.oclc.org/NET/ssnx/ssn#observedBy>  <"
-					+ sensorURL + ">." + "?observation <http://purl.oclc.org/NET/ssnx/ssn#observationResultTime> ?time." + "filter( ?time " + dateOperator
-					+ " \"" + DateUtil.date2StandardString(fromTime) + "\"^^xsd:dateTime)." + "}"
-					+ "?s <http://lsm.deri.ie/ont/lsm.owl#isObservedPropertyOf> ?observation." + "?s ?p ?o." + "}" + "union{ "
-					+ "?s <http://purl.oclc.org/NET/ssnx/ssn#observedBy>  <" + sensorURL + ">." + "?s ?p  ?o." + "}" + "}";
-		}
+
 		try {
->>>>>>> 67ea6c7c7f07686fe65647de5d9d3e010b077042
 			conn = ConnectionManager.getConnectionPool().getConnection();
 			PreparedStatement ps = conn.prepareStatement(sql);
 			logger.info("executing query:" + sql);
@@ -319,7 +280,6 @@ public class SensorManager {
 		List<String> l2 = new ArrayList<String>();
 		List<Double> l3 = new ArrayList<Double>();
 		Connection conn = null;
-<<<<<<< HEAD
 		String sql = "sparql select distinct(?sensor) ?city ?country <bif:st_distance>(?geo,<bif:st_point>("+
 				lng+","+lat+")) as ?distance "+		
 					" from <"+ metaGraph +"> " + 			
@@ -333,21 +293,10 @@ public class SensorManager {
 					"?place geo:geometry ?geo."+
 					"filter (<bif:"+ spatialOperator +">(?geo,<bif:st_point>("+
 							lng+","+lat+"),"+distance+"))." +
-					"} order by ?distance";		
-		try{
-			if(conn.isClosed())
-				conn = ConnectionManager.getConnectionPool().getConnection();			
-=======
-		String sql = "sparql select distinct(?sensor) ?city ?country <bif:st_distance>(?geo,<bif:st_point>(" + lng + "," + lat + ")) as ?distance " + " from <"
-				+ metaGraph + "> " + "where {" + "?sensor <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://purl.oclc.org/NET/ssnx/ssn#Sensor>."
-				+ "?sensor <" + VirtuosoConstantUtil.sensorHasPlacePrefix + "> ?place. " + "?place <http://lsm.deri.ie/ont/lsm.owl#is_in_city> ?cityId."
-				+ "?cityId <http://www.w3.org/2000/01/rdf-schema#label> ?city." + "?place <http://linkedgeodata.org/property/is_in_country> ?counId."
-				+ "?counId <http://www.w3.org/2000/01/rdf-schema#label> ?country." + "?place geo:geometry ?geo." + "filter (<bif:" + spatialOperator
-				+ ">(?geo,<bif:st_point>(" + lng + "," + lat + ")," + distance + "))." + "} order by ?distance";
+					"} order by ?distance";				
 		try {
 			if (conn.isClosed())
 				conn = ConnectionManager.getConnectionPool().getConnection();
->>>>>>> 67ea6c7c7f07686fe65647de5d9d3e010b077042
 			PreparedStatement ps = conn.prepareStatement(sql);
 			logger.info("executing query:" + sql);
 			ResultSet rs = ps.executeQuery();
@@ -375,7 +324,6 @@ public class SensorManager {
 	public Sensor getSpecifiedSensorWithPlaceId(String placeId) {
 		Sensor sensor = null;
 		Connection conn = null;
-<<<<<<< HEAD
 		PlaceManager placeManager = new PlaceManager(metaGraph,dataGraph);		
 		String sql = "sparql select ?sensor ?sensorType ?author  ?place "+
 				" from <"+ metaGraph +"> \n" +
@@ -386,21 +334,9 @@ public class SensorManager {
 				   "?sensor rdf:type ?sensorType."+
 //				   "?typeId <http://www.w3.org/2000/01/rdf-schema#label> ?sensorType."+
 //				   "?sensor <http://lsm.deri.ie/ont/lsm.owl#hasSourceType> ?sourceType."+	  
-				"}";			 
-		try{
-			conn = ConnectionManager.getConnectionPool().getConnection();			
-=======
-		PlaceManager placeManager = new PlaceManager(metaGraph, dataGraph);
-		String sql = "sparql select ?sensor ?sensorType ?author  ?place " + " from <" + metaGraph + "> \n" + "where{ "
-				+ "?sensor <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://purl.oclc.org/NET/ssnx/ssn#Sensor>."
-				+ "?sensor <http://www.w3.org/ns/prov#wasGeneratedBy> ?author." + "?sensor <http://www.loa-cnr.it/ontologies/DUL.owl#hasLocation> <" + placeId
-				+ ">." + "?sensor <http://lsm.deri.ie/ont/lsm.owl#hasSensorType> ?typeId."
-				+ "?typeId <http://www.w3.org/2000/01/rdf-schema#label> ?sensorType." +
-				// "?sensor <http://lsm.deri.ie/ont/lsm.owl#hasSourceType> ?sourceType."+
-				"}";
+				"}";				
 		try {
 			conn = ConnectionManager.getConnectionPool().getConnection();
->>>>>>> 67ea6c7c7f07686fe65647de5d9d3e010b077042
 			Statement st = conn.createStatement();
 			logger.info("executing query:\n" + sql);
 			if (st.execute(sql)) {
@@ -429,7 +365,6 @@ public class SensorManager {
 	public Sensor getSpecifiedSensorWithSensorId(String id) {
 		Sensor sensor = null;
 		Connection conn = null;
-<<<<<<< HEAD
 		String sql = "sparql select ?name ?sensorType ?author  ?place  "+
 				" from <"+ metaGraph +"> \n" +
 				"where{ "+
@@ -440,22 +375,11 @@ public class SensorManager {
 				   "<"+id+"> rdf:type ?sensorType."+
 //				   "?typeId <http://www.w3.org/2000/01/rdf-schema#label> ?sensorType."+
 //				   "<"+id+"> <http://lsm.deri.ie/ont/lsm.owl#hasSourceType> ?sourceType."+	  
-				"}";			 
-		try{
-			conn = ConnectionManager.getConnectionPool().getConnection();			
-			PlaceManager placeManager = new PlaceManager(metaGraph,dataGraph);		
-=======
-		String sql = "sparql select ?name ?sensorType ?author  ?place  " + " from <" + metaGraph + "> \n" + "where{ " + "<" + id
-				+ "> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://purl.oclc.org/NET/ssnx/ssn#Sensor>." + "<" + id
-				+ "> <http://www.w3.org/ns/prov#wasGeneratedBy> ?author." + "<" + id + "> <http://www.loa-cnr.it/ontologies/DUL.owl#hasLocation> ?place." + "<"
-				+ id + "> <http://www.w3.org/2000/01/rdf-schema#label> ?name." + "<" + id + "> <http://lsm.deri.ie/ont/lsm.owl#hasSensorType> ?typeId."
-				+ "?typeId <http://www.w3.org/2000/01/rdf-schema#label> ?sensorType." +
-				// "<"+id+"> <http://lsm.deri.ie/ont/lsm.owl#hasSourceType> ?sourceType."+
-				"}";
+				"}";		 
+	
 		try {
 			conn = ConnectionManager.getConnectionPool().getConnection();
 			PlaceManager placeManager = new PlaceManager(metaGraph, dataGraph);
->>>>>>> 67ea6c7c7f07686fe65647de5d9d3e010b077042
 			Statement st = conn.createStatement();
 			logger.info("executing query:\n" + sql);
 			if (st.execute(sql)) {
@@ -485,7 +409,6 @@ public class SensorManager {
 	public Sensor getSpecifiedSensorWithLatLng(double lat, double lng) {
 		Sensor sensor = null;
 		Connection conn = null;
-<<<<<<< HEAD
 //		String sql = "sparql select ?sensor ?source ?sourceType ?place "+
 		String sql = "sparql select ?sensor ?sensorType ?author  ?place "+
 				" from <"+ metaGraph +"> \n" +
@@ -498,18 +421,9 @@ public class SensorManager {
 //				   "?sensor <http://lsm.deri.ie/ont/lsm.owl#hasSourceType> ?sourceType."+				  
 				   "?place <http://www.w3.org/2003/01/geo/wgs84_pos#lat> "+lat+";" +
 				   "<http://www.w3.org/2003/01/geo/wgs84_pos#long> "+lng+"." +
-				"}";			 
-		try{
-=======
-		// String sql = "sparql select ?sensor ?source ?sourceType ?place "+
-		String sql = "sparql select ?sensor ?sensorType ?author  ?place " + " from <" + metaGraph + "> \n" + "where{ "
-				+ "?sensor <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://purl.oclc.org/NET/ssnx/ssn#Sensor>."
-				+ "?sensor <http://www.w3.org/ns/prov#wasGeneratedBy> ?author." + "?sensor <http://www.loa-cnr.it/ontologies/DUL.owl#hasLocation> ?place."
-				+ "?sensor <http://lsm.deri.ie/ont/lsm.owl#hasSensorType> ?typeId." + "?typeId <http://www.w3.org/2000/01/rdf-schema#label> ?sensorType." +
-				// "?sensor <http://lsm.deri.ie/ont/lsm.owl#hasSourceType> ?sourceType."+
-				"?place <http://www.w3.org/2003/01/geo/wgs84_pos#lat> " + lat + ";" + "<http://www.w3.org/2003/01/geo/wgs84_pos#long> " + lng + "." + "}";
+				"}";		 
+		
 		try {
->>>>>>> 67ea6c7c7f07686fe65647de5d9d3e010b077042
 			conn = ConnectionManager.getConnectionPool().getConnection();
 			PlaceManager placeManager = new PlaceManager(metaGraph, dataGraph);
 			Statement st = conn.createStatement();
@@ -665,7 +579,6 @@ public class SensorManager {
 		Date date = DateUtil.standardString2Date(dateTime);
 		Connection conn = null;
 		String sql;
-<<<<<<< HEAD
 		if(timeOper.equals("latest")){
 			if(value!=null){
 				sql= "sparql select ?obs"+
@@ -711,33 +624,7 @@ public class SensorManager {
 						   "?sign <http://purl.oclc.org/NET/ssnx/ssn#observationResultTime> ?time."+					  
 						   " filter regex(?type,'"+readingType+"','i')"+
 						   " filter (?time "+timeOper+" \""+dateTime+"\"^^xsd:dateTime)" +
-						"}";
-				
-=======
-		if (timeOper.equals("latest")) {
-			if (value != null) {
-				sql = "sparql select ?obs" + " from <" + dataGraph + "> \n" + "where{ " + "?obs <http://purl.oclc.org/NET/ssnx/ssn#observedBy>  <" + sensorId
-						+ ">." + "?sign <http://lsm.deri.ie/ont/lsm.owl#isObservedPropertyOf> ?obs." + "?sign rdf:type ?type."
-						+ "?sign <http://lsm.deri.ie/ont/lsm.owl#value> ?value." + "?sign <http://purl.oclc.org/NET/ssnx/ssn#observationResultTime> ?time."
-						+ " filter regex(?type,'" + readingType + "','i')" + " filter (?value" + oper + value + ")" + "}order by desc(?time) limit 1";
-			} else {
-				sql = "sparql select ?obs" + " from <" + dataGraph + "> \n" + "where{ " + "?obs <http://purl.oclc.org/NET/ssnx/ssn#observedBy>  <" + sensorId
-						+ ">." + "?obs <http://purl.oclc.org/NET/ssnx/ssn#observationResultTime> ?time." + "}order by desc(?time) limit 1";
-			}
-		} else {
-			if (value != null) {
-				sql = "sparql select ?obs" + " from <" + dataGraph + "> \n" + "where{ " + "?obs <http://purl.oclc.org/NET/ssnx/ssn#observedBy>  <" + sensorId
-						+ ">." + "?sign <http://lsm.deri.ie/ont/lsm.owl#isObservedPropertyOf> ?obs." + "?sign rdf:type ?type."
-						+ "?sign <http://lsm.deri.ie/ont/lsm.owl#value> ?value." + "?sign <http://purl.oclc.org/NET/ssnx/ssn#observationResultTime> ?time."
-						+ " filter regex(?type,'" + readingType + "','i')" + " filter (?value" + oper + value + " && ?time " + timeOper + " \"" + dateTime
-						+ "\"^^xsd:dateTime)" + "}";
-			} else {
-				sql = "sparql select ?obs" + " from <" + dataGraph + "> \n" + "where{ " + "?obs <http://purl.oclc.org/NET/ssnx/ssn#observedBy>  <" + sensorId
-						+ ">." + "?sign <http://lsm.deri.ie/ont/lsm.owl#isObservedPropertyOf> ?obs." + "?sign rdf:type ?type."
-						+ "?sign <http://lsm.deri.ie/ont/lsm.owl#value> ?value." + "?sign <http://purl.oclc.org/NET/ssnx/ssn#observationResultTime> ?time."
-						+ " filter regex(?type,'" + readingType + "','i')" + " filter (?time " + timeOper + " \"" + dateTime + "\"^^xsd:dateTime)" + "}";
-
->>>>>>> 67ea6c7c7f07686fe65647de5d9d3e010b077042
+						"}";				
 			}
 		}
 		List<String> observations = new ArrayList<String>();
@@ -764,7 +651,6 @@ public class SensorManager {
 		// TODO Auto-generated method stub
 		List<ArrayList> list = new ArrayList<ArrayList>();
 		Connection conn = null;
-<<<<<<< HEAD
 		String sql = "sparql select ?type ?value ?uni ?name "+
 				" from <"+ dataGraph+"> "+
 				"where{ "+
@@ -776,14 +662,6 @@ public class SensorManager {
 				"}";			 
 		try{
 			conn = ConnectionManager.getConnectionPool().getConnection();	
-=======
-		String sql = "sparql select ?type ?value ?uni ?name " + " from <" + dataGraph + "> " + "where{ "
-				+ "?sign <http://lsm.deri.ie/ont/lsm.owl#isObservedPropertyOf> <" + observationId + ">." + "?sign rdf:type ?type."
-				+ "?sign <http://lsm.deri.ie/ont/lsm.owl#value> ?value." + "OPTIONAL{?sign <http://lsm.deri.ie/ont/lsm.owl#unit> ?unit.}"
-				+ "OPTIONAL{?sign <http://www.w3.org/2000/01/rdf-schema#label> ?name.}" + "}";
-		try {
-			conn = ConnectionManager.getConnectionPool().getConnection();
->>>>>>> 67ea6c7c7f07686fe65647de5d9d3e010b077042
 			Statement st = conn.createStatement();
 			logger.info("executing query:\n" + sql);
 			if (st.execute(sql)) {
@@ -811,7 +689,6 @@ public class SensorManager {
 		// TODO Auto-generated method stub
 		Sensor sensor = null;
 		Connection conn = null;
-<<<<<<< HEAD
 		PlaceManager placeManager = new PlaceManager(metaGraph,dataGraph);
 		String sql = "sparql select ?sensor ?author  ?sensorType ?place "+
 				" from <"+ metaGraph +"> " +
@@ -827,17 +704,6 @@ public class SensorManager {
 //				   "?sensor <http://lsm.deri.ie/ont/lsm.owl#hasSourceType> ?sourceType."+		  
 				"}";			 
 		try{
-=======
-		PlaceManager placeManager = new PlaceManager(metaGraph, dataGraph);
-		String sql = "sparql select ?sensor ?author  ?sensorType ?place " + " from <" + metaGraph + "> " + "where{ " + "{select ?sensor from <" + dataGraph
-				+ "> " + " where{ <" + obsId + "> <http://purl.oclc.org/NET/ssnx/ssn#observedBy> ?sensor.}" + "}"
-				+ "?sensor <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://purl.oclc.org/NET/ssnx/ssn#Sensor>."
-				+ "?sensor <http://www.w3.org/ns/prov#wasGeneratedBy> ?author." + "?sensor <http://www.loa-cnr.it/ontologies/DUL.owl#hasLocation> ?place."
-				+ "?sensor <http://lsm.deri.ie/ont/lsm.owl#hasSensorType> ?typeId." + "?typeId <http://www.w3.org/2000/01/rdf-schema#label> ?sensorType." +
-				// "?sensor <http://lsm.deri.ie/ont/lsm.owl#hasSourceType> ?sourceType."+
-				"}";
-		try {
->>>>>>> 67ea6c7c7f07686fe65647de5d9d3e010b077042
 			conn = ConnectionManager.getConnectionPool().getConnection();
 			Statement st = conn.createStatement();
 			logger.info("executing query:\n" + sql);
@@ -868,7 +734,6 @@ public class SensorManager {
 		Connection conn = null;
 		LinkedHashMap<String, String> reading = new LinkedHashMap<>();
 		ArrayList arr = new ArrayList<>();
-<<<<<<< HEAD
 		String query = "sparql select ?s ?type ?name ?value ?time "+
 				" from <"+ dataGraph +"> " +
 					"where{ "+
@@ -886,18 +751,7 @@ public class SensorManager {
 					  "OPTIONAL{?s <http://www.w3.org/2000/01/rdf-schema#label> ?name.}"+
 					"}";			 
 		try{
-			conn = ConnectionManager.getConnectionPool().getConnection();			
-=======
-		String query = "sparql select ?s ?type ?name ?value ?time " + " from <" + dataGraph + "> " + "where{ " + "{ " + "select ?observation where " + "{ "
-				+ "?observation <http://purl.oclc.org/NET/ssnx/ssn#observedBy>  <" + sensorURL + ">. "
-				+ "?observation <http://purl.oclc.org/NET/ssnx/ssn#observationResultTime> ?time. " + "filter( ?time >\""
-				+ DateUtil.date2StandardString(fromTime) + "\"^^xsd:dateTime).} " + "} "
-				+ "?s <http://lsm.deri.ie/ont/lsm.owl#isObservedPropertyOf> ?observation. " + "?s <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?type. "
-				+ "?s <http://lsm.deri.ie/ont/lsm.owl#value> ?value." + "?s <http://purl.oclc.org/NET/ssnx/ssn#observationResultTime> ?time. "
-				+ "OPTIONAL{?s <http://www.w3.org/2000/01/rdf-schema#label> ?name.}" + "}";
-		try {
-			conn = ConnectionManager.getConnectionPool().getConnection();
->>>>>>> 67ea6c7c7f07686fe65647de5d9d3e010b077042
+			conn = ConnectionManager.getConnectionPool().getConnection();		
 			Statement st = conn.createStatement();
 			String sign = "";
 			logger.info("executing query:\n" + query);
@@ -946,7 +800,6 @@ public class SensorManager {
 
 	}
 
-<<<<<<< HEAD
 //	public String getSensorTypeId(String sensorType) {
 //		// TODO Auto-generated method stub
 //		String typeId = "";
@@ -976,34 +829,6 @@ public class SensorManager {
 //		}
 //		return typeId;
 //	}
-=======
-	public String getSensorTypeId(String sensorType) {
-		// TODO Auto-generated method stub
-		String typeId = "";
-		Connection conn = null;
-		String sql = "sparql select ?type " + " from <" + metaGraph + "> \n" + "where{ "
-				+ "?type <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://lsm.deri.ie/ont/lsm.owl#SensorType>."
-				+ "?type <http://www.w3.org/2000/01/rdf-schema#label> \"" + sensorType + "\"." + "}";
-		try {
-			conn = ConnectionManager.getConnectionPool().getConnection();
-			Statement st = conn.createStatement();
-			logger.info("executing query:\n" + sql);
-			if (st.execute(sql)) {
-				ResultSet rs = st.getResultSet();
-				while (rs.next()) {
-					typeId = rs.getString("type");
-				}
-				ConnectionManager.attemptClose(rs);
-			}
-			ConnectionManager.attemptClose(st);
-			ConnectionManager.attemptClose(conn);
-		} catch (Exception e) {
-			e.printStackTrace();
-			ConnectionManager.attemptClose(conn);
-		}
-		return typeId;
-	}
->>>>>>> 67ea6c7c7f07686fe65647de5d9d3e010b077042
 
 	/**
 	 * *********************************************************************************************
