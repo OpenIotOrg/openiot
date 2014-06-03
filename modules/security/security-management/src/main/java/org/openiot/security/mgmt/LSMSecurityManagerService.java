@@ -63,7 +63,7 @@ public class LSMSecurityManagerService implements Serializable, SecurityManagerS
 
 	private String lSMOauthGraphURL;
 	private String sparqlEndPoint;
-
+	private String instancesPrefix = "";
 	private LSMOAuthHttpManager lsmOAuthHttpManager;
 
 	public LSMSecurityManagerService() {
@@ -71,7 +71,8 @@ public class LSMSecurityManagerService implements Serializable, SecurityManagerS
 		sparqlEndPoint = propertyManagement.getSecurityLsmSparqlEndPoint();
 		lSMOauthGraphURL = propertyManagement.getSecurityLsmGraphURL();
 		lsmOAuthHttpManager = new LSMOAuthHttpManager(lSMOauthGraphURL);
-
+		instancesPrefix = propertyManagement.getOpeniotResourceNamespace();
+				
 		filteredServices = new HashSet<String>();
 		filteredServices.add("Service Manager");
 		filteredServices.add("HTTP");
@@ -175,8 +176,8 @@ public class LSMSecurityManagerService implements Serializable, SecurityManagerS
 	 */
 	public User getUserByUsername(String username) {
 		org.openiot.lsm.security.oauth.mgmt.User user = null;
-		String userURL = "http://lsm.deri.ie/resource/user/" + username;
-		if (username.contains("http://lsm.deri.ie/resource/user/")) {
+		String userURL = instancesPrefix + "user/" + username;
+		if (username.contains(instancesPrefix + "user/")) {
 			userURL = username;
 			username = username.substring(username.lastIndexOf("/") + 1);
 		}
@@ -215,8 +216,8 @@ public class LSMSecurityManagerService implements Serializable, SecurityManagerS
 	 */
 	public List<Role> getUserRoles(String username) {
 		List<Role> roles = new ArrayList<Role>();
-		String userURL = "http://lsm.deri.ie/resource/user/" + username;
-		if (username.contains("http://lsm.deri.ie/resource/user/")) {
+		String userURL = instancesPrefix + "user/" + username;
+		if (username.contains(instancesPrefix + "user/")) {
 			userURL = username;
 			username = username.substring(username.lastIndexOf("/") + 1);
 		}
@@ -294,7 +295,7 @@ public class LSMSecurityManagerService implements Serializable, SecurityManagerS
 
 	public List<User> getRoleUsers(Role role) {
 		List<User> userList = new ArrayList<User>();
-		String roleId = "http://lsm.deri.ie/resource/role/" + Role.toRoleIdStr(role);
+		String roleId = instancesPrefix + "role/" + Role.toRoleIdStr(role);
 		String sparql = " select ?userId from <" + lSMOauthGraphURL + "> \n" + "where{ ?userId <http://openiot.eu/ontology/ns/role> <" + roleId + ">}";
 		try {
 			String service = sparqlEndPoint;

@@ -197,7 +197,7 @@ public class SensorManager {
 						"where{ "+
 							"{ "+
 								"?observation <http://purl.oclc.org/NET/ssnx/ssn#observedBy>  <"+sensorURL+">."+    
-								"?s <http://lsm.deri.ie/ont/lsm.owl#isObservedPropertyOf> ?observation."+
+								"?s <http://openiot.eu/ontology/ns/isObservedValueOf> ?observation."+
 								"?s ?p ?o."+
 							"}"+
 						"union{ "+
@@ -240,7 +240,7 @@ public class SensorManager {
 						    "filter( ?time "+dateOperator+" \""+DateUtil.date2StandardString(fromTime)+"\"^^xsd:dateTime && "+
 						    "?time <= \""+DateUtil.date2StandardString(toTime)+"\"^^xsd:dateTime)."+
 						 "}"+
-						"?s <http://lsm.deri.ie/ont/lsm.owl#isObservedPropertyOf> ?observation."+
+						"?s <http://openiot.eu/ontology/ns/isObservedValueOf> ?observation."+
 						"?s ?p ?o."+
 					"}"+
 				"union{ "+
@@ -256,7 +256,7 @@ public class SensorManager {
 								"?observation <http://purl.oclc.org/NET/ssnx/ssn#observationResultTime> ?time."+
 							    "filter( ?time "+dateOperator+" \""+DateUtil.date2StandardString(fromTime)+"\"^^xsd:dateTime)."+
 							 "}"+
-							"?s <http://lsm.deri.ie/ont/lsm.owl#isObservedPropertyOf> ?observation."+
+							"?s <http://openiot.eu/ontology/ns/isObservedValueOf> ?observation."+
 							"?s ?p ?o."+
 						"}"+
 					"union{ "+
@@ -298,7 +298,7 @@ public class SensorManager {
 					"where {"+			
 					"?sensor <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://purl.oclc.org/NET/ssnx/ssn#Sensor>."+												
 					"?sensor <"+ VirtuosoConstantUtil.sensorHasPlacePrefix+"> ?place. "+
-					"?place <http://lsm.deri.ie/ont/lsm.owl#is_in_city> ?cityId."+
+					"?place <http://openiot.eu/ontology/ns/is_in_city> ?cityId."+
 					"?cityId <http://www.w3.org/2000/01/rdf-schema#label> ?city."+
 					"?place <http://linkedgeodata.org/property/is_in_country> ?counId."+
 					"?counId <http://www.w3.org/2000/01/rdf-schema#label> ?country."+
@@ -344,8 +344,8 @@ public class SensorManager {
 				   "?sensor <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://purl.oclc.org/NET/ssnx/ssn#Sensor>."+
 				   "?sensor <http://www.w3.org/ns/prov#wasGeneratedBy> ?author."+
 				   "?sensor <http://www.loa-cnr.it/ontologies/DUL.owl#hasLocation> <"+placeId+">."+
-				   "?sensor <http://lsm.deri.ie/ont/lsm.owl#hasSensorType> ?typeId."+
-				   "?typeId <http://www.w3.org/2000/01/rdf-schema#label> ?sensorType."+
+				   "?sensor rdf:type ?sensorType."+
+//				   "?typeId <http://www.w3.org/2000/01/rdf-schema#label> ?sensorType."+
 //				   "?sensor <http://lsm.deri.ie/ont/lsm.owl#hasSourceType> ?sourceType."+	  
 				"}";			 
 		try{
@@ -386,8 +386,8 @@ public class SensorManager {
 				   "<"+id+"> <http://www.w3.org/ns/prov#wasGeneratedBy> ?author."+
 				   "<"+id+"> <http://www.loa-cnr.it/ontologies/DUL.owl#hasLocation> ?place."+
 				   "<"+id+"> <http://www.w3.org/2000/01/rdf-schema#label> ?name."+
-				   "<"+id+"> <http://lsm.deri.ie/ont/lsm.owl#hasSensorType> ?typeId."+
-				   "?typeId <http://www.w3.org/2000/01/rdf-schema#label> ?sensorType."+
+				   "<"+id+"> rdf:type ?sensorType."+
+//				   "?typeId <http://www.w3.org/2000/01/rdf-schema#label> ?sensorType."+
 //				   "<"+id+"> <http://lsm.deri.ie/ont/lsm.owl#hasSourceType> ?sourceType."+	  
 				"}";			 
 		try{
@@ -430,8 +430,8 @@ public class SensorManager {
 				   "?sensor <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://purl.oclc.org/NET/ssnx/ssn#Sensor>."+
 				   "?sensor <http://www.w3.org/ns/prov#wasGeneratedBy> ?author."+
 				   "?sensor <http://www.loa-cnr.it/ontologies/DUL.owl#hasLocation> ?place."+
-				   "?sensor <http://lsm.deri.ie/ont/lsm.owl#hasSensorType> ?typeId."+
-				   "?typeId <http://www.w3.org/2000/01/rdf-schema#label> ?sensorType."+
+				   "?sensor rdf:type ?sensorType."+
+//				   "?typeId <http://www.w3.org/2000/01/rdf-schema#label> ?sensorType."+
 //				   "?sensor <http://lsm.deri.ie/ont/lsm.owl#hasSourceType> ?sourceType."+				  
 				   "?place <http://www.w3.org/2003/01/geo/wgs84_pos#lat> "+lat+";" +
 				   "<http://www.w3.org/2003/01/geo/wgs84_pos#long> "+lng+"." +
@@ -621,9 +621,9 @@ public class SensorManager {
 						" from <"+ dataGraph +"> \n" +
 					"where{ "+
 					   "?obs <http://purl.oclc.org/NET/ssnx/ssn#observedBy>  <"+sensorId+">."+
-					   "?sign <http://lsm.deri.ie/ont/lsm.owl#isObservedPropertyOf> ?obs."+
+					   "?sign <http://openiot.eu/ontology/ns/isObservedValueOf> ?obs."+
 					   "?sign rdf:type ?type." +
-					   "?sign <http://lsm.deri.ie/ont/lsm.owl#value> ?value."+
+					   "?sign <http://openiot.eu/ontology/ns/value> ?value."+
 					   "?sign <http://purl.oclc.org/NET/ssnx/ssn#observationResultTime> ?time."+					  
 					   " filter regex(?type,'"+readingType+"','i')"+
 					   " filter (?value" + oper + value +")" +
@@ -642,9 +642,9 @@ public class SensorManager {
 						" from <"+ dataGraph +"> \n" +
 						"where{ "+
 						   "?obs <http://purl.oclc.org/NET/ssnx/ssn#observedBy>  <"+sensorId+">."+
-						   "?sign <http://lsm.deri.ie/ont/lsm.owl#isObservedPropertyOf> ?obs."+
+						   "?sign <http://openiot.eu/ontology/ns/isObservedValueOf> ?obs."+
 						   "?sign rdf:type ?type." +
-						   "?sign <http://lsm.deri.ie/ont/lsm.owl#value> ?value."+
+						   "?sign <http://openiot.eu/ontology/ns/value> ?value."+
 						   "?sign <http://purl.oclc.org/NET/ssnx/ssn#observationResultTime> ?time."+					  
 						   " filter regex(?type,'"+readingType+"','i')"+
 						   " filter (?value" + oper + value +" && ?time "+timeOper+" \""+dateTime+"\"^^xsd:dateTime)" +
@@ -654,9 +654,9 @@ public class SensorManager {
 						" from <"+ dataGraph +"> \n" +
 						"where{ "+
 						   "?obs <http://purl.oclc.org/NET/ssnx/ssn#observedBy>  <"+sensorId+">."+
-						   "?sign <http://lsm.deri.ie/ont/lsm.owl#isObservedPropertyOf> ?obs."+
+						   "?sign <http://openiot.eu/ontology/ns/isObservedValueOf> ?obs."+
 						   "?sign rdf:type ?type." +
-						   "?sign <http://lsm.deri.ie/ont/lsm.owl#value> ?value."+
+						   "?sign <http://openiot.eu/ontology/ns/value> ?value."+
 						   "?sign <http://purl.oclc.org/NET/ssnx/ssn#observationResultTime> ?time."+					  
 						   " filter regex(?type,'"+readingType+"','i')"+
 						   " filter (?time "+timeOper+" \""+dateTime+"\"^^xsd:dateTime)" +
@@ -691,10 +691,10 @@ public class SensorManager {
 		String sql = "sparql select ?type ?value ?uni ?name "+
 				" from <"+ dataGraph+"> "+
 				"where{ "+
-				   "?sign <http://lsm.deri.ie/ont/lsm.owl#isObservedPropertyOf> <"+observationId+">."+
+				   "?sign <http://openiot.eu/ontology/ns/isObservedValueOf> <"+observationId+">."+
 				   "?sign rdf:type ?type." +
-				   "?sign <http://lsm.deri.ie/ont/lsm.owl#value> ?value."+
-				   "OPTIONAL{?sign <http://lsm.deri.ie/ont/lsm.owl#unit> ?unit.}" +				  
+				   "?sign <http://openiot.eu/ontology/ns/value> ?value."+
+				   "OPTIONAL{?sign <http://openiot.eu/ontology/ns/unit> ?unit.}" +				  
 				   "OPTIONAL{?sign <http://www.w3.org/2000/01/rdf-schema#label> ?name.}"+
 				"}";			 
 		try{
@@ -737,8 +737,8 @@ public class SensorManager {
 				   "?sensor <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://purl.oclc.org/NET/ssnx/ssn#Sensor>."+
 				   "?sensor <http://www.w3.org/ns/prov#wasGeneratedBy> ?author."+
 				   "?sensor <http://www.loa-cnr.it/ontologies/DUL.owl#hasLocation> ?place."+
-				   "?sensor <http://lsm.deri.ie/ont/lsm.owl#hasSensorType> ?typeId."+
-				   "?typeId <http://www.w3.org/2000/01/rdf-schema#label> ?sensorType."+
+				   "?sensor rdf:type ?sensorType."+
+//				   "?typeId <http://www.w3.org/2000/01/rdf-schema#label> ?sensorType."+
 //				   "?sensor <http://lsm.deri.ie/ont/lsm.owl#hasSourceType> ?sourceType."+		  
 				"}";			 
 		try{
@@ -784,9 +784,9 @@ public class SensorManager {
 					       "?observation <http://purl.oclc.org/NET/ssnx/ssn#observationResultTime> ?time. "+
 					    "filter( ?time >\""+DateUtil.date2StandardString(fromTime)+"\"^^xsd:dateTime).} "+
 					  "} "+ 
-					  "?s <http://lsm.deri.ie/ont/lsm.owl#isObservedPropertyOf> ?observation. "+
+					  "?s <http://openiot.eu/ontology/ns/isObservedValueOf> ?observation. "+
 					  "?s <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?type. "+
-					  "?s <http://lsm.deri.ie/ont/lsm.owl#value> ?value."+
+					  "?s <http://openiot.eu/ontology/ns/value> ?value."+
 					  "?s <http://purl.oclc.org/NET/ssnx/ssn#observationResultTime> ?time. "+
 					  "OPTIONAL{?s <http://www.w3.org/2000/01/rdf-schema#label> ?name.}"+
 					"}";			 
@@ -842,35 +842,35 @@ public class SensorManager {
 		
 	}
 
-	public String getSensorTypeId(String sensorType) {
-		// TODO Auto-generated method stub
-		String typeId = "";
-		Connection conn = null;
-		String sql = "sparql select ?type "+
-				" from <"+ metaGraph +"> \n" +
-				"where{ "+
-				  "?type <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://lsm.deri.ie/ont/lsm.owl#SensorType>."+
-				  "?type <http://www.w3.org/2000/01/rdf-schema#label> \""+sensorType+"\"."+				 
-				"}";			 
-		try{
-			conn = ConnectionManager.getConnectionPool().getConnection();							
-			Statement st = conn.createStatement();
-			logger.info("executing query:\n"+sql);
-			if(st.execute(sql)){
-				ResultSet rs = st.getResultSet();
-				while(rs.next()){
-					typeId = rs.getString("type");
-				}
-				ConnectionManager.attemptClose(rs);				
-			}
-			ConnectionManager.attemptClose(st);
-			ConnectionManager.attemptClose(conn);
-		}catch(Exception e){
-			e.printStackTrace();
-			ConnectionManager.attemptClose(conn);
-		}
-		return typeId;
-	}
+//	public String getSensorTypeId(String sensorType) {
+//		// TODO Auto-generated method stub
+//		String typeId = "";
+//		Connection conn = null;
+//		String sql = "sparql select ?type "+
+//				" from <"+ metaGraph +"> \n" +
+//				"where{ "+
+//				  "?type <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://lsm.deri.ie/ont/lsm.owl#SensorType>."+
+//				  "?type <http://www.w3.org/2000/01/rdf-schema#label> \""+sensorType+"\"."+				 
+//				"}";			 
+//		try{
+//			conn = ConnectionManager.getConnectionPool().getConnection();							
+//			Statement st = conn.createStatement();
+//			logger.info("executing query:\n"+sql);
+//			if(st.execute(sql)){
+//				ResultSet rs = st.getResultSet();
+//				while(rs.next()){
+//					typeId = rs.getString("type");
+//				}
+//				ConnectionManager.attemptClose(rs);				
+//			}
+//			ConnectionManager.attemptClose(st);
+//			ConnectionManager.attemptClose(conn);
+//		}catch(Exception e){
+//			e.printStackTrace();
+//			ConnectionManager.attemptClose(conn);
+//		}
+//		return typeId;
+//	}
 
 	/**
 	 * ***************************************************************************************************************
@@ -1767,7 +1767,7 @@ public class SensorManager {
 	public boolean deleteOSDSpecById(String osdSpecId) {
 		// TODO Auto-generated method stub
 		Connection conn = null;
-		String prefix = "http://lsm.deri.ie/resource/";
+		String prefix = propertyManagement.getOpeniotResourceNamespace();
 		String osdSpecURL = prefix + osdSpecId;
 		if(osdSpecId.contains(prefix)){
 			osdSpecURL = osdSpecId;
@@ -1807,7 +1807,7 @@ public class SensorManager {
 	public boolean deleteOAMOById(String oamoId) {
 		// TODO Auto-generated method stub
 		Connection conn = null;
-		String prefix = "http://lsm.deri.ie/resource/";
+		String prefix = propertyManagement.getOpeniotResourceNamespace();
 		String oamoURL = prefix + oamoId;
 		if(oamoId.contains(prefix)){
 			oamoURL = oamoId;
@@ -1846,7 +1846,7 @@ public class SensorManager {
 	public boolean deleteOSMOById(String osmoId) {
 		// TODO Auto-generated method stub
 		Connection conn = null;
-		String prefix = "http://lsm.deri.ie/resource/";
+		String prefix = propertyManagement.getOpeniotResourceNamespace();
 		String osmoURL = prefix + osmoId;
 		if(osmoId.contains(prefix)){
 			osmoURL = osmoId;

@@ -34,7 +34,7 @@ import org.openiot.security.client.OAuthorizationCredentials;
  */
 
 public class TestServer {
-	public static LSMTripleStore lsmStore = new LSMTripleStore("http://localhost:8080/lsm-light.server/");
+	public static LSMTripleStore lsmStore = new LSMTripleStore("http://services.openiot.eu:8080/lsm-light.server/");
 	public static Observation updateData(){
 		
 	/*
@@ -81,7 +81,7 @@ public class TestServer {
 	     Sensor sensor  = new Sensor();
 	     sensor.setName("lab_temp_hp");
 	     sensor.setAuthor("admin");
-		 sensor.setSensorType("myweather");
+		 sensor.setSensorType(ObsConstant.WEATHER_SENSOR);
 		 sensor.setInfor("Temperature sensor inside lab");
 //		 sensor.setSource("http://www.ait.gr/sensor/test1");
 		 sensor.addProperty(ObsConstant.TEMPERATURE);
@@ -104,7 +104,7 @@ public class TestServer {
 		// TODO Auto-generated method stub		        
         try{  
         	AccessControlUtil accessControlUtil = AccessControlUtil.getRestInstance();
-    		OAuthorizationCredentials credential = accessControlUtil.login("lsm-light.client", "client.secret");
+    		OAuthorizationCredentials credential = accessControlUtil.login("lsm-light.client", "nmqhoan");
     		accessControlUtil.getOAuthorizationCredentials();
     		String token = credential.getAccessToken();
     		String clientId = credential.getClientId();

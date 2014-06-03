@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.PrintWriter;
 import java.util.HashMap;
+import java.util.logging.Logger;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -41,8 +42,8 @@ import org.openiot.lsm.utils.ConstantsUtil;
 import org.openiot.lsm.utils.NumberUtil;
 import org.openiot.lsm.utils.SecurityUtil;
 import org.openiot.lsm.utils.VirtuosoConstantUtil;
-import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 
 import com.hp.hpl.jena.ontology.OntClass;
 import com.hp.hpl.jena.ontology.OntModel;

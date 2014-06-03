@@ -14,9 +14,7 @@
 	<xsl:param name="prefix"/>
 	
 	<xsl:param name="sensorId"/>
-<!-- 	<xsl:param name="sourceURL"/> -->
-<!-- 	<xsl:param name="sourceType"/> -->
-	<xsl:param name="sensortype"/>
+	<xsl:param name="sensorType"/>
 	<xsl:param name="name"/>
 	<xsl:param name="author"/>
 	
@@ -45,8 +43,11 @@
 	
 	<xsl:template name="information">	
 		<xsl:value-of select="concat('&#10;','&#60;',$sensorId,'&#62; ',
-	    			'&#60;','http://www.w3.org/1999/02/22-rdf-syntax-ns#type','&#62; ',
+	    			'&#60;','http://www.w3.org/2000/01/rdf-schema#subClassOf','&#62; ',
 	    			'&#60;','http://purl.oclc.org/NET/ssnx/ssn#Sensor','&#62;. '),
+	    			concat('&#10;','&#60;',$sensorId,'&#62; ',
+	    			'&#60;','http://www.w3.org/1999/02/22-rdf-syntax-ns#type','&#62; ',
+	    			'&#60;',$sensorType,'&#62;. '),
 	    			concat('&#60;',$sensorId,'&#62; ',
 	    			'&#60;','http://purl.org/net/provenance/ns#PerformedAt','&#62; ',
 	    			' &#34;',$utc-timestamp,'&#34;&#94;&#94;&#60;','http://www.w3.org/2001/XMLSchema#dateTime&#62;.'),	    	    	
@@ -90,7 +91,7 @@
 	    			'&#60;','http://www.w3.org/2000/01/rdf-schema#label','&#62; ',
 	    			'&#34;',$city,'&#44;',$country,'&#34;.'),	    			
 	    			concat('&#60;',$placeId,'&#62; ',
-	    			'&#60;','http://lsm.deri.ie/ont/lsm.owl#is_in_city','&#62; ',
+	    			'&#60;','http://openiot.eu/ontology/ns/is_in_city','&#62; ',
 	    			'&#60;',$prefix,$cityId,'&#62;.'),
 	    			concat('&#60;',$prefix,$cityId,'&#62; ',
 	    			'&#60;','http://www.w3.org/1999/02/22-rdf-syntax-ns#type','&#62; ',

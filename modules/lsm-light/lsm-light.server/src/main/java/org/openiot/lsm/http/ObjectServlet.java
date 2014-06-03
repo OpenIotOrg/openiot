@@ -150,8 +150,8 @@ public class ObjectServlet extends HttpServlet {
 						||SecurityUtil.hasPermission(permissionString, getServletContext(), token, clientId)){						
 		        		sensorManager.setDataGraph(sensor.getDataGraph());
 		        		sensorManager.setMetaGraph(sensor.getMetaGraph());
-				        String sensorTypeId = sensorManager.getSensorTypeId(sensor.getSensorType().toLowerCase());
-		        		triples = TriplesDataRetriever.getSensorTripleMetadata(sensor,sensorTypeId);
+//				        String sensorTypeId = sensorManager.getSensorTypeId(sensor.getSensorType().toLowerCase());
+		        		triples = TriplesDataRetriever.getSensorTripleMetadata(sensor);
 //		        		logger.info(triples);		        		
 		        		sensorManager.insertTriplesToGraph(sensor.getMetaGraph(), triples);
 //		        		sensorManager.runSpatialIndex();

@@ -25,24 +25,29 @@ package org.openiot.lsm.utils;
  * 
  */
 public class ObsConstant {
-	public final static String sensormasherMetadataGraphURI = "http://lsm.deri.ie/OpenIoT/sensormeta#";
-	public final static String sensormasherDataGraphURI = "http://lsm.deri.ie/OpenIoT/sensordata#";
+	public final static String sensormasherMetadataGraphURI = "http://services.openiot.eu/graphs/sensormeta#";
+	public final static String sensormasherDataGraphURI = "http://services.openiot.eu/graphs/sensordata#";
 	
-	public final static String sensormasherOntologyURI = "http://lsm.deri.ie/ont/lsm.owl#";
+	public final static String sensormasherOntologyURI = "http://openiot.eu/ontology/ns/";
 	public final static String SSNOntolotyURI ="http://purl.oclc.org/NET/ssnx/ssn#";
-	public static String TEMPERATURE = "http://lsm.deri.ie/ont/lsm.owl#AirTemperature";
-	public static String HUMIDITY = "http://lsm.deri.ie/ont/lsm.owl#AtmosphereHumidity";
-	public static String WINDCHILL = "http://lsm.deri.ie/ont/lsm.owl#WindChill";
-	public static String WINDSPEED = "http://lsm.deri.ie/ont/lsm.owl#WindSpeed";
-	public static String PRESSURE = "http://lsm.deri.ie/ont/lsm.owl#AtmospherePressure";
-	public static String VISIBILITY = "http://lsm.deri.ie/ont/lsm.owl#AtmosphereVisibility";
-	public static String STATUS = "http://lsm.deri.ie/ont/lsm.owl#Status";
-	public static String CAMERA_IMAGE = "http://lsm.deri.ie/ont/lsm.owl#WebcamSnapShot";
+	public static String TEMPERATURE = "http://openiot.eu/ontology/ns/AirTemperature";
+	public static String HUMIDITY = "http://openiot.eu/ontology/ns/AtmosphereHumidity";
+	public static String WINDCHILL = "http://openiot.eu/ontology/ns/WindChill";
+	public static String WINDSPEED = "http://openiot.eu/ontology/ns/WindSpeed";
+	public static String PRESSURE = "http://openiot.eu/ontology/ns/AtmospherePressure";
+	public static String VISIBILITY = "http://openiot.eu/ontology/ns/AtmosphereVisibility";
+	public static String STATUS = "http://openiot.eu/ontology/ns/Status";
+	public static String CAMERA_IMAGE = "http://openiot.eu/ontology/ns/WebcamSnapShot";
 	
-	public static String MACHINE_UTIL = "http://lsm.deri.ie/ont/lsm.owl#MachineUtilization";
-	public static String MATERIALCOUNTER = "http://lsm.deri.ie/ont/lsm.owl#MaterialQuantity";
-	public static String PRODUCTCOUNTER = "http://lsm.deri.ie/ont/lsm.owl#ProductQuantity";
-	public static String PROCESS_EFFICIENCY = "http://lsm.deri.ie/ont/lsm.owl#ProcessEfficiency";
+	public static String MACHINE_UTIL = "http://openiot.eu/ontology/ns/MachineUtilization";
+	public static String MATERIALCOUNTER = "http://openiot.eu/ontology/ns/MaterialQuantity";
+	public static String PRODUCTCOUNTER = "http://openiot.eu/ontology/ns/ProductQuantity";
+	public static String PROCESS_EFFICIENCY = "http://openiot.eu/ontology/ns/ProcessEfficiency";
+	
+	public static String TEMPS_ENSOR = "http://openiot.eu/ontology/ns/TemperatureSensor";
+	public static String WEATHER_SENSOR = "http://openiot.eu/ontology/ns/WeatherSensor";
+	public static String NOISE_SENSOR = "http://openiot.eu/ontology/ns/NoiseSensor";
+	public static String AIRQUALITY_SENSOR = "http://openiot.eu/ontology/ns/AirQualitySensor";
 	/**
 	 * @param args
 	 */

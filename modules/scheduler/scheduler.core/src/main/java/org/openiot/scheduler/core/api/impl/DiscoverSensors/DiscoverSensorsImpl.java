@@ -130,17 +130,27 @@ public class DiscoverSensorsImpl {
 		public static String getSensTypeInArea(String lsmMetaGraph,double longitude, double latitude, float radius) {
 			StringBuilder update = new StringBuilder();
 
+//			String str = ("select distinct(?sensLabelType) "//?type " 
+//					+ "from <" + lsmMetaGraph + "> "
+//					+ "WHERE " 
+//					+ "{"
+//					+ "?type <http://www.w3.org/2000/01/rdf-schema#label> ?sensLabelType."
+//					+ "?sensorId <http://lsm.deri.ie/ont/lsm.owl#hasSensorType> ?type."
+//					+ "?sensorId <http://www.loa-cnr.it/ontologies/DUL.owl#hasLocation> ?p."
+//					+ "?p geo:geometry ?geo." 
+//					+ "filter (<bif:st_intersects>(?geo,<bif:st_point>("+ longitude + "," + latitude + ")," + radius + "))."
+//					+ "}");
+
 			String str = ("select distinct(?sensLabelType) "//?type " 
 					+ "from <" + lsmMetaGraph + "> "
 					+ "WHERE " 
 					+ "{"
-					+ "?type <http://www.w3.org/2000/01/rdf-schema#label> ?sensLabelType."
-					+ "?sensorId <http://lsm.deri.ie/ont/lsm.owl#hasSensorType> ?type."
+					+ "?sensorId rdf:type ?sensLabelType."
 					+ "?sensorId <http://www.loa-cnr.it/ontologies/DUL.owl#hasLocation> ?p."
 					+ "?p geo:geometry ?geo." 
 					+ "filter (<bif:st_intersects>(?geo,<bif:st_point>("+ longitude + "," + latitude + ")," + radius + "))."
 					+ "}");
-
+			
 			logger.debug("qString of: getSensTypeInArea --"+str);
 			update.append(str);
 			return update.toString();
@@ -149,21 +159,42 @@ public class DiscoverSensorsImpl {
 		public static String getMDataOfSensorTypeInArea(String lsmMetaGraph,double longitude, double latitude, float radius,String sensorType) {
 			StringBuilder update = new StringBuilder();
 
+//			String str = ("SELECT ?measurement ?unit (AVG(?value) AS ?avalue) " 
+//					+ "WHERE " 
+//					+ "{"
+//					+ "?prob <http://www.w3.org/2000/01/rdf-schema#label> ?measurement. "
+//					+ "?prob <http://openiot.eu/ontology/ns/unit> ?unit."
+//					+ "?prob <http://openiot.eu/ontology/ns/value> ?value."
+//					+ "?prob <http://openiot.eu/ontology/ns/isObservedValueOf> ?obs."
+//					+ "?obs <http://purl.oclc.org/NET/ssnx/ssn#observedBy> ?sensorId."
+//
+//					+ "{" 
+//						+ "select ?sensorId " + "from <" + lsmMetaGraph + "> " 
+//						+ "WHERE " 
+//						+ "{"
+//						+ "?type <http://www.w3.org/2000/01/rdf-schema#label> '" + sensorType + "' ."
+//						+ "?sensorId <http://lsm.deri.ie/ont/lsm.owl#hasSensorType> ?type. "
+//						+ "FILTER EXISTS {?sensorId <http://www.loa-cnr.it/ontologies/DUL.owl#hasLocation> ?p. }"
+//						+ "?p geo:geometry ?geo. " 
+//						+ "filter (<bif:st_intersects>(?geo,<bif:st_point>("+ longitude + "," + latitude + ")," + radius + ")). " 
+//						+ "}" 
+//					+ "}"
+//
+//					+ "}group by (?measurement)(?unit) ");
 			String str = ("SELECT ?measurement ?unit (AVG(?value) AS ?avalue) " 
 					+ "WHERE " 
 					+ "{"
 					+ "?prob <http://www.w3.org/2000/01/rdf-schema#label> ?measurement. "
-					+ "?prob <http://lsm.deri.ie/ont/lsm.owl#unit> ?unit."
-					+ "?prob <http://lsm.deri.ie/ont/lsm.owl#value> ?value."
-					+ "?prob <http://lsm.deri.ie/ont/lsm.owl#isObservedPropertyOf> ?obs."
+					+ "?prob <http://openiot.eu/ontology/ns/unit> ?unit."
+					+ "?prob <http://openiot.eu/ontology/ns/value> ?value."
+					+ "?prob <http://openiot.eu/ontology/ns/isObservedValueOf> ?obs."
 					+ "?obs <http://purl.oclc.org/NET/ssnx/ssn#observedBy> ?sensorId."
 
 					+ "{" 
 						+ "select ?sensorId " + "from <" + lsmMetaGraph + "> " 
 						+ "WHERE " 
 						+ "{"
-						+ "?type <http://www.w3.org/2000/01/rdf-schema#label> '" + sensorType + "' ."
-						+ "?sensorId <http://lsm.deri.ie/ont/lsm.owl#hasSensorType> ?type. "
+						+ "?sensorId rdf:type <" + sensorType + ">."
 						+ "FILTER EXISTS {?sensorId <http://www.loa-cnr.it/ontologies/DUL.owl#hasLocation> ?p. }"
 						+ "?p geo:geometry ?geo. " 
 						+ "filter (<bif:st_intersects>(?geo,<bif:st_point>("+ longitude + "," + latitude + ")," + radius + ")). " 

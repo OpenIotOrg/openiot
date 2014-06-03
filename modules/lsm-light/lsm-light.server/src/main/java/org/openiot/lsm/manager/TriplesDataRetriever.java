@@ -80,9 +80,9 @@ public class TriplesDataRetriever {
 		long id = System.nanoTime();
 		String prefix = propertyManagement.getOpeniotResourceNamespace();
 		triples+="<"+prefix + id+"> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <"+dataType+">.\n"+ 
-				"<"+prefix+id+"> <http://lsm.deri.ie/ont/lsm.owl#isObservedPropertyOf> <"+prefix + observationId+">.\n"+
-				"<"+prefix+id+"> <http://lsm.deri.ie/ont/lsm.owl#value> \""+value+"\"^^<http://www.w3.org/2001/XMLSchema#double>.\n"+
-				"<"+prefix+id+"> <http://lsm.deri.ie/ont/lsm.owl#unit> \""+unit+"\".\n"+
+				"<"+prefix+id+"> <http://openiot.eu/ontology/ns/isObservedValueOf> <"+prefix + observationId+">.\n"+
+				"<"+prefix+id+"> <http://openiot.eu/ontology/ns/value> \""+value+"\"^^<http://www.w3.org/2001/XMLSchema#double>.\n"+
+				"<"+prefix+id+"> <http://openiot.eu/ontology/ns/unit> \""+unit+"\".\n"+
 				"<"+prefix+id+"> <http://www.w3.org/2000/01/rdf-schema#label> \""+name+"\".\n"+
 				"<"+prefix+id+"> <http://purl.oclc.org/NET/ssnx/ssn#observedProperty> <"+observedURL+">.\n"+
 				"<"+prefix+id+"> <http://purl.oclc.org/NET/ssnx/ssn#observationResultTime> \""+DateUtil.date2StandardString(time)+"\"^^<http://www.w3.org/2001/XMLSchema#dateTime>.\n";
@@ -96,8 +96,8 @@ public class TriplesDataRetriever {
 		String prefix = propertyManagement.getOpeniotResourceNamespace();
 		triples+=
 				"<"+prefix+id+"> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <"+dataType+">.\n"+ 
-				"<"+prefix+id+"> <http://lsm.deri.ie/ont/lsm.owl#isObservedPropertyOf> <"+ prefix + observationId+">.\n"+
-				"<"+prefix+id+"> <http://lsm.deri.ie/ont/lsm.owl#value> \""+value+"\".\n"+
+				"<"+prefix+id+"> <http://openiot.eu/ontology/ns/isObservedValueOf> <"+ prefix + observationId+">.\n"+
+				"<"+prefix+id+"> <http://openiot.eu/ontology/ns/value> \""+value+"\".\n"+
 				"<"+prefix+id+"> <http://www.w3.org/2000/01/rdf-schema#label> \""+name+"\".\n"+
 				"<"+prefix+id+"> <http://purl.oclc.org/NET/ssnx/ssn#observedProperty> <"+observedURL+">.\n"+
 //				"<"+observedURL+"> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://purl.oclc.org/NET/ssnx/ssn#Property>.\n"+
@@ -115,7 +115,7 @@ public class TriplesDataRetriever {
 		return triples;
 	}
 	
-	public static String getSensorTripleMetadata(Sensor s,String sensorTypeId){
+	public static String getSensorTripleMetadata(Sensor s){
 		String triples = "";
 		String xsltPath = XSLTMapFile.sensormeta2xslt;
 		xsltPath = ConstantsUtil.realPath + xsltPath;
@@ -133,9 +133,8 @@ public class TriplesDataRetriever {
             Transformer transformer = tFactory.newTransformer(new StreamSource(new File(xsltPath)));
             transformer.setParameter("sensorId", s.getId());
             transformer.setParameter("utc-timestamp", DateUtil.date2StandardString(new Date()));
-//            transformer.setParameter("sourceType", s.getSourceType());
+            transformer.setParameter("sensorType", s.getSensorType());
             transformer.setParameter("prefix", prefix);
-//            transformer.setParameter("sourceURL", s.getSource());
             transformer.setParameter("placeId", place.getId());
             transformer.setParameter("geonameId", place.getGeonameid());
             transformer.setParameter("city", place.getCity());
@@ -157,13 +156,11 @@ public class TriplesDataRetriever {
             transformer.transform(new StreamSource(inputStream),result);
             triples = outWriter.toString().trim();       
             
-            String sensorTypeTriples = "";
-            if(sensorTypeId=="")
-            	sensorTypeId = prefix+System.nanoTime();
-        	sensorTypeTriples="\n<" + s.getId() + "> <http://lsm.deri.ie/ont/lsm.owl#hasSensorType> <" + sensorTypeId +">.\n"
-        		+"<" + sensorTypeId + "> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://lsm.deri.ie/ont/lsm.owl#SensorType>.\n"
-        		+"<" + sensorTypeId + "> <http://www.w3.org/2000/01/rdf-schema#label> \"" + s.getSensorType()+"\".\n";
-        	triples+=sensorTypeTriples;
+//            String sensorTypeTriples = "";            
+//        	sensorTypeTriples="\n<" + s.getId() + "> <http://lsm.deri.ie/ont/lsm.owl#hasSensorType> <" + sensorTypeId +">.\n"
+//        		+"<" + sensorTypeId + "> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://lsm.deri.ie/ont/lsm.owl#SensorType>.\n"
+//        		+"<" + sensorTypeId + "> <http://www.w3.org/2000/01/rdf-schema#label> \"" + s.getSensorType()+"\".\n";
+//        	triples+=sensorTypeTriples;
             
             String observesTriples = "";           
             for(String classURL:s.getProperties().keySet()){
@@ -464,7 +461,7 @@ public class TriplesDataRetriever {
 		place.setLat(32325);
 		place.setLng(324);
 		sensor.setPlace(place);
-		System.out.println(TriplesDataRetriever.getSensorTripleMetadata(sensor, ""));
+		System.out.println(TriplesDataRetriever.getSensorTripleMetadata(sensor));
 	}
 
 	public static String addPermissionToRoleRDF(String roleId, String permId) {

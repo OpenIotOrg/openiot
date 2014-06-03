@@ -50,14 +50,13 @@ public class VirtuosoConstantUtil {
 	
 	private static void initAuthorizedGraph() {
 		// TODO Auto-generated method stub
-		authorizedGraphs.add("http://lsm.deri.ie/OpenIoT/sensordata#");
-		authorizedGraphs.add("http://lsm.deri.ie/OpenIoT/sensormeta#");
-		authorizedGraphs.add("http://lsm.deri.ie/cisco/eventdata#");
-		authorizedGraphs.add("http://lsm.deri.ie/OpenIoT/testSchema#");
-		authorizedGraphs.add("http://lsm.deri.ie/OpenIoT/demo/sensordata#");
-		authorizedGraphs.add("http://lsm.deri.ie/OpenIoT/demo/sensormeta#");
-		authorizedGraphs.add("http://lsm.deri.ie/OpenIoT/test/sensordata#");
-		authorizedGraphs.add("http://lsm.deri.ie/OpenIoT/test/sensormeta#");
+		authorizedGraphs.add("http://services.openiot.eu/graphs/sensordata#");
+		authorizedGraphs.add("http://services.openiot.eu/graphs/sensormeta#");
+		authorizedGraphs.add("http://services.openiot.eu/graphs/testSchema#");
+		authorizedGraphs.add("http://services.openiot.eu/graphs/demo/sensordata#");
+		authorizedGraphs.add("http://services.openiot.eu/graphs/demo/sensormeta#");
+		authorizedGraphs.add("http://services.openiot.eu/graphs/test/sensordata#");
+		authorizedGraphs.add("http://services.openiot.eu/graphs/test/sensormeta#");
 	}
 
 	

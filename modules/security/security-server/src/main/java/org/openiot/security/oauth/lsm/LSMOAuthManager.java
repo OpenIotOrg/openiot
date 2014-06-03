@@ -42,7 +42,8 @@ public class LSMOAuthManager {
 	private static LSMOAuthManager instance;
 	private String lSMOauthGraphURL;
 	private String sparqlEndPoint;
-
+	private String instancePrefix;
+	
 	private LSMOAuthHttpManager lsmOAuthHttpManager;
 
 	public static LSMOAuthManager getInstance() {
@@ -55,6 +56,7 @@ public class LSMOAuthManager {
 		PropertyManagement propertyManagement = new PropertyManagement();
 		sparqlEndPoint = propertyManagement.getSecurityLsmSparqlEndPoint();
 		lSMOauthGraphURL = propertyManagement.getSecurityLsmGraphURL();
+		instancePrefix = propertyManagement.getOpeniotResourceNamespace();
 		lsmOAuthHttpManager = new LSMOAuthHttpManager(lSMOauthGraphURL);
 	}
 
@@ -148,7 +150,7 @@ public class LSMOAuthManager {
 	 * @return
 	 */
 	public List<LSMTicketGrantingTicketImpl> getAllTicketsOfTicketGrantingTicket(String grantId) {
-		String prefix = "http://lsm.deri.ie/resource/";
+		String prefix = instancePrefix;
 		String grantURL = prefix + grantId;
 		if (grantId.contains(prefix)) {
 			grantURL = grantId;
@@ -183,7 +185,7 @@ public class LSMOAuthManager {
 	 * @return
 	 */
 	public List<LSMServiceTicketImpl> getAllServiceTicketsOfTicketGrantingTicket(String grantId) {
-		String prefix = "http://lsm.deri.ie/resource/";
+		String prefix = instancePrefix;
 		String grantURL = prefix + grantId;
 		if (grantId.contains(prefix)) {
 			grantURL = grantId;
@@ -323,8 +325,8 @@ public class LSMOAuthManager {
 	 */
 	public User getUserByUsername(String username) {
 		org.openiot.lsm.security.oauth.mgmt.User user = null;
-		String userURL = "http://lsm.deri.ie/resource/user/" + username;
-		if (username.contains("http://lsm.deri.ie/resource/user/")) {
+		String userURL = instancePrefix + "user/" + username;
+		if (username.contains(instancePrefix + "user/")) {
 			userURL = username;
 			username = username.substring(username.lastIndexOf("/") + 1);
 		}
@@ -363,8 +365,8 @@ public class LSMOAuthManager {
 	 */
 	public List<Role> getUserRoles(String username) {
 		List<Role> roles = new ArrayList<Role>();
-		String userURL = "http://lsm.deri.ie/resource/user/" + username;
-		if (username.contains("http://lsm.deri.ie/resource/user/")) {
+		String userURL = instancePrefix + "user/" + username;
+		if (username.contains(instancePrefix + "user/")) {
 			userURL = username;
 			username = username.substring(username.lastIndexOf("/") + 1);
 		}
