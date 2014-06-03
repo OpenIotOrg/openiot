@@ -37,7 +37,6 @@ import org.jasig.cas.services.RegisteredService;
 import org.openiot.lsm.security.oauth.mgmt.Permission;
 import org.openiot.lsm.security.oauth.mgmt.Role;
 import org.openiot.lsm.security.oauth.mgmt.User;
-import org.openiot.security.client.AccessControlUtil;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.RowEditEvent;
 
@@ -98,7 +97,7 @@ public class RolesController extends AbstractController {
 				String name = registeredService.getName();
 				
 				//Checking access
-				if (AccessControlUtil.getInstance().hasPermission("admin:user_mgmt:" + name))
+				if (Utils.acUtil.hasPermission("admin:user_mgmt:" + name))
 					allServices.put(registeredService.getId(), registeredService);
 			}
 		}
@@ -276,7 +275,7 @@ public class RolesController extends AbstractController {
 	}
 
 	public boolean hasRoleDeletionPermission() {
-		return AccessControlUtil.getInstance().hasPermission("admin:delete_role:" + getSelectedServiceName());
+		return Utils.acUtil.hasPermission("admin:delete_role:" + getSelectedServiceName());
 	}
 
 	public void setSelectedServiceIdStr(String selectedServiceIdStr) {

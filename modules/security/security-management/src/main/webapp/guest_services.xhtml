@@ -1,0 +1,82 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html" xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:openiot="http://openiot.org/tags" xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+<head />
+<body>
+	<ui:composition template="/WEB-INF/templates/main.xhtml">
+		<ui:define name="title">Manage Services</ui:define>
+		<ui:define name="nav-links">
+			<li><a href="home.jsf">Home</a></li>
+
+			<!-- Authorization JSF Tag -->
+			<openiot:hasPermission name="admin:user_mgmt_general">
+				<li><a href="roles.jsf">Manage roles</a></li>
+				<li><a href="users.jsf">Manage users</a></li>
+				<li><a href="perms.jsf">Manage permissions</a></li>
+				<openiot:hasPermission name="admin:add_services">
+					<li><a href="services.jsf">Manage services</a></li>
+				</openiot:hasPermission>
+			</openiot:hasPermission>
+			<c:if test="${guestServiceController.isDemoEnabled()}">
+				<li class="active"><a href="guest_services.jsf">Guest services</a></li>
+			</c:if>
+		</ui:define>
+		<ui:define name="content">
+			<p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" />
+			<p:layout fullPage="false" id="layout" style="min-height:800px;">
+				<p:layoutUnit position="center" minSize="200" size="500" resizable="true">
+					<h:form id="serviceURLForm">
+						<h:panelGrid columns="2">
+							<p:outputLabel value="Service URL Prefix" for="serviceURL" />
+							<h:panelGroup>
+								<p:inputText id="serviceURL" label="Service URL" value="#{guestServiceController.serviceURL}" size="200" />
+								<p:button id="help" style="width: 15px; height: 15px; vertical-align: middle; margin-left: 4px" icon="ui-icon-help" />
+								<p:overlayPanel for="help" showEvent="mouseover" hideEvent="mouseout" hideEffect="fade">
+									<p:panel>
+                						The URL of your web container deployment without including the name of the module (e.g., http://localhost:8080).
+            						</p:panel>
+								</p:overlayPanel>
+							</h:panelGroup>
+							<p:commandButton value="Get Services" action="#{guestServiceController.fetchServices()}" style="display:block; margin:0 auto;" ajax="true"
+								update="serviceTable" />
+						</h:panelGrid>
+
+						<!-- 					<h:form id="servicesForm"> -->
+						<h:panelGrid columns="1" style="width:100%" cellpadding="5">
+							<h:panelGroup layout="block" style="width:100%">
+								<p:dataTable var="service" value="#{guestServiceController.services}" rowKey="#{service.id}" id="serviceTable" resizableColumns="true"
+									style="table-layout: fixed" emptyMessage="Service list is emtpy">
+
+									<f:facet name="header">
+										<h:outputText value="Available Services" />
+									</f:facet>
+
+									<p:column headerText="key">
+										<h:outputText value="#{service.name}" />
+									</p:column>
+
+									<p:column headerText="Secret">
+										<h:outputText value="#{service.description}" />
+									</p:column>
+
+									<p:column headerText="URL">
+										<h:outputText value="#{service.serviceId}" title="#{service.serviceId}" />
+									</p:column>
+
+									<p:column headerText="Display name">
+										<h:outputText value="#{service.theme}" />
+									</p:column>
+
+								</p:dataTable>
+							</h:panelGroup>
+						</h:panelGrid>
+						<!-- </h:form>  -->
+					</h:form>
+				</p:layoutUnit>
+			</p:layout>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

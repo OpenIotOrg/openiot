@@ -285,4 +285,9 @@ public class InMemorySecurityManagerService implements SecurityManagerService {
 		return null;	
 	}
 
+	@Override
+	public void createGuestServices(User user, String serviceURL) {
+		// TODO Auto-generated method stub
+	}
+
 }

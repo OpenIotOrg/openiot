@@ -67,7 +67,7 @@ public class LSMSecurityManagerService implements Serializable, SecurityManagerS
 	private LSMOAuthHttpManager lsmOAuthHttpManager;
 
 	public LSMSecurityManagerService() {
-		PropertyManagement propertyManagement = new PropertyManagement();
+		PropertyManagement propertyManagement = Utils.getPropertyManagement();
 		sparqlEndPoint = propertyManagement.getSecurityLsmSparqlEndPoint();
 		lSMOauthGraphURL = propertyManagement.getSecurityLsmGraphURL();
 		lsmOAuthHttpManager = new LSMOAuthHttpManager(lSMOauthGraphURL);
@@ -138,6 +138,11 @@ public class LSMSecurityManagerService implements Serializable, SecurityManagerS
 	@Override
 	public void deleteRegisteredService(long id) {
 		lsmOAuthHttpManager.deleteRegisteredService(id);
+	}
+	
+	@Override
+	public void createGuestServices(User user, String serviceURL) {
+		lsmOAuthHttpManager.createGuestServices(user.getId(), serviceURL);
 	}
 
 	@Override
@@ -400,5 +405,6 @@ public class LSMSecurityManagerService implements Serializable, SecurityManagerS
 		}
 		return filteredList;
 	}
+
 
 }

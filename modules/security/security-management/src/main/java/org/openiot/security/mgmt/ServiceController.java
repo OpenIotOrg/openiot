@@ -34,7 +34,6 @@ import org.openiot.lsm.security.oauth.LSMRegisteredServiceImpl;
 import org.openiot.lsm.security.oauth.mgmt.Permission;
 import org.openiot.lsm.security.oauth.mgmt.Role;
 import org.openiot.lsm.security.oauth.mgmt.User;
-import org.openiot.security.client.AccessControlUtil;
 import org.openiot.security.client.OAuthorizationCredentials;
 import org.openiot.security.client.PermissionsUtil;
 import org.primefaces.context.RequestContext;
@@ -75,12 +74,11 @@ public class ServiceController extends AbstractController {
 
 			final List<RegisteredService> servicesAll = securityManagerService.getAllServices();
 			allServices = new HashMap<Long, RegisteredService>(servicesAll.size());
-			AccessControlUtil acUtil = AccessControlUtil.getInstance();
-			OAuthorizationCredentials credentials = acUtil.getOAuthorizationCredentials();
+			OAuthorizationCredentials credentials = Utils.acUtil.getOAuthorizationCredentials();
 
 			for (RegisteredService registeredService : servicesAll) {
 				allServices.put(registeredService.getId(), registeredService);
-				if (acUtil.hasPermission(PermissionsUtil.SEC_MGMT_SERVICE_MGMT + registeredService.getName()))
+				if (Utils.acUtil.hasPermission(PermissionsUtil.SEC_MGMT_SERVICE_MGMT + registeredService.getName()))
 					services.add((LSMRegisteredServiceImpl) registeredService);
 				if (registeredService.getName().equals(credentials.getClientId()))
 					myServiceId = registeredService.getId();
@@ -197,7 +195,7 @@ public class ServiceController extends AbstractController {
 		Role serviceAdminRole = null;
 		String serviceAdminRoleName = PermissionsUtil.SEC_MGMT_SERVICE_MGMT + service.getName();
 
-		boolean isAdmin = AccessControlUtil.getInstance().hasPermission("*");
+		boolean isAdmin = Utils.acUtil.hasPermission("*");
 		if (!isAdmin) {
 			for (Role r : user.getRoles()) {
 				if (r.getServiceId() == service.getId() && r.getName().equals(serviceAdminRoleName)) {
@@ -227,7 +225,7 @@ public class ServiceController extends AbstractController {
 			securityManagerService.addUser(user);
 			
 			// clearing the cache in order to see the new permission modifications
-			AccessControlUtil.getInstance().reset();
+			Utils.acUtil.reset();
 		}
 		
 		for (Permission perm : perms)
@@ -235,14 +233,15 @@ public class ServiceController extends AbstractController {
 	}
 
 	public boolean isRestful(LSMRegisteredServiceImpl service) {
-		restfulService = service.getServiceId().toLowerCase().startsWith("rest");
+		restfulService = service.getServiceId().toLowerCase().startsWith("rest://");
 		return restfulService;
 	}
 
 	private boolean isURLValid(LSMRegisteredServiceImpl service, boolean isRest) {
 		if (isRest)
 			return true;
-		return service.getServiceId().toLowerCase().startsWith("http");
+		String serviceURLLowCase = service.getServiceId().toLowerCase();
+		return serviceURLLowCase.startsWith("http://") || serviceURLLowCase.startsWith("https://");
 	}
 
 	public boolean isServiceNameUnique(LSMRegisteredServiceImpl service) {

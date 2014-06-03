@@ -32,10 +32,9 @@ import org.openiot.lsm.security.oauth.mgmt.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
  * @author Mehdi Riahi
- *
+ * 
  */
 public abstract class AbstractController implements Serializable {
 
@@ -60,21 +59,20 @@ public abstract class AbstractController implements Serializable {
 		msg.setSeverity(FacesMessage.SEVERITY_ERROR);
 		FacesContext.getCurrentInstance().addMessage(null, msg);
 	}
-	
+
 	private void addMessage(Severity severity, String message, String details) {
 		FacesMessage msg = new FacesMessage(severity, message, details);
 		FacesContext.getCurrentInstance().addMessage(null, msg);
 	}
 
-	
 	protected void addInfoMessage(String message, String details) {
 		addMessage(FacesMessage.SEVERITY_INFO, message, details);
 	}
-	
+
 	protected void addErrorMessage(String message, String details) {
 		addMessage(FacesMessage.SEVERITY_ERROR, message, details);
 	}
-	
+
 	protected void addWarnMessage(String message, String details) {
 		addMessage(FacesMessage.SEVERITY_WARN, message, details);
 	}
@@ -93,8 +91,7 @@ public abstract class AbstractController implements Serializable {
 	}
 
 	/**
-	 * Handle deserialization from passivated session and restore transient
-	 * fields.
+	 * Handle deserialization from passivated session and restore transient fields.
 	 * 
 	 * @param ois
 	 *            The ObjectInputStream object.
@@ -108,5 +105,9 @@ public abstract class AbstractController implements Serializable {
 
 	public void setUserSession(UserSession userSession) {
 		this.userSession = userSession;
+	}
+
+	public boolean isDemoEnabled() {
+		return Utils.isDemoEnabled();
 	}
 }

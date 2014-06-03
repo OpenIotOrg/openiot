@@ -33,11 +33,6 @@ public class LSMServiceRegistryDaoImpl implements ServiceRegistryDao {
 
 	private static Logger log = LoggerFactory.getLogger(LSMServiceRegistryDaoImpl.class);
 	private LSMOAuthManager manager = LSMOAuthManager.getInstance();
-	private boolean initializeOnStartup = false;
-
-	public void setInitializeOnStartup(boolean initializeOnStartup) {
-		this.initializeOnStartup = initializeOnStartup;
-	}
 
 	public RegisteredService save(RegisteredService registeredService) {
 		final boolean isNew = registeredService.getId() == -1;

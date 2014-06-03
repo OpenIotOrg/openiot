@@ -23,8 +23,6 @@ package org.openiot.lsm.security.oauth.mgmt;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.openiot.lsm.security.oauth.LSMRegisteredServiceImpl;
-
 public class User implements java.io.Serializable {
 
 	private static final long serialVersionUID = 1205297655561481894L;
@@ -36,11 +34,9 @@ public class User implements java.io.Serializable {
 	private boolean approved = false;
 
 	private List<Role> roles;
-	private List<LSMRegisteredServiceImpl> services;
 
 	public User() {
 		roles = new ArrayList<>();
-		services = new ArrayList<>();
 	}
 
 	public long getId() {
@@ -64,21 +60,6 @@ public class User implements java.io.Serializable {
 			roles = new ArrayList<Role>();
 		if (!roles.contains(role))
 			roles.add(role);
-	}
-	
-	public List<LSMRegisteredServiceImpl> getServices() {
-		return services;
-	}
-
-	public void setServices(List<LSMRegisteredServiceImpl> services) {
-		this.services = services;
-	}
-	
-	public void addService(LSMRegisteredServiceImpl service){
-		if(services == null)
-			services = new ArrayList<>();
-		if(!services.contains(service))
-			services.add(service);
 	}
 
 	public String getUsername() {

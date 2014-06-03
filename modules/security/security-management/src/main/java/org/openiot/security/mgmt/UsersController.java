@@ -36,7 +36,6 @@ import org.jasig.cas.services.RegisteredService;
 import org.openiot.lsm.security.oauth.mgmt.Permission;
 import org.openiot.lsm.security.oauth.mgmt.Role;
 import org.openiot.lsm.security.oauth.mgmt.User;
-import org.openiot.security.client.AccessControlUtil;
 
 /**
  * @author Mehdi Riahi
@@ -86,7 +85,7 @@ public class UsersController extends AbstractController {
 			allServices = new HashMap<Long, RegisteredService>(services.size());
 			for (RegisteredService registeredService : services) {
 				String name = registeredService.getName();
-				if (AccessControlUtil.getInstance().hasPermission("admin:user_mgmt:" + name))
+				if (Utils.acUtil.hasPermission("admin:user_mgmt:" + name))
 					allServices.put(registeredService.getId(), registeredService);
 			}
 		}
