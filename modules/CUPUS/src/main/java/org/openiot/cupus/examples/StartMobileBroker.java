@@ -26,6 +26,7 @@ import java.util.UUID;
 
 import org.openiot.cupus.artefact.HashtablePublication;
 import org.openiot.cupus.artefact.Publication;
+import org.openiot.cupus.artefact.Subscription;
 import org.openiot.cupus.entity.mobilebroker.MobileBroker;
 import org.openiot.cupus.entity.subscriber.NotificationListener;
 
@@ -52,6 +53,11 @@ public class StartMobileBroker {
 				System.out.println(publication);
 				System.out.println();
 			}
+
+                    @Override
+                    public void notify(UUID subscriberId, String subscriberName, Subscription subscription) {
+                        
+                    }
 		});
 
 		// connect to the broker

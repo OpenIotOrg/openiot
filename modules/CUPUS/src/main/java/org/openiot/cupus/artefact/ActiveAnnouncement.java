@@ -74,6 +74,19 @@ public class ActiveAnnouncement extends Announcement {
 	public String toString() {
 		return announcement.toString() + " from: " + mobileBrokerID;
 	}
+        
+        @Override
+	public boolean equals(Object o) {
+		if (this == o)
+			return true;
+		if (o instanceof ActiveAnnouncement) {
+			ActiveAnnouncement other = (ActiveAnnouncement) o;
+			return (this.mobileBrokerID.equals(other.mobileBrokerID))
+					&& (this.announcement.equals(other.announcement));
+		} else {
+			return false;
+		}
+	}
 
 	@Override
 	public boolean coversSubscription(Subscription data) {

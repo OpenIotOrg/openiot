@@ -20,10 +20,12 @@
 
 package org.openiot.cupus.examples;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 
-import org.openiot.cupus.entity.broker.CloudBroker;
+import org.openiot.cupus.entity.broker.Coordinator;
 
 /**
  *
@@ -32,7 +34,16 @@ import org.openiot.cupus.entity.broker.CloudBroker;
 public class BrokerExample {
   public static void main(String[] args) throws InterruptedException, IOException {
        
-    	CloudBroker broker = new CloudBroker(new File("./config/test_broker.config"), "./bin;../CUPUSCommon/bin");
-    	
+    	Coordinator broker = new Coordinator(new File("./src/main/resources/config/test_broker.config"), "./target/CUPUS-1.0-jar-with-dependencies.jar");
+        
+        System.out.println("For exit type QUIT");
+        BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+        while(true) {
+            String input = in.readLine();
+            if (input.equalsIgnoreCase("QUIT")) {
+            	broker.shutdown();
+                break;
+            };
+        }
     }
 }

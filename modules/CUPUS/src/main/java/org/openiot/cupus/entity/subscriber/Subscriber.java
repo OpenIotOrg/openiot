@@ -212,6 +212,7 @@ public class Subscriber extends NetworkEntity implements SubscriberInterface {
 		//send the register message
 		Message connectMessage = new SubscriberRegisterMessage(myName, this.getId(),
 				myIP, brokerBackConnectPort);
+                System.out.println(myIP+ " "+brokerBackConnectPort);
 		this.sendMessage(connectMessage);
 		
 		//wait for 'response' - in the form of connect request from Broker's DeliveryService

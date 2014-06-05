@@ -25,7 +25,11 @@ import java.util.UUID;
 
 import org.openiot.cupus.artefact.HashtablePublication;
 import org.openiot.cupus.artefact.Publication;
+import org.openiot.cupus.artefact.Subscription;
 import org.openiot.cupus.artefact.TripletAnnouncement;
+import org.openiot.cupus.artefact.TripletSubscription;
+import org.openiot.cupus.common.Triplet;
+import org.openiot.cupus.common.enums.Operator;
 import org.openiot.cupus.entity.mobilebroker.MobileBroker;
 import org.openiot.cupus.entity.subscriber.NotificationListener;
 
@@ -34,7 +38,7 @@ import org.openiot.cupus.entity.subscriber.NotificationListener;
  * @author Aleksandar
  */
 public class MobileBrokerExample {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
        
     	//define a mobile broker entity
     	MobileBroker mb = new MobileBroker("mb1", "localhost", 10000);
@@ -48,36 +52,41 @@ public class MobileBrokerExample {
                 System.out.println(publication);
                 System.out.println();
             }
+
+                @Override
+                public void notify(UUID subscriberId, String subscriberName, Subscription subscription) {
+                     
+                }
         });
         
         //define a new subscription (for more details see the SubscriberExample.java class) 
-        //TripletSubscription ts1 = new TripletSubscription(-1, System.currentTimeMillis());
-        //ts1.addPredicate(new Triplet("num1", 5.4, Operator.GREATER_OR_EQUAL));
-        //mb.subscribe(ts1);
+        TripletSubscription ts1 = new TripletSubscription(-1, System.currentTimeMillis());
+        ts1.addPredicate(new Triplet("num1", 5.4, Operator.GREATER_OR_EQUAL));
+        mb.subscribe(ts1);
         
-        try {
-			Thread.sleep(0);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
+       Thread.sleep(1000);
         
         //define an announcement which is unlimited 
         TripletAnnouncement ta = new TripletAnnouncement(-1, System.currentTimeMillis());
         //announce numerical data (i.e. its range is <-inf, +inf> , implementation is <
-        ta.addNumericalPredicate("num1");
+        ta.addNumericalPredicate("ID");
         //announce previously defined announcement
         mb.announce(ta);
-        
+         try {
+			Thread.sleep(10000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
         //define a new publication (for more details see the PublisherExample.java class)
         HashtablePublication hp = new HashtablePublication(-1, System.currentTimeMillis());
-        hp.setProperty("num1", 6);
-		hp.setProperty("num2", 5);
+        hp.setProperty("ID", 6);
+        hp.setProperty("ID2", 5);
         mb.publish(hp);
         
         hp = new HashtablePublication(-1, System.currentTimeMillis());
-        hp.setProperty("num2", 5);
+        hp.setProperty("ID2", 5);
         mb.publish(hp);
     	
-        //mb.disconnectFromBroker();
+        //mb.revokeAnnouncement(ta);
     }
 }

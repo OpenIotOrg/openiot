@@ -20,6 +20,7 @@
 
 package org.openiot.cupus.artefact;
 
+import java.io.Serializable;
 import java.util.UUID;
 
 /**
@@ -29,7 +30,7 @@ import java.util.UUID;
  * @author Aleksandar, Eugen
  * 
  */
-public class ActiveSubscription extends Subscription {
+public class ActiveSubscription extends Subscription implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 

@@ -20,6 +20,7 @@
 
 package org.openiot.cupus.entity.broker;
 
+import com.google.android.gcm.server.Sender;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -34,14 +35,18 @@ import java.util.UUID;
 
 import org.openiot.cupus.artefact.ActivePublication;
 import org.openiot.cupus.artefact.ActiveSubscription;
+import org.openiot.cupus.artefact.HashtablePublication;
+import org.openiot.cupus.artefact.MemorySubscription;
 import org.openiot.cupus.artefact.Publication;
 import org.openiot.cupus.artefact.Subscription;
+import org.openiot.cupus.artefact.TopKWSubscription;
 import org.openiot.cupus.common.UniqueObject;
 import org.openiot.cupus.entity.NetworkEntity;
 import org.openiot.cupus.message.InternalMessage;
 import org.openiot.cupus.message.Message;
 import org.openiot.cupus.message.external.AnnounceMessage;
 import org.openiot.cupus.message.external.MobileBrokerDisconnectMessage;
+import org.openiot.cupus.message.external.MobileBrokerRegisterGCMMessage;
 import org.openiot.cupus.message.external.MobileBrokerRegisterMessage;
 import org.openiot.cupus.message.external.NotifyMessage;
 import org.openiot.cupus.message.external.NotifySubscriptionMessage;
@@ -79,6 +84,10 @@ public class DeliveryService extends NetworkEntity {
 
     protected boolean isRunning = false;
     
+    
+    private Sender gcmSender;
+    private String APIkey = "AIzaSyADsn6N5Rq6an73KnSaEt3geI-BHy5nBdY";
+    
     //testing variables
     private UUID mb;
     private UUID sub;
@@ -90,7 +99,7 @@ public class DeliveryService extends NetworkEntity {
      * connections
      */
     private DeliveryService(String brokerName, String brokerIP, int UDPport,
-            int queueCapacity, boolean testing, boolean logWriting,
+            int queueCapacity, boolean testing, boolean logWriting, String ApiKey,
             ObjectInputStream in, ObjectOutputStream out) {
         super(brokerName, brokerIP, UDPport);
 
@@ -100,9 +109,14 @@ public class DeliveryService extends NetworkEntity {
         this.testing = testing;
         this.logWriting = logWriting;
         log = new LogWriter(brokerName + "_deliveryService.log", logWriting, false);
-
+        
         intercomm = new InternalCommunicationsThread(in, out);
         new Thread(intercomm).start();
+        
+        this.APIkey = ApiKey;
+        if (this.APIkey != null && !this.APIkey.isEmpty()) {
+            this.gcmSender = new Sender(APIkey);
+        }
     }
 
     /**
@@ -132,8 +146,12 @@ public class DeliveryService extends NetworkEntity {
      * (a check for duplicates is done before adding to the queue).
      */
     private void notifySubscribers(PublishMessage pubMsg, Set<UUID> subscribers) {
-        Publication pub = ((ActivePublication) pubMsg.getPublication()).getPublication();
-
+        Publication pub = null;
+        if (pubMsg.getPublication() instanceof ActivePublication) {
+        pub = ((ActivePublication) pubMsg.getPublication()).getPublication();
+        } else if (pubMsg.getPublication() instanceof HashtablePublication) {
+         pub = pubMsg.getPublication();
+        }
         for (UUID subscriber : subscribers) {
         	sub = subscriber;
             SubscriberQueue queue = queueDirectory.get(subscriber);
@@ -175,9 +193,17 @@ public class DeliveryService extends NetworkEntity {
     }
     
     private void notifyMobileBrokers(SubscribeMessage subscription, Set<UUID> mobileBrokerIDs) {
+        Subscription subForSending = null;
+        if (subscription.getSubscription() instanceof ActiveSubscription) {
+            subForSending = ((ActiveSubscription)subscription.getSubscription()).getSubscription();
+        } else if (subscription.getSubscription() instanceof MemorySubscription) {
+            subForSending = ((MemorySubscription)subscription.getSubscription()).getSubscription();
+        } else {
+            subForSending = subscription.getSubscription();
+        }
         for (UUID mb : mobileBrokerIDs) {
             SubscriberQueue queue = queueDirectory.get(mb);
-            NotifySubscriptionMessage msg = new NotifySubscriptionMessage(((ActiveSubscription)subscription.getSubscription()).getSubscription(), false);
+            NotifySubscriptionMessage msg = new NotifySubscriptionMessage(subForSending, false);
             if (subscription.isUnsubscribe()) {
                 boolean found = queue.remove(msg);
                 if (!found) { //if not found locally must have already been sent to subscriber, in which case he should be notified that the publication was unpublished... 
@@ -223,6 +249,10 @@ public class DeliveryService extends NetworkEntity {
             this.shutdown();
         }
     }
+    
+    synchronized protected Sender getSender() {
+        return gcmSender;
+    }
 
 	//::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
     //::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -267,20 +297,25 @@ public class DeliveryService extends NetworkEntity {
                     if (objIn instanceof SubscriberDisconnectMessage) {
                         UUID subID = ((SubscriberDisconnectMessage) objIn).getEntityID();
                         SubscriberQueue queue = queueDirectory.get(subID);
-                        queue.terminateConnection();
+                        if (queue != null){
+                            queue.terminateConnection();
+                        }
                         informBroker("Subscriber " + ((SubscriberDisconnectMessage) objIn).getEntityName()
                                 + " disconnected from broker!", false);
                     } else if (objIn instanceof SubscriberUnregisterMessage) {
                         UUID subID = ((SubscriberUnregisterMessage) objIn).getEntityID();
                         SubscriberQueue queue = queueDirectory.remove(subID);
-                        queue.terminateConnection();
+                        if (queue != null){
+                            queue.terminateConnection();
+                        }
                         informBroker("Subscriber " + ((SubscriberUnregisterMessage) objIn).getEntityName()
                                 + " unregistered from broker!", false);
                     } else if (objIn instanceof SubscriberRegisterMessage) {
                         SubscriberRegisterMessage msg = (SubscriberRegisterMessage) objIn;
-                        SubscriberQueue queue = new SubscriberQueue(msg.getEntityID(), queueCapacity, DeliveryService.this);
+                        SubscriberQueue queue = new SubscriberQueue(msg.getEntityID(), queueCapacity, DeliveryService.this, false);
                         queueDirectory.put(msg.getEntityID(), queue);
                         Socket socket = null;
+                        
                         try {
                             socket = new Socket(msg.getIP(), msg.getPort());
                             queue.setConnection(socket);
@@ -291,6 +326,7 @@ public class DeliveryService extends NetworkEntity {
                                     msg.getEntityName(), msg.getEntityID()));
                             continue; //go wait for next message
                         }
+                        
                         //if connection successfully made...
                         new Thread(queue).start(); //start communication thread
                         informBroker("Subscriber " + ((SubscriberRegisterMessage) objIn).getEntityName()
@@ -298,12 +334,14 @@ public class DeliveryService extends NetworkEntity {
                     } else if (objIn instanceof MobileBrokerDisconnectMessage) {
                         UUID mbID = ((MobileBrokerDisconnectMessage) objIn).getEntityID();
                         SubscriberQueue queue = queueDirectory.remove(mbID);
-                        queue.terminateConnection();
+                       if (queue != null){
+                            queue.terminateConnection();
+                        }
                         informBroker("Mobile broker " + ((MobileBrokerDisconnectMessage) objIn).getEntityName()
                                 + " unregistered from broker!", false);
                     } else if (objIn instanceof MobileBrokerRegisterMessage) {
                         MobileBrokerRegisterMessage msg = (MobileBrokerRegisterMessage) objIn;
-                        SubscriberQueue queue = new SubscriberQueue(msg.getEntityID(), queueCapacity, DeliveryService.this);
+                        SubscriberQueue queue = new SubscriberQueue(msg.getEntityID(), queueCapacity, DeliveryService.this, false);
                         queueDirectory.put(msg.getEntityID(), queue);
                         Socket socket = null;
                         try {
@@ -319,6 +357,28 @@ public class DeliveryService extends NetworkEntity {
                         //if connection successfully made...
                         new Thread(queue).start(); //start communication thread
                         informBroker("Mobile broker " + ((MobileBrokerRegisterMessage) objIn).getEntityName()
+                                + " connected to broker!", false);
+                    } else if (objIn instanceof MobileBrokerRegisterGCMMessage) {
+                        MobileBrokerRegisterGCMMessage msg = (MobileBrokerRegisterGCMMessage) objIn;
+                        
+                        SubscriberQueue queue = new SubscriberQueue(msg.getEntityID(), queueCapacity, DeliveryService.this, true);
+                        queueDirectory.put(msg.getEntityID(), queue);
+                        if (msg.getRegistrationID() != null && !msg.getRegistrationID().isEmpty()) {
+                            //informBroker("User RegId="+msg.getRegistrationID(), false);
+                            queue.setGCMId(msg.getRegistrationID());
+                        } else {
+                            if (msg.getRegistrationID() == null || msg.getRegistrationID().isEmpty()) {
+                                informBroker("GCM user " + msg.getEntityName() + " did not provide GCM registration ID", false);
+                            }
+                            //if a user did not send a registration key
+                            queue.terminateConnection(); //just in case
+                            sendInternalMessage(new MobileBrokerDisconnectMessage(
+                                    msg.getEntityName(), msg.getEntityID()));
+                            continue; //go wait for next message
+                        }
+                        //if connection successfully made...
+                        new Thread(queue).start(); //start communication thread
+                        informBroker("Mobile broker " + ((MobileBrokerRegisterGCMMessage) objIn).getEntityName()
                                 + " connected to broker!", false);
                     } else {
                         informBroker("DeliveryService: Unexpected external message received from CloudBroker - " + objIn.getClass().getName(), true);
@@ -418,6 +478,7 @@ public class DeliveryService extends NetworkEntity {
         int queueCapacity = -1;
         boolean testing = false;
         boolean logWriting = false;
+        String api="";
         try {
             brokerName = args[0];
             brokerIP = args[1];
@@ -434,8 +495,9 @@ public class DeliveryService extends NetworkEntity {
             }
             testing = Boolean.parseBoolean(args[4]);
             logWriting = Boolean.parseBoolean(args[5]);
+            api = args[6];
         } catch (IndexOutOfBoundsException e) {
-            String errMsg = e.getMessage() + " Not enough argument sent when starting DeliveryService! (6 needed)";
+            String errMsg = e.getMessage() + " Not enough argument sent when starting DeliveryService! (7 needed)";
             sendObject(new ErrorMessage(errMsg), out);
             System.exit(-1);
         } catch (NumberFormatException e) {
@@ -446,10 +508,10 @@ public class DeliveryService extends NetworkEntity {
             sendObject(new ErrorMessage(e.getMessage()), out);
             System.exit(-1);
         }
-
+        //Sender sender = new Sender(api);
 		//create a new DeliveryService, a thread listening on System.in is
         //automatically started and keeps the process alive
-        DeliveryService ds = new DeliveryService(brokerName, brokerIP, port, queueCapacity, testing, logWriting, in, out);
+        DeliveryService ds = new DeliveryService(brokerName, brokerIP, port, queueCapacity, testing, logWriting, api, in, out);
         ds.start();
 
         sendObject(new InfoMessage("DeliveryService created!"), out);

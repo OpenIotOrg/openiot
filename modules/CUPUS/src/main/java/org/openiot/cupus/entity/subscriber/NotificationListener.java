@@ -23,6 +23,7 @@ package org.openiot.cupus.entity.subscriber;
 import java.util.UUID;
 
 import org.openiot.cupus.artefact.Publication;
+import org.openiot.cupus.artefact.Subscription;
 
 /**
  * @author Eugen
@@ -31,4 +32,8 @@ public interface NotificationListener {
 
 	void notify(UUID subscriberId, String subscriberName,
 			Publication publication);
+        
+        void notify(UUID subscriberId, String subscriberName,
+			Subscription subscription);
+        
 }

@@ -1,23 +1,22 @@
 /**
- *    Copyright (c) 2011-2014, OpenIoT
- *    
- *    This file is part of OpenIoT.
+ * Copyright (c) 2011-2014, OpenIoT
  *
- *    OpenIoT is free software: you can redistribute it and/or modify
- *    it under the terms of the GNU Lesser General Public License as published by
- *    the Free Software Foundation, version 3 of the License.
+ * This file is part of OpenIoT.
  *
- *    OpenIoT is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    GNU Lesser General Public License for more details.
+ * OpenIoT is free software: you can redistribute it and/or modify it under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation, version 3 of the License.
  *
- *    You should have received a copy of the GNU Lesser General Public License
- *    along with OpenIoT.  If not, see <http://www.gnu.org/licenses/>.
+ * OpenIoT is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
  *
- *     Contact: OpenIoT mailto: info@openiot.eu
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with OpenIoT. If not, see <http://www.gnu.org/licenses/>.
+ *
+ * Contact: OpenIoT mailto: info@openiot.eu
  */
-
 package org.openiot.cupus.entity.mobilebroker;
 
 import static org.openiot.cupus.common.UniqueObject.getLocalIP;
@@ -488,26 +487,49 @@ public class MobileBroker extends NetworkEntity implements MobileBrokerInterface
      * @param publication Publication to be published
      */
     public void publish(Publication publication) {
-        for (Subscription subscritpion : brokerSubs) {
-            if (!subscritpion.isValid()) {
-                brokerSubs.remove(subscritpion);
-                continue;
-            }
-            if (subscritpion.coversPublication(publication)) {
-                if (connected) {
-                    Message sendMsg = new PublishMessage(publication, false);
-                    this.sendMessage(sendMsg);
-                    log.writeToLog("Publication " + publication + " sent to broker.");
-                    //TODO no confirmation is waited for here...
-                    activePubs.add(publication);
-                    allPubs.add(publication);
-                } else {
-                    outboxPubs.add(publication);
-                    allPubs.add(publication);
-                    log.writeToLog("Publication " + publication + " put in outbox because not connected to broker.");
+        synchronized (subscriptionListMutex) {
+            for (Subscription subscritpion : brokerSubs) {
+                if (!subscritpion.isValid()) {
+                    brokerSubs.remove(subscritpion);
+                    continue;
                 }
-                return;
+                if (subscritpion.coversPublication(publication)) {
+                    if (connected) {
+                        Message sendMsg = new PublishMessage(publication, false);
+                        this.sendMessage(sendMsg);
+                        log.writeToLog("Publication " + publication + " sent to broker.");
+                        //TODO no confirmation is waited for here...
+                        activePubs.add(publication);
+                        allPubs.add(publication);
+                    } else {
+                        outboxPubs.add(publication);
+                        allPubs.add(publication);
+                        log.writeToLog("Publication " + publication + " put in outbox because not connected to broker.");
+                    }
+                    return;
+                }
             }
+        }
+    }
+
+    /**
+     * Used for publishing new publication without checking whether is anyone
+     * interested in publication
+     *
+     * @param publication Publication to be published
+     */
+    public void forcePublish(Publication publication) {
+        if (connected) {
+            Message sendMsg = new PublishMessage(publication, false);
+            this.sendMessage(sendMsg);
+            log.writeToLog("Publication " + publication + " sent to broker.");
+            //TODO no confirmation is waited for here...
+            activePubs.add(publication);
+            allPubs.add(publication);
+        } else {
+            outboxPubs.add(publication);
+            allPubs.add(publication);
+            log.writeToLog("Publication " + publication + " put in outbox because not connected to broker.");
         }
     }
 
@@ -532,7 +554,7 @@ public class MobileBroker extends NetworkEntity implements MobileBrokerInterface
             log.writeToLog("Unpublication impossible because publication is not active.");
         }
     }
-    
+
     /**
      * Announcing the data source from XML file
      *
@@ -554,8 +576,8 @@ public class MobileBroker extends NetworkEntity implements MobileBrokerInterface
     }
 
     /**
-     * Announcing the data soruce from XML file or content (not both - one has to
-     * be empty string (""))
+     * Announcing the data soruce from XML file or content (not both - one has
+     * to be empty string (""))
      *
      * @param fileName Name of input file
      * @param inputString Name of input String
@@ -568,7 +590,7 @@ public class MobileBroker extends NetworkEntity implements MobileBrokerInterface
         this.announce(ann);
         return ann.getId();
     }
-    
+
     /**
      * Used for announcing
      *
@@ -660,11 +682,11 @@ public class MobileBroker extends NetworkEntity implements MobileBrokerInterface
                     return;
                 }
 
-                if (objIn instanceof NotifyMessage) {                	
+                if (objIn instanceof NotifyMessage) {
                     NotifyMessage msg = (NotifyMessage) objIn;
                     notify(msg.getPublication(), msg.isUnpublish());
-                } else if (objIn instanceof NotifySubscriptionMessage) {                	
-                	NotifySubscriptionMessage msg = (NotifySubscriptionMessage) objIn;
+                } else if (objIn instanceof NotifySubscriptionMessage) {
+                    NotifySubscriptionMessage msg = (NotifySubscriptionMessage) objIn;
                     announcement(msg.getSubscription(), msg.isRevoke());
                 } else {
                     log.writeToLog("Unkown request/response received from broker (type = "
@@ -703,6 +725,7 @@ public class MobileBroker extends NetworkEntity implements MobileBrokerInterface
             synchronized (subscriptionListMutex) {
                 if (!unsubscribe) {
                     brokerSubs.add(subscription);
+                    notificationListener.notify(getId(), myName, subscription);
                     log.writeToLog("Received subscription from broker (" + subscription.getId() + ")");
                 } else {
                     brokerSubs.remove(subscription);

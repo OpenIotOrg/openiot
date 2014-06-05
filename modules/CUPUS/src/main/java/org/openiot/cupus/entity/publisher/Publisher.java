@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Properties;
 import java.util.UUID;
+import org.openiot.cupus.artefact.HashtablePublication;
 
 import org.openiot.cupus.artefact.Publication;
 import org.openiot.cupus.entity.NetworkEntity;
@@ -294,7 +295,7 @@ public class Publisher extends NetworkEntity implements PublisherInterface {
 	 */
 	public void publish(Publication publication) {
 		if (connected) {
-			Message sendMsg = new PublishMessage(publication, false);
+			Message sendMsg = new PublishMessage((HashtablePublication)publication, false);
 			this.sendMessage(sendMsg);
 			log.writeToLog("Publication "+publication+" sent to broker.");
 			//TODO no confirmation is waited for here...
