@@ -1,0 +1,166 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.openiot</groupId>
+    <artifactId>QoSManager</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>war</packaging>
+
+    <name>QoSManager</name>
+    <description>A Java EE 6 webapp project for JBoss AS 7.1 / EAP 6</description>
+    <url>https://github.com/OpenIotOrg/openiot</url>
+    
+  <!-- =========================================================== -->
+  <!-- Properties -->
+  <!-- =========================================================== -->
+    <properties>
+        <!-- Explicitly declaring the source encoding eliminates the following 
+            message: [WARNING] Using platform encoding (UTF-8 actually) to copy filtered 
+            resources, i.e. build is platform dependent!
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding> -->
+        
+        <!-- JBoss dependency versions -->
+        <version.jboss.maven.plugin>7.3.Final</version.jboss.maven.plugin>
+        
+        <!-- Define the version of JBoss' Java EE 6 APIs and Tools we want 
+            to import. -->
+        <version.jboss.bom>1.0.4.Final</version.jboss.bom>
+        
+        <!-- Alternatively, comment out the above line, and un-comment the line
+            below to use version 1.0.2.Final-redhat-1 which is a release certified to 
+            work with JBoss EAP 6. It requires you have access to the JBoss EAP 6 
+            maven repository. -->
+        <!-- <version.jboss.bom>1.0.2.Final-redhat-1</version.jboss.bom>> -->
+        
+        <!-- other plugin versions -->
+        <version.compiler.plugin>2.3.2</version.compiler.plugin>
+        <version.surefire.plugin>2.4.3</version.surefire.plugin>
+        <version.war.plugin>2.1.1</version.war.plugin>
+
+        <!-- maven-compiler-plugin -->
+        <maven.compiler.target>1.7</maven.compiler.target>
+        <maven.compiler.source>1.7</maven.compiler.source>
+        
+     
+        <endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    
+    </properties>
+    
+  <!-- =========================================================== -->
+  <!-- Parent -->
+  <!-- =========================================================== -->
+             <!-- to be filled -->
+
+
+  <!-- =========================================================== -->
+  <!-- Dependencies -->
+  <!-- =========================================================== -->
+
+    <dependencyManagement>
+        <dependencies>
+            <!-- JBoss distributes a complete set of Java EE 6 APIs including a Bill 
+                of Materials (BOM). A BOM specifies the versions of a "stack" (or a collection) 
+                of artifacts. We use this here so that we always get the correct versions 
+                of artifacts. Here we use the jboss-javaee-6.0-with-tools stack (you can 
+                read this as the JBoss stack of the Java EE 6 APIs, with some extras tools 
+                for your project)) -->
+            <dependency>
+                <groupId>org.jboss.bom</groupId>
+                <artifactId>jboss-javaee-6.0-with-tools</artifactId>
+                <version>${version.jboss.bom}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency> 
+        </dependencies>
+    </dependencyManagement>
+    
+    <dependencies>
+        <dependency>
+            <groupId>org.openiot</groupId>
+            <artifactId>CUPUS</artifactId>
+            <version>1.0</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.3.3</version>
+            <type>jar</type>
+        </dependency>
+       <dependency>
+            <groupId>MGRS</groupId>
+            <artifactId>MGRS</artifactId>
+            <version>1.0</version>
+            <type>jar</type>
+        </dependency> 
+        <!-- <dependency>
+         <groupId>MGRS</groupId>
+         <artifactId>MGRS</artifactId>
+         <scope>system</scope>
+         <version>1.0</version>
+         <systemPath>${basedir}\src\lib\MGRS.jar</systemPath> 
+      </dependency> -->
+        <dependency>
+            <groupId>javax</groupId>
+            <artifactId>javaee-web-api</artifactId>
+            <version>6.0</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <finalName>${project.artifactId}</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                 <version>${version.compiler.plugin}</version>
+                <configuration>
+                    <source>${maven.compiler.source}</source>
+                    <target>${maven.compiler.target}</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>${version.war.plugin}</version>
+                <configuration>
+                    <failOnMissingWebXml>false</failOnMissingWebXml>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.jboss.as.plugins</groupId>
+                <artifactId>jboss-as-maven-plugin</artifactId>
+                <version>${version.jboss.maven.plugin}</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>2.1</version>
+                <executions>
+                    <execution>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${endorsed.dir}</outputDirectory>
+                            <silent>true</silent>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>javax</groupId>
+                                    <artifactId>javaee-endorsed-api</artifactId>
+                                    <version>6.0</version>
+                                    <type>jar</type>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

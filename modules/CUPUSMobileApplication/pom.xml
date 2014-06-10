@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.openiot</groupId>
+  <artifactId>CUPUSMobileApplication</artifactId>
+  <version>1.0.0</version>
+  <packaging>pom</packaging>
+
+  <name>CUPUS Project root</name>
+  
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>com.google.android</groupId>
+        <artifactId>android</artifactId>
+        <version>4.1.1.4</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+  
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <artifactId>maven-jarsigner-plugin</artifactId>
+          <version>1.2</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-resources-plugin</artifactId>
+          <version>2.5</version>
+          <configuration>
+            <encoding>UTF-8</encoding>
+          </configuration>
+        </plugin>
+
+        <plugin>
+          <groupId>com.jayway.maven.plugins.android.generation2</groupId>
+          <artifactId>android-maven-plugin</artifactId>
+          <version>3.8.2</version>
+		  <extensions>true</extensions>
+          <configuration>
+            <sdk>
+              <platform>19</platform>
+            </sdk>
+            <emulator>
+              <avd>23</avd>
+              <wait>10000</wait>
+              <!--<options>-no-skin</options> -->
+            </emulator>
+            <zipalign>
+              <verbose>true</verbose>
+            </zipalign>
+            <undeployBeforeDeploy>true</undeployBeforeDeploy>
+          </configuration>
+        </plugin>
+        <!-- <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>build-helper-maven-plugin</artifactId>
+          <version>1.5</version>
+        </plugin> -->
+        
+      </plugins>
+    </pluginManagement>
+  </build>
+  
+  <profiles>
+    <profile>
+			<!-- the standard profile runs the instrumentation tests -->
+      <id>standard</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <modules>
+        <module>CUPUSMobileApplication</module>
+        <module>CUPUS-commons</module>
+      </modules>
+    </profile>
+    <profile>
+      <!-- the release profile does sign, proguard, zipalign ... but does not 
+           run instrumentation tests -->
+      <id>release</id>
+      <!-- via this activation the profile is automatically used when the release 
+          is done with the maven release plugin -->
+      <activation>
+        <property>
+          <name>performRelease</name>
+          <value>true</value>
+        </property>
+      </activation>
+      <modules>
+        <module>CUPUSMobileApplication</module>
+        <module>CUPUS-commons</module>
+      </modules>
+      
+    </profile>
+  </profiles>
+  
+</project>
