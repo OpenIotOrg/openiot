@@ -20,8 +20,11 @@
 package org.openiot.ws;
 
 import java.io.File;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.jws.Oneway;
 import javax.jws.WebService;
 import javax.jws.WebMethod;
@@ -29,6 +32,7 @@ import javax.jws.WebParam;
 import org.openiot.qos.QoSManager;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import javax.ejb.Singleton;
 import javax.ejb.Startup;
 import org.openiot.cupus.artefact.HashtablePublication;
 import org.openiot.cupus.artefact.TripletSubscription;
@@ -37,6 +41,7 @@ import org.openiot.cupus.artefact.TripletSubscription;
  *
  * @author Martina
  */
+@Singleton
 @Startup
 @WebService(serviceName = "QoSManagerWS")
 public class QoSManagerWS {
@@ -55,10 +60,13 @@ public class QoSManagerWS {
      * Web service operation
      */
     @WebMethod(operationName = "initialize")
-    @Oneway
     @PostConstruct
-    public void initialize() {
-        this.manager = new QoSManager(new File(openIotConfigFile));
+    private void initialize() {
+        try {
+            this.manager = new QoSManager(new File(openIotConfigFile));
+        } catch (SQLException ex) {
+            Logger.getLogger(QoSManagerWS.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
@@ -129,7 +137,6 @@ public class QoSManagerWS {
      */
     @WebMethod(operationName = "shutdown")
     @Oneway
-    @PreDestroy
     public void shutdown() {
         this.manager.shutdown();
     }

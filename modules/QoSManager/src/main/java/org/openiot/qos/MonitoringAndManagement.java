@@ -8,10 +8,12 @@ import java.io.ObjectOutputStream;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -33,7 +35,7 @@ public class MonitoringAndManagement {
     private int wrapperPort;
 
     private HashMap<String, Long> batteryTime = new HashMap<String, Long>();
-    private HashMap<String, Integer> virtualSensors = new HashMap<String, Integer>();
+    private volatile HashMap<String, Integer> virtualSensors = new HashMap<String, Integer>();
 
     private volatile HashMap<String, Set<HashtablePublication>> publicationsInArea = new HashMap<String, Set<HashtablePublication>>();
     private volatile HashMap<String, Set<String>> sensorsInArea = new HashMap<String, Set<String>>();
@@ -50,6 +52,8 @@ public class MonitoringAndManagement {
     private Object mutexSubscriptionsInArea = new Object();
     private Object mutexSensorActiveSubs = new Object();
     private Object mutexSubCandidates = new Object();
+    
+    private Object mutexVirtualSensors = new Object();
 
     protected LogWriter log;
     protected QoSLogic qosLogic;
@@ -59,8 +63,9 @@ public class MonitoringAndManagement {
     private List<String> sensorTypes;
     private List<String> lsmProperty;
     private List<String> lsmUnit;
+    
 
-    public MonitoringAndManagement(LogWriter logger, MobileBroker mb, QoSLogic appLogic, List<String> param, List<String> paramTypes, List<String> lsmProp, List<String> lsmUnits, String gsn, int port) {
+    public MonitoringAndManagement(LogWriter logger, MobileBroker mb, QoSLogic appLogic, List<String> param, List<String> paramTypes, List<String> lsmProp, List<String> lsmUnits, String gsn, int port) throws SQLException {
         this.log = logger;
         this.qosMB = mb;
         this.qosLogic = appLogic;
@@ -71,7 +76,7 @@ public class MonitoringAndManagement {
 
         this.gsnAddress = gsn;
         this.wrapperPort = port;
-
+        
         this.startTimer();
     }
 
@@ -138,13 +143,16 @@ public class MonitoringAndManagement {
             addPublicationInArea(sensorPublication);
 
             //send publication to X-GSN
-            if (!virtualSensors.containsKey(area)) {
-                try {
-                    registerVirtualSensor(area);
-                } catch (IOException ex) {
-                    Logger.getLogger(MonitoringAndManagement.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(MonitoringAndManagement.class.getName()).log(Level.SEVERE, null, ex);
+            synchronized(mutexVirtualSensors){
+                if (!virtualSensors.containsKey(area)) {
+                    try {
+                        registerVirtualSensor(area);
+                        Thread.sleep(1500);
+                    } catch (IOException ex) {
+                        Logger.getLogger(MonitoringAndManagement.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(MonitoringAndManagement.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 }
             }
             sendToXGSN(virtualSensors.get(area), sensorPublication);
@@ -803,37 +811,37 @@ public class MonitoringAndManagement {
         TripletSubscription sub = new TripletSubscription(-1, System.currentTimeMillis());
         sub.addPredicate(new Triplet("Area", area, Operator.EQUAL));
         sub.addPredicate(new Triplet("Type", "SensorReading", Operator.EQUAL));
-        sub.addPredicate(new Triplet("Temperature", Float.NEGATIVE_INFINITY, Operator.GREATER_OR_EQUAL));
+        sub.addPredicate(new Triplet("temperature", Float.NEGATIVE_INFINITY, Operator.GREATER_OR_EQUAL));
         qosMB.subscribe(sub);
 
         TripletSubscription sub1 = new TripletSubscription(-1, System.currentTimeMillis());
         sub1.addPredicate(new Triplet("Area", area, Operator.EQUAL));
         sub1.addPredicate(new Triplet("Type", "SensorReading", Operator.EQUAL));
-        sub1.addPredicate(new Triplet("Humidity", Integer.MIN_VALUE, Operator.GREATER_OR_EQUAL));
+        sub1.addPredicate(new Triplet("humidity", Integer.MIN_VALUE, Operator.GREATER_OR_EQUAL));
         qosMB.subscribe(sub1);
 
         TripletSubscription sub2 = new TripletSubscription(-1, System.currentTimeMillis());
         sub2.addPredicate(new Triplet("Area", area, Operator.EQUAL));
         sub2.addPredicate(new Triplet("Type", "SensorReading", Operator.EQUAL));
-        sub2.addPredicate(new Triplet("Pressure", Integer.MIN_VALUE, Operator.GREATER_OR_EQUAL));
+        sub2.addPredicate(new Triplet("pressure", Integer.MIN_VALUE, Operator.GREATER_OR_EQUAL));
         qosMB.subscribe(sub2);
 
         TripletSubscription sub3 = new TripletSubscription(-1, System.currentTimeMillis());
         sub3.addPredicate(new Triplet("Area", area, Operator.EQUAL));
         sub3.addPredicate(new Triplet("Type", "SensorReading", Operator.EQUAL));
-        sub3.addPredicate(new Triplet("CO", Float.NEGATIVE_INFINITY, Operator.GREATER_OR_EQUAL));
+        sub3.addPredicate(new Triplet("co", Float.NEGATIVE_INFINITY, Operator.GREATER_OR_EQUAL));
         qosMB.subscribe(sub3);
 
         TripletSubscription sub4 = new TripletSubscription(-1, System.currentTimeMillis());
         sub4.addPredicate(new Triplet("Area", area, Operator.EQUAL));
         sub4.addPredicate(new Triplet("Type", "SensorReading", Operator.EQUAL));
-        sub4.addPredicate(new Triplet("SO2", Float.NEGATIVE_INFINITY, Operator.GREATER_OR_EQUAL));
+        sub4.addPredicate(new Triplet("so2", Float.NEGATIVE_INFINITY, Operator.GREATER_OR_EQUAL));
         qosMB.subscribe(sub4);
 
         TripletSubscription sub5 = new TripletSubscription(-1, System.currentTimeMillis());
         sub5.addPredicate(new Triplet("Area", area, Operator.EQUAL));
         sub5.addPredicate(new Triplet("Type", "SensorReading", Operator.EQUAL));
-        sub5.addPredicate(new Triplet("NO2", Float.NEGATIVE_INFINITY, Operator.GREATER_OR_EQUAL));
+        sub5.addPredicate(new Triplet("no2", Float.NEGATIVE_INFINITY, Operator.GREATER_OR_EQUAL));
         qosMB.subscribe(sub5);
 
     }
@@ -930,13 +938,28 @@ public class MonitoringAndManagement {
         LatLonPoint llpoint = MGRSPoint.MGRStoLL(new MGRSPoint(area));
         double lat = llpoint.getLatitude();
         double lng = llpoint.getLongitude();
+        synchronized (mutexVirtualSensors){
+            virtualSensors.put(area, wrapperPort);
+        }
         VirtualSensor vs = new VirtualSensor(area, wrapperPort, lat, lng, this.sensorParameters, this.sensorTypes, this.lsmProperty, this.lsmUnit, this.gsnAddress);
         vs.createAndRegister();
-        virtualSensors.put(area, wrapperPort);
         wrapperPort++;
     }
 
     private void sendToXGSN(Integer port, HashtablePublication sensorPublication) {
+        HashtablePublication toGSN = new HashtablePublication(sensorPublication.getProperties(), sensorPublication.getValidity(), sensorPublication.getStartTime());
+        Map<String, Object> mapToGSN = toGSN.getProperties();
+        for (String prop : sensorParameters) {
+            if (mapToGSN.get(prop) != null && mapToGSN.get(prop) instanceof Number && !(mapToGSN.get(prop) instanceof Double)) {
+                if (mapToGSN.get(prop) instanceof Integer) {
+                    Double propValue = ((Integer) mapToGSN.get(prop)).doubleValue();
+                    mapToGSN.put(prop, propValue);
+                } else if (mapToGSN.get(prop) instanceof Short) {
+                    Double propValue = ((Short) mapToGSN.get(prop)).doubleValue();
+                    mapToGSN.put(prop, propValue);
+                }
+            }
+        }
         //send publication to x-gsn listening on defined port
         try {
         String gsnIP = this.gsnAddress.split(":")[0];
@@ -944,16 +967,17 @@ public class MonitoringAndManagement {
         ByteArrayOutputStream baseOut = new ByteArrayOutputStream(64 * 1000); //64KB, max for IP packet
         baseOut.reset();
         ObjectOutputStream oos = new ObjectOutputStream(baseOut); //has to write a new header each time
-        oos.writeObject(sensorPublication.getProperties());
+        oos.writeObject(mapToGSN);
         oos.flush();
-        //IP address of DeliveryService has to be Loopback (same maschine)
         DatagramPacket packet = new DatagramPacket(baseOut.toByteArray(), baseOut.size(),InetAddress.getByName(gsnIP), port);
         socket.send(packet);
+            System.out.println("!!!!!!!!!!!");
         } catch (Exception e) {
             log.writeToLog("Exception occured while sending the UDP package to the GSN: " + e);
         }
     }
 
+    
     private void startTimer() {
         Timer time = new Timer();
         CleanExpiredMessagesTask clean = new CleanExpiredMessagesTask();

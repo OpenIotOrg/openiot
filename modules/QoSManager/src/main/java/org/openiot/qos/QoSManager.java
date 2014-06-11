@@ -36,6 +36,7 @@ import org.openiot.cupus.util.LogWriter;
 import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.proj.coords.MGRSPoint;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.Arrays;
 
 /**
@@ -66,7 +67,7 @@ public class QoSManager implements QoSManagerInterface {
          private String gsnAddress;
          private int wrapperPort;	 
 		 
-         public QoSManager(File configFile) {
+         public QoSManager(File configFile) throws SQLException {
 	        
 	        //reads properties and instantiates and sets everything...
 	        try {
@@ -219,12 +220,12 @@ public class QoSManager implements QoSManagerInterface {
 	     TripletAnnouncement ta = new TripletAnnouncement(-1, System.currentTimeMillis());
 	     //announce numerical data (i.e. its range is <-inf, +inf> , implementation is <       
 	     ta.addTextualPdredicate("Area", "", Operator.CONTAINS_STRING);
-	     ta.addNumericalPredicate("Temperature");
-	     ta.addNumericalPredicate("Humidity");
-	     ta.addNumericalPredicate("Pressure");
-	     ta.addNumericalPredicate("CO");
-	     ta.addNumericalPredicate("NO2");
-	     ta.addNumericalPredicate("SO2");  
+	     ta.addNumericalPredicate("temperature");
+	     ta.addNumericalPredicate("humidity");
+	     ta.addNumericalPredicate("pressure");
+	     ta.addNumericalPredicate("co");
+	     ta.addNumericalPredicate("no2");
+	     ta.addNumericalPredicate("so2");  
 	     ta.addTextualPdredicate("Type", "AverageReading", Operator.EQUAL);
 	     //announce previously defined announcement
 	     qosMB.announce(ta);
@@ -237,12 +238,12 @@ public class QoSManager implements QoSManagerInterface {
 	     TripletAnnouncement ta2 = new TripletAnnouncement(-1, System.currentTimeMillis());
 	     ta2.addTextualPdredicate("Type", "SensorReading", Operator.EQUAL);
 	     ta2.addTextualPdredicate("Area", "", Operator.CONTAINS_STRING);
-	     ta2.addNumericalPredicate("Temperature");
-	     ta2.addNumericalPredicate("Humidity");
+	     ta2.addNumericalPredicate("temperature");
+	     ta2.addNumericalPredicate("humidity");
 	     ta2.addNumericalPredicate("Pressure");
-	     ta2.addNumericalPredicate("CO");
-	     ta2.addNumericalPredicate("NO2");
-	     ta2.addNumericalPredicate("SO2");
+	     ta2.addNumericalPredicate("co");
+	     ta2.addNumericalPredicate("no2");
+	     ta2.addNumericalPredicate("so2");
 	     qosMB.announce(ta2);
 	                
 	     TripletSubscription ts = new TripletSubscription(-1, System.currentTimeMillis());

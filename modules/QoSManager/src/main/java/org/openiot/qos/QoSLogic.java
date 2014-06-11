@@ -233,13 +233,13 @@ public class QoSLogic {
 	public void setBattery(HashtablePublication sensorAnnouncement) {
 		
 		ArrayList<Double> battery = new ArrayList<Double>();
-		battery.add(new Double((Short)sensorAnnouncement.getProperties().get("BatteryS")));
-		battery.add(new Double((Float)sensorAnnouncement.getProperties().get("BatteryMP")));
+		battery.add(new Double((Short)sensorAnnouncement.getProperties().get("batterys")));
+		battery.add(new Double((Float)sensorAnnouncement.getProperties().get("batterymp")));
 		sensorBattery.put((String)sensorAnnouncement.getProperties().get("SensorID"), battery);
 		
-		if(((Short)sensorAnnouncement.getProperties().get("BatteryS")).doubleValue() > highBatteryLevel && ((Float)sensorAnnouncement.getProperties().get("BatteryMP")).doubleValue()  > highBatteryLevel){
+		if(((Short)sensorAnnouncement.getProperties().get("batterys")).doubleValue() > highBatteryLevel && ((Float)sensorAnnouncement.getProperties().get("batterymp")).doubleValue()  > highBatteryLevel){
 			sensorPriority.put((String)sensorAnnouncement.getProperties().get("SensorID"),1);
-		}else if(((Short)sensorAnnouncement.getProperties().get("BatteryS")).doubleValue()  > lowBatteryLevel && ((Float)sensorAnnouncement.getProperties().get("BatteryMP")).doubleValue()  > lowBatteryLevel){
+		}else if(((Short)sensorAnnouncement.getProperties().get("batterys")).doubleValue()  > lowBatteryLevel && ((Float)sensorAnnouncement.getProperties().get("batterymp")).doubleValue()  > lowBatteryLevel){
 			sensorPriority.put((String)sensorAnnouncement.getProperties().get("SensorID"),2);
 		}else 
 			sensorPriority.put((String)sensorAnnouncement.getProperties().get("SensorID"),3);
@@ -280,17 +280,17 @@ public class QoSLogic {
 		
 		for(HashtablePublication pubInArea : publicationsInArea){
 			for(String property : pubInArea.getProperties().keySet()){
-				if (property.equals("Temperature"))
+				if (property.equals("temperature"))
 					temp.add(pubInArea.getProperties().get(property));
-				else if (property.equals("Humidity"))
+				else if (property.equals("humidity"))
 					humid.add(pubInArea.getProperties().get(property));
-				else if (property.equals("Pressure"))
+				else if (property.equals("pressure"))
 					pressure.add(pubInArea.getProperties().get(property));
-				else if (property.equals("CO"))
+				else if (property.equals("co"))
 					co.add(pubInArea.getProperties().get(property));
-				else if (property.equals("NO2"))
+				else if (property.equals("no2"))
 					no2.add(pubInArea.getProperties().get(property));
-				else if (property.equals("SO2"))
+				else if (property.equals("so2"))
 					so2.add(pubInArea.getProperties().get(property));
 			}			
 		}
@@ -302,27 +302,27 @@ public class QoSLogic {
 					
 		Double tempValue = average(temp);
 		if (tempValue!=Double.POSITIVE_INFINITY && tempValue!=Double.NEGATIVE_INFINITY)
-			pub.setProperty("Temperature", tempValue);
+			pub.setProperty("temperature", tempValue);
 		
 		Double humidValue = average(humid);
 		if (humidValue!=Double.POSITIVE_INFINITY && humidValue!=Double.NEGATIVE_INFINITY)
-			pub.setProperty("Humidity", humidValue.intValue());
+			pub.setProperty("humidity", humidValue.intValue());
 		
 		Double pressureValue = average(pressure);
 		if (pressureValue!=Double.POSITIVE_INFINITY && pressureValue!=Double.NEGATIVE_INFINITY)
-			pub.setProperty("Pressure", pressureValue.intValue());
+			pub.setProperty("pressure", pressureValue.intValue());
 		
 		Double coValue = average(co);
 		if (coValue!=Double.POSITIVE_INFINITY && coValue!=Double.NEGATIVE_INFINITY)
-			pub.setProperty("CO", coValue);
+			pub.setProperty("co", coValue);
 			
 		Double no2Value = average(no2);
 		if (no2Value!=Double.POSITIVE_INFINITY && no2Value!=Double.NEGATIVE_INFINITY)
-			pub.setProperty("NO2", no2Value);
+			pub.setProperty("no2", no2Value);
 		
 		Double so2Value = average(so2);
 		if (so2Value!=Double.POSITIVE_INFINITY && so2Value!=Double.NEGATIVE_INFINITY)
-			pub.setProperty("SO2", so2Value);
+			pub.setProperty("so2", so2Value);
 		
 		return pub;
 	}

@@ -62,7 +62,7 @@ public class VirtualSensor {
     public void createAndRegister () throws IOException, InterruptedException {
         
         HttpClient client = HttpClientBuilder.create().build();
-        String name = "FERsensor_"+virtualSensorID;
+        String name = "FER"+virtualSensorID;
 
         WriteXMLFile xmlFile = new WriteXMLFile(name, virtualSensorPort, sensorParameters, sensorTypes);
         String virtualSensor = xmlFile.createXML();
@@ -78,13 +78,11 @@ public class VirtualSensor {
 
         EntityUtils.toString(response.getEntity());
         response.getEntity().getContent().close();
-
-        Thread.sleep(1000);
-
+        
         WriteMetadataFile metaFile = new WriteMetadataFile(name, virtualSensorID, latitude, longitude, sensorParameters, lsmProperty, lsmUnit);
         String sensorInstance = metaFile.createMetadata();
-
-        url = "http://"+gsnAddress+"vs/vsensor/" + name + "/register";
+        
+        url = "http://"+gsnAddress+"/vs/vsensor/" + name + "/register";
         request = new HttpPost(url);
         input = new StringEntity(sensorInstance);
 
