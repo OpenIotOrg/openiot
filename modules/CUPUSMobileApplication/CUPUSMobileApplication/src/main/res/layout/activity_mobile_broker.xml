@@ -62,13 +62,33 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
+    <RadioGroup
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_below="@+id/broker_port"
+        android:layout_toRightOf="@+id/textView2"
+        android:layout_marginTop="34dp">
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="TCP"
+            android:checked="true"
+            android:id="@+id/radioButtonTCP"/>
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="GCM"
+            android:id="@+id/radioButtonGCM"/>
+    </RadioGroup>
+
+
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Connect"
         android:id="@+id/connect_button"
-        android:layout_marginTop="51dp"
-        android:layout_below="@+id/broker_port"
+        android:layout_centerVertical="true"
         android:layout_toRightOf="@+id/textView3" />
 
     <Button

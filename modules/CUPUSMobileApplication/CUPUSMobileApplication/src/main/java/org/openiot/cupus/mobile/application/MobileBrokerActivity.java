@@ -2,18 +2,17 @@ package org.openiot.cupus.mobile.application;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.Context;
+import android.content.BroadcastReceiver;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.telephony.TelephonyManager;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioButton;
 
 import org.openiot.cupus.mobile.entity.mobilebroker.MobileBrokerService;
-import org.openiot.cupus.mobile.util.SensorUniqueID;
 
 public class MobileBrokerActivity extends Activity {
 
@@ -22,6 +21,14 @@ public class MobileBrokerActivity extends Activity {
     private String mobileBrokerName;
     private String brokerIpAddress;
     private int brokerPort;
+    private String brokerType;
+
+    private boolean brokerConected = false;
+    private boolean gcmReceiver = false;
+
+    public static BroadcastReceiver receiver = null;
+    public static Activity activity;
+
 
     private String CLIENT_KEY = "client";
     private String SERVER_KEY = "server";
@@ -33,6 +40,8 @@ public class MobileBrokerActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mobile_broker);
+
+        this.activity = this;
 
         Button connectButton = (Button) findViewById(R.id.connect_button);
         Button disconnectButton = (Button) findViewById(R.id.disconnect_button);
@@ -54,6 +63,14 @@ public class MobileBrokerActivity extends Activity {
 
                 EditText brokerPortText = (EditText) findViewById(R.id.broker_port);
                 String stringBrokerPort = brokerPortText.getText().toString();
+
+                RadioButton radioButtonTCP = (RadioButton) findViewById(R.id.radioButtonTCP);
+
+                if(radioButtonTCP.isChecked()){
+                    brokerType = "TCP";
+                }else {
+                    brokerType = "GCM";
+                }
 
                 if (myName.trim().length() == 0 || brokerIP.trim().length() == 0 || stringBrokerPort.trim().length() == 0) {
                     AlertDialog.Builder alertDialog = new AlertDialog.Builder(MobileBrokerActivity.this);
@@ -78,6 +95,8 @@ public class MobileBrokerActivity extends Activity {
                     serviceIntent.putExtra("mobileBrokerName", mobileBrokerName);
                     serviceIntent.putExtra("brokerIP", brokerIpAddress);
                     serviceIntent.putExtra("brokerPort", brokerPort);
+                    serviceIntent.putExtra("brokerType", brokerType);
+
                     startService(serviceIntent);
                 }
             }
@@ -171,4 +190,24 @@ public class MobileBrokerActivity extends Activity {
         editor.apply();
 
     }
+
+    public void setGcmReceiver(boolean gcmReceiver) {
+        this.gcmReceiver = gcmReceiver;
+    }
+
+    public void setBroadcastReceiver(BroadcastReceiver receiver) {
+        this.receiver = receiver;
+    }
+
+//    @Override
+//    protected void onDestroy() {
+////        if(brokerConected) {
+////            disconnectFromBroker();
+////        }
+//        if(gcmReceiver){
+//            unregisterReceiver(receiver);
+//        }
+//        super.onDestroy();
+//    }
+
 }

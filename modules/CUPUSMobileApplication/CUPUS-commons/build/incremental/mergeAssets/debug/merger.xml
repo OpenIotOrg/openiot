@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merger>
+
+    <dataSet config="main" >
+        <source path="C:\Users\Marko\Desktop\CUPUSMobileApplicationLite\CUPUSMobileApplicationLite\CUPUS-commons\src\main\assets" />
+    </dataSet>
+    <dataSet config="debug" >
+        <source path="C:\Users\Marko\Desktop\CUPUSMobileApplicationLite\CUPUSMobileApplicationLite\CUPUS-commons\src\debug\assets" />
+    </dataSet>
+
+</merger>

@@ -90,7 +90,7 @@ public class Attributes implements Serializable {
 	 * </ol>
 	 * 
 	 * @param in
-	 * @throws IOException
+	 * @throws java.io.IOException
 	 */
 	public void load(InputStream in) throws IOException {
 		BufferedReader reader = new BufferedReader(new InputStreamReader(in));
