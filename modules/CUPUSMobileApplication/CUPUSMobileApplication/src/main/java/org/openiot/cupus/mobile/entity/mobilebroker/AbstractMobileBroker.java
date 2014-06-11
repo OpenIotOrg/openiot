@@ -206,6 +206,8 @@ public abstract class AbstractMobileBroker extends NetworkEntity implements Mobi
      */
     public abstract void terminateConnection();
 
+    public abstract void setAnnouncementListener(AnnouncementListener announcementListener);
+
     /**
      * Subscribing subscription from XML file
      *

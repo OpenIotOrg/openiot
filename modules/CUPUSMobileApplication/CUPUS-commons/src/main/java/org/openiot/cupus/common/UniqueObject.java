@@ -22,6 +22,7 @@ package org.openiot.cupus.common;
 
 import java.util.UUID;
 import java.io.Serializable;
+import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
@@ -106,7 +107,7 @@ public abstract class UniqueObject implements Serializable {
 					Enumeration<InetAddress> adrs = nif.getInetAddresses();
 					while (adrs.hasMoreElements()) {
 						InetAddress adr = adrs.nextElement();
-						if (adr != null
+						if (adr != null && !(adr instanceof Inet6Address)
 								&& !adr.isLoopbackAddress()
 								&& (nif.isPointToPoint() || !adr
 										.isLinkLocalAddress())) {

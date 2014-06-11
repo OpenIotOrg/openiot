@@ -7,7 +7,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
 
+import org.openiot.cupus.artefact.HashtablePublication;
 import org.openiot.cupus.artefact.Publication;
+import org.openiot.cupus.artefact.Subscription;
 import org.openiot.cupus.entity.subscriber.NotificationListener;
 import org.openiot.cupus.mobile.application.R;
 import org.openiot.cupus.mobile.data.Parameters;
@@ -30,7 +32,7 @@ public class MyNotificationListener implements NotificationListener {
         NotificationManager nManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
         Intent notificationIntent = new Intent(context, MyNotifyMessage.class);
-        notificationIntent.putExtra("NotificationMessage", publication.toString());
+        notificationIntent.putExtra("NotificationMessage", ((HashtablePublication) publication).toString());
         notificationIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
         // This pending intent will open after notification click
@@ -39,11 +41,15 @@ public class MyNotificationListener implements NotificationListener {
 
         Notification not = new NotificationCompat.Builder(context)
                 .setContentTitle("New notification")
-                .setContentText(publication.toString())
+                .setContentText(((HashtablePublication) publication).toString())
                 .setContentIntent(pendingIntent)
                 .setSmallIcon(R.drawable.ic_launcher)
                 .build();
 
         nManager.notify(Parameters.NOTIFY_ME_ID, not);
+    }
+
+    @Override
+    public void notify(UUID subscriberId, String subscriberName, Subscription subscription) {
     }
 }

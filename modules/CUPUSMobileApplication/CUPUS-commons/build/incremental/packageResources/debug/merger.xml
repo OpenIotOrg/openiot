@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merger>
+
+    <dataSet config="main" >
+        <source path="C:\Users\Marko\Desktop\CUPUSMobileApplicationLite\CUPUSMobileApplicationLite\CUPUS-commons\src\main\res" >
+            <file
+                name="ic_launcher"
+                path="C:\Users\Marko\Desktop\CUPUSMobileApplicationLite\CUPUSMobileApplicationLite\CUPUS-commons\src\main\res\drawable-hdpi\ic_launcher.png"
+                qualifiers="hdpi"
+                type="drawable" />
+            <file
+                name="ic_launcher"
+                path="C:\Users\Marko\Desktop\CUPUSMobileApplicationLite\CUPUSMobileApplicationLite\CUPUS-commons\src\main\res\drawable-mdpi\ic_launcher.png"
+                qualifiers="mdpi"
+                type="drawable" />
+            <file
+                name="ic_launcher"
+                path="C:\Users\Marko\Desktop\CUPUSMobileApplicationLite\CUPUSMobileApplicationLite\CUPUS-commons\src\main\res\drawable-xhdpi\ic_launcher.png"
+                qualifiers="xhdpi"
+                type="drawable" />
+            <file
+                name="ic_launcher"
+                path="C:\Users\Marko\Desktop\CUPUSMobileApplicationLite\CUPUSMobileApplicationLite\CUPUS-commons\src\main\res\drawable-xxhdpi\ic_launcher.png"
+                qualifiers="xxhdpi"
+                type="drawable" />
+            <file
+                path="C:\Users\Marko\Desktop\CUPUSMobileApplicationLite\CUPUSMobileApplicationLite\CUPUS-commons\src\main\res\values\strings.xml"
+                qualifiers="" >
+                <string name="app_name" >My Module
+                </string>
+            </file>
+        </source>
+        <source path="C:\Users\Marko\Desktop\CUPUSMobileApplicationLite\CUPUSMobileApplicationLite\CUPUS-commons\build\res\rs\debug" />
+        <source path="C:\Users\Marko\Desktop\CUPUSMobileApplicationLite\CUPUSMobileApplicationLite\CUPUS-commons\build\res\generated\debug" />
+    </dataSet>
+    <dataSet config="debug" >
+        <source path="C:\Users\Marko\Desktop\CUPUSMobileApplicationLite\CUPUSMobileApplicationLite\CUPUS-commons\src\debug\res" />
+    </dataSet>
+
+</merger>

@@ -54,7 +54,7 @@ public abstract class Announcement extends UniqueObject implements Serializable 
 	 * invalid.
 	 */
 	public boolean isValid() {
-		return (validity >= java.lang.System.currentTimeMillis())
+		return (validity >= System.currentTimeMillis())
 				|| (validity == -1);
 	}
 

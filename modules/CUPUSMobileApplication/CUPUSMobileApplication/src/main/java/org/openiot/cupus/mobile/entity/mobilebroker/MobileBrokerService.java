@@ -11,9 +11,10 @@ import android.support.v4.content.LocalBroadcastManager;
 
 import org.openiot.cupus.artefact.HashtablePublication;
 import org.openiot.cupus.artefact.TripletAnnouncement;
+import org.openiot.cupus.mobile.application.MobileBrokerActivity;
+import org.openiot.cupus.mobile.application.notification.MyNotificationListener;
 import org.openiot.cupus.mobile.data.IntentObjectHolder;
 import org.openiot.cupus.mobile.data.Parameters;
-import org.openiot.cupus.mobile.application.notification.MyNotificationListener;
 import org.openiot.cupus.mobile.sensors.common.ReadingDefinition;
 import org.openiot.cupus.mobile.sensors.common.SensorReading;
 
@@ -24,11 +25,10 @@ import java.util.Set;
 public class MobileBrokerService extends Service {
 
     private BrokerServiceBroadcastReceiver broadcastReceiver;
-    private TCPMobileBroker mobileBroker;
+    private AbstractMobileBroker mobileBroker;
     private LocalBroadcastManager localBroadcastManager;
 
     private List<ReadingDefinition> availableSensors = new ArrayList<ReadingDefinition>();
-
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -77,8 +77,17 @@ public class MobileBrokerService extends Service {
         String myName = extras.getString("mobileBrokerName");
         String myBrokerIP = extras.getString("brokerIP");
         int myBrokerPort = extras.getInt("brokerPort");
+        String brokerType = extras.getString("brokerType");
 
-        mobileBroker = new TCPMobileBroker(myName, myBrokerIP, myBrokerPort, this.getApplicationContext());
+        if(brokerType.equals("TCP")){
+            mobileBroker = new TCPMobileBroker(myName, myBrokerIP, myBrokerPort, this.getApplicationContext());
+        }else if(brokerType.equals("GCM")){
+            mobileBroker = new GCMMobileBroker(myName,myBrokerIP,myBrokerPort,this.getApplicationContext(), MobileBrokerActivity.activity);
+        }else {
+            throw new UnsupportedOperationException("That broker type don't exist");
+        }
+
+
         connect();
 
         final Context context = this;
