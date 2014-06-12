@@ -20,7 +20,7 @@ import org.restlet.resource.ClientResource;
 
 public class TestOVRestApi extends LD4STestHelper {
 	/** Resource ID necessary to store locally. */
-	protected String resourceId = "x12y";
+	protected String resourceId = "observationValue_x12y";
 
 	/** LD4S currently running server host. */
 	protected String local_uri = "http://localhost:8182/ld4s/ov/";

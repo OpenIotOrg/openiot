@@ -20,13 +20,13 @@ public class FeatureOfInterest extends LD4SObject{
 	}
 
 	@Override
-	public String getRemote_uri() {
+	public String getResource_id() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public void setRemote_uri(String resourceHost) {
+	public void setResource_id(String resourceHost) {
 		// TODO Auto-generated method stub
 		
 	}

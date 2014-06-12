@@ -39,25 +39,11 @@ public class Device extends LD4SObject  implements Serializable{
 	private String foi = null;
 
 
-	/** Unit of Measurement. */
-	private String unit_of_measurement = null;
-
-	/** Observed Property. */
-	private String observed_property = null;
-
-	/** Base host name. */
-	private String base_name = null;
-	
-	/** Base OV host name. */
-	private String base_ov_name = null;
 
 	/** Temporal Sensor Properties IDs (same base name than the main resource). */
-	private String[] tsproperties = null;
+	private String[] observed_properties = null;
 
-	/** OV IDs (ov base name). */
-	private String[] values = null;
-	
-	/** Original Source (in case the sensor data and metadata come from a third party provider/api). */
+/** Original Source (in case the sensor data and metadata come from a third party provider/api). */
 	private String source = null;
 
 
@@ -68,97 +54,38 @@ public class Device extends LD4SObject  implements Serializable{
 			String[] locations) 
 	throws Exception{
 		super(base_datetime, start_range, end_range,locations);
-		this.setRemote_uri(host);
-		this.setValues(values);
-		this.setUnit_of_measurement(uom);
-		this.setObserved_property(op);
-		this.setBase_name(bn);
-		this.setBase_ov_name(bovn);
+		this.setResource_id(host);
 		this.setLink_criteria(criteria, localhost);
 	}
 
 	public Device(JSONObject json, String localhost) throws Exception {
 		super(json);
-		if (json.has("uri")){
-			this.setRemote_uri(LD4SDataResource.removeBrackets(
-					json.getString("uri")));
-		}
-		if (json.has("uom")){
-			this.setUnit_of_measurement(LD4SDataResource.removeBrackets(
-					json.getString("uom")));
-		}
 		if (json.has("source")){
 			this.setSource(LD4SDataResource.removeBrackets(
 					json.getString("source")));
 		}
-		if (json.has("observed"+LD4SConstants.JSON_SEPARATOR+"property")){
-			this.setObserved_property(LD4SDataResource.removeBrackets(
-					json.getString("observed"+LD4SConstants.JSON_SEPARATOR+"property")));
-		}
-		if (json.has("foi")){
-			this.setFoi(LD4SDataResource.removeBrackets(
-					json.getString("foi")));
-		}
-		if (json.has("base"+LD4SConstants.JSON_SEPARATOR+"name")){
-			this.setBase_name(LD4SDataResource.removeBrackets(
-					json.getString("base"+LD4SConstants.JSON_SEPARATOR+"name")));
-		}
-		
-		if (json.has("base"+LD4SConstants.JSON_SEPARATOR+"ov"+LD4SConstants.JSON_SEPARATOR+"name")){
-			this.setBase_ov_name(LD4SDataResource.removeBrackets(
-					json.getString("base"+LD4SConstants.JSON_SEPARATOR+"ov"+LD4SConstants.JSON_SEPARATOR+"name")));
-		}
-		if (json.has("observation"+LD4SConstants.JSON_SEPARATOR+"values")){
-			this.setValues(json.getJSONArray("observation"+LD4SConstants.JSON_SEPARATOR+"values"));
-		}
-		if (json.has("mobility"+LD4SConstants.JSON_SEPARATOR+"contexts")){
-			this.setTsproperties(json.getJSONArray("mobility"+
-					LD4SConstants.JSON_SEPARATOR+"contexts"));
+		if (json.has("observed"+LD4SConstants.JSON_SEPARATOR+"properties")){
+			this.setObserved_properties(json.getJSONArray("observed"+LD4SConstants.JSON_SEPARATOR+"properties"));
 		}
 		if (json.has("context")){
 			this.setLink_criteria(json.getString("context"), localhost);
 		}
+		
 	}
 
 	
 
 	public Device (Form form, String localhost) throws Exception {
 		super(form);
-		this.setValues(form.getValuesArray("observation"+LD4SConstants.JSON_SEPARATOR+"values"));
-		this.setTsproperties(form.getValuesArray("tsproperties"));
-		this.setRemote_uri(form.getFirstValue("uri")); 
-		this.setUnit_of_measurement(
-				form.getFirstValue("uom"));
-		this.setBase_name(
-				form.getFirstValue("base"+LD4SConstants.JSON_SEPARATOR+"name"));
+		this.setObserved_properties(form.getValuesArray("tsproperties"));
+		this.setResource_id(form.getFirstValue("uri")); 
 		this.setType(
 				form.getFirstValue("type"));
-		this.setBase_ov_name(
-				form.getFirstValue("base"+LD4SConstants.JSON_SEPARATOR+"ov"+LD4SConstants.JSON_SEPARATOR+"name"));
-		this.setObserved_property(
-				form.getFirstValue("observed"+LD4SConstants.JSON_SEPARATOR+"property"));
 		this.setLink_criteria(
 				form.getFirstValue("context"), localhost);
 	}
 
 
-
-
-	public void setValues(String[] values) {
-		this.values = values;
-	}
-
-	public void setValues(JSONArray jvalues) throws JSONException {
-		String[] values = new String[jvalues.length()];
-		for (int i=0; i< jvalues.length(); i++){
-			values[i] = jvalues.get(i).toString();
-		}
-		setValues(values);
-	}
-
-	public String[] getValues() {
-		return values;
-	}
 
 	@Override
 	public void setStoredRemotely(boolean storedRemotely) {
@@ -172,10 +99,10 @@ public class Device extends LD4SObject  implements Serializable{
 
 	@Override
 	public boolean isStoredRemotely(String localUri) {
-		if (getRemote_uri() == null
+		if (getResource_id() == null
 				||
-				(localUri.contains(getRemote_uri())
-						|| getRemote_uri().contains(localUri))){
+				(localUri.contains(getResource_id())
+						|| getResource_id().contains(localUri))){
 			return false;
 		}
 		return true;
@@ -196,59 +123,21 @@ public class Device extends LD4SObject  implements Serializable{
 		return this.link_criteria;
 	}
 
-	public void setUnit_of_measurement(String unit_of_measurement) {
-		this.unit_of_measurement = unit_of_measurement;
-	}
-
-	public String getUnit_of_measurement() {
-		return unit_of_measurement;
-	}
-
-	/**
-	 * Search for an external observed property resource uri 
-	 * @param observed_property
-	 */
-	public void setObserved_property(String observed_property) {
-		this.observed_property = observed_property;
-	}
-
-	/**
-	 * @return Observed Property URI
-	 */
-	public String getObserved_property() {
-		return observed_property;
-	}
-
-	public void setBase_name(String base_name) {
-		this.base_name = base_name;
-	}
-
-	public String getBase_name() {
-		return base_name;
-	}
-
-	public void setBase_ov_name(String base_ov_name) {
-		this.base_ov_name = base_ov_name;
-	}
-
-	public String getBase_ov_name() {
-		return base_ov_name;
-	}
-
-	public void setTsproperties(String[] tsproperties) {
-		this.tsproperties = tsproperties;
+	public void setObserved_properties(String[] observedProperties)
+	{
+		this.observed_properties = observedProperties;
 	}
 	
-	public void setTsproperties(JSONArray jvalues) throws JSONException {
+	public void setObserved_properties(JSONArray jvalues) throws JSONException {
 		String[] values = new String[jvalues.length()];
 		for (int i=0; i< jvalues.length(); i++){
 			values[i] = jvalues.get(i).toString();
 		}
-		setTsproperties(values);
+		setObserved_properties(values);
 	}
 
-	public String[] getTsproperties() {
-		return tsproperties;
+	public String[] getObservedProperties() {
+		return observed_properties;
 	}
 
 	@Override

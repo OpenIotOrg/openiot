@@ -70,13 +70,13 @@ public class LinkReview extends LD4SObject{
 	}
 
 	@Override
-	public String getRemote_uri() {
-		return this.resource_uri;
+	public String getResource_id() {
+		return this.resource_id;
 	}
 
 	@Override
-	public void setRemote_uri(String resourceHost) {
-		this.resource_uri = resourceHost;		
+	public void setResource_id(String resourceHost) {
+		this.resource_id = resourceHost;		
 	}
 
 	@Override
@@ -91,10 +91,10 @@ public class LinkReview extends LD4SObject{
 
 	@Override
 	public boolean isStoredRemotely(String localUri) {
-		if (getRemote_uri() == null
+		if (getResource_id() == null
 				||
-				(localUri.contains(getRemote_uri())
-						|| getRemote_uri().contains(localUri))){
+				(localUri.contains(getResource_id())
+						|| getResource_id().contains(localUri))){
 			return false;
 		}
 		return true;

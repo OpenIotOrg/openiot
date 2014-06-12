@@ -6,7 +6,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.openiot.ld4s.lod_cloud.Context;
-import org.openiot.ld4s.resource.LD4SDataResource;
 import org.openiot.ld4s.resource.LD4SObject;
 import org.openiot.ld4s.vocabulary.LD4SConstants;
 import org.openiot.ld4s.vocabulary.SptVocab;
@@ -65,8 +64,6 @@ public class OV extends LD4SObject  implements Serializable{
 	/** Feature of Interest. If provided, it will be associated with the Observed Property. */
 	private String foi = null;
 	
-	/** Temporal Sensor Properties IDs (same base name than the main resource). */
-	private String[] tsproperties = null;
 
 
 	public OV(String host, String[] values, String resource_time,
@@ -75,8 +72,8 @@ public class OV extends LD4SObject  implements Serializable{
 			String[] locations) 
 	throws Exception{
 		super(base_datetime, start_range, end_range,locations);
-		this.setRemote_uri(host);
-		this.setResource_time(resource_time);
+		this.setResource_id(host);
+		this.setResult_time(resource_time);
 		this.setValues(values);
 		this.setLink_criteria(criteria, localhost);
 	}
@@ -84,39 +81,22 @@ public class OV extends LD4SObject  implements Serializable{
 	public OV(JSONObject json, String localhost) throws Exception {
 		super(json);
 		if (json.has("uom")){
-			this.setUnit_of_measurement(LD4SDataResource.removeBrackets(
-					json.getString("uom")));
+			this.setUnit_of_measurement(json.getString("uom"));
 		}
 		if (json.has("foi")){
-			this.setFoi(LD4SDataResource.removeBrackets(
-					json.getString("foi")));
-		}
-		if (json.has("uri")){
-			this.setRemote_uri(LD4SDataResource.removeBrackets(
-					json.getString("uri")));
-		}
-		if (json.has("resource"+LD4SConstants.JSON_SEPARATOR+"time")){
-			this.setResource_time(LD4SDataResource.removeBrackets(
-					json.getString("resource"+LD4SConstants.JSON_SEPARATOR+"time")));
+			this.setFoi(json.getString("foi"));
 		}
 		if (json.has("observation")){
-			this.setObservation(LD4SDataResource.removeBrackets(
-					json.getString("observation")));
+			this.setObservation(json.getString("observation"));
 		}
 		if (json.has("values")){
 			this.setValues(json.getJSONArray("values"));
 		}
 		if (json.has("sensor"+LD4SConstants.JSON_SEPARATOR+"id")){
-			this.setSensor_id(LD4SDataResource.removeBrackets(
-					json.getString("senso"+LD4SConstants.JSON_SEPARATOR+"id")));
+			this.setSensor_id(json.getString("sensor"+LD4SConstants.JSON_SEPARATOR+"id"));
 		}
 		if (json.has("observed"+LD4SConstants.JSON_SEPARATOR+"property")){
-			this.setObserved_property(LD4SDataResource.removeBrackets(
-					json.getString("observed"+LD4SConstants.JSON_SEPARATOR+"property")));
-		}
-		if (json.has("mobility"+LD4SConstants.JSON_SEPARATOR+"contexts")){
-			this.setTsproperties(json.getJSONArray("mobility"+
-					LD4SConstants.JSON_SEPARATOR+"contexts"));
+			this.setObserved_property(json.getString("observed"+LD4SConstants.JSON_SEPARATOR+"property"));
 		}
 		if (json.has("context")){
 			this.setLink_criteria(json.getString("context"), localhost);
@@ -126,8 +106,8 @@ public class OV extends LD4SObject  implements Serializable{
 	public OV (Form form, String localhost) throws Exception {
 		super(form);
 		this.setValues(form.getValuesArray("values"));
-		this.setRemote_uri(form.getFirstValue("uri")); 
-		this.setResource_time(
+		this.setResource_id(form.getFirstValue("uri")); 
+		this.setResult_time(
 				form.getFirstValue("resource"+LD4SConstants.JSON_SEPARATOR+"time"));
 		this.setLink_criteria(
 				form.getFirstValue("context"), localhost);
@@ -140,8 +120,7 @@ public class OV extends LD4SObject  implements Serializable{
 		this.values = values;
 	}
 
-	public void setValues(JSONArray jvalues) throws JSONException {
-		JSONArray j = jvalues.getJSONArray(0);
+	public void setValues(JSONArray j) throws JSONException {
 		if (j != null){
 			String[] values = new String[j.length()];
 			for (int i=0; i< j.length(); i++){
@@ -175,10 +154,10 @@ public class OV extends LD4SObject  implements Serializable{
 
 	@Override
 	public boolean isStoredRemotely(String localUri) {
-		if (getRemote_uri() == null
+		if (getResource_id() == null
 				||
-				(localUri.contains(getRemote_uri())
-						|| getRemote_uri().contains(localUri))){
+				(localUri.contains(getResource_id())
+						|| getResource_id().contains(localUri))){
 			return false;
 		}
 		return true;
@@ -244,19 +223,5 @@ public class OV extends LD4SObject  implements Serializable{
 		this.foi = foi;
 	}
 
-	public String[] getTsproperties() {
-		return tsproperties;
-	}
-
-	public void setTsproperties(String[] tsproperties) {
-		this.tsproperties = tsproperties;
-	}
 	
-	public void setTsproperties(JSONArray jvalues) throws JSONException {
-		String[] values = new String[jvalues.length()];
-		for (int i=0; i< jvalues.length(); i++){
-			values[i] = jvalues.get(i).toString();
-		}
-		setTsproperties(values);
-	}
 }

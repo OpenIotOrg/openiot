@@ -56,7 +56,7 @@ public class Platform extends LD4SObject  implements Serializable{
 			String[] locations) 
 	throws Exception{
 		super(base_datetime, start_range, end_range, locations);
-		this.setRemote_uri(host);
+		this.setResource_id(host);
 		this.setTpproperties(tpproperties);
 		this.setStatus(status_page);
 		this.setBase_name(bn);
@@ -89,7 +89,7 @@ public class Platform extends LD4SObject  implements Serializable{
 	public Platform (Form form, String localhost) throws Exception {
 		super(form);
 		this.setTpproperties(form.getValuesArray("tpproperties"));
-		this.setRemote_uri(form.getFirstValue("uri")); 
+		this.setResource_id(form.getFirstValue("uri")); 
 		this.setBase_name(
 				form.getFirstValue("base"+LD4SConstants.JSON_SEPARATOR+"name"));
 		this.setType(
@@ -112,10 +112,10 @@ public class Platform extends LD4SObject  implements Serializable{
 
 	@Override
 	public boolean isStoredRemotely(String localUri) {
-		if (getRemote_uri() == null
+		if (getResource_id() == null
 				||
-				(localUri.contains(getRemote_uri())
-						|| getRemote_uri().contains(localUri))){
+				(localUri.contains(getResource_id())
+						|| getResource_id().contains(localUri))){
 			return false;
 		}
 		return true;

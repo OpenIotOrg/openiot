@@ -18,7 +18,7 @@ public abstract class LD4SObject{
 	protected OntClass defaultType;
 
 	/** Eventual remote resource hosting server URI. */
-	protected String resource_uri = null;
+	protected String resource_id = null;
 
 	/** Flag for the resource being store remotely or not. */
 	protected boolean stored_remotely = false;
@@ -52,7 +52,7 @@ public abstract class LD4SObject{
 	private String description = null;
 
 	/** DateTime as a resource creation time point. */
-	private String resource_time = null;
+	private String result_time = null;
 	
 	/** Location name. */
 	private String location_name = null;
@@ -74,11 +74,11 @@ public abstract class LD4SObject{
 
 	protected abstract void initDefaultType(); 
 	protected abstract void initAcceptedTypes(); 
-	public String getRemote_uri() {
-		return resource_uri;
+	public String getResource_id() {
+		return resource_id;
 	}
-	public void setRemote_uri(String host) {
-		this.resource_uri = host;
+	public void setResource_id(String host) {
+		this.resource_id = host;
 	}
 	public abstract void setStoredRemotely(boolean storedRemotely);
 	public abstract boolean isStoredRemotely();
@@ -113,9 +113,9 @@ public abstract class LD4SObject{
 				this.setBase_datetime(LD4SDataResource.removeBrackets(
 						json.getString("base"+LD4SConstants.JSON_SEPARATOR+"datetime")));
 			}
-			if (json.has("resource"+LD4SConstants.JSON_SEPARATOR+"datetime")){
-				this.setResource_time(LD4SDataResource.removeBrackets(
-						json.getString("resource"+LD4SConstants.JSON_SEPARATOR+"datetime")));
+			if (json.has("result"+LD4SConstants.JSON_SEPARATOR+"datetime")){
+				this.setResult_time(LD4SDataResource.removeBrackets(
+						json.getString("result"+LD4SConstants.JSON_SEPARATOR+"datetime")));
 			}
 			if (json.has("start"+LD4SConstants.JSON_SEPARATOR+"range")){
 				this.setStart_range(LD4SDataResource.removeBrackets(
@@ -140,9 +140,9 @@ public abstract class LD4SObject{
 				this.setDescription(LD4SDataResource.removeBrackets(
 						json.getString("description")));
 			}
-			if (json.has("resource"+LD4SConstants.JSON_SEPARATOR+"uri")){
-				this.setRemote_uri(LD4SDataResource.removeBrackets(
-						json.getString("resource"+LD4SConstants.JSON_SEPARATOR+"uri")));
+			if (json.has("id")){
+				this.setResource_id(LD4SDataResource.removeBrackets(
+						json.getString("id")));
 			}
 			if (json.has("location"+LD4SConstants.JSON_SEPARATOR+"name")){
 				this.setLocation_name(LD4SDataResource.removeBrackets(
@@ -185,8 +185,8 @@ public abstract class LD4SObject{
 					form.getFirstValue("archive"));
 			this.setDescription(
 					form.getFirstValue("description"));
-			this.setRemote_uri(
-					form.getFirstValue("uri"));
+			this.setResource_id(
+					form.getFirstValue("id"));
 			this.setType(
 					form.getFirstValue("type"));
 			//spaces relation # <lat,long | name> 
@@ -273,12 +273,12 @@ public abstract class LD4SObject{
 		setSpace(sparr);
 	}
 
-	public void setResource_time(String resource_time) {
-		this.resource_time = resource_time;
+	public void setResult_time(String resource_time) {
+		this.result_time = resource_time;
 	}
 
-	public String getResource_time() {
-		return resource_time;
+	public String getResult_time() {
+		return result_time;
 	}
 	
 	public void setTime(String time) {

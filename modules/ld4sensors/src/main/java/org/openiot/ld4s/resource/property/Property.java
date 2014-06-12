@@ -31,14 +31,14 @@ public class Property extends LD4SObject  implements Serializable{
 			String[] locations) 
 	throws Exception{
 		super(base_datetime, start_range, end_range,locations);
-		this.setRemote_uri(host);
+		this.setResource_id(host);
 		this.setLink_criteria(criteria, localhost);
 	}
 
 	public Property(JSONObject json, String localhost) throws Exception {
 		super(json);
 		if (json.has("uri")){
-			this.setRemote_uri(LD4SDataResource.removeBrackets(
+			this.setResource_id(LD4SDataResource.removeBrackets(
 					json.getString("uri")));
 		}
 		if (json.has("context")){
@@ -54,14 +54,14 @@ public class Property extends LD4SObject  implements Serializable{
 
 
 	@Override
-	public String getRemote_uri() {
-		return resource_uri;
+	public String getResource_id() {
+		return resource_id;
 	}
 
 
 	@Override
-	public void setRemote_uri(String host) {
-		this.resource_uri = host;
+	public void setResource_id(String host) {
+		this.resource_id = host;
 	}
 
 	
@@ -77,10 +77,10 @@ public class Property extends LD4SObject  implements Serializable{
 
 	@Override
 	public boolean isStoredRemotely(String localUri) {
-		if (getRemote_uri() == null
+		if (getResource_id() == null
 				||
-				(localUri.contains(getRemote_uri())
-						|| getRemote_uri().contains(localUri))){
+				(localUri.contains(getResource_id())
+						|| getResource_id().contains(localUri))){
 			return false;
 		}
 		return true;

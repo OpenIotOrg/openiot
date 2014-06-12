@@ -142,7 +142,7 @@ public class PlatformResource extends LD4SPlatformResource implements LD4SApiInt
 		try {
 			this.ov = new Platform(obj, this.ld4sServer.getHostName());
 
-			if (ov.getRemote_uri() != null){
+			if (ov.getResource_id() != null){
 				//if the preferred resource hosting is a remote one, PUT can not be used
 				//(use POST instead) 
 				if (this.ov.isStoredRemotely(ld4sServer.getHostName())){
@@ -197,7 +197,7 @@ public class PlatformResource extends LD4SPlatformResource implements LD4SApiInt
 		logger.fine(resourceName + " LD4S: Now building LD4S.");
 		try {
 			this.ov = new Platform(obj, this.ld4sServer.getHostName());
-			if (ov.getRemote_uri() != null){
+			if (ov.getResource_id() != null){
 				//if the preferred resource hosting server is a remote one, PUT can not be used
 				//(use POST instead) 
 				if (this.ov.isStoredRemotely(ld4sServer.getHostName())){

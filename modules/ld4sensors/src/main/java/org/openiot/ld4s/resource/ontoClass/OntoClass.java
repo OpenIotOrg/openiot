@@ -1,13 +1,11 @@
 package org.openiot.ld4s.resource.ontoClass;
 
 import java.io.Serializable;
-import java.util.LinkedList;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.openiot.ld4s.lod_cloud.Context;
-import org.openiot.ld4s.resource.LD4SDataResource;
 import org.openiot.ld4s.resource.LD4SObject;
 import org.openiot.ld4s.vocabulary.LD4SConstants;
 import org.openiot.ld4s.vocabulary.SptSnVocab;
@@ -57,10 +55,6 @@ public class OntoClass extends LD4SObject  implements Serializable{
 
 	public OntoClass(JSONObject json, String localhost) throws Exception {
 		super(json);
-		if (json.has("resource"+LD4SConstants.JSON_SEPARATOR+"id")){
-			this.setResource_id(LD4SDataResource.removeBrackets(
-					json.getString("resource"+LD4SConstants.JSON_SEPARATOR+"id")));
-		}
 		if (json.has("types")){
 			this.setOntoClassTypes(json.getJSONArray("types"));
 		}
@@ -166,16 +160,7 @@ public class OntoClass extends LD4SObject  implements Serializable{
 		setOntoClassTypes(toTypes(objarr));
 	}
 	
-	@Override
-	public String getRemote_uri() {
-		return "http://openiot.eu/ontology/ext/"+resource_uri;
-	}
 
-
-	@Override
-	public void setRemote_uri(String host) {
-		this.resource_uri = host;
-	}
 
 	@Override
 	public void setStoredRemotely(boolean storedRemotely) {
@@ -189,10 +174,10 @@ public class OntoClass extends LD4SObject  implements Serializable{
 
 	@Override
 	public boolean isStoredRemotely(String localUri) {
-		if (getRemote_uri() == null
+		if (getResource_id() == null
 				||
-				(localUri.contains(getRemote_uri())
-						|| getRemote_uri().contains(localUri))){
+				(localUri.contains(getResource_id())
+						|| getResource_id().contains(localUri))){
 			return false;
 		}
 		return true;
@@ -222,14 +207,6 @@ public class OntoClass extends LD4SObject  implements Serializable{
 	@Override
 	protected void initDefaultType() {
 		this.defaultType = SsnVocab.PLATFORM;
-	}
-
-	public String getResource_id() {
-		return resource_id;
-	}
-
-	public void setResource_id(String resource_id) {
-		this.resource_id = "http://openiot.eu/ontology/ext/"+resource_id;
 	}
 	
 	

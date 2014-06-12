@@ -46,6 +46,8 @@ public class SsnVocab {
 	  // Vocabulary properties
 	  // /////////////////////////
 
+	  public static final ObjectProperty IS_PROPERTY_OF = m_model
+		      .createObjectProperty(NS+"isPropertyOf");
 	  public static final ObjectProperty OBSERVED_PROPERTY = m_model
 		      .createObjectProperty(NS+"observedProperty");
 	  public static final ObjectProperty OBSERVATION_RESULT_TIME = m_model

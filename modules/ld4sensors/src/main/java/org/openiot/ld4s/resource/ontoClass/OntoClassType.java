@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.openiot.ld4s.resource.LD4SDataResource;
 import org.openiot.ld4s.vocabulary.LD4SConstants;
 
 public class OntoClassType {
@@ -29,13 +30,16 @@ public class OntoClassType {
 
 	public OntoClassType(JSONObject json) throws JSONException{
 		if (json.has("type"+LD4SConstants.JSON_SEPARATOR+"choice")){
-			this.setChoice(json.getString("type"+LD4SConstants.JSON_SEPARATOR+"choice"));
+			this.setChoice(LD4SDataResource.removeBrackets(
+					json.getString("type"+LD4SConstants.JSON_SEPARATOR+"choice")));
 		}
 		if (json.has("type"+LD4SConstants.JSON_SEPARATOR+"super")){
-			this.setSuperClass(json.getString("type"+LD4SConstants.JSON_SEPARATOR+"super"));
+			this.setSuperClass(LD4SDataResource.removeBrackets(
+					json.getString("type"+LD4SConstants.JSON_SEPARATOR+"super")));
 		}
 		if (json.has("type"+LD4SConstants.JSON_SEPARATOR+"uri")){
-			this.setUri(json.getString("type"+LD4SConstants.JSON_SEPARATOR+"uri"));
+			this.setUri(LD4SDataResource.removeBrackets(
+					json.getString("type"+LD4SConstants.JSON_SEPARATOR+"uri")));
 		}
 		if (json.has("type"+LD4SConstants.JSON_SEPARATOR+"allowed"+
 				LD4SConstants.JSON_SEPARATOR+"values")){

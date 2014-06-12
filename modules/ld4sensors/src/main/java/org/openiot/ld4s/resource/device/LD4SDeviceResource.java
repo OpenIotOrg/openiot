@@ -2,13 +2,11 @@ package org.openiot.ld4s.resource.device;
 
 import org.openiot.ld4s.lod_cloud.Context.Domain;
 import org.openiot.ld4s.resource.LD4SDataResource;
-import org.openiot.ld4s.vocabulary.CorelfVocab;
-import org.openiot.ld4s.vocabulary.OpenIoTVocab;
-import org.openiot.ld4s.vocabulary.ProvVocab;
-import org.openiot.ld4s.vocabulary.SptVocab;
+import org.openiot.ld4s.vocabulary.SsnVocab;
 
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.vocabulary.RDF;
 
 /**
  * Construct an oobservation value resource.
@@ -59,64 +57,47 @@ public class LD4SDeviceResource extends LD4SDataResource {
 		if (resourceId != null){
 			subjuri = this.uristr;	
 		}else{
-			subjuri = ov.getRemote_uri();
+			subjuri = getResourceUri(null, null, ov.getResource_id());
 		}
 		resource = rdfData.createResource(subjuri);
 
-		String item = ov.getBase_name();
-//		if (item != null && item.trim().compareTo("")!=0){
-//			if (item.startsWith("http://")){
-//				resource.addProperty(CorelfVocab.BASE_NAME, 
-//						rdfData.createResource(item));	
-//			}else{
-//				resource.addProperty(CorelfVocab.BASE_NAME, 
-//						rdfData.createTypedLiteral(item));
-//			}
-//		}
-//		item = ov.getBase_ov_name();
-//		if (item != null && item.trim().compareTo("")!=0){
-//			if (item.startsWith("http://")){
-//				resource.addProperty(CorelfVocab.BASE_OV_NAME, 
-//						rdfData.createResource(item));	
-//			}else{
-//				resource.addProperty(CorelfVocab.BASE_OV_NAME, 
-//						rdfData.createTypedLiteral(item));
-//			}
-//		}
-		item = ov.getSource();
-		if (item != null && item.trim().compareTo("")!=0){
-			if (item.startsWith("http://")){
-				resource.addProperty(ProvVocab.PERFORMED_BY, 
-						rdfData.createResource(item));	
-			}else{
-				resource.addProperty(ProvVocab.PERFORMED_BY, 
-						rdfData.createTypedLiteral(item));
-			}
+		
+		if (ov.getType() != null){
+			resource.addProperty(RDF.type, rdfData.createResource(ov.getType()));
+		}else{
+			resource.addProperty(RDF.type, SsnVocab.SENSOR);
 		}
 		
-		item = ov.getUnit_of_measurement();
-		if (item != null && item.trim().compareTo("")!=0){
-			if (item.startsWith("http://")){
-				resource.addProperty(SptVocab.UOM, 
-						rdfData.createResource(item));	
-			}else{
-				resource = addUom(resource, item);
-			}
+		
+		String item = ov.getLocation_name();
+		String[] item1 = ov.getCoords();
+		if (item != null && item.startsWith("http://")){
+			resource.addProperty(
+					resource.getModel().createProperty(
+							"http://www.ontologydesignpatterns.org/ont/dul/DUL.owl/hasLocation"), 
+							resource.getModel().createResource(item));	
+		}else {
+			resource = addLocation(resource, item, item1);
+
 		}
-		String[] tprops = ov.getTsproperties();
-		if (tprops != null){
-			for (int i=0; i<tprops.length ;i++){
-				if (tprops[i].startsWith("http://")){
-					resource.addProperty(OpenIoTVocab.MOBILITY, 
-							rdfData.createResource(tprops[i]));	
-				}else{
-					resource.addProperty(OpenIoTVocab.MOBILITY, 
-							rdfData.createTypedLiteral(tprops[i]));
+		
+		
+		String[] obsprops = ov.getObservedProperties();
+		if (obsprops != null){
+			for (int i=0; i<obsprops.length ;i++){
+				if (obsprops[i] != null){
+					if (obsprops[i].startsWith("http://")){
+						resource.addProperty(SsnVocab.OBSERVES, 
+								rdfData.createResource(obsprops[i]));	
+					}else{
+						addObsProp(resource, obsprops[i], SsnVocab.OBSERVES, ov.getFoi(), null, null, null, null);
+					}
+					
 				}
 			}			
 		}
 		
-		resource = crossResourcesAnnotation(ov, resource);
+//		resource = crossResourcesAnnotation(ov, resource);
 		return resource;
 	}
 

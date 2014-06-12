@@ -75,15 +75,15 @@ public class MC extends LD4SObject  implements Serializable{
 			String[] locations) 
 	throws Exception{
 		super(base_datetime, start_range, end_range,locations);
-		this.setRemote_uri(host);
-		this.setResource_time(resource_time);
+		this.setResource_id(host);
+		this.setResult_time(resource_time);
 		this.setLink_criteria(criteria, localhost);
 	}
 
 	public MC(JSONObject json, String localhost) throws Exception {
 		super(json);
 		if (json.has("uri")){
-			this.setRemote_uri(LD4SDataResource.removeBrackets(
+			this.setResource_id(LD4SDataResource.removeBrackets(
 					json.getString("uri")));
 		}
 		if (json.has("observed_property")){
@@ -104,8 +104,8 @@ public class MC extends LD4SObject  implements Serializable{
 
 	public MC (Form form, String localhost) throws Exception {
 		super(form);
-		this.setRemote_uri(form.getFirstValue("uri")); 
-		this.setResource_time(
+		this.setResource_id(form.getFirstValue("uri")); 
+		this.setResult_time(
 				form.getFirstValue("resource"+LD4SConstants.JSON_SEPARATOR+"time"));
 		this.setLink_criteria(
 				form.getFirstValue("context"), localhost);
@@ -113,21 +113,21 @@ public class MC extends LD4SObject  implements Serializable{
 
 
 	@Override
-	public String getRemote_uri() {
-		return resource_uri;
+	public String getResource_id() {
+		return resource_id;
 	}
 
 
 	@Override
-	public void setRemote_uri(String host) {
-		this.resource_uri = host;
+	public void setResource_id(String host) {
+		this.resource_id = host;
 	}
 
-	public void setResource_time(String resource_time) {
+	public void setResult_time(String resource_time) {
 		this.resource_time = resource_time;
 	}
 
-	public String getResource_time() {
+	public String getResult_time() {
 		return resource_time;
 	}
 
@@ -143,10 +143,10 @@ public class MC extends LD4SObject  implements Serializable{
 
 	@Override
 	public boolean isStoredRemotely(String localUri) {
-		if (getRemote_uri() == null
+		if (getResource_id() == null
 				||
-				(localUri.contains(getRemote_uri())
-						|| getRemote_uri().contains(localUri))){
+				(localUri.contains(getResource_id())
+						|| getResource_id().contains(localUri))){
 			return false;
 		}
 		return true;

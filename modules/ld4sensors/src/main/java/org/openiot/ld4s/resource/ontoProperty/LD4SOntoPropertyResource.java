@@ -75,7 +75,7 @@ public class LD4SOntoPropertyResource extends LD4SDataResource {
 		if (resourceId != null){
 			subjuri = this.uristr;	
 		}else{
-			subjuri = ov.getRemote_uri();
+			subjuri = ov.getResource_id();
 		}
 		resource = rdfData.createResource(subjuri);
 

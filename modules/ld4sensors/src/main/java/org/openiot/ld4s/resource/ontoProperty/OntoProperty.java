@@ -184,20 +184,6 @@ public class OntoProperty extends LD4SObject  implements Serializable{
 		return ret;
 	}
 	
-	
-	
-	
-	@Override
-	public String getRemote_uri() {
-		return resource_uri;
-	}
-
-
-	@Override
-	public void setRemote_uri(String host) {
-		this.resource_uri = host;
-	}
-
 	@Override
 	public void setStoredRemotely(boolean storedRemotely) {
 		this.stored_remotely = storedRemotely;		
@@ -210,10 +196,10 @@ public class OntoProperty extends LD4SObject  implements Serializable{
 
 	@Override
 	public boolean isStoredRemotely(String localUri) {
-		if (getRemote_uri() == null
+		if (getResource_id() == null
 				||
-				(localUri.contains(getRemote_uri())
-						|| getRemote_uri().contains(localUri))){
+				(localUri.contains(getResource_id())
+						|| getResource_id().contains(localUri))){
 			return false;
 		}
 		return true;

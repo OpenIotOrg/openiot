@@ -16,8 +16,6 @@ import org.openiot.ld4s.resource.other.OtherResource;
 import org.openiot.ld4s.resource.ov.OVResource;
 import org.openiot.ld4s.resource.ping.PingResource;
 import org.openiot.ld4s.resource.platform.PlatformResource;
-import org.openiot.ld4s.resource.temporal_property.platform.TempPlatfPropResource;
-import org.openiot.ld4s.resource.temporal_property.sensor.TempSensPropResource;
 import org.restlet.Application;
 import org.restlet.Component;
 import org.restlet.Restlet;
@@ -188,33 +186,6 @@ public class Server extends Application{
 				// GET with query string for link filtering req: resource stored locally 
 				router.attach("/platform/{resource_id}?d={domains}&nod={nodomains}&trange={time}&s={space}&th={thing}", PlatformResource.class);
 				
-				//=============================================================
-				
-				// POST req: resource stored remotely IF resourceId == null
-				router.attach("/mobility_context/", TempSensPropResource.class);
-				router.attach("/mobility_context", TempSensPropResource.class);
-				// GET req:resource stored locally
-				// PUT req: resource stored locally + no Linked Data enrichment
-				// POST req: resource stored locally + Linked Data enrichment
-				// DELETE req: resource stored locally
-				router.attach("/mobility_context/{resource_id}", TempSensPropResource.class);
-				// GET with query string for link filtering req: resource stored locally 
-				router.attach("/mobility_context/{resource_id}?d={domains}&nod={nodomains}&trange={time}&s={space}&th={thing}", TempSensPropResource.class);
-				
-				//=============================================================
-				
-				// POST req: resource stored remotely IF resourceId == null
-				router.attach("/tpp/", TempPlatfPropResource.class);
-				router.attach("/tpp", TempPlatfPropResource.class);
-				// GET req:resource stored locally
-				// PUT req: resource stored locally + no Linked Data enrichment
-				// POST req: resource stored locally + Linked Data enrichment
-				// DELETE req: resource stored locally
-				router.attach("/tpp/{resource_id}", TempPlatfPropResource.class);
-				// GET with query string for link filtering req: resource stored locally 
-				router.attach("/tpp/{resource_id}?d={domains}&nod={nodomains}&trange={time}&s={space}&th={thing}", TempPlatfPropResource.class);
-				
-				//=============================================================
 				
 				// POST req: resource stored remotely IF resourceId == null
 				router.attach("/meas_capab/", MCResource.class);
@@ -317,7 +288,7 @@ public class Server extends Application{
 	 * @return The version.
 	 */
 	public static String getVersion() {
-		String version = Package.getPackage("eu.spitfire_project.ld4s.server")
+		String version = Package.getPackage("org.openiot.ld4s.server")
 		.getImplementationVersion();
 		return (version == null) ? "Development" : version;
 	}

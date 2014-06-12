@@ -63,7 +63,7 @@ public class LD4SOntoClassResource extends LD4SDataResource {
 	protected Resource makeOVData() throws Exception {
 		Resource resource = createOVResource();
 		resource.addProperty(DCTerms.isPartOf,
-				this.ld4sServer.getHostName()+"void");
+				"http://"+this.ld4sServer.getHostName()+"void");
 		return resource;
 	}
 
@@ -71,7 +71,7 @@ public class LD4SOntoClassResource extends LD4SDataResource {
 			Resource subj){
 		if (set.getType() == OntoClassSet.Type.singleClass){
 			subj.addProperty(lastProperty, 
-					rdfData.createResource(set.getId()));
+					rdfData.createResource(getResourceUri(null, null, set.getId())));
 			return subj;
 		}
 		Node bnode = null;
@@ -136,7 +136,7 @@ public class LD4SOntoClassResource extends LD4SDataResource {
 					}
 					break;
 				case Class:
-				case SUBCLASS:
+				case Subclass:
 				default:
 					bnode_resource.addProperty(
 							rdfData.createProperty(OWL.NS +restr.getAmount().name()),
@@ -177,7 +177,7 @@ public class LD4SOntoClassResource extends LD4SDataResource {
 //		if (resourceId != null){
 //			subjuri = this.uristr;	
 //		}else{
-			subjuri = ov.getResource_id();
+			subjuri = getResourceUri(null, null, ov.getResource_id());
 //		}
 		resource = rdfData.createResource(subjuri);
 
@@ -217,7 +217,7 @@ public class LD4SOntoClassResource extends LD4SDataResource {
 						resource.addProperty(OWL.oneOf, rdfData.createList(members));
 					}
 					break;
-				case SUBCLASS:
+				case Subclass:
 					if (types[ind].getSuperClass() != null){
 						resource.addProperty(RDFS.subClassOf, 
 								rdfData.createResource(types[ind].getSuperClass()));

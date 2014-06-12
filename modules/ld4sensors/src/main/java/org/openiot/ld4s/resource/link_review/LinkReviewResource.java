@@ -197,7 +197,7 @@ public class LinkReviewResource extends LD4SLinkReviewResource implements LD4SAp
 		logger.fine(resourceName + " LD4S: Now building LD4S.");
 		try {
 			this.ov = new LinkReview(obj, this.ld4sServer.getHostName());
-			if (ov.getRemote_uri() != null){
+			if (ov.getResource_id() != null){
 				//if the preferred resource hosting server is a remote one, PUT can not be used
 				//(use POST instead) 
 				if (this.ov.isStoredRemotely(ld4sServer.getHostName())){

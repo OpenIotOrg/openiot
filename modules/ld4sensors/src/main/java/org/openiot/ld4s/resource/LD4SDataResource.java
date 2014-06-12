@@ -7,9 +7,7 @@ import java.io.PrintWriter;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
-import java.net.InetAddress;
 import java.net.URLEncoder;
-import java.net.UnknownHostException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -217,8 +215,8 @@ public abstract class LD4SDataResource extends ServerResource{
 				"http://"+this.ld4sServer.getHostName()+"void");
 		return resource;
 	}
-	
-	
+
+
 	protected Resource createOVResource() throws Exception{
 		// TODO Auto-generated method stub
 		return null;
@@ -326,10 +324,10 @@ public abstract class LD4SDataResource extends ServerResource{
 			return;
 		}
 
-	
+
 	}
 
-	
+
 
 	public static String getNamedModel(String uri) {
 		Iterator<String> it = resource2namedGraph.keySet().iterator();
@@ -899,30 +897,30 @@ public abstract class LD4SDataResource extends ServerResource{
 	 */
 	public static String getResourceUri(String host,
 			String type, String name) {
-//		String address = host, start = "http://", tmp = "";
-//		if (address.startsWith(start)){
-//			address = address.substring(start.length());
-//		}
-//		int port_start = address.indexOf(":");
-//		if (port_start != -1){
-//			tmp =  address.substring(port_start);
-//			address = address.substring(0, port_start);
-//		}
-//
-//		try {
-//			InetAddress inetAddr = InetAddress.getByName(address);
-//			address = inetAddr.getCanonicalHostName();
-//		}
-//		catch (UnknownHostException e) {
-//			System.out.println("Host not found: " + e.getMessage());
-//		}
-
+		//		String address = host, start = "http://", tmp = "";
+		//		if (address.startsWith(start)){
+		//			address = address.substring(start.length());
+		//		}
+		//		int port_start = address.indexOf(":");
+		//		if (port_start != -1){
+		//			tmp =  address.substring(port_start);
+		//			address = address.substring(0, port_start);
+		//		}
+		//
+		//		try {
+		//			InetAddress inetAddr = InetAddress.getByName(address);
+		//			address = inetAddr.getCanonicalHostName();
+		//		}
+		//		catch (UnknownHostException e) {
+		//			System.out.println("Host not found: " + e.getMessage());
+		//		}
+		if (name == null){
+			return "";
+		}
 		String uri = 
-//				start + address + tmp + type +"/"
-				"http://services.openiot.eu/resources/"
-				
-				+ name.toLowerCase();
-				
+				//				start + address + tmp + type +"/"
+				"http://services.openiot.eu/resources/" + name.toLowerCase();
+
 
 		return uri;
 	}
@@ -1134,23 +1132,23 @@ public abstract class LD4SDataResource extends ServerResource{
 			resource.addProperty(RDF.type, ov.getDefaultType());
 		}
 
-		item = ov.getLocation_name();
-		String[] item1 = ov.getCoords();
-		if (item != null && item.startsWith("http://")){
-			resource.addProperty(
-					resource.getModel().createProperty(
-							"http://www.ontologydesignpatterns.org/ont/dul/DUL.owl/hasLocation"), 
-							resource.getModel().createResource(item));	
-		}else {
-			resource = addLocation(resource, item, item1);
-
-		}
-		item = ov.getResource_time();
+		//		item = ov.getLocation_name();
+		//		String[] item1 = ov.getCoords();
+		//		if (item != null && item.startsWith("http://")){
+		//			resource.addProperty(
+		//					resource.getModel().createProperty(
+		//							"http://www.ontologydesignpatterns.org/ont/dul/DUL.owl/hasLocation"), 
+		//							resource.getModel().createResource(item));	
+		//		}else {
+		//			resource = addLocation(resource, item, item1);
+		//
+		//		}
+		item = ov.getResult_time();
 		if (item != null && item.trim().compareTo("")!=0){
 			resource.addProperty(CorelfVocab.RESOURCE_TIME, 
 					resource.getModel().createTypedLiteral(item, XSDDatatype.XSDlong));
 		}
-		
+
 		item = ov.getBase_datetime();
 		if (item != null && item.trim().compareTo("")!=0){
 			resource.addProperty(CorelfVocab.BASE_TIME, 
@@ -1300,6 +1298,23 @@ public abstract class LD4SDataResource extends ServerResource{
 		return resource;
 	}
 
+	protected Resource addFoi(Resource resource, String foi, Property property) throws Exception{
+		if (foi.contains("weather")){
+			resource = addWeatherForecast(resource);
+		}else{
+			String item_uri = getResourceUri(this.ld4sServer.getHostName(), "res/property", foi);
+			Resource item_resource = resource.getModel().createResource(item_uri);
+			Context con = new Context(this.ld4sServer.getHostName());
+			con.setThing(foi);
+			item_resource = addLinkedData(item_resource, Domain.FEATURE, con);
+			if (item_resource != null){
+				resource.addProperty(property, item_resource);
+			}
+		}
+
+		return resource;
+	}
+
 	public com.hp.hpl.jena.rdf.model.Resource addObsProp (
 			com.hp.hpl.jena.rdf.model.Resource resource, 
 			java.lang.String observed_property,
@@ -1307,10 +1322,10 @@ public abstract class LD4SDataResource extends ServerResource{
 			java.lang.String foi, String date,
 			String time, String company, String country)
 					throws java.lang.Exception{
-		
+
 		String item_uri = getResourceUri(this.ld4sServer.getHostName(), "res/property", observed_property);		
 		Resource item_resource = resource.getModel().createResource(item_uri);
-	
+
 		String op = observed_property.toLowerCase().trim();
 		if (op.compareTo("airtemperature") == 0){
 			item_resource.addProperty(RDF.type, OpenIoTVocab.AIR_TEMPERATURE);
@@ -1329,20 +1344,27 @@ public abstract class LD4SDataResource extends ServerResource{
 		} else if (op.compareTo("webcamsnapshot") == 0){
 			item_resource.addProperty(RDF.type, OpenIoTVocab.WEBCAM_SNAPSHOT);
 
-				
+
 		}else{		
-			
+
 			Context con = new Context(this.ld4sServer.getHostName());
 			con.setThing(observed_property);
 			con.setAdditionalTerms(new String[][]{
 					{"", foi}
 			});
 
-			
-				item_resource = addLinkedData(item_resource, Domain.FEATURE, con);	
-			}
+
+			item_resource = addLinkedData(item_resource, Domain.FEATURE, con);	
+		}
 		if (item_resource != null){
-//			resource.addProperty(prop, item_resource);
+			if (foi.startsWith("http://")){
+				item_resource.addProperty(SsnVocab.IS_PROPERTY_OF, 
+						resource.getModel().createResource(foi));	
+			}else{
+				item_resource= addFoi(item_resource, foi, SsnVocab.IS_PROPERTY_OF);
+			}
+
+			//			resource.addProperty(prop, item_resource);
 			resource.addProperty(SsnVocab.OBSERVES, item_resource);
 		}
 		return resource;

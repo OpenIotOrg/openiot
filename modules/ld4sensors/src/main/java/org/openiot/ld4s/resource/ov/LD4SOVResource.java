@@ -9,7 +9,6 @@ import org.openiot.ld4s.vocabulary.SptVocab;
 import org.openiot.ld4s.vocabulary.SsnVocab;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
-import com.hp.hpl.jena.datatypes.xsd.impl.XSDDateTimeType;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.vocabulary.DCTerms;
@@ -80,7 +79,7 @@ public class LD4SOVResource extends LD4SDataResource {
 		if (resourceId != null){
 			subjuri = this.uristr;	
 		}else{
-			subjuri = ov.getRemote_uri();
+			subjuri = getResourceUri(null, null, ov.getResource_id());
 		}
 		observation_value_resource = rdfData.createResource(subjuri);
 		
@@ -95,11 +94,13 @@ public class LD4SOVResource extends LD4SDataResource {
 				}
 			}			
 		}
+		
+		/** Observation Resource Creation - Start. */
 		//create observation, if not given. link it with the sensor, if given.
 		String item = ov.getObservation();
 		Resource observation_resource = null;
 		if (item != null && item.trim().compareTo("")!=0){
-			observation_resource = rdfData.createResource(item);
+			observation_resource = rdfData.createResource(getResourceUri(null,  null,  item));
 		}else{
 			String observation_uri = getResourceUri(this.ld4sServer.getHostName(), "/observation", 
 					String.valueOf((new Random()).nextInt()));		
@@ -108,20 +109,7 @@ public class LD4SOVResource extends LD4SDataResource {
 		observation_value_resource.addProperty(OpenIoTVocab.IS_OBSERVED_VALUE_OF, observation_resource);
 		observation_resource.addProperty(SsnVocab.OBSERVATION_RESULT, observation_value_resource);
 		observation_resource.addProperty(RDF.type, SsnVocab.OBSERVATION);
-		
-		String[] tprops = ov.getTsproperties();
-		if (tprops != null){
-			for (int i=0; i<tprops.length ;i++){
-				if (tprops[i].startsWith("http://")){
-					observation_resource.addProperty(OpenIoTVocab.CONTEXT, 
-							rdfData.createResource(tprops[i]));	
-				}else{
-					observation_resource.addProperty(OpenIoTVocab.CONTEXT, 
-							rdfData.createTypedLiteral(tprops[i]));
-				}
-			}			
-		}
-		
+				
 		item = ov.getSensor_id();
 		if (item != null && item.trim().compareTo("")!=0){
 			if (item.startsWith("http://")){
@@ -130,15 +118,28 @@ public class LD4SOVResource extends LD4SDataResource {
 
 			}else{
 //				resource.addProperty(SptVocab.OUT_OF, item);
-				observation_value_resource.addProperty(SsnVocab.OBSERVED_BY, item);
+				observation_resource.addProperty(SsnVocab.OBSERVED_BY, item);
+			}
+		}	
+		
+		item = ov.getFoi();
+		if (item != null && item.trim().compareTo("") != 0){
+			if (item.startsWith("http://")){
+				observation_resource.addProperty(SsnVocab.FEATURE_OF_INTEREST, 
+						rdfData.createResource(item));
+			}else{
+				observation_resource = addFoi(observation_resource, item);
 			}
 		}
 		
-		item = ov.getResource_time();
+		item = ov.getResult_time();
 		if (item != null && item.trim().compareTo("")!=0){
-				observation_value_resource.addProperty(SsnVocab.OBSERVATION_RESULT_TIME, 
+				observation_resource.addProperty(SsnVocab.OBSERVATION_RESULT_TIME, 
 						rdfData.createTypedLiteral(item, XSDDatatype.XSDdateTime));	
 		}
+		/** Observation Resource Creation - End. */
+		
+		
 		item = ov.getStart_range();
 		if (item != null && item.trim().compareTo("")!=0){
 				observation_value_resource.addProperty(SptVocab.START_TIME, 

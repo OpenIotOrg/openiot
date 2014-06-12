@@ -92,7 +92,7 @@ public class OntoClassResource extends LD4SOntoClassResource implements LD4SApiI
 		try {
 			this.ov = new OntoClass(obj, this.ld4sServer.getHostName());
 
-			if (ov.getRemote_uri() != null){
+			if (ov.getResource_id() != null){
 				//if the preferred resource hosting is a remote one, PUT can not be used
 				//(use POST instead) 
 				if (this.ov.isStoredRemotely(ld4sServer.getHostName())){
@@ -147,7 +147,7 @@ public class OntoClassResource extends LD4SOntoClassResource implements LD4SApiI
 		logger.fine(resourceName + " LD4S: Now building LD4S.");
 		try {
 			this.ov = new OntoClass(obj, this.ld4sServer.getHostName());
-			if (ov.getRemote_uri() != null){
+			if (ov.getResource_id() != null){
 				//if the preferred resource hosting server is a remote one, PUT can not be used
 				//(use POST instead) 
 				if (this.ov.isStoredRemotely(ld4sServer.getHostName())){
