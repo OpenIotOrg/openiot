@@ -76,13 +76,20 @@ logs/
 #*.sqlite
 
 
-# OS generated files #
-######################
+# Gradle #
+##########
+build/
+*/build
+*/.gradle
+.gradle
 
+# IntelliJ #
+##########
 *.iml
 /.idea
 .idea
 */.idea
+
+# OS generated files #
+######################
 rebel.xml
-*/.gradle
-.gradle
