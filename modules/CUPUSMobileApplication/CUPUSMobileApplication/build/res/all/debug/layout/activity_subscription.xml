@@ -1,0 +1,143 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context="org.openiot.cupus.mobile.application.SubscriptionActivity$PlaceholderFragment">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="min pressure value"
+        android:id="@+id/textView"
+        android:phoneNumber="false"
+        android:layout_alignBaseline="@+id/pressure_value"
+        android:layout_alignBottom="@+id/pressure_value"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        android:ems="10"
+        android:id="@+id/pressure_value"
+        android:layout_marginTop="73dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_toRightOf="@+id/pressureSub" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Subscribe"
+        android:id="@+id/pressureSub"
+        android:layout_above="@+id/unsubscribe"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="27dp" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Unsubscribe"
+        android:id="@+id/unsubscribe"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="numberDecimal"
+        android:ems="10"
+        android:id="@+id/minLat"
+        android:layout_marginTop="41dp"
+        android:layout_below="@+id/pressure_value"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignLeft="@+id/pressure_value"
+        android:layout_alignStart="@+id/pressure_value" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="numberDecimal"
+        android:ems="10"
+        android:id="@+id/maxLat"
+        android:layout_below="@+id/minLat"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignLeft="@+id/minLat"
+        android:layout_alignStart="@+id/minLat" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="numberDecimal"
+        android:ems="10"
+        android:id="@+id/minLong"
+        android:layout_below="@+id/maxLat"
+        android:layout_alignRight="@+id/maxLat"
+        android:layout_alignEnd="@+id/maxLat"
+        android:layout_alignLeft="@+id/maxLat"
+        android:layout_alignStart="@+id/maxLat" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="numberDecimal"
+        android:ems="10"
+        android:id="@+id/maxLong"
+        android:layout_below="@+id/minLong"
+        android:layout_alignRight="@+id/minLong"
+        android:layout_alignEnd="@+id/minLong"
+        android:layout_alignLeft="@+id/minLong"
+        android:layout_alignStart="@+id/minLong" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="min latitude"
+        android:id="@+id/textView2"
+        android:layout_alignTop="@+id/minLat"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:password="false" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="max latitude"
+        android:id="@+id/textView3"
+        android:layout_alignTop="@+id/maxLat"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="min longitude"
+        android:id="@+id/textView4"
+        android:layout_alignTop="@+id/minLong"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="max longitude"
+        android:id="@+id/textView5"
+        android:layout_below="@+id/minLong"
+        android:layout_alignRight="@+id/textView4"
+        android:layout_alignEnd="@+id/textView4" />
+
+</RelativeLayout>
+<!-- From: file:/C:/Users/Marko/Desktop/CUPUSMobileApplicationLite/CUPUSMobileApplicationLite/CUPUSMobileApplication/src/main/res/layout/activity_subscription.xml -->

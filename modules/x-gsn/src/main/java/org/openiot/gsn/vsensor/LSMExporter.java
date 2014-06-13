@@ -89,7 +89,7 @@ public class LSMExporter extends AbstractVirtualSensor {
             logger.debug(fieldName + " : t=" + d + " v=" + v);
 
             if (!allow_nulls && v == null)
-                return; // skipping null values if allow_nulls flag is not st to true
+                continue; // skipping null values if allow_nulls flag is not st to true
 
             if (publish_to_lsm) {
                 LSMRepository.getInstance().publishSensorDataToLSM(sensorName, fieldName, v, d);

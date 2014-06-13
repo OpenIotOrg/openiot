@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="android-maps-utils-0.2.1">
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/CUPUSMobileApplication/build/exploded-aar/com.google.maps.android/android-maps-utils/0.2.1/res" />
+      <root url="jar://$PROJECT_DIR$/CUPUSMobileApplication/build/exploded-aar/com.google.maps.android/android-maps-utils/0.2.1/classes.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

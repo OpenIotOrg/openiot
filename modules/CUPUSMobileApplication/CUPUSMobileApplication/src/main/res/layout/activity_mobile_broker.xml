@@ -1,0 +1,104 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context="org.openiot.cupus.mobile.application.MobileBrokerActivity$PlaceholderFragment">
+
+    <TextView
+        android:text="Client name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/textView"
+        android:layout_alignBaseline="@+id/client_name"
+        android:layout_alignBottom="@+id/client_name"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/client_name"
+        android:layout_marginLeft="25dp"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/textView2" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Broker IP Address"
+        android:id="@+id/textView2"
+        android:layout_below="@+id/client_name"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/broker_ip"
+        android:layout_below="@+id/client_name"
+        android:layout_alignLeft="@+id/client_name"
+        android:layout_alignStart="@+id/client_name" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        android:ems="10"
+        android:id="@+id/broker_port"
+        android:layout_below="@+id/broker_ip"
+        android:layout_alignLeft="@+id/broker_ip"
+        android:layout_alignStart="@+id/broker_ip" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Broker Port"
+        android:id="@+id/textView3"
+        android:layout_alignTop="@+id/broker_port"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <RadioGroup
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_below="@+id/broker_port"
+        android:layout_toRightOf="@+id/textView2"
+        android:layout_marginTop="34dp">
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="TCP"
+            android:checked="true"
+            android:id="@+id/radioButtonTCP"/>
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="GCM"
+            android:id="@+id/radioButtonGCM"/>
+    </RadioGroup>
+
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Connect"
+        android:id="@+id/connect_button"
+        android:layout_centerVertical="true"
+        android:layout_toRightOf="@+id/textView3" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Disconnect"
+        android:id="@+id/disconnect_button"
+        android:layout_alignTop="@+id/connect_button"
+        android:layout_alignRight="@+id/broker_port"
+        android:layout_alignEnd="@+id/broker_port"
+        android:layout_marginRight="48dp" />
+
+</RelativeLayout>
