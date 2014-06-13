@@ -78,3 +78,11 @@ logs/
 
 # OS generated files #
 ######################
+
+*.iml
+/.idea
+.idea
+*/.idea
+rebel.xml
+*/.gradle
+.gradle
