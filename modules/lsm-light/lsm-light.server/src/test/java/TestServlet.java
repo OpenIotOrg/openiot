@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.PrintWriter;
 import java.util.HashMap;
-import java.util.logging.Logger;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -43,6 +42,7 @@ import org.openiot.lsm.utils.NumberUtil;
 import org.openiot.lsm.utils.SecurityUtil;
 import org.openiot.lsm.utils.VirtuosoConstantUtil;
 import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 
 
 import com.hp.hpl.jena.ontology.OntClass;
@@ -135,8 +135,8 @@ public class TestServlet extends HttpServlet {
 					String permissionString = "sensor:add";
 					
 					if(SecurityUtil.hasPermission(permissionString, getServletContext(), token, clientId)){
-						String sensorTypeId = sensorManager.getSensorTypeId(sensor.getSensorType().toLowerCase());
-						String triples = TriplesDataRetriever.getSensorTripleMetadata(sensor,sensorTypeId);
+					//String sensorTypeId = sensorManager.getSensorTypeId(sensor.getSensorType().toLowerCase());
+						String triples = TriplesDataRetriever.getSensorTripleMetadata(sensor);
 						//	        		System.out.println(triples);
 						if((sensor.getMetaGraph()==null)||(sensor.getMetaGraph()==""))
 							sensor.setMetaGraph(propertyManagement.getSchedulerLsmMetaGraph());

@@ -97,6 +97,7 @@ public class ApplicationDesignPageController implements Serializable {
 	}
 
 	public ApplicationDesignPageContext getContext() {
+         	sessionBean.setUserId("jpcik");
 		if (cachedContext == null) {
 			if (sessionBean.getUserId() == null) {
 				return null;
