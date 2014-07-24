@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/CUPUS-commons/CUPUS-commons.iml" filepath="$PROJECT_DIR$/CUPUS-commons/CUPUS-commons.iml" />
+      <module fileurl="file://$PROJECT_DIR$/CUPUSMobileApplication.iml" filepath="$PROJECT_DIR$/CUPUSMobileApplication.iml" />
+      <module fileurl="file://$PROJECT_DIR$/CUPUSMobileApplicationLite.iml" filepath="$PROJECT_DIR$/CUPUSMobileApplicationLite.iml" />
+    </modules>
+  </component>
+</project>
+

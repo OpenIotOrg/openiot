@@ -1,6 +1,6 @@
 /**
 *    Copyright (c) 2011-2014, OpenIoT
-*   
+*
 *    This file is part of OpenIoT.
 *
 *    OpenIoT is free software: you can redistribute it and/or modify
@@ -150,7 +150,7 @@ public class VSensorLoader extends Thread {
                 // Create the VS configuration file
                 Writer fw = new BufferedWriter(new FileWriter(filePath, true));
                 fw.write(vsConfigurationFileContent);
-                fw.flush();    
+                fw.flush();
                 fw.close();
                 // Try to load it
                 //if ( ! loadPlugin(fileName)) {
@@ -167,9 +167,9 @@ public class VSensorLoader extends Thread {
             throw new Exception("The configuration file:" + filePath + " already exist.");
         }
     }
-    
-    private VSensorConfig buildVSensorConfig(String fileContent) throws VirtualSensorInitializationFailedException{    	
-    	java.io.InputStream is = new ByteArrayInputStream(fileContent.getBytes());	
+
+    private VSensorConfig buildVSensorConfig(String fileContent) throws VirtualSensorInitializationFailedException{
+    	java.io.InputStream is = new ByteArrayInputStream(fileContent.getBytes());
 		IUnmarshallingContext uctx;
 		try {
 			IBindingFactory bfact = BindingDirectory.getFactory( VSensorConfig.class );
@@ -187,12 +187,12 @@ public class VSensorLoader extends Thread {
 			throw new VirtualSensorInitializationFailedException("VS Malformed Configuration: "+e.getMessage());
 		}
 		//configuration.setFileName( file );
-		if ( !configuration.validate( ) ) 
+		if ( !configuration.validate( ) )
 			throw new VirtualSensorInitializationFailedException("VS Configuration Invalid");
 
 		return configuration;
     }
-    
+
 
     public static String getVSConfigurationFilePath(String fileName) {
         return Main.DEFAULT_VIRTUAL_SENSOR_DIRECTORY + File.separator + fileName + ".xml";
@@ -367,6 +367,12 @@ public class VSensorLoader extends Thread {
             for ( StreamSource streamSource : inputStream.getSources ( ) )
                 releaseStreamSource(streamSource);
             inputStream.release();
+        }
+        try {
+            // delete table so that future creation with different type does not crash
+            Main.getStorage(vsensorName).executeDropTable(vsensorName);
+        } catch (SQLException ex) {
+            logger.warn("Problem deleting sensor tables.", ex);
         }
         // sm.renameTable(vsensorName,vsensorName+"Before"+System.currentTimeMillis());
         logger.debug("Total change Listeners:"+changeListeners.size());

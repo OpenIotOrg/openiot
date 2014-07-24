@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:ns1="urn:oasis:names:tc:xliff:document:1.2">
+
+    <!-- From: file:/C:/Users/Marko/Desktop/CUPUSMobileApplicationLite/CUPUSMobileApplicationLite/CUPUSMobileApplication/build/exploded-aar/com.android.support/appcompat-v7/19.1.0/res/values-ar/values.xml -->
+    <eat-comment />
+
+    <string name="abc_action_bar_home_description" msgid="4600421777120114993">"التنقل إلى الشاشة الرئيسية"</string>
+    <string name="abc_action_bar_up_description" msgid="1594238315039666878">"التنقل إلى أعلى"</string>
+    <string name="abc_action_menu_overflow_description" msgid="3588849162933574182">"خيارات إضافية"</string>
+    <string name="abc_action_mode_done" msgid="4076576682505996667">"تم"</string>
+    <string name="abc_activity_chooser_view_see_all" msgid="7468859129482906941">"عرض الكل"</string>
+    <string name="abc_activitychooserview_choose_application" msgid="2031811694353399454">"اختيار تطبيق"</string>
+    <string name="abc_searchview_description_clear" msgid="3691816814315814921">"محو طلب البحث"</string>
+    <string name="abc_searchview_description_query" msgid="2550479030709304392">"طلب البحث"</string>
+    <string name="abc_searchview_description_search" msgid="8264924765203268293">"بحث"</string>
+    <string name="abc_searchview_description_submit" msgid="8928215447528550784">"إرسال طلب البحث"</string>
+    <string name="abc_searchview_description_voice" msgid="893419373245838918">"البحث الصوتي"</string>
+    <string name="abc_shareactionprovider_share_with" msgid="3421042268587513524">"مشاركة مع"</string>
+    <string name="abc_shareactionprovider_share_with_application" msgid="7165123711973476752">"مشاركة مع %s"</string>
+    <!-- From: file:/C:/Users/Marko/Desktop/CUPUSMobileApplicationLite/CUPUSMobileApplicationLite/CUPUSMobileApplication/build/exploded-aar/com.google.android.gms/play-services/3.1.59/res/values-ar/strings.xml -->
+    <eat-comment />
+
+    <string name="auth_client_needs_enabling_title" msgid="3983201110833868073">"يتطلب أحد التطبيقات تمكين خدمات Google Play."</string>
+    <string name="auth_client_needs_installation_title" msgid="7999585836145154206">"يتطلب أحد التطبيقات تثبيت خدمات Google Play."</string>
+    <string name="auth_client_needs_update_title" msgid="6488605506794595966">"يتطلب أحد التطبيقات تحديث خدمات Google Play."</string>
+    <string name="auth_client_play_services_err_notification_msg" msgid="3635065018897986478">"خطأ في خدمات Google Play"</string>
+    <string name="auth_client_requested_by_msg" msgid="6304135633531965756">"تم الطلب عن طريق <ns1:g id="APP_NAME">%1$s</ns1:g>"</string>
+    <string name="auth_client_using_bad_version_title" msgid="2534454398764507874">"يحاول أحد التطبيقات استخدام إصدار غير صالح من خدمات Google Play."</string>
+    <string name="common_google_play_services_enable_button" msgid="4181637455539816337">"تمكين خدمات Google Play"</string>
+    <string name="common_google_play_services_enable_text" msgid="7627896071867667758">"لن يعمل هذا التطبيق ما لم يتم تمكين خدمات Google Play."</string>
+    <string name="common_google_play_services_enable_title" msgid="529078775174559253">"تمكين خدمات Google Play"</string>
+    <string name="common_google_play_services_install_button" msgid="8515591849428043265">"الحصول على خدمات Google Play"</string>
+    <string name="common_google_play_services_install_text_phone" msgid="8685301130651051380">"لن يتم تشغيل هذا التطبيق بدون خدمات Google Play، والتي لا تتوفر في هاتفك."</string>
+    <string name="common_google_play_services_install_text_tablet" msgid="1589957570365247855">"لن يتم تشغيل هذا التطبيق بدون خدمات Google Play، والتي لا تتوفر في جهازك اللوحي."</string>
+    <string name="common_google_play_services_install_title" msgid="26645092511305524">"الحصول على خدمات Google Play"</string>
+    <string name="common_google_play_services_unknown_issue" msgid="4762332809710093730">"حدثت مشكلة غير معروفة في خدمات Google Play."</string>
+    <string name="common_google_play_services_unsupported_text" msgid="3542578567569488671">"خدمات Google Play التي تستجيب لها بعض تطبيقاتك لا تعمل على جهازك. يُرجى الاتصال بجهة التصنيع للحصول على المساعدة."</string>
+    <string name="common_google_play_services_unsupported_title" msgid="6334768798839376943">"خدمات Google Play"</string>
+    <string name="common_google_play_services_update_button" msgid="8932944190611227642">"تحديث"</string>
+    <string name="common_google_play_services_update_text" msgid="448354684997260580">"لن يتم تشغيل هذا التطبيق ما لم تحدِّث خدمات Google Play."</string>
+    <string name="common_google_play_services_update_title" msgid="6006316683626838685">"تحديث خدمات Google Play"</string>
+    <string name="common_signin_button_text" msgid="9071884888741449141">"تسجيل الدخول"</string>
+    <string name="common_signin_button_text_long" msgid="2429381841831957106">"تسجيل الدخول باستخدام Google"</string>
+
+</resources>

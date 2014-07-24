@@ -1,0 +1,63 @@
+{"requestPresentation": {
+	"widget": [
+		{
+			"presentationAttr": [
+				{
+					"name": "MAX",
+					"value": null
+				},
+				{
+					"name": "UNIT",
+					"value": null
+				},
+				{
+					"name": "MIN",
+					"value": null
+				},
+				{
+					"name": "TITLE",
+					"value": null
+				},
+				{
+					"name": "widgetClass",
+					"value": null
+				}
+			],
+			"widgetID": "node://widget_graphNode_530010354662416,"
+		}
+	]
+}, "queryResult": [
+	{
+		"sparql": {
+			"head": {
+				"variable": [
+					{
+						"name": "VALUE"
+					}
+				],
+				"link": []
+			},
+			"results": {
+				"result": [
+					{
+						"binding": [
+							{
+								"uri": null,
+								"bnode": null,
+								"literal": {
+									"content": "15.303319338756232",
+									"datatype": null,
+									"lang": null
+								},
+								"name": "VALUE"
+							}
+						],
+						"index": null
+					}
+				]
+			},
+			"boolean": null
+		},
+		"rdf": null
+	}
+]}

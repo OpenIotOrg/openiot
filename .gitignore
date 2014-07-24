@@ -23,6 +23,12 @@ org.eclipse.m2e.core.prefs
 .pmd
 
 
+# Netbeans Settings #
+#####################
+**/jboss-web.xml
+**/nb-configuration.xml
+
+
 
 
 # Maven Generated #
@@ -70,5 +76,20 @@ logs/
 #*.sqlite
 
 
+# Gradle #
+##########
+build/
+*/build
+*/.gradle
+.gradle
+
+# IntelliJ #
+##########
+*.iml
+/.idea
+.idea
+*/.idea
+
 # OS generated files #
 ######################
+rebel.xml
