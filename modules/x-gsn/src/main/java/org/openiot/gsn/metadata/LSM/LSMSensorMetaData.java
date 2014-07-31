@@ -199,7 +199,7 @@ if (conf.hasPath(KEY_SENSOR_ID)) {
             lsmFieldMetaData.setLsmPropertyName(conf.getString("field." + fieldName + "." + "propertyName"));
             lsmFieldMetaData.setLsmUnit(conf.getString("field." + fieldName + "." + "unit"));
             fields.put(fieldName, lsmFieldMetaData);
-            logger.info(fields.get(fieldName));
+            //logger.info(fields.get(fieldName));
         }
         /*String [] props = new String[fieldNames.length];
         int i=0;
@@ -231,4 +231,5 @@ if (conf.hasPath(KEY_SENSOR_ID)) {
         	props[i]=field.getLsmPropertyName();i++;
         }
 		return props;
+	}
 }
