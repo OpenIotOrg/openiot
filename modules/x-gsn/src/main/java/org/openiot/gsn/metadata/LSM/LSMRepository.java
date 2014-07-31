@@ -169,7 +169,7 @@ public class LSMRepository {
         LSMSensorMetaData lsmSensorMetaData = new LSMSensorMetaData();
         lsmSensorMetaData.initFromConfigFile(metadataFile);
 
-        logger.info(lsmSensorMetaData);
+        logger.info(lsmSensorMetaData.toString());
 
         //TODO: check if sensor is already registered to LSM (to avoid duplicates)
         /*if (lsmSensorMetaData.isRegisteredToLSM()) {
@@ -178,7 +178,7 @@ public class LSMRepository {
         }*/        
 
         // announce sensor to LSM
-        String sensorID = MetadataCreator.addSensorToLSM(lsmSensorMetaData);
+        String sensorID = SensorAnnotator.addSensorToLSM(lsmSensorMetaData);
         // check returned sensor ID
         if (sensorID == "") {
             logger.warn("Couldn't register sensor " + lsmSensorMetaData.getSensorName() + " to LSM. Received empty sensor ID");
