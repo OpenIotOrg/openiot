@@ -199,10 +199,11 @@
 					</h:form>
 
 					<h:form id="dlgForm">
-						<p:dialog id="addUserDlg" header="Add User" widgetVar="addUserDlg" modal="true" dynamic="true">
+						<p:dialog id="addUserDlg" header="Add User" widgetVar="addUserDlg" modal="true" dynamic="true" width="750">
 							<h:panelGrid columns="1" cellpadding="5">
 								<p:dataTable var="otherUser" value="#{rolesController.selectedRoleOtherUsers}" id="otherUsersTable" tableStyle="width:100%; font-size:smaller;"
-									selectionMode="single" selection="#{rolesController.selectedOtherUser}" rowKey="#{otherUser.username}" emptyMessage="User list is empty.">
+									selectionMode="single" selection="#{rolesController.selectedOtherUser}" rowKey="#{otherUser.username}" emptyMessage="User list is empty."
+									scrollable="true" scrollHeight="350" >
 
 									<p:ajax event="rowSelect" update=":dlgForm:addUserDlg_addButton" />
 
@@ -227,11 +228,12 @@
 							</h:panelGrid>
 						</p:dialog>
 
-						<p:dialog id="addPermDlg" header="Add Permission" widgetVar="addPermDlg" modal="true" dynamic="true">
+						<p:dialog id="addPermDlg" header="Add Permission" widgetVar="addPermDlg" modal="true" dynamic="true" width="750">
 							<h:panelGrid columns="1" cellpadding="5">
 
 								<p:dataTable var="otherPerm" value="#{rolesController.selectedRoleOtherPermissions}" id="otherPermsTable" tableStyle="width:100%; font-size:smaller;"
-									selectionMode="single" selection="#{rolesController.selectedOtherPermission}" rowKey="#{otherPerm.name}" emptyMessage="Permission list is empty.">
+									selectionMode="single" selection="#{rolesController.selectedOtherPermission}" rowKey="#{otherPerm.name}" emptyMessage="Permission list is empty." 
+									scrollable="true" scrollHeight="350">
 
 									<p:ajax event="rowSelect" update=":dlgForm:addPermDlg_addButton" />
 
