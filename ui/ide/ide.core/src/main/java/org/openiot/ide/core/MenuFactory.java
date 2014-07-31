@@ -194,10 +194,15 @@ public class MenuFactory implements Serializable {
 	 * @return
 	 */
 	private String createMonitorURL(String baseUrl) {
-		if (!StringUtils.endsWith(baseUrl, "/")) {
-			baseUrl += "/";
-		}
-		return baseUrl + FIELD_MONITORING;
+//		if (!StringUtils.endsWith(baseUrl, "/")) {
+//			baseUrl += "/";
+//		}
+
+//		int indexDomainUrl = StringUtils.indexOf(baseUrl, );
+		String suffix = StringUtils.substring(baseUrl, Faces.getRequestDomainURL().length(), baseUrl.length() - 1);
+		String moduleName = StringUtils.split(suffix, "/")[0];
+
+		return Faces.getRequestDomainURL() + "/" + moduleName + "/" + FIELD_MONITORING;
 	}
 
 	/**

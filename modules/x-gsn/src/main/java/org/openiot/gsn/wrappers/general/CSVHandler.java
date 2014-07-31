@@ -1,27 +1,29 @@
 /**
-*    Copyright (c) 2011-2014, OpenIoT
-*   
-*    This file is part of OpenIoT.
-*
-*    OpenIoT is free software: you can redistribute it and/or modify
-*    it under the terms of the GNU Lesser General Public License as published by
-*    the Free Software Foundation, version 3 of the License.
-*
-*    OpenIoT is distributed in the hope that it will be useful,
-*    but WITHOUT ANY WARRANTY; without even the implied warranty of
-*    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*    GNU Lesser General Public License for more details.
-*
-*    You should have received a copy of the GNU Lesser General Public License
-*    along with OpenIoT.  If not, see <http://www.gnu.org/licenses/>.
-*
-*     Contact: OpenIoT mailto: info@openiot.eu
+ *    Copyright (c) 2011-2014, OpenIoT
+ *
+ *    This file is part of OpenIoT.
+ *
+ *    OpenIoT is free software: you can redistribute it and/or modify
+ *    it under the terms of the GNU Lesser General Public License as published by
+ *    the Free Software Foundation, version 3 of the License.
+ *
+ *    OpenIoT is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *    GNU Lesser General Public License for more details.
+ *
+ *    You should have received a copy of the GNU Lesser General Public License
+ *    along with OpenIoT.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *     Contact: OpenIoT mailto: info@openiot.eu
  * @author Ali Salehi
  * @author Mehdi Riahi
  * @author Sofiane Sarni
-*/
+ * @author Hylke van der Schaaf
+ */
 
 package org.openiot.gsn.wrappers.general;
+
 import org.openiot.gsn.beans.DataField;
 import org.openiot.gsn.utils.CaseInsensitiveComparator;
 
@@ -103,8 +105,9 @@ public class CSVHandler {
             logger.error(e.getMessage(), e);
             return false;
         }
-        if (!validateFormats(this.formats))
+        if (!validateFormats(this.formats)) {
             return false;
+        }
         if (fields.length != formats.length) {
             logger.error("loading the csv-wrapper failed as the length of fields(" + fields.length + ") doesn't match the length of formats(" + formats.length + ")");
             return false;
@@ -120,18 +123,18 @@ public class CSVHandler {
     }
 
     public static boolean validateFormats(String[] formats) {
-        for (int i = 0; i < formats.length; i++) {
-            if (formats[i].equalsIgnoreCase("numeric") || formats[i].equalsIgnoreCase("string"))
+        for (String format : formats) {
+            if (format.equalsIgnoreCase("numeric") || format.equalsIgnoreCase("string")) {
                 continue;
-            else if (isTimeStampFormat(formats[i])) {
+            } else if (isTimeStampFormat(format)) {
                 try {
-                    String tmp = DateTimeFormat.forPattern(getTimeStampFormat(formats[i])).print(System.currentTimeMillis());
+                    String tmp = DateTimeFormat.forPattern(getTimeStampFormat(format)).print(System.currentTimeMillis());
                 } catch (IllegalArgumentException e) {
-                    logger.error("Validating the time-format(" + formats[i] + ") used by the CSV-wrapper is failed. ");
+                    logger.error("Validating the time-format(" + format + ") used by the CSV-wrapper is failed. ");
                     return false;
                 }
             } else {
-                logger.error("The format (" + formats[i] + ") used by the CSV-Wrapper doesn't exist.");
+                logger.error("The format (" + format + ") used by the CSV-Wrapper doesn't exist.");
                 return false;
             }
         }
@@ -150,18 +153,20 @@ public class CSVHandler {
      */
     public static String[] generateFieldIdx(String rawFields, boolean toLowerCase) throws IOException {
         String[] toReturn = new CSVReader(new StringReader(rawFields)).readNext();
-        if (toReturn == null)
+        if (toReturn == null) {
             return new String[0];
+        }
         for (int i = 0; i < toReturn.length; i++) {
             toReturn[i] = toReturn[i].trim();
-            if (toLowerCase)
+            if (toLowerCase) {
                 toReturn[i] = toReturn[i].toLowerCase();
+            }
         }
         return toReturn;
     }
 
     public ArrayList<TreeMap<String, Serializable>> work(Reader dataFile, String checkpointDir, int samplingCountPerPeriod) throws IOException {
-        ArrayList<TreeMap<String, Serializable>> items = null;
+        ArrayList<TreeMap<String, Serializable>> items;
         setupCheckPointFileIfNeeded();
         String val = FileUtils.readFileToString(new File(checkPointFile), "UTF-8");
         long lastItem = 0;
@@ -183,16 +188,17 @@ public class CSVHandler {
         CSVReader reader = new CSVReader(datainput, getSeparator(), getStringSeparator(), getSkipFirstXLines());
         String[] values;
         long currentLine = 0;
-		Serializable currentTimeStamp=null;
-		boolean quit = false;
+        Serializable currentTimeStamp = null;
+        boolean quit = false;
         while ((values = reader.readNext()) != null) {
             TreeMap<String, Serializable> se = convertTo(formats, fields, getNulls(), values, getSeparator());
-            if (isEmpty(se))
+            if (isEmpty(se)) {
                 continue;
+            }
             if (se.containsKey(TIMESTAMP)) {
                 if (((Long) se.get(TIMESTAMP)) <= previousCheckPoint) {
                     continue;
-				}
+                }
             } else {// assuming useCounterForCheckPoint = true
 
                 if (logger.isDebugEnabled()) {
@@ -201,36 +207,36 @@ public class CSVHandler {
                 }
 
                 if (currentLine < previousCheckPoint) {// skipping already read lines, based on line count
-                    if (logger.isDebugEnabled()) logger.debug("skipping");
+                    logger.debug("skipping");
                     currentLine++;
                     continue;
                 }
             }
-			if (quit) {
-				if (se.containsKey(TIMESTAMP)) {
-					if (currentTimeStamp == null || !currentTimeStamp.equals(se.get(TIMESTAMP))) {
-						break;
-					}
-				} else {
-					break;
-				}
+            if (quit) {
+                if (se.containsKey(TIMESTAMP)) {
+                    if (currentTimeStamp == null || !currentTimeStamp.equals(se.get(TIMESTAMP))) {
+                        break;
+                    }
+                } else {
+                    break;
+                }
             }
             toReturn.add(se);
             currentLine++;
             loggedNoChange = false;
             if (toReturn.size() >= samplingCountPerPeriod) {
-				// Move outside the loop as in each call we only read 250 values;
-				// But if we use timeStampMode, still check the next value, since
-				// if the timestamp is the same we have to return it, or data
-				// would be lost.
-				logger.trace("Time to quit.");
-                quit=true;
-				if (se.containsKey(TIMESTAMP)) {
-					currentTimeStamp = se.get(TIMESTAMP);
-				} else {
-					break;
-        }
-			}
+				// Move outside the loop as in each call we only read x values;
+                // But if we use timeStampMode, still check the next value, since
+                // if the timestamp is the same we have to return it, or data
+                // would be lost.
+                logger.trace("Time to quit.");
+                quit = true;
+                if (se.containsKey(TIMESTAMP)) {
+                    currentTimeStamp = se.get(TIMESTAMP);
+                } else {
+                    break;
+                }
+            }
         }
         if (logger.isDebugEnabled() && toReturn.isEmpty() && loggedNoChange == false) {
             logger.debug("There is no new item after most recent checkpoint(previousCheckPoint:" + new DateTime(previousCheckPoint) + ").");
@@ -242,16 +248,19 @@ public class CSVHandler {
     }
 
     private boolean isEmpty(Map<String, Serializable> se) {
-        for (Object o : se.values())
-            if (o != null)
+        for (Object o : se.values()) {
+            if (o != null) {
                 return false;
+            }
+        }
         return true;
     }
 
     public TreeMap<String, Serializable> convertTo(String[] formats, String[] fields, String nullValues[], String[] values, char separator) {
         TreeMap<String, Serializable> streamElement = new TreeMap<String, Serializable>(new CaseInsensitiveComparator());
-        for (String field : fields)
+        for (String field : fields) {
             streamElement.put(field, null);
+        }
         HashMap<String, String> timeStampFormats = new HashMap<String, String>();
         for (int i = 0; i < Math.min(fields.length, values.length); i++) {
             if (isNull(nullValues, values[i])) {
@@ -263,9 +272,9 @@ public class CSVHandler {
                     logger.error("Parsing to Numeric fails: Value to parse=" + values[i]);
                     throw e;
                 }
-            } else if (formats[i].equalsIgnoreCase("string"))
+            } else if (formats[i].equalsIgnoreCase("string")) {
                 streamElement.put(fields[i], values[i]);
-            else if (isTimeStampFormat(formats[i])) {
+			} else if (isTimeStampFormat(formats[i])) {
                 String value = "";
                 String format = "";
                 if (streamElement.get(fields[i]) != null) {
@@ -300,9 +309,9 @@ public class CSVHandler {
     }
 
     public static String getTimeStampFormat(String input) {
-        if (input.indexOf("timestampl(") >= 0)
+        if (input.contains("timestampl("))
             return input.substring("timestampl(".length(), input.indexOf(")")).trim();
-        else
+         else
             return input.substring("timestamp(".length(), input.indexOf(")")).trim();
     }
 
@@ -341,22 +350,24 @@ public class CSVHandler {
     }
 
     public DataField[] getDataFields() {
-        HashMap<String, String> fields = new HashMap<String, String>();
+        HashMap<String, String> dataFields = new HashMap<String, String>();
         for (int i = 0; i < getFields().length; i++) {
             String field = getFields()[i];
             String type = getFormats()[i];
             if (isTimeStampFormat(type)) {
                 //GSN doesn't support timestamp data type, all timestamp values are supposed to be bigint.
-                fields.put(field, "bigint");
-            } else if (type.equalsIgnoreCase("numeric"))
-                fields.put(field, "numeric");
-            else
-                fields.put(field, "string");
+                dataFields.put(field, "bigint");
+            } else if (type.equalsIgnoreCase("numeric")) {
+                dataFields.put(field, "numeric");
+            } else {
+                dataFields.put(field, "string");
+            }
         }
-        DataField[] toReturn = new DataField[fields.size()];
+        DataField[] toReturn = new DataField[dataFields.size()];
         int i = 0;
-        for (String key : fields.keySet())
-            toReturn[i++] = new DataField(key, fields.get(key));
+        for (String key : dataFields.keySet()) {
+            toReturn[i++] = new DataField(key, dataFields.get(key));
+        }
         return toReturn;
     }
 

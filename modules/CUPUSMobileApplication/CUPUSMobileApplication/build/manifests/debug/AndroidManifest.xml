@@ -1,0 +1,51 @@
+<!-- From: file:/C:/Users/Marko/Desktop/CUPUSMobileApplicationLite/CUPUSMobileApplicationLite/CUPUSMobileApplication/src/main/AndroidManifest.xml --><manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionCode="1" android:versionName="1.0" package="org.openiot.cupus.mobile.application">
+
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+
+
+    <!-- GCM permisions -->
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE"/>
+    <permission android:name="com.example.gcm.permission.C2D_MESSAGE" android:protectionLevel="signature"/>
+    <uses-permission android:name="com.example.gcm.permission.C2D_MESSAGE"/>
+
+
+    <uses-sdk android:minSdkVersion="14" android:targetSdkVersion="19"/>
+
+    <application android:allowBackup="true" android:icon="@drawable/ic_launcher" android:label="@string/app_name" android:name="org.openiot.cupus.mobile.application.MyApplication">
+        <activity android:label="@string/app_name" android:name="org.openiot.cupus.mobile.application.MenuActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+
+        <service android:enabled="true" android:exported="true" android:name="org.openiot.cupus.mobile.sensors.service.SensorService">
+        </service>
+
+        <service android:enabled="true" android:exported="true" android:name="org.openiot.cupus.mobile.entity.mobilebroker.MobileBrokerService">
+        </service>
+
+        <activity android:label="@string/title_activity_mobile_broker" android:name="org.openiot.cupus.mobile.application.MobileBrokerActivity">
+        </activity>
+        <activity android:label="@string/title_activity_sensor_service" android:name="org.openiot.cupus.mobile.application.SensorServiceActivity">
+        </activity>
+
+        <service android:enabled="true" android:exported="true" android:name="org.openiot.cupus.mobile.sensors.service.MultiSensorService">
+        </service>
+
+        <activity android:label="@string/title_activity_pressure_subscription" android:name="org.openiot.cupus.mobile.application.SubscriptionActivity">
+        </activity>
+        <activity android:label="@string/title_activity_notify_message" android:name="org.openiot.cupus.mobile.application.notification.MyNotifyMessage">
+        </activity>
+
+        <service android:name="org.openiot.cupus.mobile.entity.mobilebroker.GCMMobileBroker$GcmIntentService"/>
+
+    </application>
+
+</manifest>

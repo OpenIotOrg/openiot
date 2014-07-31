@@ -17,6 +17,7 @@
 *
 *    Contact: OpenIoT mailto: info@openiot.eu
 *    @author Sofiane Sarni
+*    @author Hylke van der Schaaf
 */
 
 package org.openiot.gsn.metadata.LSM;
@@ -32,7 +33,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class LSMSensorMetaData {
-
+	public final static String KEY_SENSOR_ID = "sensorID";
     private static final transient Logger logger = LoggerFactory.getLogger(LSMSensorMetaData.class);
     
     private String sensorName;
@@ -103,6 +104,7 @@ public class LSMSensorMetaData {
         this.sensorID = sensorID;
     }
 
+    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("LSMSensorMetaData{")
@@ -148,7 +150,22 @@ public class LSMSensorMetaData {
 		this.featureOfInterest = featureOfInterest;
 	}
 
-    public void init(Config conf){
+public void init(Config conf) {
+		init(conf, false);
+	}
+
+	/**
+	 * Initialize the sensor metadata from the given configuration set. If the
+	 * data set does not contain a sensorId, and allowMissingSensorId is not
+	 * true, an exception will be thrown. If allowMissingSensorId is true, then
+	 * the sensorId should be set externally.
+	 *
+	 * @param conf The configuration to use for initailization.
+	 * @param allowMissingSensorId Flag stating whether a missing sensorId is
+	 * allowed.
+	 */
+	public void init(Config conf, boolean allowMissingSensorId) {
+	
      
     	this.setSensorName(conf.getString("sensorName"));
         this.setAuthor(conf.getString("author"));
@@ -156,10 +173,22 @@ public class LSMSensorMetaData {
         this.setSensorType(conf.getString("sensorType"));
         this.setSourceType(conf.getString("sourceType"));
         this.setSource(conf.getString("source"));
-        this.setSensorID(conf.getString("sensorID"));
+if (conf.hasPath(KEY_SENSOR_ID)) {
+			this.setSensorID(conf.getString(KEY_SENSOR_ID));
+		} else {
+			if (!allowMissingSensorId) {
+				// This will throw an exception.
+				conf.getString(KEY_SENSOR_ID);
+			}
+		}
         this.setLatitude(conf.getDouble("latitude"));
         this.setLongitude(conf.getDouble("longitude"));
 
+        /*String registeredToLSMString = PropertiesReader.readProperty(fileName, "registered");
+        if (registeredToLSMString.equalsIgnoreCase("true"))
+            registeredToLSM = true;
+        else
+            registeredToLSM = false;*/
         String listOfFieldsString = conf.getString("fields");
         String [] fieldNames = listOfFieldsString.trim().split(",");
         for (int i = 0; i < fieldNames.length; i++) {
@@ -170,8 +199,22 @@ public class LSMSensorMetaData {
             lsmFieldMetaData.setLsmPropertyName(conf.getString("field." + fieldName + "." + "propertyName"));
             lsmFieldMetaData.setLsmUnit(conf.getString("field." + fieldName + "." + "unit"));
             fields.put(fieldName, lsmFieldMetaData);
-            logger.info(fields.get(fieldName).toString());
+            logger.info(fields.get(fieldName));
         }
+        /*String [] props = new String[fieldNames.length];
+        int i=0;
+        for (LSMFieldMetaData field : fields.values()){
+        	props[i]=field.getLsmPropertyName();i++;
+        }
+        this.setProperties(props);*/
+
+    /*} catch (NullPointerException e) {
+        logger.warn("Error while reading properties file: " + fileName);
+        logger.warn(e);
+        return false;
+    }*/
+
+    //return true;
 
     }
     
@@ -188,7 +231,4 @@ public class LSMSensorMetaData {
         	props[i]=field.getLsmPropertyName();i++;
         }
 		return props;
-	}
-
-
 }

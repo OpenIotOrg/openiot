@@ -140,10 +140,12 @@ public class LSMRepository {
      */
     @Deprecated
     public boolean announceSensor(VSensorConfig vsConfig) throws FileNotFoundException {
-       
+        String metadataFile = vsConfig.getFileName() + METADATA_FILE_SUFFIX;
+
     	LSMSensorMetaData lsmSensorMetaData = loadMetadata(vsConfig);    	
         logger.info(lsmSensorMetaData.toString());
         if (lsmSensorMetaData==null) return false;
+
 
 
         // announce sensor to LSM
@@ -167,10 +169,16 @@ public class LSMRepository {
         LSMSensorMetaData lsmSensorMetaData = new LSMSensorMetaData();
         lsmSensorMetaData.initFromConfigFile(metadataFile);
 
-        logger.info(lsmSensorMetaData.toString());
-       
+        logger.info(lsmSensorMetaData);
+
+        //TODO: check if sensor is already registered to LSM (to avoid duplicates)
+        /*if (lsmSensorMetaData.isRegisteredToLSM()) {
+            logger.info("Sensor " + lsmSensorMetaData.getSensorName() + " already registered to LSM with id " + lsmSensorMetaData.getSensorID() + ". No need to register it again.");
+            return true;
+        }*/        
+
         // announce sensor to LSM
-        String sensorID = SensorAnnotator.addSensorToLSM(lsmSensorMetaData);
+        String sensorID = MetadataCreator.addSensorToLSM(lsmSensorMetaData);
         // check returned sensor ID
         if (sensorID == "") {
             logger.warn("Couldn't register sensor " + lsmSensorMetaData.getSensorName() + " to LSM. Received empty sensor ID");

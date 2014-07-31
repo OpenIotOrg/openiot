@@ -215,7 +215,7 @@ public class RegisterServiceImpl {
 
 		logger.debug(myOntInstance.exportToTriples("TURTLE"));
 //		boolean ok = 
-		lsmStore.pushRDF(lsmFunctionalGraph, myOntInstance.exportToTriples("N-TRIPLE"));
+		lsmStore.pushRDF(lsmFunctionalGraph, myOntInstance.exportToTriples("N-TRIPLE"),"","");
 
 //		if (ok) {
 //			replyMessage = "regester service successfull";

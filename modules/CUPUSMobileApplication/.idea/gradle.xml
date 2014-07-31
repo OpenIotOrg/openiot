@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="GradleSettings">
+    <option name="linkedExternalProjectsSettings">
+      <GradleProjectSettings>
+        <option name="distributionType" value="DEFAULT_WRAPPED" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="modules">
+          <set>
+            <option value="C:\Users\Marko\Desktop\CUPUSMobileApplicationLite\CUPUSMobileApplicationLite" />
+            <option value="C:\Users\Marko\Desktop\CUPUSMobileApplicationLite\CUPUSMobileApplicationLite\CUPUS-commons" />
+            <option value="C:\Users\Marko\Desktop\CUPUSMobileApplicationLite\CUPUSMobileApplicationLite\CUPUSMobileApplication" />
+          </set>
+        </option>
+      </GradleProjectSettings>
+    </option>
+  </component>
+</project>
+

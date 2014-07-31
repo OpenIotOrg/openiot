@@ -130,7 +130,7 @@ public class UserRegisterImpl
 			
 			logger.debug(myOntInstance.exportToTriples("TURTLE"));
 //			boolean ok = 
-			lsmStore.pushRDF(SchedulerLsmFunctionalGraph,myOntInstance.exportToTriples("N-TRIPLE"));
+			lsmStore.pushRDF(SchedulerLsmFunctionalGraph,myOntInstance.exportToTriples("N-TRIPLE"),"","");
 
 			
 //			if(ok){
