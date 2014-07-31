@@ -104,7 +104,7 @@ public class VSManagerService {
 			}
 			InputStream is = new ByteArrayInputStream(concat.getBytes());
 			meta.load(is);
-		    MetadataCreator.addRdfMetadatatoLSM(meta);
+		    SensorAnnotator.addRdfMetadatatoLSM(meta);
 			FileWriter fw = new FileWriter(filePath, true);			
 		    IOUtils.writeLines(lines, "\n", fw);
 	        fw.close();
@@ -133,7 +133,7 @@ public class VSManagerService {
 				sensorIdOld = configData.getString(LSMSensorMetaData.KEY_SENSOR_ID);
 			}
 			lsmmd.init(configData, true);
-			sensorId = MetadataCreator.addSensorToLSM(lsmmd);
+			sensorId = SensorAnnotator.addSensorToLSM(lsmmd);
 
 			if (sensorIdOld == null || sensorId.compareTo(sensorIdOld) != 0) {
 				logger.info("SensorId has changed from {} to {}.", sensorIdOld, sensorId);
@@ -177,7 +177,7 @@ public class VSManagerService {
 
 						String sensorId = sensorConfig.getString(LSMSensorMetaData.KEY_SENSOR_ID);
 						logger.info("Deleting sensor {} from LSM. SensorId: {}.", vsname, sensorId);
-						MetadataCreator.deleteSensorFromLSM(sensorId);
+						SensorAnnotator.deleteSensorFromLSM(sensorId);
 
 						if (!vsMetaFile.delete()) {
 							logger.error("Failed to delete sensor metadata file.");
