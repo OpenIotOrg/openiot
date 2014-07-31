@@ -23,15 +23,18 @@
 package org.openiot.gsn.vsensor;
 
 import org.openiot.gsn.beans.DataField;
+import org.openiot.gsn.beans.DataTypes;
 import org.openiot.gsn.beans.StreamElement;
 import org.openiot.gsn.beans.VSensorConfig;
 import org.openiot.gsn.metadata.LSM.LSMRepository;
+import org.openiot.gsn.metadata.LSM.LSMSensorMetaData;
 import org.openiot.gsn.metadata.LSM.SensorAnnotator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.typesafe.config.Config;
-import com.typesafe.config.ConfigFactory;
+//import com.typesafe.config.Config;
+//import com.typesafe.config.ConfigFactory;
+
 
 import java.util.*;
 
@@ -48,22 +51,26 @@ public class LSMExporter extends AbstractVirtualSensor {
     public boolean initialize() {
 
     	//Config prefixes=ConfigFactory.load().getConfig("prefixes");
-    	
+    	LSMSensorMetaData metadata;
         VSensorConfig vsensor = getVirtualSensorConfiguration();
         try {        	
-        	LSMRepository.getInstance().loadMetadata(vsensor);
+        	metadata = LSMRepository.getInstance().loadMetadata(vsensor);
         } catch (Exception e){
         	e.printStackTrace();
         	logger.error("No LSM metadata available for loading vsensor "+vsensor.getName());
         	return false;
         }
-        //publish_to_lsm = vsensor.getPublishToLSM();
         TreeMap<String, String> params = vsensor.getMainClassInitialParams();
         sensorName = vsensor.getName();        
         
         for (DataField df:vsensor.getOutputStructure()){
         	logger.info("Property:"+ df.getName()+"--"+df.getProperty());
-        	fieldUris.put(df.getName().toUpperCase(), df.getProperty());
+        	if (df.getProperty()!=null)
+        	  fieldUris.put(df.getName().toUpperCase(), df.getProperty());
+        	else {
+        		String propUri=metadata.getFields().get(df.getName()).getLsmPropertyName();
+        		fieldUris.put(df.getName().toUpperCase(), propUri);
+        	}
         }
         
         String allow_nulls_str = params.get("allow-nulls");
@@ -86,20 +93,29 @@ public class LSMExporter extends AbstractVirtualSensor {
     }
 
     public void dataAvailable(String inputStreamName, StreamElement data) {
-
+    	
+            	
         Long t = data.getTimeStamp();
         for (int i = 0; i < fields.size(); i++) {
             String field = fields.get(i);
-            Double v = (Double) data.getData(field);
+            Object val;
+            if (data.getFieldTypes()[i].equals(DataTypes.VAR_CHAR_PATTERN_STRING) ||
+                    data.getFieldTypes()[i].equals(DataTypes.VARCHAR) ||
+                    data.getFieldTypes()[i].equals(DataTypes.VARCHAR_NAME) ){
+            	val = (String) data.getData(field);
+            }
+            else {
+            	val = (Double) data.getData(field);
+            }
             Date d = new Date(t);
             String fieldName = data.getFieldNames()[i];
-            logger.debug(fieldName + " : t=" + d + " v=" + v);
-
-            if (!allow_nulls && v == null)
+            logger.debug(fieldName + " : t=" + d + " v=" + val);
+            
+            if (!allow_nulls && val == null)
                 return; // skipping null values if allow_nulls flag is not st to true
-
+          
             if (publish_to_lsm) {
-                SensorAnnotator.updateSensorDataOnLSM(sensorName, fieldName, fieldUris.get(fieldName), v, d);                
+                SensorAnnotator.updateSensorDataOnLSM(sensorName, fieldName, fieldUris.get(fieldName), val, d);                
             }
 
             //dataProduced(data);

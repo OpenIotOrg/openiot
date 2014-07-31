@@ -1,6 +1,5 @@
 package org.openiot.gsn.utils;
 
-import org.jboss.resteasy.client.ClientRequest;
 import org.openiot.security.client.AccessControlUtil;
 import org.openiot.security.client.OAuthorizationCredentials;
 import org.slf4j.Logger;
@@ -25,7 +24,7 @@ public class CASUtils {
 	private static String password="";
 	
 	static {
-		Config conf=ConfigFactory.load();//LSMRepository.LSM_CONFIG_PROPERTIES_FILE);
+		Config conf=ConfigFactory.load();
 		username=conf.getString("username");
 		password=conf.getString("password");
 	}
@@ -36,7 +35,6 @@ public class CASUtils {
 	static OAuthorizationCredentials credentials;
 	
 	public static OAuthorizationCredentials getTokenAndId() {
-		//ClientRequest request = new ClientRequest(
 		if (credentials!=null){
 			if (System.currentTimeMillis() - lastExpiryCheck > EXPIRY_CHECK_INTERVAL) {
 				logger.debug("Checking if LSM access token is expired");

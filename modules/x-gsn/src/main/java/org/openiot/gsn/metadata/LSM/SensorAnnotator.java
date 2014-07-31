@@ -44,13 +44,11 @@ public class SensorAnnotator {
     private static String lsmServer="";
     private static String metaGraph="";
     private static String dataGraph="";
-    //private static LSMSchema lsmSchema=new LSMSchema();
 	static{
 		Config conf=ConfigFactory.load();//LSMRepository.LSM_CONFIG_PROPERTIES_FILE);
 		metaGraph=conf.getString("metaGraph");
 		dataGraph=conf.getString("dataGraph");
 		lsmServer=conf.getString("lsm.server");
-		//lsmSchema.initFromConfigFile(LSMRepository.LSM_CONFIG_PROPERTIES_FILE);
 	}
 
     public static String addSensorToLSM(LSMSensorMetaData md){
@@ -78,10 +76,8 @@ public class SensorAnnotator {
             Sensor sensor = new Sensor();
             sensor.setName(sensorName);
             sensor.setAuthor(sensorAuthor);
-            //sensor.setSourceType(sourceType);
             sensor.setSensorType(sensorType);
             sensor.setInfor(infor);
-            //sensor.setSource(sensorSource);
             for (String p:properties){
             	sensor.addProperty(p);
             }
@@ -108,7 +104,7 @@ public class SensorAnnotator {
     }
 
     public static boolean updateSensorDataOnLSM(String vsName, String fieldName, 
-    		String propertyUri,double value, Date date) {
+    		String propertyUri,Object value, Date date) {
         boolean success = true;
         
         //String field = fieldName.toLowerCase();
@@ -125,7 +121,7 @@ public class SensorAnnotator {
     
     public static boolean updateSensorDataOnLSM(String metaGraph,String dataGraph,
             String sensorID,String propertyType,
-            double fieldValue,String fieldUnit,
+            Object fieldValue,String fieldUnit,
             String feature,Date date) {
 
     	boolean success = true;
@@ -194,8 +190,16 @@ public class SensorAnnotator {
 		    //LSMSchema schema = new LSMSchema();
 		    //schema.initFromConfigFile(metadataFileName);
 		    String SID = addSensorToLSM(metaData);
+		    System.out.println("--------------------"+metadataFileName);
 		    logger.info("Sensor registered to LSM with ID: " + SID);
-			
+	        try {
+	        	logger.debug("Rewrite sensorId for: "+metadataFileName);
+				LSMRepository.getInstance().writeSensorId(metadataFileName, SID);
+			} catch (Exception e) {
+				logger.error("Error "+e.getMessage());
+				e.printStackTrace();
+			}
+
 		}
 		//rdf file
 		else if (args[1].equals("-rdf")){

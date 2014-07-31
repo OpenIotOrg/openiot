@@ -21,9 +21,6 @@
 
 package org.openiot.gsn.metadata.LSM;
 
-import org.openiot.gsn.utils.PropertiesReader;
-import org.apache.log4j.Logger;
-
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 
@@ -31,9 +28,12 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class LSMSensorMetaData {
 
-    private static final transient Logger logger = Logger.getLogger(LSMSensorMetaData.class);
+    private static final transient Logger logger = LoggerFactory.getLogger(LSMSensorMetaData.class);
     
     private String sensorName;
     private String author;
@@ -42,11 +42,8 @@ public class LSMSensorMetaData {
     private String sourceType;
     private String source;
     private String featureOfInterest;
-    //private String[] properties;
-    //private boolean registeredToLSM;
     private double latitude;
     private double longitude;
-    //private String fieldNames[];
     private Map<String, LSMFieldMetaData> fields = new HashMap<String, LSMFieldMetaData>();
     String sensorID;
 
@@ -86,25 +83,9 @@ public class LSMSensorMetaData {
         this.longitude = longitude;
     }
 
-    /*public String[] getFieldNames() {
-        return fieldNames;
-    }
-
-    public void setFieldNames(String[] fieldNames) {
-        this.fieldNames = fieldNames;
-    }*/
-
     public Map<String, LSMFieldMetaData> getFields() {
         return fields;
     }
-/*
-    public void setFields(Map<String, LSMFieldMetaData> fields) {
-        this.fields = fields;
-    }
-*/
-    /*public boolean isRegisteredToLSM() {
-        return registeredToLSM;
-    }*/
 
     public String getSource() {
         return source;
@@ -159,6 +140,14 @@ public class LSMSensorMetaData {
         this.sourceType = sourceType;
     }
 
+	public String getFeatureOfInterest() {
+		return featureOfInterest;
+	}
+
+	public void setFeatureOfInterest(String featureOfInterest) {
+		this.featureOfInterest = featureOfInterest;
+	}
+
     public void init(Config conf){
      
     	this.setSensorName(conf.getString("sensorName"));
@@ -171,11 +160,6 @@ public class LSMSensorMetaData {
         this.setLatitude(conf.getDouble("latitude"));
         this.setLongitude(conf.getDouble("longitude"));
 
-        /*String registeredToLSMString = PropertiesReader.readProperty(fileName, "registered");
-        if (registeredToLSMString.equalsIgnoreCase("true"))
-            registeredToLSM = true;
-        else
-            registeredToLSM = false;*/
         String listOfFieldsString = conf.getString("fields");
         String [] fieldNames = listOfFieldsString.trim().split(",");
         for (int i = 0; i < fieldNames.length; i++) {
@@ -186,7 +170,7 @@ public class LSMSensorMetaData {
             lsmFieldMetaData.setLsmPropertyName(conf.getString("field." + fieldName + "." + "propertyName"));
             lsmFieldMetaData.setLsmUnit(conf.getString("field." + fieldName + "." + "unit"));
             fields.put(fieldName, lsmFieldMetaData);
-            logger.info(fields.get(fieldName));
+            logger.info(fields.get(fieldName).toString());
         }
 
     }
@@ -197,14 +181,6 @@ public class LSMSensorMetaData {
         init(conf);
     }
 
-    /*public boolean updateSensorIDInConfigFile(String fileName, String sensorID) {
-        return PropertiesReader.writeProperty(fileName, "sensorID", sensorID);
-    }
-
-    public boolean setSensorAsRegistered(String fileName) {
-        return PropertiesReader.writeProperty(fileName, "registered", "true");
-    }*/
-
 	public String[] getProperties() {
 		String [] props = new String[fields.size()];
         int i=0;
@@ -213,17 +189,6 @@ public class LSMSensorMetaData {
         }
 		return props;
 	}
-/*
-	public void setProperties(String[] properties) {
-		this.properties = properties;
-	}
-*/
-	public String getFeatureOfInterest() {
-		return featureOfInterest;
-	}
 
-	public void setFeatureOfInterest(String featureOfInterest) {
-		this.featureOfInterest = featureOfInterest;
-	}
 
 }

@@ -77,7 +77,7 @@ public class SensorMetadata {
 		  if (!units.hasNext())
 			  throw new IllegalArgumentException("The property "+prop+" has no unit");
 		  Resource unit=prop.getPropertyResourceValue(quUnit);
-		  //String column=prop.listProperties(rrColumnName).next().getObject().toString();
+		  //String column=prop.listProperties(rrColumnName).next().getObject().toString();		  
 		  lsmField.setLsmPropertyName(prop.getURI());
 		  lsmField.setLsmUnit(unit.getURI());
 		  md.getFields().put(prop.getURI(), lsmField);
