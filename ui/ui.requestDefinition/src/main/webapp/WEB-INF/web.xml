@@ -32,6 +32,17 @@
 		<param-name>javax.faces.STATE_SAVING_METHOD</param-name>
 		<param-value>server</param-value>
 	</context-param>
+
+	<context-param>
+		<param-name>shiroEnvironmentClass</param-name>
+		<param-value>org.openiot.security.client.CustomIniWebEnvironment</param-value>
+	</context-param>
+
+	<context-param>
+		<param-name>module-name</param-name>
+		<param-value>security.management</param-value>
+	</context-param>
+
 	<!-- BEGIN: Faces servlet -->
 	<servlet>
 		<servlet-name>Faces Servlet</servlet-name>
@@ -52,6 +63,19 @@
 	</servlet-mapping>
 	<!--  Upload filter -->
 	<filter>
+		<filter-name>ShiroFilter</filter-name>
+		<filter-class>org.apache.shiro.web.servlet.ShiroFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>ShiroFilter</filter-name>
+		<url-pattern>/login</url-pattern>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	<listener>
+		<listener-class>org.apache.shiro.web.env.EnvironmentLoaderListener</listener-class>
+	</listener>
+
+	<filter>
 		<filter-name>PrimeFaces FileUpload Filter</filter-name>
 		<filter-class>org.primefaces.webapp.filter.FileUploadFilter</filter-class>
 	</filter>
@@ -64,5 +88,6 @@
 	</session-config>
 	<welcome-file-list>
 		<welcome-file>pages/applicationDesign.xhtml</welcome-file>
+		<!--<welcome-file>/home</welcome-file>-->
 	</welcome-file-list>
 </web-app>
