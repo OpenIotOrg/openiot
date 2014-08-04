@@ -255,8 +255,13 @@ public class SchedulerRsControler {
 	 */
 	@GET
 	@Path("/getApplication")
-	public OAMO getApplication(@QueryParam("applicationID") String applicationID) {
+	public OAMO getApplication(@QueryParam("applicationID") String applicationID, @QueryParam("clientId") String clientId, @QueryParam("token") String token) {
 
+		if(!SecurityUtil.hasPermission(PermissionsUtil.SCHEDULER_ALL, token, clientId)){
+			logger.info("Missing required permissions");
+			return null;
+		}
+		
 		GetApplicationImpl application = new GetApplicationImpl(applicationID);		
 
 		return application.getOAMO();
@@ -275,8 +280,13 @@ public class SchedulerRsControler {
 	 */
 	@GET
 	@Path("/getService")
-	public OSMO getService(@QueryParam("serviceID") String serviceID) {
+	public OSMO getService(@QueryParam("serviceID") String serviceID, @QueryParam("clientId") String clientId, @QueryParam("token") String token) {
 
+		if(!SecurityUtil.hasPermission(PermissionsUtil.SCHEDULER_ALL, token, clientId)){
+			logger.info("Missing required permissions");
+			return null;
+		}
+		
 		GetServiceImpl service =  new GetServiceImpl(serviceID);		
 		
 		return service.getService();
@@ -295,8 +305,13 @@ public class SchedulerRsControler {
 	 */
 	@GET
 	@Path("/getAvailableAppIDs")
-	public DescreptiveIDs getAvailableAppIDs(@QueryParam("userID") String userID) {
+	public DescreptiveIDs getAvailableAppIDs(@QueryParam("userID") String userID, @QueryParam("clientId") String clientId, @QueryParam("token") String token) {
 
+		if(!SecurityUtil.hasPermission(PermissionsUtil.SCHEDULER_ALL, token, clientId)){
+			logger.info("Missing required permissions");
+			return null;
+		}
+		
 		GetAvailableAppIDsImpl availableAppIDs = new GetAvailableAppIDsImpl(userID);
 
 		return availableAppIDs.getAvailableAppIDs();
@@ -315,8 +330,13 @@ public class SchedulerRsControler {
 	 */
 	@GET
 	@Path("/getAvailableServiceIDs")
-	public DescreptiveIDs getAvailableServiceIDs(@QueryParam("applicationID") String applicationID) {
+	public DescreptiveIDs getAvailableServiceIDs(@QueryParam("applicationID") String applicationID, @QueryParam("clientId") String clientId, @QueryParam("token") String token) {
 
+		if(!SecurityUtil.hasPermission(PermissionsUtil.SCHEDULER_ALL, token, clientId)){
+			logger.info("Missing required permissions");
+			return null;
+		}
+		
 		GetAvailableServiceIDsImpl availableServiceIDs = new GetAvailableServiceIDsImpl(applicationID);
 				
 		return availableServiceIDs.getAvailableServiceIDs();
@@ -331,8 +351,13 @@ public class SchedulerRsControler {
 	 */
 	@GET
 	@Path("/getAvailableApps")
-	public OSDSpec getAvailableApps(@QueryParam("userID") String userID) {
+	public OSDSpec getAvailableApps(@QueryParam("userID") String userID, @QueryParam("clientId") String clientId, @QueryParam("token") String token) {
 
+		if(!SecurityUtil.hasPermission(PermissionsUtil.SCHEDULER_ALL, token, clientId)){
+			logger.info("Missing required permissions");
+			return null;
+		}
+		
 		GetAvailableAppsImpl availableApps = new GetAvailableAppsImpl(userID); 
 
 		return availableApps.getAvailableApps();

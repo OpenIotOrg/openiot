@@ -182,7 +182,7 @@ public class SecurityInitializer {
 		lsmServerService.setEvaluationOrder(0);
 		lsmServerService.setIgnoreAttributes(false);
 		lsmServerService.setName(acUtil.getClient().getKey());
-		lsmServerService.setServiceId("http://lsm-light.server/callback");
+		lsmServerService.setServiceId("REST://lsm-light.server");
 		lsmServerService.setTheme("LSM-Server");
 		lsmServerService.setSsoEnabled(true);
 

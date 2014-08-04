@@ -126,7 +126,6 @@ public class SchedulerAPIWrapper {
 		String responseText = null;
 
 		try {
-			OSDSpec spec = null;
 			response = getAvailableAppsClientRequest.get(String.class);
 
 			if (response.getStatus() != 200) {
