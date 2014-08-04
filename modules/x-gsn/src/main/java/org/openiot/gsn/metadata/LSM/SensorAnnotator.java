@@ -103,6 +103,19 @@ public class SensorAnnotator {
         return sensorID;
     }
 
+	/**
+	 * Deletes the sensor and all sensor readings from the LSM data store.
+	*
+	* @param sensorId The sensorId of the sensor for which to delete all data.
+	*/
+	public static void deleteSensorFromLSM(String sensorId) {
+		LSMTripleStore lsmStore = new LSMTripleStore(lsmServer);
+        OAuthorizationCredentials cred=CASUtils.getTokenAndId();            
+		lsmStore.deleteAllReadings(sensorId, dataGraph,cred.getClientId(),cred.getAccessToken());
+		lsmStore.sensorDelete(sensorId, metaGraph,cred.getClientId(),cred.getAccessToken());
+	}
+
+
     public static boolean updateSensorDataOnLSM(String vsName, String fieldName, 
     		String propertyUri,Object value, Date date) {
         boolean success = true;

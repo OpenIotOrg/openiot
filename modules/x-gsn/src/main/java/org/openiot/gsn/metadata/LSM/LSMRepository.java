@@ -102,6 +102,18 @@ public class LSMRepository {
         else throw new IllegalStateException("No metadata available for Virtual Sensor "+vsName);
     }
     
+	/**
+    * Remove the given virtual sensor from the cache so a new sensor with the
+    * same name does not re-use the old data.
+    *
+    * 	@param vsName The name of the sensor that needs to be removed.
+    */
+    public void unloadMetaData(String vsName) {
+    	lsmSensorsMetaDataLookupTable.remove(vsName);
+    }
+
+
+    
     public void writeSensorId(String filePath,String sensorId) throws Exception{
     	logger.info("Overwrite "+sensorId+ " for "+filePath);
     	
