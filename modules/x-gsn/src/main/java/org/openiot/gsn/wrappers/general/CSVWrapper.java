@@ -1,22 +1,28 @@
 /**
-*    Copyright (c) 2011-2014, OpenIoT
-*   
-*    This file is part of OpenIoT.
-*
-*    OpenIoT is free software: you can redistribute it and/or modify
-*    it under the terms of the GNU Lesser General Public License as published by
-*    the Free Software Foundation, version 3 of the License.
-*
-*    OpenIoT is distributed in the hope that it will be useful,
-*    but WITHOUT ANY WARRANTY; without even the implied warranty of
-*    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*    GNU Lesser General Public License for more details.
-*
-*    You should have received a copy of the GNU Lesser General Public License
-*    along with OpenIoT.  If not, see <http://www.gnu.org/licenses/>.
-*
-*     Contact: OpenIoT mailto: info@openiot.eu
-*/
+ *    Copyright (c) 2011-2014, OpenIoT
+ *
+ *    This file is part of OpenIoT.
+ *
+ *    OpenIoT is free software: you can redistribute it and/or modify
+ *    it under the terms of the GNU Lesser General Public License as published by
+ *    the Free Software Foundation, version 3 of the License.
+ *
+ *    OpenIoT is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *    GNU Lesser General Public License for more details.
+ *
+ *    You should have received a copy of the GNU Lesser General Public License
+ *    along with OpenIoT.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *     Contact: OpenIoT mailto: info@openiot.eu
+ * @author Mehdi Riahi
+ * @author Ali Salehi
+ * @author Timotee Maret
+ * @author Sofiane Sarni
+ * @author Milos Stojanovic
+ * @author Hylke van der Schaaf
+ */
 
 package org.openiot.gsn.wrappers.general;
 
@@ -50,18 +56,23 @@ public class CSVWrapper extends AbstractWrapper {
     private CSVHandler handler = new CSVHandler();
 
     private int samplingPeriodInMsc;
+    /**
+     * The maximum number of samples to read from the file per sampling period.
+     */
+    private int samplingCountPerPeriod;
 
     private String checkPointDir;
 
-    private String dataFile;
+    private String dataFileName;
 
     boolean useCounterForCheckPoint = false;
     long processedLineCounter = 0; // counts lines processed when checkpoint use counter to track changes (instead of timestamp, by default)
 
+    @Override
     public boolean initialize() {
         setName("CSVWrapper-Thread" + (++threadCounter));
         AddressBean addressBean = getActiveAddressBean();
-        dataFile = addressBean.getPredicateValueWithException("file");
+        dataFileName = addressBean.getPredicateValueWithException("file");
         String csvFields = addressBean.getPredicateValueWithException("fields");
         String csvFormats = addressBean.getPredicateValueWithException("formats");
         //String csvSeparator = addressBean.getPredicateValueWithDefault("separator",",");
@@ -70,15 +81,15 @@ public class CSVWrapper extends AbstractWrapper {
         checkPointDir = addressBean.getPredicateValueWithDefault("check-point-directory", "./csv-check-points");
         String csvStringQuote = addressBean.getPredicateValueWithDefault("quote", "\"");
         int skipFirstXLine = addressBean.getPredicateValueAsInt("skip-first-lines", 0);
-        String timezone = addressBean.getPredicateValueWithDefault("timezone", handler.LOCAL_TIMEZONE_ID);
+        String timezone = addressBean.getPredicateValueWithDefault("timezone", CSVHandler.LOCAL_TIMEZONE_ID);
         String nullValues = addressBean.getPredicateValueWithDefault("bad-values", "");
         String strUseCounterForCheckPoint = addressBean.getPredicateValueWithDefault("use-counter-for-check-point", "false");
         samplingPeriodInMsc = addressBean.getPredicateValueAsInt("sampling", 10000);
+        samplingCountPerPeriod = addressBean.getPredicateValueAsInt("sampling-count", 250);
 
         /*
-        DEBUG_INFO(dataFile);
-        */
-
+         DEBUG_INFO(dataFile);
+         */
         if (csvSeparator != null && csvSeparator.length() != 1) {
             logger.warn("The provided CSV separator:>" + csvSeparator + "< should only have  1 character, thus ignored and instead \",\" is used.");
             csvSeparator = ",";
@@ -104,35 +115,37 @@ public class CSVWrapper extends AbstractWrapper {
                     .append("_")
                     .append(addressBean.getWrapper())
                     .append("_")
-                    .append(new File(dataFile).getName());
-            if (!handler.initialize(dataFile.trim(), csvFields, csvFormats, csvSeparator.toCharArray()[0], csvStringQuote.toCharArray()[0], skipFirstXLine, nullValues, timezone, checkPointFile.toString()))
+                    .append(new File(dataFileName).getName());
+            if (!handler.initialize(dataFileName.trim(), csvFields, csvFormats, csvSeparator.toCharArray()[0], csvStringQuote.toCharArray()[0], skipFirstXLine, nullValues, timezone, checkPointFile.toString())) {
                 return false;
+            }
 
             String val = FileUtils.readFileToString(new File(checkPointFile.toString()), "UTF-8");
             long lastItem = 0;
-            if (val != null && val.trim().length() > 0)
+            if (val != null && val.trim().length() > 0) {
                 lastItem = Long.parseLong(val.trim());
-            logger.warn("Latest item: "+lastItem);
+            }
+            logger.warn("Latest item: " + lastItem);
 
             if (useCounterForCheckPoint) {
                 processedLineCounter = lastItem;
             }
 
-        } catch (Exception e) {
+        } catch (IOException | NumberFormatException e) {
             logger.error("Loading the csv-wrapper failed:" + e.getMessage(), e);
             return false;
         }
 
         dataField = handler.getDataFields();
 
-        logger.warn("Reading from: " + dataFile);
+        logger.warn("Reading from: " + dataFileName);
 
         return true;
     }
 
-
+    @Override
     public void run() {
-        Exception preivousError = null;
+        Exception previousError = null;
         long previousModTime = -1;
         long previousCheckModTime = -1;
         while (isActive()) {
@@ -140,74 +153,85 @@ public class CSVWrapper extends AbstractWrapper {
             File chkPointFile = new File(handler.getCheckPointFile());
             long lastModified = -1;
             long lastModifiedCheckPoint = -1;
-            if (dataFile.isFile())
+            if (dataFile.isFile()) {
                 lastModified = dataFile.lastModified();
-            if (chkPointFile.isFile())
+            }
+            if (chkPointFile.isFile()) {
                 lastModifiedCheckPoint = chkPointFile.lastModified();
+            }
             FileReader reader = null;
 
             /*
-            DEBUG_INFO("* Entry *");
-            DEBUG_INFO(list("lastModified", lastModified));
-            DEBUG_INFO(list("lastModifiedCheckPoint", lastModifiedCheckPoint));
-            */
-
+             DEBUG_INFO("* Entry *");
+             DEBUG_INFO(list("lastModified", lastModified));
+             DEBUG_INFO(list("lastModifiedCheckPoint", lastModifiedCheckPoint));
+             */
             try {
-                ArrayList<TreeMap<String, Serializable>> output = null;
-                if (preivousError == null || (preivousError != null && ((lastModified != previousModTime || lastModifiedCheckPoint != previousCheckModTime) || useCounterForCheckPoint))) {
+                ArrayList<TreeMap<String, Serializable>> output;
+                if (previousError == null || ((lastModified != previousModTime || lastModifiedCheckPoint != previousCheckModTime) || useCounterForCheckPoint)) {
 
                     reader = new FileReader(handler.getDataFile());
-                    output = handler.work(reader, checkPointDir);
+                    output = handler.work(reader, checkPointDir, samplingCountPerPeriod);
                     for (TreeMap<String, Serializable> se : output) {
                         StreamElement streamElement = new StreamElement(se, getOutputFormat());
                         processedLineCounter++;
-                        //logger.warn(se);
+                        logger.warn(se);
                         boolean insertionSuccess = postStreamElement(streamElement);
 
-                        if (!useCounterForCheckPoint)
+                        if (!insertionSuccess) {
+                            logger.error("Insert failed.");
+                        }
+
+                        if (!useCounterForCheckPoint) {
                             handler.updateCheckPointFile(streamElement.getTimeStamp()); // write latest processed timestamp
-                        else
+                        } else {
                             handler.updateCheckPointFile(processedLineCounter); // write latest processed line number
+                        }
                     }
                 }
                 //if (output==null || output.size()==0) //More intelligent sleeping, being more proactive once the wrapper receives huge files.
                 Thread.sleep(samplingPeriodInMsc);
-            } catch (Exception e) {
-                if (preivousError != null && preivousError.getMessage().equals(e.getMessage()))
+            } catch (IOException | InterruptedException e) {
+                if (previousError != null && previousError.getMessage().equals(e.getMessage())) {
                     continue;
+                }
                 logger.error(e.getMessage() + " :: " + dataFile, e);
-                preivousError = e;
+                previousError = e;
                 previousModTime = lastModified;
                 previousCheckModTime = lastModifiedCheckPoint;
             } finally {
-                if (reader != null)
+                if (reader != null) {
                     try {
                         reader.close();
                     } catch (IOException e) {
                         logger.debug(e.getMessage(), e);
                     }
+                }
             }
             /*
-            DEBUG_INFO("* Exit *");
-            */
+             DEBUG_INFO("* Exit *");
+             */
         }
     }
 
+    @Override
     public DataField[] getOutputFormat() {
         return dataField;
     }
 
+    @Override
     public String getWrapperName() {
         return this.getClass().getName();
     }
 
+    @Override
     public void dispose() {
         threadCounter--;
     }
 
- /*
-   * Convenient function used for debugging
-   * */
+    /*
+     * Convenient function used for debugging
+     * */
     public void DEBUG_INFO(String s) {
 
         String date = new java.text.SimpleDateFormat("MM/dd/yyyy HH:mm:ss,SSS").format(new java.util.Date(System.currentTimeMillis()));
@@ -215,13 +239,12 @@ public class CSVWrapper extends AbstractWrapper {
         try {
             FileUtils.writeStringToFile(new File("DEBUG_INFO_" + threadCounter + ".txt"), s, true);
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("", e);
         }
     }
 
     String list(String name, long value) {
         return name + " = " + value + " (" + new java.text.SimpleDateFormat("MM/dd/yyyy HH:mm:ss,SSS").format(new java.util.Date(value)) + ")";
     }
-
 
 }

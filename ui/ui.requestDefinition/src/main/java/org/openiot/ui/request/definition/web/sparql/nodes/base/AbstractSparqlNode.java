@@ -28,17 +28,18 @@ import org.openiot.commons.util.PropertyManagement;
 
 public abstract class AbstractSparqlNode implements Serializable{
 	public static int DEPTH_SPACES = 2;
-	
-	public static PropertyManagement propertyManagement = new PropertyManagement();
-	//public static String GRAPH_META_URI = "<http://lsm.deri.ie/OpenIoT/sensormeta#>";
-	//public static String GRAPH_DATA_URI = "<http://lsm.deri.ie/OpenIoT/sensordata#>";
-	
-	public static String GRAPH_META_URI  = "<" + propertyManagement.getSchedulerLsmMetaGraph() + ">";
-	public static String GRAPH_DATA_URI = "<" + propertyManagement.getSchedulerLsmDataGraph() + ">";
+	public static String GRAPH_META_URI = "";
+	public static String GRAPH_DATA_URI = "";
 	
 	private static final long serialVersionUID = 1L;
 	private List<AbstractSparqlNode> scopedItems;
 	private int depth = 0;
+	
+	static {
+		PropertyManagement propertyManagement = new PropertyManagement();
+		GRAPH_META_URI = "<"+propertyManagement.getSchedulerLsmMetaGraph()+">";
+		GRAPH_DATA_URI = "<"+propertyManagement.getSchedulerLsmDataGraph()+">";
+	}
 	
 	public AbstractSparqlNode() {
 		this.scopedItems = new ArrayList<AbstractSparqlNode>();

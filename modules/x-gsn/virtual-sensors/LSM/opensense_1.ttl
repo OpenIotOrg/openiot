@@ -1,0 +1,65 @@
+@prefix : <http://sensordb.csiro.au/id/> .
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+@prefix DUL:  <http://www.loa-cnr.it/ontologies/DUL.owl#> .
+@prefix rr:   <http://www.w3.org/ns/r2rml#> .
+@prefix ssn:  <http://purl.oclc.org/NET/ssnx/ssn#> .
+@prefix qu:   <http://purl.oclc.org/NET/ssnx/qu/qu#> .
+@prefix unit: <http://purl.oclc.org/NET/ssnx/qu/unit#> .
+@prefix aws:  <http://purl.oclc.org/NET/ssnx/meteo/aws#> .
+@prefix cf-property:<http://purl.oclc.org/NET/ssnx/cf/cf-property#> .
+@prefix cf-feature: <http://purl.oclc.org/NET/ssnx/cf/cf-feature#> .
+@prefix prov: <http://purl.org/net/provenance/ns#> .
+@prefix phenonet: <http://sensordb.csiro.au/ontology/phenonet#> .
+@prefix wgs84: <http://www.w3.org/2003/01/geo/wgs84_pos#> .
+@prefix lgd: <http://linkedgeodata.org/property/> .
+@prefix lsm: <http://lsm.deri.ie/ont/lsm.owl#> .
+@base <http://sensordb.csiro.au/id/> .
+
+<sensor/5010> rdf:type aws:CapacitiveBead,ssn:Sensor;
+              rdfs:label "Sensor 5010";
+              ssn:observes aws:air_temperature ;
+              phenonet:hasSerialNumber <sensor/5010/serial/serial2> ;
+              ssn:onPlatform <site/narrabri/Pweather> ;
+              ssn:ofFeature <site/narrabri/sf/sf_narrabri> ;
+              ssn:hasMeasurementProperty <sensor/5010/accuracy/acc_1> ;
+              prov:PerformedBy "SensorSource";
+              DUL:hasLocation <place/location1>;
+              lsm:hasSensorType <sensorType1>;
+              lsm:hasSourceType "SourceType".
+              	
+<sensorType1> rdfs:label "TypeName".
+
+<sensor/5010/serial/serial2> rdf:type phenonet:SerialNumber; 
+                             phenonet:hasId "5010" .
+                                                                     
+<site/narrabri/Pweather>  rdf:type ssn:Platform ;
+                          ssn:inDeployment <site/narrabri/deployment/2013> .
+
+<site/narrabri/deployment/2013> rdf:type ssn:Deployment.
+
+<site/narrabri/sf/sf_narrabri> rdf:type phenonet:SamplingFeature ;                                                           
+                               ssn:ofFeature cf-feature:atmosphere_air .
+
+<sensor/5010/accuracy/acc_1> rdf:type ssn:Accuracy ;
+                             qu:numericalValue "0.3"^^xsd:double ;
+                             DUL:hasParameter phenonet:degreeCelsius .
+                             
+aws:air_temperature qu:unit phenonet:degreeCelsius;
+                    rr:columnName "temperature" .
+
+
+<place/location1> rdf:type DUL:Place;
+                  wgs84:lat 52.3;
+                  wgs84:long 98.2;
+                  lsm:is_in_city <city1>;
+                  lgd:is_in_province <prov1>;
+                  lgd:is_in_country <country1>;
+                  lgd:is_in_continent <conti>.
+
+<city1> rdfs:label  "cityname".
+<prov1> rdfs:label "province".
+<country1> rdfs:label "italy".
+<conti> rdfs:label "europe".
+                             

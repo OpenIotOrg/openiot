@@ -16,6 +16,11 @@
 *    along with OpenIoT.  If not, see <http://www.gnu.org/licenses/>.
 *
 *     Contact: OpenIoT mailto: info@openiot.eu
+ * @author Jerome Rousselot
+ * @author Mehdi Riahi
+ * @author gsn_devs
+ * @author Timotee Maret
+ * @author Ali Salehi
 */
 
 package org.openiot.gsn;
@@ -91,7 +96,7 @@ public class GSNController extends Thread {
 		if (this.vsLoader == null) // override protection
 			this.vsLoader = vsLoader;
 	}
-
+	
 	private class StopManager extends Thread {
 
 		public void run() {

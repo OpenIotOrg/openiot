@@ -1,0 +1,23 @@
+Announcements, publications and subscriptions can be defined using XML files. 
+This folder contains one example file with publication definition and another with subscription definition.
+
+Publication
+-type: booleanHashtable
+-validity: long[period in ms] || -1[infinity]
+-attribute name: string
+-attribute operator: "EQUAL"
+-attribute type: string || integer || long || double || float || boolean
+
+Subscription
+-type: booleanTriplet
+-validity: long[period in ms] || -1[infinity]
+-attribute name: string
+-attribute operator: "EQUAL" || "GREATER_THAN" || "GREATER_OR_EQUAL" || "LESS_THAN" || "LESS_OR_EQUAL" || "BETWEEN" || CONTAINS_STRING" || "ENDS_WITH_STRING" || "STARTS_WITH_STRING"
+-attribute type: string || integer || long || double || float || boolean
+
+Announcement
+-type: booleanTriplet
+-validity: long[period in ms] || -1[infinity]
+-attribute name: string
+-attribute operator: "EQUAL" || "GREATER_THAN" || "GREATER_OR_EQUAL" || "LESS_THAN" || "LESS_OR_EQUAL" || "BETWEEN" || CONTAINS_STRING" || "ENDS_WITH_STRING" || "STARTS_WITH_STRING"
+-attribute type: string || integer || long || double || float || boolean

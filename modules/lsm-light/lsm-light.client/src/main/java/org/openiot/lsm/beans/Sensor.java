@@ -19,11 +19,14 @@ package org.openiot.lsm.beans;
 *     Contact: OpenIoT mailto: info@openiot.eu
 */
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
-
+/**
+ * 
+ * @author Hoan Nguyen Mau Quoc
+ * 
+ */
 public class Sensor implements java.io.Serializable {
 	private String id="";
 	private String name = "";
@@ -35,18 +38,10 @@ public class Sensor implements java.io.Serializable {
 	private String author="admin";
 	private String code="";
 	private Place place;
-	private User user;
 	private String metaGraph="";
 	private String dataGraph="";
 	private HashMap<String,String> properties;
 
-	public User getUser() {
-		return user;
-	}
-	public void setUser(User user) {
-		this.user = user;
-	}
-	
 	public HashMap<String,String> getProperties() {
 		return properties;
 	}

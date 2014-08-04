@@ -16,6 +16,11 @@
 *    along with OpenIoT.  If not, see <http://www.gnu.org/licenses/>.
 *
 *     Contact: OpenIoT mailto: info@openiot.eu
+ * @author Mehdi Riahi
+ * @author gsn_devs
+ * @author Timotee Maret
+ * @author Ali Salehi
+ * @author Julien Eberle
 */
 
 package org.openiot.gsn.beans;
@@ -51,6 +56,10 @@ public final class AddressBean implements Serializable{
 		this.predicates=EMPTY_PREDICATES;
 	}
 
+	public AddressBean(){
+		this.predicates=EMPTY_PREDICATES;
+	}
+	
 	public String getWrapper ( ) {
 		return this.wrapper;
 	}

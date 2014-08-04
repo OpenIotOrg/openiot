@@ -225,6 +225,15 @@
        <servlet-class>org.openiot.gsn.http.restapi.RestServlet</servlet-class>
    </servlet>
 
+   <servlet>
+       <servlet-name>VSServlet</servlet-name>
+       <display-name>VSServlet</display-name>
+       <servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
+       <init-param>
+         <param-name>javax.ws.rs.Application</param-name>
+         <param-value>org.openiot.gsn.http.restapi.VSManagerApplication</param-value>
+       </init-param>
+   </servlet>
 
 
    
@@ -270,6 +279,10 @@
     <servlet-mapping>
     	<servlet-name>RestServlet</servlet-name>
     	<url-pattern>/rest/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+    	<servlet-name>VSServlet</servlet-name>
+    	<url-pattern>/vs/*</url-pattern>
     </servlet-mapping>
 
 
@@ -428,8 +441,8 @@
 
 
      <filter>
-        <display-name>MyControllerFilter</display-name>
         <filter-name>MyControllerFilter</filter-name>
+        <display-name>MyControllerFilter</display-name>
         <filter-class>org.openiot.gsn.http.ac.MyControllerFilter</filter-class>
          <init-param>
             <param-name>logIPs</param-name>

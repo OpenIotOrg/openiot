@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="play-services-3.1.59">
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/CUPUSMobileApplication/build/exploded-aar/com.google.android.gms/play-services/3.1.59/res" />
+      <root url="jar://$PROJECT_DIR$/CUPUSMobileApplication/build/exploded-aar/com.google.android.gms/play-services/3.1.59/classes.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

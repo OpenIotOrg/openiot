@@ -16,6 +16,8 @@
 *    along with OpenIoT.  If not, see <http://www.gnu.org/licenses/>.
 *
 *     Contact: OpenIoT mailto: info@openiot.eu
+ * @author Timotee Maret
+ * @author Ali Salehi
 */
 
 package org.openiot.gsn.acquisition2.client;
@@ -27,8 +29,8 @@ import org.openiot.gsn.acquisition2.messages.HelloMsg;
 import org.openiot.gsn.beans.AddressBean;
 
 import org.apache.log4j.Logger;
-import org.apache.mina.common.IoHandlerAdapter;
-import org.apache.mina.common.IoSession;
+import org.apache.mina.core.service.IoHandlerAdapter;
+import org.apache.mina.core.session.IoSession;
 
 public class SafeStorageClientSessionHandler extends IoHandlerAdapter {
   

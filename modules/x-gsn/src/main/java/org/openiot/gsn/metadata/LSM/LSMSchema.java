@@ -15,7 +15,8 @@
 *    You should have received a copy of the GNU Lesser General Public License
 *    along with OpenIoT.  If not, see <http://www.gnu.org/licenses/>.
 *
-*     Contact: OpenIoT mailto: info@openiot.eu
+*    Contact: OpenIoT mailto: info@openiot.eu
+*    @author Sofiane Sarni
 */
 
 package org.openiot.gsn.metadata.LSM;
@@ -29,11 +30,13 @@ public class LSMSchema {
 
     private String metaGraph;
     private String dataGraph;
+    private String lsmServerUrl;
 
     public boolean initFromConfigFile(String fileName) {
         try {
             this.setMetaGraph(PropertiesReader.readProperty(fileName, "metaGraph"));
             this.setDataGraph(PropertiesReader.readProperty(fileName, "dataGraph"));
+            lsmServerUrl=PropertiesReader.readProperty(fileName, "lsm.server");
 
         } catch (NullPointerException e) {
             logger.warn("Error while reading properties file: " + fileName);
@@ -53,6 +56,10 @@ public class LSMSchema {
                 '}';
     }
 
+    public String getLsmServerUrl(){
+    	return lsmServerUrl;
+    }
+    
     public String getMetaGraph() {
         return metaGraph;
     }

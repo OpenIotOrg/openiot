@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">CUPUSMobileApplicationLite</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_list_sensors">ListSensorsActivity</string>
+    <string name="title_activity_mobile_broker">MobileBrokerActivity</string>
+    <string name="title_activity_sensor_service">SensorServiceActivity</string>
+    <string name="title_activity_subscription">SubscriptionActivity</string>
+    <string name="title_activity_pressure_subscription">PressureSubscriptionActivity</string>
+    <string name="title_activity_location_subscription">LocationSubscriptionActivity</string>
+    <string name="title_activity_notify_message">NotifyMessage</string>
+
+</resources>

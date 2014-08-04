@@ -19,25 +19,23 @@ package org.openiot.lsm.manager;
 *
 *     Contact: OpenIoT mailto: info@openiot.eu
 */
-
 import java.sql.Connection;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.openiot.lsm.beans.Place;
-import org.openiot.lsm.pooling.ConnectionPool;
-import org.openiot.lsm.utils.VirtuosoConstantUtil;
-
-import virtuoso.jena.driver.VirtGraph;
-
+import org.openiot.lsm.pooling.ConnectionManager;
+/**
+ * 
+ * @author Hoan Nguyen Mau Quoc
+ * 
+ */
 
 public class PlaceManager {
-	private Connection conn;
-	private String dataGraph = VirtuosoConstantUtil.sensormasherDataGraphURI;
-	private String metaGraph = VirtuosoConstantUtil.sensormasherMetadataGraphURI;
+	private String dataGraph;
+	private String metaGraph;
 	
 	public PlaceManager(String metaGraph,String dataGraph){
 		this.metaGraph = metaGraph;
@@ -46,12 +44,6 @@ public class PlaceManager {
 	
 	public PlaceManager(){
 		
-	}
-	
-	public PlaceManager(Connection conn,String metaGraph,String dataGraph){
-		this.conn = conn;
-		this.metaGraph = metaGraph;
-		this.dataGraph = dataGraph;
 	}
 	
 	
@@ -73,6 +65,7 @@ public class PlaceManager {
 
 	public Place getPlaceWithSpecifiedLatLng(double lat, double lng) {
 		Place place = null;
+		Connection conn = null;
 		String sql = "sparql select distinct ?place ?lat ?lng ?city ?province ?country ?continent "+
 					"from <"+metaGraph+"> " +
 					"where{ "+
@@ -90,7 +83,7 @@ public class PlaceManager {
 					  "filter(?lat="+lat +" && ?lng="+lng+")"+
 					"}";			 
 		try{
-			conn = ConnectionPool.getConnectionPool().getConnection();
+			conn = ConnectionManager.getConnection();
 			Statement st = conn.createStatement();
 			if(st.execute(sql)){
 				ResultSet rs = st.getResultSet();
@@ -104,13 +97,13 @@ public class PlaceManager {
 					place.setLat(rs.getDouble("lat"));
 					place.setLng(rs.getDouble("lng"));		
 				}
-				ConnectionPool.attemptClose(rs);				
+				ConnectionManager.attemptClose(rs);				
 			}
-			ConnectionPool.attemptClose(st);
-			ConnectionPool.attemptClose(conn);
+			ConnectionManager.attemptClose(st);
+			ConnectionManager.attemptClose(conn);
 		}catch(Exception e){
 			e.printStackTrace();
-			ConnectionPool.attemptClose(conn);
+			ConnectionManager.attemptClose(conn);
 		}
 		return place;
 	}
@@ -118,6 +111,7 @@ public class PlaceManager {
 	
 	@SuppressWarnings("unchecked")
 	public List<Place> getAllPlacesWithinOneCity(String city) {
+		Connection conn = null;
 		List<Place> places = new ArrayList<Place>();
 		String sql = "sparql select distinct ?place ?lat ?lng "+
 					"from <"+metaGraph+"> " +
@@ -129,7 +123,7 @@ public class PlaceManager {
 					  "?cityId <http://www.w3.org/2000/01/rdf-schema#label> \"" + city +"\"."+					  
 					"}";			 
 		try{
-			conn = ConnectionPool.getConnectionPool().getConnection();				
+			conn = ConnectionManager.getConnection();				
 			Statement st = conn.createStatement();
 			if(st.execute(sql)){
 				ResultSet rs = st.getResultSet();
@@ -140,13 +134,13 @@ public class PlaceManager {
 					place.setLng(rs.getDouble("lng"));
 					places.add(place);
 				}
-				ConnectionPool.attemptClose(rs);				
+				ConnectionManager.attemptClose(rs);				
 			}
-			ConnectionPool.attemptClose(st);
-			ConnectionPool.attemptClose(conn);
+			ConnectionManager.attemptClose(st);
+			ConnectionManager.attemptClose(conn);
 		}catch(Exception e){
 			e.printStackTrace();
-			ConnectionPool.attemptClose(conn);
+			ConnectionManager.attemptClose(conn);
 		}
 		return places;
 	}
@@ -154,6 +148,7 @@ public class PlaceManager {
 
 	public List<List<String>> getALlPlaceMetadataWithPlaceId(String id) {
 		// TODO Auto-generated method stub
+		Connection conn = null;
 		List<List<String>> lst = new ArrayList();		
 		String sql = "sparql select ?p ?o "+		
 			"from <"+metaGraph+"> " +
@@ -161,7 +156,7 @@ public class PlaceManager {
 			   " <"+id+"> ?p ?o." +			   
 			  "}";			 
 		try{
-			conn = ConnectionPool.getConnectionPool().getConnection();				
+			conn = ConnectionManager.getConnection();				
 			Statement st = conn.createStatement();
 			if(st.execute(sql)){
 				ResultSet rs = st.getResultSet();
@@ -172,13 +167,13 @@ public class PlaceManager {
 					strNode.add(rs.getString(2));
 					lst.add(strNode);
 				}
-				ConnectionPool.attemptClose(rs);				
+				ConnectionManager.attemptClose(rs);				
 			}
-			ConnectionPool.attemptClose(st);
-			ConnectionPool.attemptClose(conn);
+			ConnectionManager.attemptClose(st);
+			ConnectionManager.attemptClose(conn);
 		}catch(Exception e){
 			e.printStackTrace();
-			ConnectionPool.attemptClose(conn);
+			ConnectionManager.attemptClose(conn);
 			return lst;
 		}		
 		return lst;
@@ -186,6 +181,7 @@ public class PlaceManager {
 
 	public Place getPlaceWithPlaceId(String id){
 		Place place = null;		
+		Connection conn = null;
 		String sql = "sparql select distinct ?lat ?lng ?city ?province ?country ?continent "+
 					"from <"+metaGraph+"> " +
 					"where{ "+
@@ -202,7 +198,7 @@ public class PlaceManager {
 					  "?conId <http://www.w3.org/2000/01/rdf-schema#label> ?continent."+
 					"}";			 
 		try{
-			conn = ConnectionPool.getConnectionPool().getConnection();				
+			conn = ConnectionManager.getConnection();				
 			Statement st = conn.createStatement();
 			if(st.execute(sql)){
 				ResultSet rs = st.getResultSet();
@@ -216,13 +212,13 @@ public class PlaceManager {
 					place.setLat(rs.getDouble("lat"));
 					place.setLng(rs.getDouble("lng"));		
 				}
-				ConnectionPool.attemptClose(rs);				
+				ConnectionManager.attemptClose(rs);				
 			}
-			ConnectionPool.attemptClose(st);
-			ConnectionPool.attemptClose(conn);
+			ConnectionManager.attemptClose(st);
+			ConnectionManager.attemptClose(conn);
 		}catch(Exception e){
 			e.printStackTrace();
-			ConnectionPool.attemptClose(conn);
+			ConnectionManager.attemptClose(conn);
 		}
 		return place;
 	}

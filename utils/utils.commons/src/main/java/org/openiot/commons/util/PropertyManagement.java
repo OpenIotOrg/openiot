@@ -22,15 +22,15 @@ package org.openiot.commons.util;
  */
 
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Properties;
-
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @author Nikos Kefalakis (nkef) e-mail: nkef@ait.edu.gr
@@ -74,15 +74,31 @@ public class PropertyManagement {
 	private static final String SCHEDULER_LSM_FUNCTIONAL_GRAPH = "scheduler.core.lsm.openiotFunctionalGraph";
 	private static final String SCHEDULER_LSM_USER_NAME="scheduler.core.lsm.access.username";
 	private static final String SCHEDULER_LSM_PASSWORD="scheduler.core.lsm.access.password";
-
+	private static final String SCHEDULER_LSM_SPARQL_END_POINT = "scheduler.core.lsm.sparql.endpoint";
+	private static final String SCHEDULER_LSM_REMOTE_SERVER="scheduler.core.lsm.remote.server";
 	
 
 	//==============SD&UM====================
-	private static final String SDUM_LSM_FUNCTIONAL_GRAPH = "scheduler.core.lsm.openiotFunctionalGraph";
+	private static final String SDUM_LSM_FUNCTIONAL_GRAPH = "sdum.core.lsm.openiotFunctionalGraph";
 	private static final String SDUM_LSM_SPARQL_END_POINT = "sdum.core.lsm.sparql.endpoint";
+	private static final String SDUM_LSM_REMOTE_SERVER="sdum.core.lsm.remote.server";
 	
-	
-	
+
+	//==============LSM-LIGHT====================
+	private static final String LSM_CONNECTION_DRIVER = "lsm-light.server.connection.driver_class";
+	private static final String LSM_CONNECTION_URL = "lsm-light.server.connection.url";
+	private static final String LSM_CONNECTION_USERNAME = "lsm-light.server.connection.username";
+	private static final String LSM_CONNECTION_PASS= "lsm-light.server.connection.password";
+	private static final String LSM_MIN_CONNECTION = "lsm-light.server.minConnection";
+	private static final String LSM_MAX_CONNECTION = "lsm-light.server.maxConnection";
+	private static final String LSM_RETRY_ATTEMPTS = "lsm-light.server.acquireRetryAttempts";
+
+	private static final String LSM_LOCAL_METAGRAPH = "lsm-light.server.localMetaGraph";
+	private static final String LSM_LOCAL_DATAGRAPH = "lsm-light.server.localDataGraph";
+
+
+	private static final String IDE_CORE_NAVIGATION_PREFIX = "ide.core.navigation";
+
 	private Properties props = null;
 	
 
@@ -143,6 +159,14 @@ public class PropertyManagement {
 	public String getSchedulerLsmPassword() {
 		return props.getProperty(SCHEDULER_LSM_PASSWORD);
 	}
+	
+	public String getSchedulerLsmSparqlEndPoint() {
+		return props.getProperty(SCHEDULER_LSM_SPARQL_END_POINT);
+	}
+	
+	public String getSchedulerLsmRemoteServer(){
+		return props.getProperty(SCHEDULER_LSM_REMOTE_SERVER);
+	}
 
 	public String getSdumLsmFunctionalGraph() {
 		return props.getProperty(SDUM_LSM_FUNCTIONAL_GRAPH);
@@ -151,7 +175,70 @@ public class PropertyManagement {
 	public String getSdumLsmSparqlEndPoint() {
 		return props.getProperty(SDUM_LSM_SPARQL_END_POINT);
 	}
+	
+	public String getSdumLsmRemoteServer(){
+		return props.getProperty(SDUM_LSM_REMOTE_SERVER);
+	}
 
+	public String getLsmServerConnectionDriver(){
+		return props.getProperty(LSM_CONNECTION_DRIVER);
+	}
 
+	public String getLsmServerConnectionURL(){
+		return props.getProperty(LSM_CONNECTION_URL);
+	}
+	
+	public String getLsmServerUserName(){
+		return props.getProperty(LSM_CONNECTION_USERNAME);
+	}
 
+	public String getLsmServerPass(){
+		return props.getProperty(LSM_CONNECTION_PASS);
+	}
+	
+	public int getLsmMinConnection(){
+		try{
+			return Integer.parseInt(props.getProperty(LSM_MIN_CONNECTION));
+		}catch(Exception e){
+			logger.error("Invalid input value",e);
+		}
+		return -99;
+	}
+	
+	public int getLsmMaxConnection(){
+		try{
+			return Integer.parseInt(props.getProperty(LSM_MAX_CONNECTION));
+		}catch(Exception e){
+			logger.error("Invalid input value",e);
+		}
+		return -99;
+	}
+	
+	public int getLsmRetryAttempts(){
+		try{
+			return Integer.parseInt(props.getProperty(LSM_RETRY_ATTEMPTS));
+		}catch(Exception e){
+			logger.error("Invalid input value",e);
+		}
+		return -99;
+	}
+
+	public HashMap<String, String> getIdeNavigationSettings() {
+		HashMap<String, String> navigationMap = new HashMap<String, String>();
+
+		for (String key : props.stringPropertyNames()) {
+			if (key.startsWith(IDE_CORE_NAVIGATION_PREFIX)) {
+				navigationMap.put(key, props.getProperty(key));
+			}
+		}
+		return navigationMap;
+	}
+
+	public String getLSMLocalMetaGraph(){
+		return props.getProperty(LSM_LOCAL_METAGRAPH);
+	}
+	
+	public String getLSMLocalDataGraph(){
+		return props.getProperty(LSM_LOCAL_DATAGRAPH);
+	}
 }
