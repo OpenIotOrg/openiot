@@ -2,6 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui"
 	xmlns:pe="http://primefaces.org/ui/extensions"
 	xmlns:s="http://www.sensap.eu/jsf"
@@ -35,7 +36,12 @@
 		</div>
 
 		<p:separator />
-
+		
+		<p:outputPanel layout="block" style="text-align:center;">
+			<h:button value="#{messages.UI_LOGIN_APPLICATION_DESIGNER}" outcome="applicationDesign.xhtml" />
+		</p:outputPanel>
+		
+		<ui:remove>
 		<p:outputPanel layout="block" style="text-align:center;">
 			<h:panelGrid columns="2" cellpadding="20" style="margin:0 auto;"
 				columnClasses="align-top, align-top">
@@ -87,6 +93,7 @@
 				</p:panel>
 			</h:panelGrid>
 		</p:outputPanel>
+		</ui:remove>
 
 		<p:dialog></p:dialog>
 	</h:body>

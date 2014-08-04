@@ -26,7 +26,9 @@ import javax.ws.rs.QueryParam;
 
 import org.openiot.commons.util.PropertyManagement;
 import org.openiot.scheduler.core.api.impl.RegisterService.RegisterServiceImpl;
+import org.openiot.scheduler.core.utils.SecurityUtil;
 import org.openiot.scheduler.core.utils.sparql.SesameSPARQLClient;
+import org.openiot.security.client.OAuthorizationCredentials;
 import org.openrdf.query.TupleQueryResult;
 import org.openrdf.repository.RepositoryException;
 import org.slf4j.Logger;
@@ -130,7 +132,8 @@ public class UserRegisterImpl
 			
 			logger.debug(myOntInstance.exportToTriples("TURTLE"));
 //			boolean ok = 
-			lsmStore.pushRDF(SchedulerLsmFunctionalGraph,myOntInstance.exportToTriples("N-TRIPLE"),"","");
+			OAuthorizationCredentials credentials = SecurityUtil.getCredentials();
+			lsmStore.pushRDF(SchedulerLsmFunctionalGraph,myOntInstance.exportToTriples("N-TRIPLE"), credentials.getClientId(), credentials.getAccessToken());
 
 			
 //			if(ok){

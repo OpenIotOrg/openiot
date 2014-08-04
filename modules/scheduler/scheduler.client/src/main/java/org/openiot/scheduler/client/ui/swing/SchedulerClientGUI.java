@@ -241,7 +241,7 @@ public class SchedulerClientGUI extends JPanel
 		btnGetOAMO.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) 
 			{
-				schedulerClient.getApplication(textFieldOAMOID.getText());
+				schedulerClient.getApplication(textFieldOAMOID.getText(), null, null);
 			}
 		});
 		
@@ -261,7 +261,7 @@ public class SchedulerClientGUI extends JPanel
 		btnGetOamoIds.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) 
 			{
-				schedulerClient.getAvailableAppIDs(textFieldOAMOuserID.getText());
+				schedulerClient.getAvailableAppIDs(textFieldOAMOuserID.getText(), null, null);
 			}
 		});
 		GroupLayout gl_panel_3 = new GroupLayout(panel_3);
@@ -310,7 +310,7 @@ public class SchedulerClientGUI extends JPanel
 		btnGetOsmo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) 
 			{
-				schedulerClient.getService(textFieldOSMOId.getText());
+				schedulerClient.getService(textFieldOSMOId.getText(), null, null);
 			}
 		});
 		
@@ -330,7 +330,7 @@ public class SchedulerClientGUI extends JPanel
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) 
 			{
-				schedulerClient.getAvailableServiceIDs(txtOAMOid.getText());
+				schedulerClient.getAvailableServiceIDs(txtOAMOid.getText(), null, null);
 			}
 		});
 		GroupLayout gl_panel_4 = new GroupLayout(panel_4);
@@ -379,7 +379,7 @@ public class SchedulerClientGUI extends JPanel
 		btnGetOSDSpec.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) 
 			{
-				schedulerClient.getAvailableApps(textFieldGetSpecUserID.getText());
+				schedulerClient.getAvailableApps(textFieldGetSpecUserID.getText(), null, null);
 			}
 		});
 		
@@ -574,7 +574,7 @@ public class SchedulerClientGUI extends JPanel
 			SensorTypes stypes= schedulerClient.discoverSensors(
 					Double.valueOf(textFieldLong.getText()),
 					Double.valueOf(textFieldLat.getText()),
-					Float.valueOf(textFieldRad.getText()));	
+					Float.valueOf(textFieldRad.getText()), null, null);	
 
 		}
 	}
@@ -582,7 +582,7 @@ public class SchedulerClientGUI extends JPanel
 	{
 		public void actionPerformed(ActionEvent e) 
 		{			
-			String registerMsg = schedulerClient.registerDemoService();			
+			String registerMsg = schedulerClient.registerDemoService(null, null);			
 		}
 	}
 	private class BtnOpenOsdspecActionListener implements ActionListener 
@@ -611,7 +611,7 @@ public class SchedulerClientGUI extends JPanel
 		public void actionPerformed(ActionEvent e) 
 		{			
 			try {
-				String responseMsg = schedulerClient.registerFromFile(osdSpecpathTextField.getText());
+				String responseMsg = schedulerClient.registerFromFile(osdSpecpathTextField.getText(), null, null);
 				if (responseMsg==null){
 					JOptionPane.showMessageDialog(SchedulerClientGUI.this, 
 							"Error registering service. Check log.", 

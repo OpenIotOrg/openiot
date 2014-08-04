@@ -108,7 +108,7 @@ public class SchedulerClient
 	 * 
 	 * @return the sensortypes discovered 
 	 */
-	public SensorTypes discoverSensors(double longitude, double lat, float radius) 
+	public SensorTypes discoverSensors(double longitude, double lat, float radius, String clientId, String token) 
 	{
 		ClientRequest discoverSensorsClientRequest = clientRequestFactory
 				.createRelativeRequest("/rest/services/discoverSensors");
@@ -118,6 +118,8 @@ public class SchedulerClient
 		discoverSensorsClientRequest.queryParameter("longitude", longitude);
 		discoverSensorsClientRequest.queryParameter("latitude", lat);
 		discoverSensorsClientRequest.queryParameter("radius", radius);
+		discoverSensorsClientRequest.queryParameter("clientId", clientId);
+		discoverSensorsClientRequest.queryParameter("token", token);
 
 		discoverSensorsClientRequest.accept("application/xml");
 		
@@ -236,15 +238,14 @@ public class SchedulerClient
 	 * @return the response from the server, null if something went wrong
 	 * 
 	 */	
-	public String registerService(OSDSpec osdSpec) 
+	public String registerService(OSDSpec osdSpec, String clientId, String token) 
 	{
 		ClientRequest registerServiceClientRequest = clientRequestFactory
 				.createRelativeRequest("/rest/services/registerService");
 
-		registerServiceClientRequest.accept("application/xml");
-
-		registerServiceClientRequest.body("application/xml", osdSpec);
-	
+		registerServiceClientRequest.queryParameter("clientId", clientId);
+		registerServiceClientRequest.queryParameter("token", token);
+		registerServiceClientRequest.body(MediaType.APPLICATION_XML, osdSpec);
 		
 		//Handle the response
 		try {
@@ -263,13 +264,15 @@ public class SchedulerClient
 		}
 	}
 
-	public OAMO getApplication(String applicationID)
+	public OAMO getApplication(String applicationID, String clientId, String token)
 	{
 		ClientRequest getApplicationRequest = clientRequestFactory
 				.createRelativeRequest("/rest/services/getApplication");
 		
 		//Prepare the request
 		getApplicationRequest.queryParameter("applicationID", applicationID);
+		getApplicationRequest.queryParameter("clientId", clientId);
+		getApplicationRequest.queryParameter("token", token);
 		
 		getApplicationRequest.accept("application/xml");
 		
@@ -331,13 +334,15 @@ public class SchedulerClient
 		}
 	}
 	
-	public OSMO getService(String serviceID)
+	public OSMO getService(String serviceID, String clientId, String token)
 	{
 		ClientRequest getServiceRequest = clientRequestFactory
 				.createRelativeRequest("/rest/services/getService");
 		
 		//Prepare the request
 		getServiceRequest.queryParameter("serviceID", serviceID);
+		getServiceRequest.queryParameter("clientId", clientId);
+		getServiceRequest.queryParameter("token", token);
 		
 		getServiceRequest.accept("application/xml");
 		
@@ -395,13 +400,15 @@ public class SchedulerClient
 		}
 	}
 	
-	public DescreptiveIDs getAvailableAppIDs(String userID)
+	public DescreptiveIDs getAvailableAppIDs(String userID, String clientId, String token)
 	{
 		ClientRequest getServiceRequest = clientRequestFactory
 				.createRelativeRequest("/rest/services/getAvailableAppIDs");
 		
 		//Prepare the request
 		getServiceRequest.queryParameter("userID", userID);
+		getServiceRequest.queryParameter("clientId", clientId);
+		getServiceRequest.queryParameter("token", token);
 		
 		getServiceRequest.accept("application/xml");
 		
@@ -444,13 +451,15 @@ public class SchedulerClient
 		}
 	}
 	
-	public DescreptiveIDs getAvailableServiceIDs(String applicationID)
+	public DescreptiveIDs getAvailableServiceIDs(String applicationID, String clientId, String token)
 	{
 		ClientRequest getServiceRequest = clientRequestFactory
 				.createRelativeRequest("/rest/services/getAvailableServiceIDs");
 		
 		//Prepare the request
 		getServiceRequest.queryParameter("applicationID", applicationID);
+		getServiceRequest.queryParameter("clientId", clientId);
+		getServiceRequest.queryParameter("token", token);
 		
 		getServiceRequest.accept("application/xml");
 		
@@ -493,13 +502,15 @@ public class SchedulerClient
 		}
 	}
 	
-	public OSDSpec getAvailableApps(String userID)
+	public OSDSpec getAvailableApps(String userID, String clientId, String token)
 	{
 		ClientRequest getServiceRequest = clientRequestFactory
 				.createRelativeRequest("/rest/services/getAvailableApps");
 		
 		//Prepare the request
 		getServiceRequest.queryParameter("userID", userID);
+		getServiceRequest.queryParameter("clientId", clientId);
+		getServiceRequest.queryParameter("token", token);
 		
 		getServiceRequest.accept("application/xml");
 		
@@ -573,7 +584,7 @@ public class SchedulerClient
 	 * 
 	 * @return the response from the server, null if something went wrong
 	 */
-	public String registerDemoService() 
+	public String registerDemoService(String clientId, String token) 
 	{
 		//Prepare the request
 		OSDSpec osdSpec = new OSDSpec();
@@ -631,7 +642,7 @@ public class SchedulerClient
 //		
 //		osdSpec.getOAMO().add(oamo1);
 		
-		return registerService(osdSpec);
+		return registerService(osdSpec, clientId, token);
 	}
 		
 	/**
@@ -641,7 +652,7 @@ public class SchedulerClient
 	 * 
 	 * @return the response from the server, null if something went wrong
 	 */
-	public String registerFromFile(String osdSpecFilePathName) throws FileNotFoundException,Exception
+	public String registerFromFile(String osdSpecFilePathName, String clientId, String token) throws FileNotFoundException,Exception
 	{				
 		OSDSpec osdSpec = null;
 		
@@ -656,6 +667,6 @@ public class SchedulerClient
 			throw e;
 		}
 		
-		return registerService(osdSpec);		
+		return registerService(osdSpec, clientId, token);		
 	}
 }

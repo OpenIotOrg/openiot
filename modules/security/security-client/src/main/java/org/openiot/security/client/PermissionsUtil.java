@@ -50,6 +50,10 @@ public class PermissionsUtil {
 	public final static String SEC_MGMT_GRANT_ROLE = "admin:grant_role:";
 	public final static String SEC_MGMT_ALL = "admin:*:";
 	
+	public final static String SCHEDULER_ALL = "*";
+	
+	public final static String SDUM_ALL = "*";
+	
 	public final static String SEC_MGMT_SERVICE_MGMT = "admin:service_mgmt:";
 	
 	public final static ArrayList<String> GUESS_GRAPHS = new ArrayList<String>();

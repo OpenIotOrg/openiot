@@ -31,6 +31,7 @@ import javax.ws.rs.core.UriBuilder;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.stream.StreamSource;
+
 import java.io.StringReader;
 import java.net.URI;
 
@@ -43,12 +44,14 @@ public class SDUMAPIWrapper {
 		SDUM_HOST_URL =  UriBuilder.fromUri(propertyManagement.getRequestCommonsSdumHostUrl()).build();
 	}
 
-	public static SdumServiceResultSet pollForReport(String serviceId) throws APICommunicationException, APIException {
+	public static SdumServiceResultSet pollForReport(String serviceId, String clientId, String token) throws APICommunicationException, APIException {
 		ClientRequestFactory clientRequestFactory = new ClientRequestFactory(SDUM_HOST_URL);
 		ClientRequest pollForReportClientRequest = clientRequestFactory.createRelativeRequest("/rest/services/pollforreport");
 
 		pollForReportClientRequest.queryParameter("serviceID", serviceId);
 		pollForReportClientRequest.accept("application/xml");
+		pollForReportClientRequest.queryParameter("clientId", clientId);
+		pollForReportClientRequest.queryParameter("token", token);
 
 		ClientResponse<String> response;
 		String responseText = null;

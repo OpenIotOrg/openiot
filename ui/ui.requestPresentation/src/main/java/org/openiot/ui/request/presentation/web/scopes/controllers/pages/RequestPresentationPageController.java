@@ -20,6 +20,7 @@
 
 package org.openiot.ui.request.presentation.web.scopes.controllers.pages;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
@@ -31,11 +32,15 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.RequestScoped;
 import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.openiot.commons.osdspec.model.OAMO;
 import org.openiot.commons.osdspec.model.OSMO;
 import org.openiot.commons.osdspec.model.PresentationAttr;
 import org.openiot.commons.sdum.serviceresultset.model.SdumServiceResultSet;
+import org.openiot.security.client.AccessControlUtil;
+import org.openiot.security.client.OAuthorizationCredentials;
 import org.openiot.ui.request.commons.logging.LoggerService;
 import org.openiot.ui.request.commons.models.OAMOManager;
 import org.openiot.ui.request.commons.providers.SDUMAPIWrapper;
@@ -73,15 +78,21 @@ public class RequestPresentationPageController implements Serializable {
 	@ManagedProperty(value = "#{sessionBean}")
 	protected transient SessionBean sessionBean;
 	protected transient ResourceBundle messages;
+	private AccessControlUtil acUtil;
 
 	public RequestPresentationPageController() {
 		this.messages = FaceletLocalization.getLocalizedResourceBundle();
+		acUtil = AccessControlUtil.getInstance();
 	}
 
 	public RequestPresentationPageContext getContext() {
 		if (cachedContext == null) {
 			if (sessionBean.getUserId() == null) {
-				return null;
+				OAuthorizationCredentials credentials = acUtil.getOAuthorizationCredentials();
+				if(credentials == null)
+					return null;
+				else 
+					sessionBean.setUserId(credentials.getUserIdURI());
 			}
 			cachedContext = (RequestPresentationPageContext) (sessionBean == null ? ApplicationBean.lookupSessionBean() : sessionBean).getContext("requestPresentationPageContext");
 			if (cachedContext == null) {
@@ -96,10 +107,15 @@ public class RequestPresentationPageController implements Serializable {
 		return cachedContext;
 	}
 
-	public void doAccessControl() {
-		if (sessionBean.getUserId() == null) {
-			applicationBean.redirect("/pages/login.xhtml?faces-redirect=true");
+	public void doAccessControl() throws IOException {
+		if(acUtil.getOAuthorizationCredentials() == null){
+			HttpServletResponse response = (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse();
+			HttpServletRequest req = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
+			acUtil.redirectToLogin(req, response);
 		}
+//		if (sessionBean.getUserId() == null) {
+//			applicationBean.redirect("/pages/login.xhtml?faces-redirect=true");
+//		}
 	}
 
 	// ------------------------------------
@@ -119,7 +135,8 @@ public class RequestPresentationPageController implements Serializable {
 
 		// Load services
 		try {
-			context.getAppManager().loadUserOAMOs(ApplicationBean.lookupSessionBean().getUserId());
+			OAuthorizationCredentials creds = acUtil.getOAuthorizationCredentials();
+			context.getAppManager().loadUserOAMOs(ApplicationBean.lookupSessionBean().getUserId(), creds.getClientId(), creds.getAccessToken());
 			if (!context.getAppManager().getAvailableOAMOs().isEmpty()) {
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, messages.getString("GROWL_INFO_HEADER"), FaceletLocalization.getLocalisedMessage(messages, "APPLICATIONS_LOADED_SUCCESSFULLY")));
 			}
@@ -178,7 +195,8 @@ public class RequestPresentationPageController implements Serializable {
 
 		// Fetch data
 		try {
-			SdumServiceResultSet resultSet = SDUMAPIWrapper.pollForReport(serviceId);
+			OAuthorizationCredentials creds = acUtil.getOAuthorizationCredentials();
+			SdumServiceResultSet resultSet = SDUMAPIWrapper.pollForReport(serviceId, creds.getClientId(), creds.getAccessToken());
 			context.getServiceIdToWidgetMap().get(serviceId).processData(resultSet);
 		} catch (APIException ex) {
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, messages.getString("GROWL_ERROR_HEADER"), FaceletLocalization.getLocalisedMessage(messages, "ERROR_CONNECTING_TO_SDUM_SERVICE")));

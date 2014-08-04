@@ -29,13 +29,14 @@ import org.openiot.commons.util.PropertyManagement;
 import org.openiot.ui.request.commons.providers.exceptions.APICommunicationException;
 import org.openiot.ui.request.commons.providers.exceptions.APIException;
 
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriBuilder;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.stream.StreamSource;
+
 import java.io.StringReader;
 import java.net.URI;
-
 
 public class SchedulerAPIWrapper {
 
@@ -46,7 +47,8 @@ public class SchedulerAPIWrapper {
 		SCHEDULER_HOST_URL = UriBuilder.fromUri(propertyManagement.getRequestCommonsSchedulerHostUrl()).build();
 	}
 
-	public static SensorTypes getAvailableSensors(String userId, double lat, double lon, double radius) throws APICommunicationException, APIException {
+	public static SensorTypes getAvailableSensors(String userId, double lat, double lon, double radius, String clientId, String token)
+			throws APICommunicationException, APIException {
 
 		ClientRequestFactory clientRequestFactory = new ClientRequestFactory(SCHEDULER_HOST_URL);
 		ClientRequest discoverSensorsClientRequest = clientRequestFactory.createRelativeRequest("/rest/services/discoverSensors");
@@ -55,6 +57,8 @@ public class SchedulerAPIWrapper {
 		discoverSensorsClientRequest.queryParameter("latitude", lat);
 		discoverSensorsClientRequest.queryParameter("longitude", lon);
 		discoverSensorsClientRequest.queryParameter("radius", radius);
+		discoverSensorsClientRequest.queryParameter("clientId", clientId);
+		discoverSensorsClientRequest.queryParameter("token", token);
 
 		discoverSensorsClientRequest.accept("application/xml");
 
@@ -65,11 +69,11 @@ public class SchedulerAPIWrapper {
 			response = discoverSensorsClientRequest.get(String.class);
 
 			if (response.getStatus() != 200) {
-				throw new APICommunicationException("Error communicating with schedulerr (method: discoverSensors, HTTP error code : " + response.getStatus() + ")");
+				throw new APICommunicationException("Error communicating with scheduler (method: discoverSensors, HTTP error code : " + response.getStatus()
+						+ ")");
 			}
 
 			responseText = response.getEntity();
-
 			JAXBContext jaxbContext = JAXBContext.newInstance(SensorTypes.class);
 			Unmarshaller um = jaxbContext.createUnmarshaller();
 			SensorTypes sensorTypes = (SensorTypes) um.unmarshal(new StreamSource(new StringReader(responseText)));
@@ -79,13 +83,16 @@ public class SchedulerAPIWrapper {
 		}
 	}
 
-	public static void registerService(OSDSpec osdSpec) throws APICommunicationException, APIException {
+	public static void registerService(OSDSpec osdSpec, String clientId, String token) throws APICommunicationException, APIException {
 
 		ClientRequestFactory clientRequestFactory = new ClientRequestFactory(SCHEDULER_HOST_URL);
 		ClientRequest registerServiceRequest = clientRequestFactory.createRelativeRequest("/rest/services/registerService");
 
+		registerServiceRequest.queryParameter("clientId", clientId);
+		registerServiceRequest.queryParameter("token", token);
+
 		try {
-			registerServiceRequest.body("application/xml", osdSpec);
+			registerServiceRequest.body(MediaType.APPLICATION_XML, osdSpec);
 
 			ClientResponse<String> response;
 
@@ -93,7 +100,8 @@ public class SchedulerAPIWrapper {
 				response = registerServiceRequest.post(String.class);
 
 				if (response.getStatus() != 200) {
-					throw new APICommunicationException("Error communicating with scheduler (method: registerService, HTTP error code : " + response.getStatus() + ")");
+					throw new APICommunicationException("Error communicating with scheduler (method: registerService, HTTP error code : "
+							+ response.getStatus() + ")");
 				}
 
 			} catch (Throwable ex) {
@@ -104,29 +112,33 @@ public class SchedulerAPIWrapper {
 		}
 	}
 
-	public static OSDSpec getAvailableApps(String userId) throws APICommunicationException, APIException {
+	public static OSDSpec getAvailableApps(String userId, String clientId, String token) throws APICommunicationException, APIException {
 		ClientRequestFactory clientRequestFactory = new ClientRequestFactory(SCHEDULER_HOST_URL);
 		ClientRequest getAvailableAppsClientRequest = clientRequestFactory.createRelativeRequest("/rest/services/getAvailableApps");
 
 		getAvailableAppsClientRequest.queryParameter("userID", userId);
+		getAvailableAppsClientRequest.queryParameter("clientId", clientId);
+		getAvailableAppsClientRequest.queryParameter("token", token);
+
 		getAvailableAppsClientRequest.accept("application/xml");
 
 		ClientResponse<String> response;
 		String responseText = null;
 
 		try {
-				OSDSpec spec = null;
-				response = getAvailableAppsClientRequest.get(String.class);
+			OSDSpec spec = null;
+			response = getAvailableAppsClientRequest.get(String.class);
 
-				if (response.getStatus() != 200) {
-					throw new APICommunicationException("Error communicating with scheduler (method: getAvailableApps, HTTP error code : " + response.getStatus() + ")");
-				}
+			if (response.getStatus() != 200) {
+				throw new APICommunicationException("Error communicating with scheduler (method: getAvailableApps, HTTP error code : " + response.getStatus()
+						+ ")");
+			}
 
-				responseText = response.getEntity();
+			responseText = response.getEntity();
 
-				JAXBContext jaxbContext = JAXBContext.newInstance(OSDSpec.class);
-				Unmarshaller um = jaxbContext.createUnmarshaller();
-				return (OSDSpec) um.unmarshal(new StreamSource(new StringReader(responseText)));
+			JAXBContext jaxbContext = JAXBContext.newInstance(OSDSpec.class);
+			Unmarshaller um = jaxbContext.createUnmarshaller();
+			return (OSDSpec) um.unmarshal(new StreamSource(new StringReader(responseText)));
 		} catch (Throwable ex) {
 			throw new APIException(ex);
 		}
@@ -143,23 +155,23 @@ public class SchedulerAPIWrapper {
 		String responseText = null;
 
 		try {
-				response = userLoginClientRequest.get(String.class);
+			response = userLoginClientRequest.get(String.class);
 
-				if (response.getStatus() != 200) {
-					throw new APICommunicationException("Error communicating with scheduler (method: userLogin, HTTP error code : " + response.getStatus() + ")");
-				}
+			if (response.getStatus() != 200) {
+				throw new APICommunicationException("Error communicating with scheduler (method: userLogin, HTTP error code : " + response.getStatus() + ")");
+			}
 
-				responseText = response.getEntity();
-				if("error checking if mail exists, cannot init repository".equals(responseText)){
-					throw new APICommunicationException("Could not init user repository");
-				}
+			responseText = response.getEntity();
+			if ("error checking if mail exists, cannot init repository".equals(responseText)) {
+				throw new APICommunicationException("Could not init user repository");
+			}
 
-				if( "user mail not found".equals(responseText) || "wrong password".equals(responseText)){
-					throw new APIException("Login failed: " + responseText);
-				}
+			if ("user mail not found".equals(responseText) || "wrong password".equals(responseText)) {
+				throw new APIException("Login failed: " + responseText);
+			}
 
-				// Response text should be user id
-				return responseText;
+			// Response text should be user id
+			return responseText;
 
 		} catch (Throwable ex) {
 			throw new APIException(ex);
@@ -179,23 +191,23 @@ public class SchedulerAPIWrapper {
 		String responseText = null;
 
 		try {
-				response = userRegisterClientRequest.get(String.class);
+			response = userRegisterClientRequest.get(String.class);
 
-				if (response.getStatus() != 200) {
-					throw new APICommunicationException("Error communicating with scheduler (method: userRegister, HTTP error code : " + response.getStatus() + ")");
-				}
+			if (response.getStatus() != 200) {
+				throw new APICommunicationException("Error communicating with scheduler (method: userRegister, HTTP error code : " + response.getStatus() + ")");
+			}
 
-				responseText = response.getEntity();
-				if("error checking if mail already exists".equals(responseText) || "register user error".equals(responseText)){
-					throw new APICommunicationException("Could not init user repository");
-				}
+			responseText = response.getEntity();
+			if ("error checking if mail already exists".equals(responseText) || "register user error".equals(responseText)) {
+				throw new APICommunicationException("Could not init user repository");
+			}
 
-				if( "mail already exists".equals(responseText)){
-					throw new APIException("Registration failed: " + responseText);
-				}
+			if ("mail already exists".equals(responseText)) {
+				throw new APIException("Registration failed: " + responseText);
+			}
 
-				// Response text should be new user id
-				return responseText;
+			// Response text should be new user id
+			return responseText;
 
 		} catch (Throwable ex) {
 			throw new APIException(ex);

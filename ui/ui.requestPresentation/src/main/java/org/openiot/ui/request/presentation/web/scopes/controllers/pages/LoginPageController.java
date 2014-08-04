@@ -20,6 +20,7 @@
 
 package org.openiot.ui.request.presentation.web.scopes.controllers.pages;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ResourceBundle;
 
@@ -72,13 +73,13 @@ public class LoginPageController implements Serializable {
 	// ------------------------------------
 	// Controllers
 	// ------------------------------------
-	public void handleLogout() {
+	public void handleLogout() throws IOException {
 		sessionBean.setUserId(null);
 		getContext().dispose();
-		
-		FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
 
-		applicationBean.redirect("/pages/login.xhtml?faces-redirect=true");
+//		FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
+		FacesContext.getCurrentInstance().getExternalContext().redirect("../logout?faces-redirect=true");
+
 	}
 
 	public void handleLogin() {

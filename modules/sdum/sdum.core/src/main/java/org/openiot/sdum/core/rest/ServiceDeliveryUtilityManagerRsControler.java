@@ -41,6 +41,8 @@ import org.openiot.sdum.core.api.impl.PollForReport.PollForReportImpl;
 
 
 
+import org.openiot.sdum.core.utils.SecurityUtil;
+import org.openiot.security.client.PermissionsUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -109,8 +111,13 @@ public class ServiceDeliveryUtilityManagerRsControler {
 	 */
 	@GET
 	@Path("/pollforreport")
-	public SdumServiceResultSet pollForReport(@QueryParam("serviceID") String applicationID) {
+	public SdumServiceResultSet pollForReport(@QueryParam("serviceID") String applicationID, @QueryParam("clientId") String clientId, @QueryParam("token") String token) {
 
+		if(!SecurityUtil.hasPermission(PermissionsUtil.SDUM_ALL, token, clientId)){
+			logger.info("Missing required permissions");
+			return null;
+		}
+		
 		PollForReportImpl pollForReportImpl = new PollForReportImpl(applicationID);
 
 		return pollForReportImpl.getSdumServiceResultSet();
@@ -127,8 +134,13 @@ public class ServiceDeliveryUtilityManagerRsControler {
 	 */
 	@GET
 	@Path("/getApplication")
-	public OAMO getApplication(@QueryParam("applicationID") String applicationID) {
+	public OAMO getApplication(@QueryParam("applicationID") String applicationID, @QueryParam("clientId") String clientId, @QueryParam("token") String token) {
 
+		if(!SecurityUtil.hasPermission(PermissionsUtil.SDUM_ALL, token, clientId)){
+			logger.info("Missing required permissions");
+			return null;
+		}
+		
 		GetApplicationImpl application = new GetApplicationImpl(applicationID);		
 
 		return application.getOAMO();
@@ -143,8 +155,13 @@ public class ServiceDeliveryUtilityManagerRsControler {
 	 */
 	@GET
 	@Path("/getService")
-	public OSMO getService(@QueryParam("serviceID") String serviceID) {
+	public OSMO getService(@QueryParam("serviceID") String serviceID, @QueryParam("clientId") String clientId, @QueryParam("token") String token) {
 
+		if(!SecurityUtil.hasPermission(PermissionsUtil.SDUM_ALL, token, clientId)){
+			logger.info("Missing required permissions");
+			return null;
+		}
+		
 		GetServiceImpl service =  new GetServiceImpl(serviceID);		
 		
 		return service.getService();
@@ -161,8 +178,13 @@ public class ServiceDeliveryUtilityManagerRsControler {
 	 */
 	@GET
 	@Path("/getAvailableAppIDs")
-	public DescreptiveIDs getAvailableAppIDs(@QueryParam("userID") String userID) {
+	public DescreptiveIDs getAvailableAppIDs(@QueryParam("userID") String userID, @QueryParam("clientId") String clientId, @QueryParam("token") String token) {
 
+		if(!SecurityUtil.hasPermission(PermissionsUtil.SDUM_ALL, token, clientId)){
+			logger.info("Missing required permissions");
+			return null;
+		}
+		
 		GetAvailableAppIDsImpl availableAppIDs = new GetAvailableAppIDsImpl(userID);
 
 		return availableAppIDs.getAvailableAppIDs();
@@ -179,8 +201,13 @@ public class ServiceDeliveryUtilityManagerRsControler {
 	 */
 	@GET
 	@Path("/getAvailableServiceIDs")
-	public DescreptiveIDs getAvailableServiceIDs(@QueryParam("applicationID") String applicationID) {
+	public DescreptiveIDs getAvailableServiceIDs(@QueryParam("applicationID") String applicationID, @QueryParam("clientId") String clientId, @QueryParam("token") String token) {
 
+		if(!SecurityUtil.hasPermission(PermissionsUtil.SDUM_ALL, token, clientId)){
+			logger.info("Missing required permissions");
+			return null;
+		}
+		
 		GetAvailableServiceIDsImpl availableServiceIDs = new GetAvailableServiceIDsImpl(applicationID);
 		
 		return availableServiceIDs.getAvailableServiceIDs();
