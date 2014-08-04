@@ -152,6 +152,13 @@
 			<artifactId>javamelody-core</artifactId>
 			<version>1.45.0</version>
 		</dependency>
+		
+		<dependency>
+			<groupId>org.openiot</groupId>
+			<artifactId>security.client</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		
 	</dependencies>
 
 

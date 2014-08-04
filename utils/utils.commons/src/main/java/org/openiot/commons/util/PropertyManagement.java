@@ -99,8 +99,8 @@ public class PropertyManagement {
 
 
 	// ==============REQUEST COMMONS ====================
-	private static final String REQUEST_COMMONS_SCHEDULER_CORE_HOST_URL = "request.definition.scheduler.core.host.url";
-	private static final String REQUEST_COMMONS_SDUM_CORE_HOST_URL = "request.definition.sdum.core.host.url";
+	private static final String REQUEST_COMMONS_SCHEDULER_CORE_HOST_URL = "request.commons.scheduler.core.host.url";
+	private static final String REQUEST_COMMONS_SDUM_CORE_HOST_URL = "request.commons.sdum.core.host.url";
 
 
 	private static final String IDE_CORE_NAVIGATION_PREFIX = "ide.core.navigation";

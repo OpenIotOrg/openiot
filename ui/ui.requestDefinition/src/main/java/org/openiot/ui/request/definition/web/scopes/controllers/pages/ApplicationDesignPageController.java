@@ -32,6 +32,8 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.RequestScoped;
 import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.stream.StreamSource;
@@ -52,6 +54,8 @@ import org.openiot.commons.osdspec.model.RequestPresentation;
 import org.openiot.commons.osdspec.model.Widget;
 import org.openiot.commons.sensortypes.model.SensorTypes;
 import org.openiot.commons.sparql.protocoltypes.model.QueryRequest;
+import org.openiot.security.client.AccessControlUtil;
+import org.openiot.security.client.OAuthorizationCredentials;
 import org.openiot.ui.request.commons.interfaces.GraphModel;
 import org.openiot.ui.request.commons.logging.LoggerService;
 import org.openiot.ui.request.commons.models.DefaultGraphModel;
@@ -91,16 +95,21 @@ public class ApplicationDesignPageController implements Serializable {
 	@ManagedProperty(value = "#{sessionBean}")
 	protected transient SessionBean sessionBean;
 	protected transient ResourceBundle messages;
+	private AccessControlUtil acUtil;
 
 	public ApplicationDesignPageController() {
 		this.messages = FaceletLocalization.getLocalizedResourceBundle();
+		acUtil = AccessControlUtil.getInstance();
 	}
 
 	public ApplicationDesignPageContext getContext() {
-         	sessionBean.setUserId("jpcik");
 		if (cachedContext == null) {
 			if (sessionBean.getUserId() == null) {
-				return null;
+				OAuthorizationCredentials credentials = acUtil.getOAuthorizationCredentials();
+				if(credentials == null)
+					return null;
+				else 
+					sessionBean.setUserId(credentials.getUserIdURI());
 			}
 
 			cachedContext = (ApplicationDesignPageContext) (sessionBean == null ? ApplicationBean.lookupSessionBean() : sessionBean).getContext("applicationDesignPageContext");
@@ -118,10 +127,15 @@ public class ApplicationDesignPageController implements Serializable {
 
 	}
 
-	public void doAccessControl() {
-		if (sessionBean.getUserId() == null) {
-			applicationBean.redirect("/pages/login.xhtml?faces-redirect=true");
+	public void doAccessControl() throws IOException {
+		if(acUtil.getOAuthorizationCredentials() == null){
+			HttpServletResponse response = (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse();
+			HttpServletRequest req = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
+			acUtil.redirectToLogin(req, response);
 		}
+//		if (sessionBean.getUserId() == null) {
+//			applicationBean.redirect("/pages/login.xhtml?faces-redirect=true");
+//		}
 	}
 
 	// ------------------------------------
@@ -187,7 +201,8 @@ public class ApplicationDesignPageController implements Serializable {
 
 		// Execute search and populate sensor toolbox
 		try {
-			SensorTypes sensorTypes = SchedulerAPIWrapper.getAvailableSensors("user000", context.getFilterLocationLat(), context.getFilterLocationLon(), context.getFilterLocationRadius());
+			OAuthorizationCredentials creds = acUtil.getOAuthorizationCredentials();
+			SensorTypes sensorTypes = SchedulerAPIWrapper.getAvailableSensors("user000", context.getFilterLocationLat(), context.getFilterLocationLon(), context.getFilterLocationRadius(), creds.getClientId(), creds.getAccessToken());
 			context.updateAvailableSensors(sensorTypes);
 		} catch (APIException ex) {
 			LoggerService.log(ex);
@@ -288,7 +303,8 @@ public class ApplicationDesignPageController implements Serializable {
 
 		if (encodeApplication()) {
 			try {
-				getContext().getAppManager().saveSelectedOAMO();
+				OAuthorizationCredentials creds = acUtil.getOAuthorizationCredentials();
+				getContext().getAppManager().saveSelectedOAMO(creds.getClientId(), creds.getAccessToken());
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, messages.getString("GROWL_INFO_HEADER"), FaceletLocalization.getLocalisedMessage(messages, "UI_GRAPH_SAVE_SUCCESS")));
 			} catch (APIException ex) {
 				LoggerService.log(ex);
@@ -305,7 +321,8 @@ public class ApplicationDesignPageController implements Serializable {
 
 		// Load services
 		try {
-			context.getAppManager().loadUserOAMOs(ApplicationBean.lookupSessionBean().getUserId());
+			OAuthorizationCredentials creds = acUtil.getOAuthorizationCredentials();
+			context.getAppManager().loadUserOAMOs(ApplicationBean.lookupSessionBean().getUserId(), creds.getClientId(), creds.getAccessToken());
 			if( !context.getAppManager().getAvailableOAMOs().isEmpty() ){
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, messages.getString("GROWL_INFO_HEADER"), FaceletLocalization.getLocalisedMessage(messages, "APPLICATIONS_LOADED_SUCCESSFULLY")));
 			}
@@ -349,7 +366,8 @@ public class ApplicationDesignPageController implements Serializable {
 		
 		if( context.isPersistSpec() ){
 			try{
-				SchedulerAPIWrapper.registerService(context.getAppManager().exportOSDSpec());
+				OAuthorizationCredentials creds = acUtil.getOAuthorizationCredentials();
+				SchedulerAPIWrapper.registerService(context.getAppManager().exportOSDSpec(), creds.getClientId(), creds.getAccessToken());
 			} catch (APIException ex) {
 				LoggerService.log(ex);
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, messages.getString("GROWL_ERROR_HEADER"), FaceletLocalization.getLocalisedMessage(messages, "ERROR_CONNECTING_TO_REGISTRATION_SERVICE")));

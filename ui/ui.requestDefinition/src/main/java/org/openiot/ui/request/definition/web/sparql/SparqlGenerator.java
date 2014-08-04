@@ -461,7 +461,7 @@ public class SparqlGenerator extends AbstractGraphNodeVisitor {
 	public void visitPassthroughSink(Passthrough node) {
 
 		// Generate one query per attribute
-		int attrCount = Integer.valueOf((String) node.getPropertyValueMap().get("ATTRIBUTES"));
+		int attrCount = Integer.valueOf(node.getPropertyValueMap().get("ATTRIBUTES").toString());
 		for (int i = 0; i < attrCount; i++) {
 			// Start a new code block for each attribute
 			beginQueryBlock(node, i + 1, attrCount);

@@ -29,16 +29,15 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.MediaType;
+import javax.xml.bind.JAXBException;
 
-
+import org.openiot.commons.descriptiveids.model.DescreptiveIDs;
 import org.openiot.commons.osdspec.model.OAMO;
 import org.openiot.commons.osdspec.model.OSDSpec;
 import org.openiot.commons.osdspec.model.OSMO;
 import org.openiot.commons.sensortypes.model.SensorTypes;
 import org.openiot.commons.util.PropertyManagement;
-
-
-
 import org.openiot.scheduler.core.api.impl.DiscoverSensors.DiscoverSensorsImpl;
 import org.openiot.scheduler.core.api.impl.GetApplication.GetApplicationImpl;
 import org.openiot.scheduler.core.api.impl.GetAvailableAppIDs.GetAvailableAppIDsImpl;
@@ -48,14 +47,10 @@ import org.openiot.scheduler.core.api.impl.GetService.GetServiceImpl;
 import org.openiot.scheduler.core.api.impl.RegisterService.RegisterServiceImpl;
 import org.openiot.scheduler.core.api.impl.UserLogin.UserLoginImpl;
 import org.openiot.scheduler.core.api.impl.UserRegister.UserRegisterImpl;
-
 //import org.openiot.scheduler.core.api.impl.DiscoverSensorsImpl;
 //import org.openiot.scheduler.core.api.impl.RegisterServiceImpl;
-
-
-import org.openiot.commons.descriptiveids.model.DescreptiveIDs;
-
-
+import org.openiot.scheduler.core.utils.SecurityUtil;
+import org.openiot.security.client.PermissionsUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -173,9 +168,13 @@ public class SchedulerRsControler {
 	@Path("/discoverSensors")
 //	@Consumes("application/xml")
 //	@Produces("application/xml")
-	public SensorTypes discoverSensors(@QueryParam("userID") String userID, @QueryParam("longitude") double longitude, @QueryParam("latitude") double latitude, @QueryParam("radius") float radius) {
+	public SensorTypes discoverSensors(@QueryParam("userID") String userID, @QueryParam("longitude") double longitude, @QueryParam("latitude") double latitude,
+			@QueryParam("radius") float radius, @QueryParam("clientId") String clientId, @QueryParam("token") String token) {
 
-		
+		if(!SecurityUtil.hasPermission(PermissionsUtil.SCHEDULER_ALL, token, clientId)){
+			logger.info("Missing required permissions");
+			return null;
+		}
 		DiscoverSensorsImpl discoverSensorsImpl = new DiscoverSensorsImpl(userID, longitude, latitude, radius);
 		
 		return discoverSensorsImpl.getSensorTypes();
@@ -190,14 +189,22 @@ public class SchedulerRsControler {
 	 *         <p>
 	 *         registerService(osdSpec: OSDSpec): String
 	 *         <p>
+	 * @throws JAXBException 
 	 */
 	@POST
 	@Path("/registerService")
-//	@Consumes("application/xml")
-	public String registerService(OSDSpec osdSpec) {
+	@Consumes(MediaType.APPLICATION_XML)
+	@Produces(MediaType.TEXT_PLAIN)
+	public String registerService(OSDSpec osdSpec,  @QueryParam("clientId") String clientId, @QueryParam("token") String token) throws JAXBException {
 
+		System.out.println("osdSpec: " + osdSpec);
+		System.out.println(String.format("clientId: %s, token: %s", clientId, token));
 		
-
+		if(!SecurityUtil.hasPermission(PermissionsUtil.SCHEDULER_ALL, token, clientId)){
+			logger.info("Missing required permissions");
+			return null;
+		}
+		
 		RegisterServiceImpl registerServiceImpl = new RegisterServiceImpl(osdSpec);
 		
 
