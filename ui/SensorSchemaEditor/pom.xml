@@ -1,0 +1,140 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.openiot</groupId>
+  <artifactId>ui.sensorschema</artifactId>
+  <packaging>war</packaging>
+  <version>0.0.3-Development</version>
+  <name>OpenIoT RDF Sensor Schema Editor</name>
+  <url>http://maven.apache.org</url>
+  
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+      <scope>test</scope>
+    </dependency>
+    
+    
+	<dependency>
+		<groupId>javax.servlet</groupId>
+		<artifactId>jstl</artifactId>
+		<version>1.2</version>
+	</dependency>
+
+	<dependency>
+		<groupId>javax.servlet</groupId>
+		<artifactId>servlet-api</artifactId>
+		<version>2.5</version>
+	</dependency>
+
+	<dependency>
+		<groupId>javax.servlet.jsp</groupId>
+		<artifactId>jsp-api</artifactId>
+		<version>2.1</version>
+	</dependency>
+    
+	
+	<dependency>
+		<groupId>com.sun.faces</groupId>
+		<artifactId>jsf-impl</artifactId>
+		<version>2.1.7</version>
+	</dependency>
+	
+	<dependency>
+		<groupId>com.sun.faces</groupId>
+		<artifactId>jsf-api</artifactId>
+		<version>2.1.7</version>
+	</dependency>
+	
+	
+	<!-- Prime Faces -->
+	<dependency>
+		<groupId>org.primefaces</groupId>
+		<artifactId>primefaces</artifactId>
+		<version>4.0</version>
+	</dependency>
+	
+	
+	<!-- Jena -->
+	    
+    <dependency>
+		<groupId>org.apache.jena</groupId>
+		<artifactId>jena-core</artifactId>
+		<version>2.11.2</version>
+	</dependency>
+	
+    <dependency>
+		<groupId>org.apache.jena</groupId>
+		<artifactId>jena-arq</artifactId>
+		<version>2.11.2</version>
+	</dependency>
+    
+    <!-- OpenIoT Dependency -->
+    
+    <dependency>
+		<groupId>org.openiot</groupId>
+	    <artifactId>utils.commons</artifactId>
+	    <version>0.0.1</version>
+    </dependency>
+    
+	<dependency>
+		<groupId>org.openiot</groupId>
+		<artifactId>lsm-light.client</artifactId>
+		<version>0.0.1</version>
+	</dependency>    
+    
+    
+    <!-- Logging framework sl4j with log4j-->
+	<dependency> 
+  		<groupId>org.slf4j</groupId>
+  		<artifactId>slf4j-log4j12</artifactId>
+  		<version>1.7.5</version>
+	</dependency>
+	
+	
+	<!-- ======== Sesame Dependencies ========== -->
+		<dependency>
+			<groupId>org.openrdf.sesame</groupId>
+			<artifactId>sesame-query</artifactId>
+			<version>2.7.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.openrdf.sesame</groupId>
+			<artifactId>sesame-queryresultio-sparqlxml</artifactId>
+			<version>2.7.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.openrdf.sesame</groupId>
+			<artifactId>sesame-repository-sparql</artifactId>
+			<version>2.7.0</version>
+		</dependency>
+	
+  </dependencies>
+  <build>
+  	<plugins>
+    
+    <!-- Plugin To Deploy to JBOSS -->
+	<plugin>
+		<groupId>org.jboss.as.plugins</groupId>
+		<artifactId>jboss-as-maven-plugin</artifactId>
+		<version>7.4.Final</version>
+	</plugin>
+	<!-- Maven compiler plugin -->
+	<plugin>
+		<artifactId>maven-compiler-plugin</artifactId>
+		<configuration>
+			<source>1.7</source>
+			<target>1.7</target>
+		</configuration>
+	</plugin>     
+  </plugins>
+  <finalName>sensorschema</finalName>
+    <resources>
+		<resource>
+			<directory>src/main/resources</directory>
+		</resource>
+	</resources>
+  </build>
+</project>

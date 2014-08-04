@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>Really simple CRUD</title>
+    </h:head>
+    <h:body>
+        <h3>List items</h3>
+        <h:form rendered="#{not empty crud.list}">
+            <h:dataTable value="#{crud.model}" var="item">
+                <h:column><f:facet name="header">ID</f:facet>#{item.id}</h:column>
+                <h:column><f:facet name="header">Value</f:facet>#{item.value}</h:column>
+                <h:column><h:commandButton value="edit" action="#{crud.edit}" /></h:column>
+                <h:column><h:commandButton value="delete" action="#{crud.delete}" /></h:column>
+            </h:dataTable>
+        </h:form>
+        <h:panelGroup rendered="#{empty crud.list}">
+            <p>Table is empty! Please add new items.</p>
+        </h:panelGroup>
+        
+        <h:panelGroup rendered="#{!crud.edit}">
+            <h3>Add item</h3>
+            <h:form>
+                <p>Value: <p:inputText value="#{crud.item.value}" /></p>
+                <p><h:commandButton value="add" action="#{crud.add}" /></p>
+            </h:form>
+        </h:panelGroup>
+        <h:panelGroup rendered="#{crud.edit}">
+            <h3>Edit item #{crud.item.id}</h3>
+            <h:form>
+                <p>Value: <h:inputText value="#{crud.item.value}" /></p>
+                <p><h:commandButton value="save" action="#{crud.save}" /></p>
+            </h:form>
+        </h:panelGroup>
+    </h:body>
+</html>

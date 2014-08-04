@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>
+        	<h:outputText value="#{sensorBean.pageTitle}"/>
+        </title>
+        <style>
+       	.noBorders tr, .noBorders td {
+    		background: none !important;
+    		border: none !important;
+		}
+		</style>
+    </h:head>
+    <h:body>
+ 
+        <p:panel id="sensorschema" header="#{sensorBean.pageTitle}">
+               		
+	        <h:form id="MainForm">
+	        	<h3>Sensor Type Name 	
+	        	<p:inplace editor="true">
+	        	<p:inputText value="#{sensorBean.sensorType}" id="name" required="true">	
+	        		<f:validator validatorId = "custom.SimpleValidator"/>        		
+	        	</p:inputText>
+	        	</p:inplace>
+	        	</h3>
+	        	<p:message for="name" style="color:red"/>
+	        	<p:tooltip id="toolTipFocus" for="name" value="e.g. VaisalaWeatherStation (no spaces)" />
+	        	
+	        	<h3>Add Observed Property <p:commandButton ajax="false" id="addObservation" action="#{sensorBean.add}" icon="ui-icon-plusthick"/></h3>	   
+	        	<p:tooltip id="obstip" for="addObservation" value="Click to add new Observed property to the sensor" />                  
+	        </h:form>
+        
+	        <h:panelGroup rendered="#{empty sensorBean.list}">
+	            <p>Currently this Sensor measures no Observation! Please add new Observation.</p>
+	        </h:panelGroup>
+
+	        
+	        
+	        <h:panelGroup rendered="#{sensorBean.edit}">
+	        	<h3>Edit item #{sensorBean.observation.id}</h3>
+	    		<h:form>
+		        	<p>Value: <p:inputText value="#{sensorBean.observation.observes}" /></p>
+	            	<p><h:commandButton value="save" action="#{sensorBean.save}" /></p>
+	            </h:form>
+	        </h:panelGroup>
+		</p:panel>
+	       	
+	       	<h:form rendered="#{not empty sensorBean.list}" id="form2">        
+	        	<p:dataGrid value="#{sensorBean.model}" var="observation" columns = "3">
+	        		<f:facet name="header">
+	            		Observes
+	        		</f:facet>
+	        		<p:panel header="#{observation.id}" >
+	        			<p:panelGrid  styleClass="noBorders">
+	        			<p:row>
+	        			<p:column>
+	        				<h:outputText value="Property Name "/>	        				
+	        			</p:column>
+	        			<p:column>
+	        			<p:inplace editor="true">
+	            			<p:inputText id="ajax" value="#{observation.observes}" required="true" label="text">
+	            				<f:validator validatorId = "custom.SimpleValidator"/>
+	            			</p:inputText>  
+	            		</p:inplace>
+	        			<p:tooltip id="toolTipFocus" for="ajax" value="e.g. AirTemperature (no space)" />
+	        			<p:message id="m1" for="ajax" style="color:red"/>     	
+	        			</p:column>
+	        			</p:row>
+	        			
+	        			<p:row>
+	        			<p:column colspan="4">
+	        				<p:fieldset legend="Measurement Capability" style="margin-bottom:20px">
+	        				<p:panelGrid columns="4">
+		        				<h:outputText value="Accuracy"/>		        						            			
+		            			<p:inplace editor="true">
+		            				<p:inputText id="txtacc" value="#{observation.accuracy}" 
+		            				required="true" label="text">
+		            					<f:validator validatorId = "custom.SimpleValidator"/>	            							
+		            				</p:inputText>		        				        	
+		        				</p:inplace>
+		        				<p:tooltip id="toolTipFocus2" for="txtacc" value="e.g.  BARO-1QML (Class A accuracy)" />
+		        				<p:message id="m2" for="txtacc" style="color:red"/>
+		        				
+		        				<h:outputText value="Frequency"/>
+		        				<p:inplace editor="true">
+		            				<p:inputText id="ajax-freq" value="#{observation.frequency}" required="true" label="text">
+		            					<f:validator validatorId = "custom.SimpleValidator"/>	
+		            				</p:inputText>
+		        				</p:inplace>
+		        				<p:tooltip id="toolTipFocus3" for="ajax-freq" value="e.g.  10 Hz" />
+		        				<p:message id="m3" for="ajax-freq" style="color:red"/>
+		        			</p:panelGrid>        	
+	        				</p:fieldset>
+	        			</p:column>
+						</p:row>
+						
+						<p:row>	        				
+	        			<p:column colspan="2">
+	                		<p:commandButton value="delete" action="#{sensorBean.delete}" ajax="false"/>
+	                	</p:column>
+	                	</p:row>
+	                	
+	                	</p:panelGrid>
+	        		</p:panel>
+	            </p:dataGrid>
+				
+				<p:commandButton validateClient="true" 
+	        	value="Generate Description" actionListener="#{sensorBean.generateRDF}" id="generate" styleClass="ui-priority-primary" ajax="true" update="form2 :out growl"/>
+				<p:commandButton value = "Clear" actionListener="#{sensorBean.clearSession}" ajax = "false"/>	        	
+	        	<p:commandButton value = "Register Sensor Type" actionListener="#{sensorBean.pushRDF}" id="submitlsm" ajax = "true" update="growl"/>	
+	        	
+	        	<p:growl id="growl" for="buttongrowl" sticky="true" /> 				
+	        </h:form>
+			
+
+	       
+        	<br />
+	       	<p:fieldset id="out" legend="Generated RDF Output" style="margin-bottom:20px">
+        		<h:outputText value="#{sensorBean.outputText}" />
+        	</p:fieldset>
+        	
+        	
+	      
+       	    
+    </h:body>
+</html>

@@ -96,6 +96,14 @@ public class PropertyManagement {
 	private static final String LSM_LOCAL_METAGRAPH = "lsm-light.server.localMetaGraph";
 	private static final String LSM_LOCAL_DATAGRAPH = "lsm-light.server.localDataGraph";
 
+	
+	//=================Sensor Schema Editor ====================
+	private static final String SENSORSCHEMAEDITOR_NS = "ide.core.navigation.sensorSchemaEditor.ns";
+	private static final String SENSORSCHEMAEDITOR_URL = "ide.core.navigation.sensorSchemaEditor.url";
+	private static final String SENSORSCHEMAEDITOR_TITLE = "ide.core.navigation.sensorSchemaEditor.title";
+	private static final String SENSORSCHEMAEDITOR_ENDPOINT = "ide.core.navigation.lsm.sparql.endpoint";
+	private static final String SENSORSCHEMAEDITOR_SERVER = "ide.core.navigation.lsm.remote.server";
+	private static final String SENSORSCHEMAEDITOR_METAGRAPH = "ide.core.nvaigation.lsm.openiotMetaGraph";
 
 	private static final String IDE_CORE_NAVIGATION_PREFIX = "ide.core.navigation";
 
@@ -240,5 +248,29 @@ public class PropertyManagement {
 	
 	public String getLSMLocalDataGraph(){
 		return props.getProperty(LSM_LOCAL_DATAGRAPH);
+	}
+	
+	
+	//get methods for sensor schema editor
+	public String getSensorSchemaEditorNS(){
+		return props.getProperty(SENSORSCHEMAEDITOR_NS);
+	}
+	
+	public String getSensorSchemaEditorURL(){
+		return props.getProperty(SENSORSCHEMAEDITOR_URL);
+	}
+	
+	public String getSensorSchemaEditorTITLE(){
+		return props.getProperty(SENSORSCHEMAEDITOR_TITLE);
+	}
+	
+	public String getSensorSchemaEditorLSMSERVER(){
+		return props.getProperty(SENSORSCHEMAEDITOR_SERVER);
+	}
+	public String getSensorSchemaEditorLSMMETAGRAPH(){
+		return props.getProperty(SENSORSCHEMAEDITOR_METAGRAPH);
+	}
+	public String getSensorSchemaEditorSPARQLENDPOINT(){
+		return props.getProperty(SENSORSCHEMAEDITOR_ENDPOINT);
 	}
 }
