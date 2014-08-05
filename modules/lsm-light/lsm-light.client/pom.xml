@@ -8,6 +8,12 @@
 	<description>A LSM OpenIoT api for clients</description>
 	<url>https://github.com/OpenIotOrg/openiot</url>
 
+	<parent>
+		<groupId>org.openiot</groupId>
+		<artifactId>openiot</artifactId>
+		<version>0.1-SNAPSHOT</version>
+		<relativePath>../../../pom.xml</relativePath>
+	</parent>
 
 	<licenses>
 		<license>
