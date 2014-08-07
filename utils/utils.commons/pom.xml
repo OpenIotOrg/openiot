@@ -40,7 +40,7 @@
     <description>OpenIoT Commons library</description>
     <url>https://github.com/OpenIotOrg/openiot</url>
 
-    <licenses>
+	<licenses>
         <license>
             <name>GNU Lesser General Public License, version 2.1</name>
             <distribution>repo</distribution>
