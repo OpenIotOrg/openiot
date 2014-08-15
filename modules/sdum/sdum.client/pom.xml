@@ -1,10 +1,10 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-<!-- 
+<!--
      Copyright (c) 2011-2014, OpenIoT
-     
+
      This file is part of OpenIoT.
- 
+
      OpenIoT is free software: you can redistribute it and/or modify
      it under the terms of the GNU Lesser General Public License as published by
      the Free Software Foundation, version 3 of the License.
@@ -13,99 +13,89 @@
      but WITHOUT ANY WARRANTY; without even the implied warranty of
      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
      GNU Lesser General Public License for more details.
- 
+
      You should have received a copy of the GNU Lesser General Public License
      along with OpenIoT.  If not, see <http://www.gnu.org/licenses/>.
- 
-      Contact: OpenIoT mailto: info@openiot.eu
-/ -->
 
-<!-- Author: Nikos Kefalakis (nkef@ait.edu.gr) -->
+		  Contact: OpenIoT mailto: info@openiot.eu
+	/ -->
 
-  <!-- =========================================================== -->
-  <!-- Basics -->
-  <!-- =========================================================== -->  
+	<!-- Author: Nikos Kefalakis (nkef@ait.edu.gr) -->
 
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>org.openiot</groupId>
-  <artifactId>sdum.client</artifactId>
-  <version>0.0.1</version>
-  <name>sdum.client</name>
-  <description>The Service Delivery and Utility Manager Client</description>
-  
-  
-  
-    <licenses>
-        <license>
-            <name>GNU Lesser General Public License, version 2.1</name>
-            <distribution>repo</distribution>
-            <url>http://www.gnu.org/licenses/lgpl-2.1.html</url>
-        </license>
-    </licenses>
+	<!-- =========================================================== -->
+	<!-- Basics -->
+	<!-- =========================================================== -->
+
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.openiot</groupId>
+	<artifactId>sdum.client</artifactId>
+	<version>0.0.1</version>
+	<name>OpenIoT sdum.client</name>
+	<description>The Service Delivery and Utility Manager Client</description>
 
 
-  <!-- =========================================================== -->
-  <!-- Properties -->
-  <!-- =========================================================== -->
-    <properties>
-        <!-- Explicitly declaring the source encoding eliminates the following 
-            message: [WARNING] Using platform encoding (UTF-8 actually) to copy filtered 
-            resources, i.e. build is platform dependent!
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding> -->
-        
 
-        <!-- other plugin versions -->
-        <version.compiler.plugin>2.3.2</version.compiler.plugin>
-
-        <!-- maven-compiler-plugin -->
-        <maven.compiler.target>1.7</maven.compiler.target>
-        <maven.compiler.source>1.7</maven.compiler.source>
-    </properties>
+	<licenses>
+		<license>
+			<name>GNU Lesser General Public License, version 2.1</name>
+			<distribution>repo</distribution>
+			<url>http://www.gnu.org/licenses/lgpl-2.1.html</url>
+		</license>
+	</licenses>
 
 
-  <!-- =========================================================== -->
-  <!-- Parent -->
-  <!-- =========================================================== -->
-             <!-- to be filled -->
+	<!-- =========================================================== -->
+	<!-- Properties -->
+	<!-- =========================================================== -->
+	<properties>
+		<!-- Explicitly declaring the source encoding eliminates the following
+			message: [WARNING] Using platform encoding (UTF-8 actually) to copy filtered
+			resources, i.e. build is platform dependent!
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding> -->
 
 
-  <!-- =========================================================== -->
-  <!-- Dependencies -->
-  <!-- =========================================================== -->
+		<!-- other plugin versions -->
+		<version.compiler.plugin>2.3.2</version.compiler.plugin>
 
-    
+		<!-- maven-compiler-plugin -->
+		<maven.compiler.target>1.7</maven.compiler.target>
+		<maven.compiler.source>1.7</maven.compiler.source>
+	</properties>
 
-    
-    <dependencies>
+
+	<!-- =========================================================== -->
+	<!-- Dependencies -->
+	<!-- =========================================================== -->
+	<dependencies>
 
 		<!--======== OpenIoT dependencies ============-->
 
 
-        <dependency>
-	        <groupId>org.openiot</groupId>
-	        <artifactId>utils.commons</artifactId>
-	        <version>0.0.1</version>
-        </dependency>
+		<dependency>
+			<groupId>org.openiot</groupId>
+			<artifactId>utils.commons</artifactId>
+			<version>0.0.1</version>
+		</dependency>
 
- 
+
 
 
 		<!-- ======== JBoss RestEasy JAX-RS with JAXB support Dependencies ========== -->
-        <dependency>
-        	<groupId>org.jboss.resteasy</groupId>
-        	<artifactId>resteasy-jaxrs</artifactId>
-        	<version>2.3.6.Final</version>
-        </dependency>        
-        <dependency>
-        	<groupId>org.jboss.resteasy</groupId>
-        	<artifactId>resteasy-jaxb-provider</artifactId>
-        	<version>2.3.6.Final</version>
-        </dependency>
+		<dependency>
+			<groupId>org.jboss.resteasy</groupId>
+			<artifactId>resteasy-jaxrs</artifactId>
+			<version>2.3.6.Final</version>
+		</dependency>
+		<dependency>
+			<groupId>org.jboss.resteasy</groupId>
+			<artifactId>resteasy-jaxb-provider</artifactId>
+			<version>2.3.6.Final</version>
+		</dependency>
 
 
 
 		<!-- ====== org.eclipse.persistence.jaxb.JAXBContextFactory Dependencies -->
-		 
+
 		<dependency>
 			<groupId>org.eclipse.persistence</groupId>
 			<artifactId>eclipselink</artifactId>
@@ -120,7 +110,7 @@
 			<artifactId>logback-classic</artifactId>
 			<version>1.0.11</version>
 		</dependency>
-         <!-- Apache commons-logging Required By Sesame -->
+		<!-- Apache commons-logging Required By Sesame -->
 		<dependency>
 			<groupId>commons-logging</groupId>
 			<artifactId>commons-logging</artifactId>
@@ -130,18 +120,16 @@
 
 
 
-    </dependencies>
+	</dependencies>
 
-  <!-- =========================================================== -->
-  <!-- Plugins -->
-  <!-- =========================================================== -->
-
-
+	<!-- =========================================================== -->
+	<!-- Build -->
+	<!-- =========================================================== -->
 	<build>
-	
+
 		<plugins>
-			<!-- Compiler plugin enforces Java 1.6 compatibility and activates annotation 
-				processors -->
+			<!-- Compiler plugin enforces Java 1.6 compatibility and activates annotation
+			processors -->
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>${version.compiler.plugin}</version>
@@ -153,13 +141,13 @@
 
 
 
- 
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
 				<version>2.2</version>
 			</plugin>
-			
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-assembly-plugin</artifactId>
@@ -183,10 +171,6 @@
 					</execution>
 				</executions>
 			</plugin>
-
- 
-
-
 		</plugins>
 	</build>
 
@@ -196,46 +180,16 @@
   <!-- =========================================================== -->
   <!-- profiles -->
   <!-- =========================================================== -->
-    <profiles>
-    </profiles>
-    
-    
+	<profiles>
+	</profiles>
+
+
   <!-- =========================================================== -->
   <!-- Repositories -->
   <!-- =========================================================== -->
+	<repositories>
+	</repositories>
 
-  <repositories>
-  </repositories>
-
-  <pluginRepositories>
-  </pluginRepositories>
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+	<pluginRepositories>
+	</pluginRepositories>
 </project>

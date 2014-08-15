@@ -3,9 +3,10 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.openiot</groupId>
 	<artifactId>lsm-light.server</artifactId>
+	<name>OpenIoT LSM-light Server</name>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>war</packaging>
-	<name>OpenIoT LSM-light Server</name>
+
 	<description>The LSM server for OpenIoT</description>
 	<url>https://github.com/OpenIotOrg/openiot</url>
 
@@ -22,7 +23,7 @@
 	<!-- Properties -->
 	<!-- =========================================================== -->
 	<properties>
-		<!-- Explicitly declaring the source encoding eliminates the following message: [WARNING] Using platform encoding (UTF-8 actually) 
+		<!-- Explicitly declaring the source encoding eliminates the following message: [WARNING] Using platform encoding (UTF-8 actually)
 		to copy filtered resources, i.e. build is platform dependent! <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding> -->
 
 		<!-- JBoss dependency versions -->
@@ -31,7 +32,7 @@
 		<!-- Define the version of JBoss' Java EE 6 APIs and Tools we want to import. -->
 		<version.jboss.bom>1.0.4.Final</version.jboss.bom>
 
-		<!-- Alternatively, comment out the above line, and un-comment the line below to use version 1.0.2.Final-redhat-1 which is 
+		<!-- Alternatively, comment out the above line, and un-comment the line below to use version 1.0.2.Final-redhat-1 which is
 		a release certified to work with JBoss EAP 6. It requires you have access to the JBoss EAP 6 maven repository. -->
 		<!-- <version.jboss.bom>1.0.2.Final-redhat-1</version.jboss.bom>> -->
 
@@ -54,9 +55,9 @@
 
 	<dependencyManagement>
 		<dependencies>
-			<!-- JBoss distributes a complete set of Java EE 6 APIs including a Bill of Materials (BOM). A BOM specifies the versions 
-			of a "stack" (or a collection) of artifacts. We use this here so that we always get the correct versions of artifacts. Here we 
-			use the jboss-javaee-6.0-with-tools stack (you can read this as the JBoss stack of the Java EE 6 APIs, with some extras tools 
+			<!-- JBoss distributes a complete set of Java EE 6 APIs including a Bill of Materials (BOM). A BOM specifies the versions
+			of a "stack" (or a collection) of artifacts. We use this here so that we always get the correct versions of artifacts. Here we
+			use the jboss-javaee-6.0-with-tools stack (you can read this as the JBoss stack of the Java EE 6 APIs, with some extras tools
 			for your project)) -->
 			<dependency>
 				<groupId>org.jboss.bom</groupId>
@@ -65,7 +66,7 @@
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
-			<!-- <dependency> <groupId>org.jboss.bom</groupId> <artifactId>jboss-javaee-6.0-with-resteasy</artifactId> <version>${version.jboss.bom}</version> 
+			<!-- <dependency> <groupId>org.jboss.bom</groupId> <artifactId>jboss-javaee-6.0-with-resteasy</artifactId> <version>${version.jboss.bom}</version>
 			<type>pom</type> <scope>import</scope> </dependency> -->
 		</dependencies>
 	</dependencyManagement>
@@ -143,13 +144,27 @@
 			<artifactId>sesame-repository-sparql</artifactId>
 			<version>2.7.0</version>
 		</dependency>
-		
+
 		<!-- ======== LSM API Dependencies ========== -->
 
 		<dependency>
 			<groupId>com.hp.hpl.jena</groupId>
 			<artifactId>jena</artifactId>
 			<version>2.6.4</version>
+			<exclusions>
+				<exclusion>
+					<groupId>log4j</groupId>
+					<artifactId>log4j</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-log4j12</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-api</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 
 		<dependency>
@@ -162,6 +177,12 @@
 			<groupId>com.jolbox</groupId>
 			<artifactId>bonecp</artifactId>
 			<version>0.7.1.RELEASE</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-api</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 
 		<dependency>
@@ -205,9 +226,14 @@
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
-			<!-- <version>1.0.11</version>  -->
-			<version>1.1.1</version>
+			<version>1.1.2</version>
 		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>log4j-over-slf4j</artifactId>
+			<version>1.6.4</version>
+		</dependency>
+
 
 		<!-- ========javamelody (monitoring) dependency ========== -->
 		<dependency>
@@ -236,12 +262,6 @@
 			<artifactId>slf4j-api</artifactId>
 			<version>1.7.1</version>
 			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-log4j12</artifactId>
-			<version>1.7.1</version>
-			<scope>test</scope>
 		</dependency>
 
 	</dependencies>

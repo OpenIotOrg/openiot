@@ -1,6 +1,6 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>org.openiot</groupId>
@@ -29,6 +29,18 @@
 			<plugin>
 				<artifactId>maven-war-plugin</artifactId>
 				<version>${version.war.plugin}</version>
+				<configuration>
+					<!--
+					  Exclude LOG4J and slf4j-log4j, pulled in by cas-server-webapp,
+					  since all logging should go through SLF4J.
+					  Note that we're excluding log4j-<version>.jar but keeping
+					  log4j-over-slf4j-<version>.jar
+					-->
+					<packagingExcludes>
+						%regex[.*log4j-(?!over-slf4j).*jar],
+						%regex[.*slf4j-log4j.*jar]
+					</packagingExcludes>
+				</configuration>
 			</plugin>
 
 			<plugin>
@@ -65,6 +77,18 @@
 				<exclusion>
 					<groupId>org.perf4j</groupId>
 					<artifactId>perf4j</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>log4j</groupId>
+					<artifactId>log4j</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-log4j12</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-api</artifactId>
 				</exclusion>
 			</exclusions>
 		</dependency>
@@ -159,7 +183,7 @@
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
-			<version>1.1.1</version>
+			<version>1.1.2</version>
 			<!--<version>1.0.13</version> -->
 		</dependency>
 

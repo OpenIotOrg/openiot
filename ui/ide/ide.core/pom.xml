@@ -18,7 +18,7 @@
 	<artifactId>ide.core</artifactId>
 	<version>0.0.1</version>
 	<packaging>war</packaging>
-	<name>ide.core</name>
+	<name>OpenIoT ide.core</name>
 	<description>A starter Java EE 6 webapp project for use on JBoss AS 7 / EAP 6,
 		generated from the jboss-javaee6-webapp archetype
 	</description>

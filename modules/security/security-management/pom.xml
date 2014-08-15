@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- /** * Copyright (c) 2011-2014, OpenIoT * * This library is free software; you can redistribute it and/or * modify it either 
-	under the terms of the GNU Lesser General Public * License version 2.1 as published by the Free Software Foundation * (the "LGPL"). 
-	If you do not alter this * notice, a recipient may use your version of this file under the LGPL. * * You should have received 
-	a copy of the LGPL along with this library * in the file COPYING-LGPL-2.1; if not, write to the Free Software * Foundation, Inc., 
-	59 Temple Place, Suite 330, Boston, MA 02111-1307 USA * * This software is distributed on an "AS IS" basis, WITHOUT WARRANTY 
-	* OF ANY KIND, either express or implied. See the LGPL for * the specific language governing rights and limitations. * * Contact: 
+<!-- /** * Copyright (c) 2011-2014, OpenIoT * * This library is free software; you can redistribute it and/or * modify it either
+	under the terms of the GNU Lesser General Public * License version 2.1 as published by the Free Software Foundation * (the "LGPL").
+	If you do not alter this * notice, a recipient may use your version of this file under the LGPL. * * You should have received
+	a copy of the LGPL along with this library * in the file COPYING-LGPL-2.1; if not, write to the Free Software * Foundation, Inc.,
+	59 Temple Place, Suite 330, Boston, MA 02111-1307 USA * * This software is distributed on an "AS IS" basis, WITHOUT WARRANTY
+	* OF ANY KIND, either express or implied. See the LGPL for * the specific language governing rights and limitations. * * Contact:
 	OpenIoT mailto: info@openiot.eu */ -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
@@ -46,7 +46,7 @@
 
 		<!-- Define the version of the JBoss BOMs we want to import to specify tested stacks. -->
 		<version.jboss.bom>1.0.4.Final</version.jboss.bom>
-		<!-- Alternatively, comment out the above line, and un-comment the line below to use version 1.0.2.Final-redhat-1 which is 
+		<!-- Alternatively, comment out the above line, and un-comment the line below to use version 1.0.2.Final-redhat-1 which is
 			a release certified to work with JBoss EAP 6. It requires you have access to the JBoss EAP 6 maven repository. -->
 		<!-- <version.jboss.bom>1.0.2.Final-redhat-1</version.jboss.bom>> -->
 
@@ -68,10 +68,10 @@
 
 	<dependencyManagement>
 		<dependencies>
-			<!-- JBoss distributes a complete set of Java EE 6 APIs including a Bill of Materials (BOM). A BOM specifies the versions 
-				of a "stack" (or a collection) of artifacts. We use this here so that we always get the correct versions of artifacts. Here we 
-				use the jboss-javaee-6.0-with-tools stack (you can read this as the JBoss stack of the Java EE 6 APIs, with some extras tools 
-				for your project, such as Arquillian for testing) and the jboss-javaee-6.0-with-hibernate stack you can read this as the JBoss 
+			<!-- JBoss distributes a complete set of Java EE 6 APIs including a Bill of Materials (BOM). A BOM specifies the versions
+				of a "stack" (or a collection) of artifacts. We use this here so that we always get the correct versions of artifacts. Here we
+				use the jboss-javaee-6.0-with-tools stack (you can read this as the JBoss stack of the Java EE 6 APIs, with some extras tools
+				for your project, such as Arquillian for testing) and the jboss-javaee-6.0-with-hibernate stack you can read this as the JBoss
 				stack of the Java EE 6 APIs, with extras from the Hibernate family of projects) -->
 			<dependency>
 				<groupId>org.jboss.bom</groupId>
@@ -111,12 +111,6 @@
 			<groupId>org.openiot</groupId>
 			<artifactId>utils.commons</artifactId>
 			<version>0.0.1</version>
-		</dependency>
-
-		<dependency>
-			<artifactId>slf4j-log4j12</artifactId>
-			<groupId>org.slf4j</groupId>
-			<version>1.7.1</version>
 		</dependency>
 
 		<!-- MISC -->
@@ -229,12 +223,9 @@
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
-			<version>1.1.1</version>
+			<version>1.1.2</version>
 			<!--<version>1.0.13</version> -->
 		</dependency>
-
-
-
 	</dependencies>
 
 
