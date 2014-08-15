@@ -1,6 +1,6 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	
+
 	<groupId>org.openiot</groupId>
 	<artifactId>openiot</artifactId>
 	<packaging>pom</packaging>
@@ -15,8 +15,8 @@
 
 	<modules>
 		<module>utils/utils.commons</module>
-		<module>modules/security/security-server</module>
 		<module>modules/security/security-client</module>
+		<module>modules/security/security-server</module>
 		<module>modules/security/security-management</module>
 		<module>modules/security/security-webapp-demo</module>
 		<module>modules/lsm-light/lsm-light.client</module>
@@ -31,12 +31,12 @@
 		<module>ui/ui.requestDefinition</module>
 		<module>ui/ui.requestPresentation</module>
 	</modules>
-	
+
 	<issueManagement>
 		<system>GitHub</system>
 		<url>https://github.com/OpenIotOrg/openiot/issues</url>
 	</issueManagement>
-	
+
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
