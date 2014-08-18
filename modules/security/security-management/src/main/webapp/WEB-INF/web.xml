@@ -55,6 +55,10 @@
 	<filter-mapping>
 		<filter-name>ShiroFilter</filter-name>
 		<url-pattern>/*</url-pattern>
+		<dispatcher>REQUEST</dispatcher> 
+    	<dispatcher>FORWARD</dispatcher> 
+    	<dispatcher>INCLUDE</dispatcher> 
+    	<dispatcher>ERROR</dispatcher>
 	</filter-mapping>
 	<listener>
 		<listener-class>org.apache.shiro.web.env.EnvironmentLoaderListener</listener-class>

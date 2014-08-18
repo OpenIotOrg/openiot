@@ -84,10 +84,11 @@ public abstract class AccessControlUtil {
 			instanceRest = new AccessControlUtilRest();
 		return instanceRest;
 	}
-	
+
 	/**
 	 * Returns a singleton instance of this class for RESTful applications.
 	 * 
+	 * @param moduleName
 	 * @return
 	 */
 	public static AccessControlUtil getRestInstance(String moduleName) {
@@ -97,7 +98,21 @@ public abstract class AccessControlUtil {
 	}
 
 	/**
-	 * Authenticated the user and abtains a token. Should be used only for the REST client.
+	 * Returns a singleton instance of this class for RESTful applications.
+	 * 
+	 * @param moduleName
+	 * @param configDir
+	 *            The directory in which the config file is located
+	 * @return
+	 */
+	public static AccessControlUtil getRestInstance(String moduleName, String configDir) {
+		if (instanceRest == null)
+			instanceRest = new AccessControlUtilRest(moduleName);
+		return instanceRest;
+	}
+
+	/**
+	 * Authenticated the user and obtains a token. Should be used only for the REST client.
 	 * 
 	 * @param username
 	 * @param password
@@ -228,6 +243,7 @@ public abstract class AccessControlUtil {
 	protected ClientRealm getCasOAuthClientRealm() {
 		if (clientRealm == null) {
 			SecurityManager securityManager = SecurityUtils.getSecurityManager();
+			logger.debug("Security manager class :{} ", securityManager.getClass());
 			RealmSecurityManager realmSecurityManager = (RealmSecurityManager) securityManager;
 			Collection<Realm> realms = realmSecurityManager.getRealms();
 			for (Realm realm : realms)

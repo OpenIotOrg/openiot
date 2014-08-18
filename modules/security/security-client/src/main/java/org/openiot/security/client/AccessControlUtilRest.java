@@ -54,14 +54,17 @@ class AccessControlUtilRest extends AccessControlUtil {
 	}
 
 	AccessControlUtilRest(String moduleName) {
-		String jbossConfigDir = System.getProperty("jboss.server.config.dir");
+		this(moduleName, System.getProperty("jboss.server.config.dir"));
+	}
+
+	AccessControlUtilRest(String moduleName, String configDir) {
 		String key = null;
 		String secret = null;
 
 		IniSecurityManagerFactory factory = null;
-		if (moduleName != null && jbossConfigDir != null) {
+		if (moduleName != null && configDir != null) {
 			PropertyManagement props = new PropertyManagement();
-			String iniFilePath = jbossConfigDir + "/rest-client-" + moduleName + ".ini";
+			String iniFilePath = configDir + "/rest-client-" + moduleName + ".ini";
 			Path path = Paths.get(iniFilePath);
 			if (!Files.exists(path) || Files.isDirectory(path)) {
 				logger.warn("The configuration file {} is not found.", iniFilePath);
@@ -77,7 +80,7 @@ class AccessControlUtilRest extends AccessControlUtil {
 			String confFilePath = "classpath:rest-client.ini";
 			factory = new IniSecurityManagerFactory(confFilePath);
 		}
-		
+
 		SecurityManager securityManager = factory.getInstance();
 		SecurityUtils.setSecurityManager(securityManager);
 
@@ -85,7 +88,7 @@ class AccessControlUtilRest extends AccessControlUtil {
 			CasOAuthWrapperClientRest bean = (CasOAuthWrapperClientRest) factory.getBeans().get("casOauthClient");
 			bean.setKey(key);
 			bean.setSecret(secret);
-		} else {
+		} else if (moduleName != null && configDir != null) {
 			logger.warn("casOauthClient.key.{} or/and casOauthClient.secret.{} is not set in the global properties file", moduleName, moduleName);
 		}
 

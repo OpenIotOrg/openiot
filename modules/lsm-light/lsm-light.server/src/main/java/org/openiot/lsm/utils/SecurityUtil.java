@@ -99,12 +99,18 @@ public class SecurityUtil {
 		return false;
 	}
 
-	public static OAuthorizationCredentials login(ServletContext context) {
-		logger.debug("Logging into CAS by username {}", username);
-		OAuthorizationCredentials credentials = acUtil.login(username, password);
-		logger.debug("Credentials obtained after logging in is {}", credentials);
-		context.setAttribute(CREDENTIALS, credentials);
-		lastExpiryCheck = System.currentTimeMillis();
+	public static synchronized OAuthorizationCredentials login(ServletContext context) {
+		OAuthorizationCredentials credentials = (OAuthorizationCredentials) context.getAttribute(CREDENTIALS);
+		if (credentials == null) {
+			logger.debug("Logging into CAS by username {}", username);
+			credentials = acUtil.login(username, password);
+			logger.debug("Credentials obtained after logging in is {}", credentials);
+			context.setAttribute(CREDENTIALS, credentials);
+			lastExpiryCheck = System.currentTimeMillis();
+			
+		} else {
+			logger.debug("Credentials found in context. Aborting login process.");
+		}
 		return credentials;
 	}
 

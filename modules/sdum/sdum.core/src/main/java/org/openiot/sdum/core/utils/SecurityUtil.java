@@ -7,7 +7,6 @@ import org.openiot.security.client.OAuthorizationCredentials;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 public class SecurityUtil {
 	private static Logger logger = LoggerFactory.getLogger(SecurityUtil.class);
 	private static final int EXPIRY_CHECK_INTERVAL = 5 * 60 * 1000; // some sample value
@@ -39,8 +38,9 @@ public class SecurityUtil {
 	 *            the clientId of the requester
 	 * @param sdumIsTarget
 	 *            if true, it is checked if <code>accessToken</code> has the permission
-	 *            <code>perm</code> on SDUM. Otherwise, it is checked if <code>accessToken</code> has
-	 *            the permission <code>perm</code> on the service specified by the <code>clientId.
+	 *            <code>perm</code> on SDUM. Otherwise, it is checked if <code>accessToken</code>
+	 *            has the permission <code>perm</code> on the service specified by the
+	 *            <code>clientId.
 	 * @return
 	 */
 	public static boolean hasPermission(String perm, String accessToken, String clientId, boolean sdumIsTarget) {
@@ -91,19 +91,23 @@ public class SecurityUtil {
 		}
 		return false;
 	}
-	
-	public static OAuthorizationCredentials getCredentials(){
-		if(credentials == null)
+
+	public static OAuthorizationCredentials getCredentials() {
+		if (credentials == null)
 			login();
 		return credentials;
 	}
 
-	public static OAuthorizationCredentials login() {
-		logger.debug("Logging into CAS by username {}", username);
-		OAuthorizationCredentials creds = acUtil.login(username, password);
-		logger.debug("Credentials obtained after logging in is {}", creds);
-		credentials = creds;
-		lastExpiryCheck = System.currentTimeMillis();
+	public static synchronized OAuthorizationCredentials login() {
+		if (credentials != null) {
+			logger.debug("Credentials found in context. Aborting login process.");
+		} else {
+			logger.debug("Logging into CAS by username {}", username);
+			OAuthorizationCredentials creds = acUtil.login(username, password);
+			logger.debug("Credentials obtained after logging in is {}", creds);
+			credentials = creds;
+			lastExpiryCheck = System.currentTimeMillis();
+		}
 		return credentials;
 	}
 
