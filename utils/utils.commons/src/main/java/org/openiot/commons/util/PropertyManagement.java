@@ -131,7 +131,7 @@ public class PropertyManagement {
 		} catch (FileNotFoundException e) {
 			// TODO Handle exception
 
-			logger.error("Unable to find file: " + openIotConfigFile);
+			logger.warn("Unable to find file: " + openIotConfigFile);
 
 		}
 
