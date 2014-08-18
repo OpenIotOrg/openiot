@@ -184,6 +184,8 @@ if (conf.hasPath(KEY_SENSOR_ID)) {
         this.setLatitude(conf.getDouble("latitude"));
         this.setLongitude(conf.getDouble("longitude"));
 
+        if (conf.hasPath("feature"))
+          this.featureOfInterest=conf.getString("feature");
         /*String registeredToLSMString = PropertiesReader.readProperty(fileName, "registered");
         if (registeredToLSMString.equalsIgnoreCase("true"))
             registeredToLSM = true;
@@ -198,7 +200,7 @@ if (conf.hasPath(KEY_SENSOR_ID)) {
             lsmFieldMetaData.setGsnFieldName(fieldName);
             lsmFieldMetaData.setLsmPropertyName(conf.getString("field." + fieldName + "." + "propertyName"));
             lsmFieldMetaData.setLsmUnit(conf.getString("field." + fieldName + "." + "unit"));
-            fields.put(fieldName, lsmFieldMetaData);
+            fields.put(lsmFieldMetaData.getLsmPropertyName(), lsmFieldMetaData);
             //logger.info(fields.get(fieldName));
         }
         /*String [] props = new String[fieldNames.length];

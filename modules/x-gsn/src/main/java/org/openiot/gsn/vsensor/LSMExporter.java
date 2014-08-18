@@ -26,6 +26,7 @@ import org.openiot.gsn.beans.DataField;
 import org.openiot.gsn.beans.DataTypes;
 import org.openiot.gsn.beans.StreamElement;
 import org.openiot.gsn.beans.VSensorConfig;
+import org.openiot.gsn.metadata.LSM.LSMFieldMetaData;
 import org.openiot.gsn.metadata.LSM.LSMRepository;
 import org.openiot.gsn.metadata.LSM.LSMSensorMetaData;
 import org.openiot.gsn.metadata.LSM.SensorAnnotator;
@@ -34,6 +35,7 @@ import org.slf4j.LoggerFactory;
 
 //import com.typesafe.config.Config;
 //import com.typesafe.config.ConfigFactory;
+
 
 
 import java.util.*;
@@ -68,8 +70,10 @@ public class LSMExporter extends AbstractVirtualSensor {
         	if (df.getProperty()!=null)
         	  fieldUris.put(df.getName().toUpperCase(), df.getProperty());
         	else {
-        		String propUri=metadata.getFields().get(df.getName()).getLsmPropertyName();
-        		fieldUris.put(df.getName().toUpperCase(), propUri);
+              for (LSMFieldMetaData md:metadata.getFields().values()){
+            	  if (md.getGsnFieldName().equals(df.getName()))
+              		fieldUris.put(df.getName().toUpperCase(), md.getLsmPropertyName());            		  
+              }        				
         	}
         }
         
