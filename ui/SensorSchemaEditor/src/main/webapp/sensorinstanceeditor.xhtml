@@ -1,0 +1,252 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+xmlns:f="http://java.sun.com/jsf/core"
+xmlns:h="http://java.sun.com/jsf/html"
+xmlns:ui="http://java.sun.com/jsf/facelets"
+xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	
+	<meta name="author" content="Prem Prakash Jayaraman" />
+	<meta name="author-email" content="Prem.Jayaraman@csiro.au" />
+	
+	<script type="text/javascript">
+
+
+		var currentMarker = null;
+		var geocoder = null;
+		
+		function start() {
+    		PF('statusDialog').show();
+		}
+	 
+		function stop() {
+    		PF('statusDialog').hide();
+		}
+
+		 
+	    function handlePointClick(event) {
+
+			if  (currentMarker != null){
+				currentMarker.setMap(null);
+				currentMarker = null;
+			}
+			
+			document.getElementById('form1:lat').value = event.latLng.lat();
+	        document.getElementById('form1:lng').value = event.latLng.lng();
+	   	 
+	        currentMarker = new google.maps.Marker({
+	                position:new google.maps.LatLng(event.latLng.lat(), event.latLng.lng())
+	        });
+	 
+	        PF('map').addOverlay(currentMarker);
+	           
+	    }
+
+
+	    function initialize(){
+
+		    geocoder = new google.maps.Geocoder();
+
+	    }
+
+	    function codeAddress() {
+
+	        var address = document.getElementById("address").value;
+	        geocoder.geocode( { 'address': address}, function(results, status) {
+	          if (status == google.maps.GeocoderStatus.OK) {
+		          //alert(results[0].geometry.location);
+	        	  PF('map').getMap().setCenter(results[0].geometry.location);
+	          } else {
+	            alert("Geocode was not successful for the following reason: " + status);
+	          }
+	        });
+	      }
+	</script>
+	<script src="http://maps.google.com/maps/api/js?sensor=false" type="text/javascript" ></script>
+	
+</h:head>
+
+<h:body onload="initialize()">
+
+	<h:form id="form1">
+		
+	<p:panelGrid style="margin-top:20px">
+		<f:facet name="header">
+        <p:row>
+        	<p:column colspan="2">Registered Sensor Types</p:column>
+        </p:row>
+        <p:row>
+        	<p:column>Sensor Types Registered</p:column>
+        	<p:column rendered="#{sensorInstanceCreatorBean.show}">Sensor Type Description</p:column>
+        </p:row>
+		</f:facet>	
+		<p:row>
+		    <p:column>						    
+			   		<h:selectOneListbox value="#{sensorInstanceCreatorBean.selectedSensor}">
+			   			<f:selectItems value="#{sensorInstanceCreatorBean.sensortypelist}" var="sensor"
+			   			itemLabel="#{sensor}" itemValue="#{sensor}" />
+			   		</h:selectOneListbox>
+			</p:column>
+ 
+			<p:column rendered="#{sensorInstanceCreatorBean.show}">	
+					<h:outputText value="#{sensorInstanceCreatorBean.outputText}" escape="false" />	
+	    	</p:column>	
+		</p:row>
+		
+		<p:row>
+			<p:column>
+				<p:commandButton value="View Sensor Description" ajax = "true" update ="form1" actionListener="#{sensorInstanceCreatorBean.getdescription}" style="margin-top:5px" />
+			</p:column>		
+			
+			<p:column rendered="#{sensorInstanceCreatorBean.show}">
+				<p:commandButton value="Create Sensor Instance" action="#{sensorInstanceCreatorBean.showSensorInstance}" style="margin-top:5px" ajax = "true" update ="form1" />
+			</p:column>		
+		</p:row>
+	</p:panelGrid>
+	<p:commandButton value="Clear Session/Restart" style="margin-top:5px" action="#{sensorInstanceCreatorBean.clearSession}"/>
+	
+	
+	<p:panelGrid style="margin-top:20px" rendered="#{sensorInstanceCreatorBean.showsensorinstance}">
+		<f:facet name="header">
+        <p:row>
+        	<p:column colspan="2">Sensor Instance Creator </p:column>
+        </p:row>        
+		</f:facet>
+		<p:row>
+        	<p:column>Sensor Name</p:column>
+        	<p:column><p:inputText value="#{sensorInstanceCreatorBean.sensormeatadata.sensorName}" required="true" id="text1"/>
+        	<p:message for="text1"></p:message></p:column>
+        </p:row>        
+		
+		<p:row>
+        	<p:column>Author/Owner</p:column>
+        	<p:column><p:inputText value="#{sensorInstanceCreatorBean.sensormeatadata.author}" required="true" id="text2"/>
+        	<p:message for="text2"></p:message></p:column>
+        </p:row>     
+        
+        <p:row>
+        	<p:column>Description/Information </p:column>
+        	<p:column><p:inputText value="#{sensorInstanceCreatorBean.sensormeatadata.information}" required="true" id="text3"/>
+        	<p:message for="text3"></p:message></p:column>
+        </p:row>      
+        
+        <p:row>
+        	<p:column>Source URL </p:column>
+        	<p:column><p:inputText value="#{sensorInstanceCreatorBean.sensormeatadata.source}" required="true" id="text4">
+        		<f:validator validatorId = "custom.SimpleURLValidator"/>  
+        	</p:inputText>
+        	<p:tooltip for="text4" value="GSN URL e.g. http://localhost:22001/stream" />
+        	<p:message for="text4"></p:message></p:column>
+        </p:row>
+        
+        <p:row>
+        	<p:column>Source Type </p:column>
+        	<p:column><p:inputText value="#{sensorInstanceCreatorBean.sensormeatadata.sourceType}" required="true" id="text5"/>
+        	<p:tooltip for="text5" value="GSN" />
+        	<p:message for="text5"></p:message></p:column>
+        </p:row>
+        
+        <p:row>
+       	 	<p:column>Latitude 
+       	 	<br /><br /> 
+       	 	Longitude
+       	 	</p:column>
+       	 	
+       	 	
+       	 	<p:column>
+       	 	
+       	 	<p:inputText id="lat" value="#{sensorInstanceCreatorBean.sensormeatadata.latitude}" required="true">
+       	 		<f:validator validatorId = "custom.SimpleValidator"/>  
+       	 	</p:inputText>
+       	 	<p:commandButton id="btn" type="button" icon="ui-icon-pin-s" value="Show Map" onclick="PF('dlg').show();" />
+       	 	<p:message for="lat" />
+       	 	
+       	 	<br/>
+       		
+       		<p:inputText value="#{sensorInstanceCreatorBean.sensormeatadata.longitude}" required="true" id="lng">
+        	 	<f:validator validatorId = "custom.SimpleValidator"/>  
+        	 </p:inputText> 	
+       		<p:message for="lng" /> 	
+       	 	
+       	 	</p:column>
+       	 	
+		</p:row>
+		
+    
+                      
+        <p:row>
+        	<p:column>Feature of Interest</p:column>
+        	<p:column><p:inputText value="#{sensorInstanceCreatorBean.sensormeatadata.featureOfInterest}" required="true" id="text6"/>
+        	<p:message for="text6" />
+        	</p:column>
+        	
+        </p:row>        
+            
+        
+        <p:row>
+        	<p:column colspan="2">        		
+        		<p:fieldset legend="Observed Properties">
+        			<p:dataGrid value="#{sensorInstanceCreatorBean.model}" var="sensor" columns="1">        				
+	        			<p:panel header="#{sensor.lsmPropertyName}" style="text-align:center">
+            				<p:panelGrid style="width:100%">	
+            				<p:row>
+            				<p:column>    		
+		    					<h:outputText value="Unit of Measurement"/>	 
+		    				</p:column>
+		    				<p:column>       					        				        				        				
+	            				<p:inputText id="ajax" value="#{sensor.lsmUnit}" required="true" label="text">		            					            			
+	            				</p:inputText>
+	            				<p:message for="ajax"></p:message>	     
+	            			</p:column>
+	            			</p:row>  
+	            			<p:row>     				
+	            			<p:column>
+	            				<h:outputText value="XGSN Field Name"/>	        
+	            			</p:column>
+	            			<p:column>				   
+	            				<p:inputText id="ajax1" value="#{sensor.gsnFieldName}" required="true" label="text">
+	            				</p:inputText>
+	            				<p:message for="ajax1"></p:message>
+	            			</p:column>
+	            			</p:row>	            				
+		    				</p:panelGrid>
+		    				
+		    				
+		    			</p:panel>	        				        		  
+        			</p:dataGrid>        			
+        		</p:fieldset>
+        	</p:column>
+        
+        </p:row>        
+		
+		<p:row>
+			<p:column colspan = "2">
+						
+				<p:commandButton value="Register Sensor Instance" style="margin-top:5px" 
+				action="#{sensorInstanceCreatorBean.registersensorinstance}" ajax="true" update="form1 growl"
+				rendered="#{!sensorInstanceCreatorBean.registered}"/>
+				
+				<p:growl id="growl" for="registersensorgrowl" sticky="true" /> 
+
+				<p:commandButton value="Download XGSN Metadata" actionListener="#{sensorInstanceCreatorBean.generateMetaDataFile}" 
+				update = "form1" ajax = "false" style="margin-top:5px" rendered="#{sensorInstanceCreatorBean.registered}">
+					<p:fileDownload value="#{sensorInstanceCreatorBean.file}"/>	
+				</p:commandButton>
+			</p:column>
+		</p:row>
+	</p:panelGrid>        
+		
+	<p:dialog id="gmapDialog" widgetVar="dlg" width="625" height="440" modal="true">
+		<p:gmap id="gmap" center="41.381542, 2.122893" zoom="15" type="HYBRID" style="width:600px;height:400px" 
+		onPointClick="handlePointClick(event);" widgetVar="map"/>
+		<input id="address" type="text" placeholder="Search Box" />
+		<input id="search" type="button" value="Search" onclick="codeAddress();" />
+		<input id="close" type="button" value="Close" onclick="PF('dlg').hide();" />
+	</p:dialog>		
+
+</h:form>
+</h:body>
+
+</html>

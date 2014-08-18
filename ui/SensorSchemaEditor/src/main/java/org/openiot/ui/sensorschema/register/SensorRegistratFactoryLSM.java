@@ -19,25 +19,21 @@
  * 
  * 	   @author Prem Jayaraman
  */
-package org.openiot.ui.sensorschema.test;
+package org.openiot.ui.sensorschema.register;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
+public class SensorRegistratFactoryLSM implements AbstractSensorRegistrarFactory{
 
-
-@ManagedBean
-@SessionScoped
-public class HelloBean {
-
-	private static final long serialVersionUID = 1L;
-	 
-	private String name;
- 
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
+	@Override
+	public SensorRegistrar getSensorRegistrar() {
+		// TODO Auto-generated method stub
+		return SensorRegistrarLSMSingletonHolder.INSTANCE;
 	}
 	
+	private static class SensorRegistrarLSMSingletonHolder {
+        public static final SensorRegistrarLSM INSTANCE = new SensorRegistrarLSM();
+    }
+	
+	protected Object readResolve() {
+        return getSensorRegistrar();
+    }
 }

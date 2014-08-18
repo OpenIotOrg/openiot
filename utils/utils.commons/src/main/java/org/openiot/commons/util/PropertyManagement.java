@@ -104,6 +104,7 @@ public class PropertyManagement {
 	private static final String SENSORSCHEMAEDITOR_ENDPOINT = "ide.core.navigation.lsm.sparql.endpoint";
 	private static final String SENSORSCHEMAEDITOR_SERVER = "ide.core.navigation.lsm.remote.server";
 	private static final String SENSORSCHEMAEDITOR_METAGRAPH = "ide.core.nvaigation.lsm.openiotMetaGraph";
+	private static final String SENSORSCHEMAEDITOR_DATAGRAPH = "ide.core.nvaigation.lsm.openiotDataGraph";
 
 	private static final String IDE_CORE_NAVIGATION_PREFIX = "ide.core.navigation";
 
@@ -270,6 +271,10 @@ public class PropertyManagement {
 	public String getSensorSchemaEditorLSMMETAGRAPH(){
 		return props.getProperty(SENSORSCHEMAEDITOR_METAGRAPH);
 	}
+	public String getSensorSchemaEditorLSMDATAGRAPH(){
+		return props.getProperty(SENSORSCHEMAEDITOR_DATAGRAPH);
+	}
+	
 	public String getSensorSchemaEditorSPARQLENDPOINT(){
 		return props.getProperty(SENSORSCHEMAEDITOR_ENDPOINT);
 	}

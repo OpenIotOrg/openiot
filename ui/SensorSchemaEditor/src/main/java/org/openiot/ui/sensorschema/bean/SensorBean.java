@@ -1,3 +1,24 @@
+/**
+ *    Copyright (c) 2011-2014, OpenIoT
+ *   
+ *    This file is part of OpenIoT.
+ *
+ *    OpenIoT is free software: you can redistribute it and/or modify
+ *    it under the terms of the GNU Lesser General Public License as published by
+ *    the Free Software Foundation, version 3 of the License.
+ *
+ *    OpenIoT is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *    GNU Lesser General Public License for more details.
+ *
+ *    You should have received a copy of the GNU Lesser General Public License
+ *    along with OpenIoT.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *     Contact: OpenIoT mailto: info@openiot.eu
+ * 
+ * 	   @author Prem Jayaraman
+ */
 package org.openiot.ui.sensorschema.bean;
 
 import java.io.IOException;
@@ -9,15 +30,16 @@ import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
-import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
-import javax.faces.event.ActionEvent;
 import javax.faces.model.DataModel;
 import javax.faces.model.ListDataModel;
-import javax.faces.validator.ValidatorException;
 
-import org.openiot.ui.sensorschema.rdf.OpeniotVocab;
 import org.openiot.ui.sensorschema.rdf.SensorTypeSchema;
+import org.openiot.ui.sensorschema.register.AbstractSensorRegistrarFactory;
+import org.openiot.ui.sensorschema.register.SensorRegistrar;
+import org.openiot.ui.sensorschema.register.SensorRegistrarLSM;
+import org.openiot.ui.sensorschema.register.SensorRegistratFactoryLSM;
+import org.openiot.ui.sensorschema.utils.OpeniotVocab;
 
 
 @ManagedBean
@@ -37,15 +59,20 @@ public class SensorBean implements Serializable{
     private boolean output;
     private String pageTitle;
     private String outputText;
-    private SensorTypeSchema ss;
-    
-    
+    private SensorTypeSchema sensorschema = null;
+    private AbstractSensorRegistrarFactory factory;
     
     
     
     @PostConstruct
     public void init() {
     	//initialise the list for new observations that a sensor will measure
+    	
+    	//factory singleton pattern to connect to corresponding cloud server implementation
+    	//http://java.dzone.com/articles/design-patterns-abstract-factory
+    	//http://howtodoinjava.com/2012/10/22/singleton-design-pattern-in-java/#enum_singleton
+    	
+    	factory = new SensorRegistratFactoryLSM();		
         list = new ArrayList<ObservedPropertyBean>();
         setPageTitle(OpeniotVocab.TITLE);
         output = false;
@@ -111,21 +138,22 @@ public class SensorBean implements Serializable{
 	
 	public void generateRDF(){
 
-		ss = new SensorTypeSchema();
+		
 		//check if a sensor with same name exists
-		if (!ss.checkSensorTypeRegistration(sensorType)){
+		if (!factory.getSensorRegistrar().checkSensorTypeRegistration(sensorType)){
   
+			sensorschema = new SensorTypeSchema();
 			//code to generate the RDF for the corresponding sensor type defined by the user
 			
-			ss.defineSensorType(sensorType);
+			sensorschema.defineSensorType(sensorType);
 			
 			for (ObservedPropertyBean property: list){
 				if (property.getObserves() != ""){
-					ss.addObservedProperty(property.getObserves(), property.getAccuracy(), property.getFrequency());
+					sensorschema.addObservedProperty(property.getObserves(), property.getAccuracy(), property.getFrequency());
 				}				
 			}
 			
-			this.outputText = ss.serializeRDF("N-TRIPLES");
+			this.outputText = sensorschema.serializeRDF("N-TRIPLES");
 			output = true;
 		}
 		else{
@@ -142,7 +170,7 @@ public class SensorBean implements Serializable{
 		boolean valid = true;
 		
 		if (output){			
-			if (!ss.pushRdftoLSM(ss.serializeRDF("N-TRIPLES")))
+			if (!factory.getSensorRegistrar().registerSensorType(sensorschema.serializeRDF("N-TRIPLES")))
 			{
 				valid = false;
 				addMessage("Unable to register Sensor. Please check LSM configuration in openiot.properties");
@@ -168,7 +196,7 @@ public class SensorBean implements Serializable{
 		//clear the session for new sensor type creation
 		FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
 		try {
-			FacesContext.getCurrentInstance().getExternalContext().redirect("/SensorSchemaEditor/SensorType.jsf");
+			FacesContext.getCurrentInstance().getExternalContext().redirect("/SensorSchemaEditor/sensortypeeditor.jsf");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

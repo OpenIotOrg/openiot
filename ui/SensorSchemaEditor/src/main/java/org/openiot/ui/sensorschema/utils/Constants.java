@@ -19,25 +19,17 @@
  * 
  * 	   @author Prem Jayaraman
  */
-package org.openiot.ui.sensorschema.test;
+package org.openiot.ui.sensorschema.utils;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
+public class Constants {
+	  public static final String SEPARATOR1_ID = " ";
+	  public static final String SEPARATOR2_ID = "__";
+	  public static final String JSON_SEPARATOR = "_";
+	    
+	   	  	  
+	  public static final String LANG_RDFXML = "RDF/XML";
+	  public static final String LANG_RDFJSON = "RDF/JSON";
+	  public static final String LANG_TURTLE = "TURTLE";
+	  public static final String LANG_NTRIPLE = "N-TRIPLE";
 
-
-@ManagedBean
-@SessionScoped
-public class HelloBean {
-
-	private static final long serialVersionUID = 1L;
-	 
-	private String name;
- 
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
-	}
-	
 }

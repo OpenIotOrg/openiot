@@ -19,25 +19,30 @@
  * 
  * 	   @author Prem Jayaraman
  */
-package org.openiot.ui.sensorschema.test;
+package org.openiot.ui.sensorschema.register;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.openiot.ui.sensorschema.bean.SensorMetaDataBean;
 
 
-@ManagedBean
-@SessionScoped
-public class HelloBean {
-
-	private static final long serialVersionUID = 1L;
-	 
-	private String name;
- 
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
-	}
+/*
+ * Interface for sensor registration
+ * 
+ */
+public interface SensorRegistrar {
+	
+	public String registerSensorInstance(SensorMetaDataBean metadata);
+	public boolean unregisterSensorInstance(String sensorID); 
+	
+	public boolean registerSensorType(String rdf);
+	public boolean checkSensorTypeRegistration(String sensorID);
+	
+	public List<String> getSensorList();
+	public ArrayList<String> getSensorDescription(String sensorTypeName);
+	
+	public boolean checkSensorInstanceRegistrationbyName(String sensorName);
+	
 	
 }

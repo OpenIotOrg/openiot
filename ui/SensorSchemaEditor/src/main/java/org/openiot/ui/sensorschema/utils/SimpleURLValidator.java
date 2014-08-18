@@ -34,8 +34,8 @@ import javax.faces.validator.ValidatorException;
 
 import org.primefaces.validate.ClientValidator;
 
-@FacesValidator("custom.SimpleValidator")
-public class SimpleValidator implements Validator, ClientValidator {
+@FacesValidator("custom.SimpleURLValidator")
+public class SimpleURLValidator implements Validator, ClientValidator {
 
 	@Override
 	public void validate(FacesContext context, UIComponent component,
@@ -44,35 +44,26 @@ public class SimpleValidator implements Validator, ClientValidator {
 		
 		
 		String text = String.valueOf(value);		
-        boolean valid = true;
+        boolean valid = true;                             
         
-        if (value == null) {
-            valid = false;
-        } else if (text.contains("CLICK TO EDIT")) {
-            valid = false;
-        } else if (text.contains("0.0")){
-        	valid = false;
-        	FacesMessage message = new FacesMessage(
-                    FacesMessage.SEVERITY_ERROR, "Location validation failed",
-                    "Latitude and Longitude cannot be 0.0.");
-            throw new ValidatorException(message);
-        } else if (text.startsWith("http://")){
+        if (!text.startsWith("http://")){
+        	 valid = false;
+        }
+        else
+        {
         	 try {
                  new URI(text);
               } catch (URISyntaxException e) {
-                 FacesMessage msg =
-                    new FacesMessage("URL validation failed","Invalid Source URL format");
-                 msg.setSeverity(FacesMessage.SEVERITY_ERROR);
-                 throw new ValidatorException(msg);
+            	  valid = false;
               }
         }
        
             
         if (!valid) {
-            FacesMessage message = new FacesMessage(
-                    FacesMessage.SEVERITY_ERROR, "Invalid Value",
-                    "Please update the value.");
-            throw new ValidatorException(message);
+            FacesMessage msg =
+                    new FacesMessage("URL validation failed","Invalid Source URL format");
+                 msg.setSeverity(FacesMessage.SEVERITY_ERROR);
+                 throw new ValidatorException(msg);
         }
 		
 	}

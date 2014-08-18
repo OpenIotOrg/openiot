@@ -111,6 +111,14 @@
 			<version>2.7.0</version>
 		</dependency>
 	
+	<!-- JSON -->
+	<dependency>
+		<groupId>org.json</groupId>
+		<artifactId>json</artifactId>
+		<version>20140107</version>
+	</dependency>
+	
+		
   </dependencies>
   <build>
   	<plugins>

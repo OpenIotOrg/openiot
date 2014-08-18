@@ -1,3 +1,24 @@
+/**
+ *    Copyright (c) 2011-2014, OpenIoT
+ *   
+ *    This file is part of OpenIoT.
+ *
+ *    OpenIoT is free software: you can redistribute it and/or modify
+ *    it under the terms of the GNU Lesser General Public License as published by
+ *    the Free Software Foundation, version 3 of the License.
+ *
+ *    OpenIoT is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *    GNU Lesser General Public License for more details.
+ *
+ *    You should have received a copy of the GNU Lesser General Public License
+ *    along with OpenIoT.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *     Contact: OpenIoT mailto: info@openiot.eu
+ * 
+ * 	   @author Prem Jayaraman
+ */
 package org.openiot.ui.sensorschema.rdf;
 
 import java.io.StringWriter;
@@ -5,7 +26,10 @@ import java.util.Date;
 import java.util.Set;
 
 import org.openiot.lsm.server.LSMTripleStore;
+import org.openiot.ui.sensorschema.register.AbstractSensorRegistrarFactory;
+import org.openiot.ui.sensorschema.utils.OpeniotVocab;
 import org.openiot.ui.sensorschema.utils.SesameSPARQLClient;
+import org.openiot.ui.sensorschema.utils.SsnVocab;
 import org.openrdf.query.BindingSet;
 import org.openrdf.query.TupleQueryResult;
 import org.openrdf.repository.RepositoryException;
@@ -32,7 +56,7 @@ public class SensorTypeSchema
 	private static final transient Logger logger = LoggerFactory.getLogger(SensorTypeSchema.class);
 	
 	private OntModel ontModel = null;
-    private OntClass sensortype;
+    private OntClass sensortype;    
     
  // ============READING PROPERIES=========================
 
@@ -49,7 +73,7 @@ public class SensorTypeSchema
 		
 	  	// Create an empty ontology model
 	  	ontModel = ModelFactory.createOntologyModel();
-	  	ontModel.setNsPrefix("ssn", SsnVocab.NS);
+	  	ontModel.setNsPrefix("ssn", SsnVocab.SSN_NS);
 	  	
 	  	//openiot namespace	  	
 	  	//Ontology onto = ontModel.createOntology(BASEURI);	  		  	
@@ -66,7 +90,11 @@ public class SensorTypeSchema
 	public void addObservedProperty(String propertyName, String accuracy, String frequency){
     	
     	//create a property and the corresponding MeasurementCapability 		
-		String proertyURI = OpeniotVocab.NS.replace("#", "/") + propertyName;
+		//using default openiot uri --> but if properties are defined else where???
+		//String proertyURI = OpeniotVocab.NS.replace("#", "/") + propertyName;
+		
+		//user is responsible to define properties as URI. Interface has a URI checker
+		String proertyURI = propertyName;
     	sensortype.addProperty(SsnVocab.OBSERVES, proertyURI);
     	Individual mct = measurementCapability(proertyURI ,accuracy, frequency);
     	sensortype.addProperty(SsnVocab.MEASUREMENT_CAPAB, mct);
@@ -81,69 +109,7 @@ public class SensorTypeSchema
     	//sparqlQuery();
 
 	}
-    
-	
-	//code to pusht he rdf into LSM using the LSM client
-	public boolean pushRdftoLSM(String rdf){
-        LSMTripleStore lsmStore = new LSMTripleStore(OpeniotVocab.LSM_URL);
-        logger.info("Connecting to LSM and Storing data to graph: "+OpeniotVocab.LSM_URL + ";" + OpeniotVocab.LSM_METAGRAPH);        
-        boolean success = lsmStore.pushRDF(OpeniotVocab.LSM_METAGRAPH,rdf);
-        return success;
-	}
-	
-	
-	public boolean checkSensorTypeRegistration(String sensorTypeName){
-		
-		String sensorURI =null, metagraphURI = null;
-		
-		sensorURI = OpeniotVocab.NS + sensorTypeName;
-		metagraphURI = OpeniotVocab.LSM_METAGRAPH;
-		
-		
-		StringBuilder query = new StringBuilder();		
-		query.append("SELECT * from");
-		query.append(" <" + metagraphURI + ">"); //sensor metagraph from configuration file
-		query.append(" WHERE" );
-		query.append(" {");
-		query.append(" <" + sensorURI + ">"); //subject
-		query.append(" ?o"); //object
-		query.append(" ?p"); //predicate
-		query.append(" }");
-		
-		//System.out.println("SPARQL Query" + query.toString());
-		
-		try {
-			SesameSPARQLClient sparqlclient = new SesameSPARQLClient();
-			TupleQueryResult qres = sparqlclient.sparqlToQResult(query.toString());
-			if (qres.hasNext())
-				return true;
-			
-		} catch (RepositoryException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		catch (Exception e) {
-			e.printStackTrace();		
-		}
-		
-		return false;
-		
-	}
-
-	public void checkProperty(){
-		//processing the result
-//		while (qres.hasNext()) {
-//			BindingSet b = qres.next();
-//			Set names = b.getBindingNames();				
-//
-//			for (Object n : names) {
-//				System.out.println(b.getValue((String) n));
-//			}
-//
-//		}// while
-
-	}
-	
+   
 	public String serializeRDF(String lang){
 		StringWriter sw=new StringWriter();
 		ontModel.write(sw, lang);
@@ -168,44 +134,6 @@ public class SensorTypeSchema
     	return mct1;
 	}
 	
-	public void sparqlQuery(){
-//		String queryString = " select ?s ?property ?freqval where { ?s ?o <http://purl.oclc.org/NET/ssnx/ssn#Sensor> ." +
-//								"?s  <http://purl.oclc.org/NET/ssnx/ssn#hasMeasurementCapability> ?mc ." +
-//								"?mc <http://purl.oclc.org/NET/ssnx/ssn#forProperty> ?property ." +
-//								"?mc <http://purl.oclc.org/NET/ssnx/ssn#hasMeasurementProperty> ?mpa ." +
-//								"?mpa a <http://purl.oclc.org/NET/ssnx/ssn#Frequency> ." +
-//								"?mpa  <http://services.openiot.eu/resources#hasValue>  ?freqval} " ;
-
-		
-		String queryString = " select ?s ?property ?freqval where { ?s ?o <http://purl.oclc.org/NET/ssnx/ssn#Sensor> ." +
-				"?s  <http://purl.oclc.org/NET/ssnx/ssn#hasMeasurementCapability> ?mc ." +
-				"?mc <http://purl.oclc.org/NET/ssnx/ssn#forProperty> ?property ." +
-				"?mc <http://purl.oclc.org/NET/ssnx/ssn#hasMeasurementProperty> ?mpa ." +
-				"?mpa a <http://purl.oclc.org/NET/ssnx/ssn#Frequency> ." +				
-				"?mpa  <http://services.openiot.eu/resources#hasValue>  ?freqval " +	
-				"} " ;
-		//"
-		//"?out  <http://services.openiot.eu/resources#hasValue>  ?accurval " +
-		//"?s   <http://purl.oclc.org/NET/ssnx/ssn#observes>  ?property} " ;
-		//String queryString = " select * where { ?s <http://purl.oclc.org/NET/ssnx/ssn#hasMeasurementCapability> ?p}" ;
-		
-		
-		Query query = QueryFactory.create(queryString);
-		QueryExecution qexec = QueryExecutionFactory.create(query, ontModel) ;
-		  try {
-		    ResultSet results = qexec.execSelect() ;
-		    ResultSetFormatter.out(System.out, results, query) ;
-//		    for ( ; results.hasNext() ; )
-//		    {
-////		      System.out.println(results.toString());
-//		    	QuerySolution soln = results.nextSolution() ;
-//		      RDFNode x = soln.get("varName") ;       // Get a result variable by name.
-//		      Resource r = soln.getResource("VarR") ; // Get a result variable - must be a resource
-//		      Literal l = soln.getLiteral("VarL") ;   // Get a result variable - must be a literal
-//		    }
-		  } finally { qexec.close() ; }
-		
-	}
 	
 	private long generateTimeStamp(){
 		long lDateTime = new Date().getTime();
