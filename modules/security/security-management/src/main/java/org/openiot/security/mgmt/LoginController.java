@@ -64,5 +64,9 @@ public class LoginController extends AbstractController {
 			return "home";
 		}
 	}
+	
+	public String getSignOutOfCASLink() {
+		return AccessControlUtil.getInstance().getLogoutURL();
+	}
 
 }

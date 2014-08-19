@@ -8,7 +8,8 @@
 	xmlns:s="http://www.sensap.eu/jsf"
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:dialogs="http://java.sun.com/jsf/composite/components/dialogs"
-	xmlns:widgets="http://java.sun.com/jsf/composite/components/widgets">
+	xmlns:widgets="http://java.sun.com/jsf/composite/components/widgets"
+	xmlns:shiro="http://shiro.apache.org/tags">
 
 <f:view contentType="text/html">
 	<h:head>
@@ -39,6 +40,9 @@
 
 		<p:outputPanel layout="block" style="text-align:center;">
 			<h:button value="#{messages.UI_LOGIN_REQUEST_PRESENTATION}" outcome="requestPresentation.xhtml" />
+			<shiro:guest>
+				<h:button value="Log out of CAS" onclick="window.open('#{loginPageController.signOutOfCASLink}', '_blank');"/>
+			</shiro:guest>
 		</p:outputPanel>
 
 		<ui:remove>

@@ -30,6 +30,7 @@ import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.RequestScoped;
 import javax.faces.context.FacesContext;
 
+import org.openiot.security.client.AccessControlUtil;
 import org.openiot.ui.request.commons.providers.SchedulerAPIWrapper;
 import org.openiot.ui.request.commons.providers.exceptions.APICommunicationException;
 import org.openiot.ui.request.commons.providers.exceptions.APIException;
@@ -127,5 +128,9 @@ public class LoginPageController implements Serializable {
 
 	public void setSessionBean(SessionBean sessionBean) {
 		this.sessionBean = sessionBean;
+	}
+	
+	public String getSignOutOfCASLink() {
+		return AccessControlUtil.getInstance().getLogoutURL();
 	}
 }

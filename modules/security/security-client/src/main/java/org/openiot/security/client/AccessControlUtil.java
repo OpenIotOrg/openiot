@@ -42,6 +42,7 @@ import org.apache.shiro.subject.Subject;
 import org.apache.shiro.web.util.WebUtils;
 import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.oauth.client.BaseOAuth20Client;
+import org.pac4j.oauth.client.CasOAuthWrapperClient;
 import org.pac4j.oauth.profile.casoauthwrapper.CasOAuthWrapperProfile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -264,6 +265,18 @@ public abstract class AccessControlUtil {
 		}
 
 		return client;
+	}
+
+	/**
+	 * Returns the URL for logging out of CAS.
+	 * 
+	 * @return
+	 */
+	public String getLogoutURL() {
+		StringBuffer casOAuthUrl = new StringBuffer(((CasOAuthWrapperClient) getClient()).getCasOAuthUrl());
+		while (casOAuthUrl.charAt(casOAuthUrl.length() - 1) == '/')
+			casOAuthUrl.deleteCharAt(casOAuthUrl.length() - 1);
+		return casOAuthUrl.substring(0, casOAuthUrl.lastIndexOf("/")) + "/logout";
 	}
 
 	private static class AccessControlUtilWeb extends AccessControlUtil implements SessionListener {

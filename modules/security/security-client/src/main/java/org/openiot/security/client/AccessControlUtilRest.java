@@ -24,7 +24,6 @@ import io.buji.pac4j.ClientToken;
 
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -36,8 +35,8 @@ import org.apache.shiro.config.IniSecurityManagerFactory;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.subject.Subject;
 import org.openiot.commons.util.PropertyManagement;
-import org.openiot.security.client.rest.OAuthCredentialsRest;
 import org.openiot.security.client.rest.CasOAuthWrapperClientRest;
+import org.openiot.security.client.rest.OAuthCredentialsRest;
 import org.pac4j.oauth.client.BaseOAuth20Client;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

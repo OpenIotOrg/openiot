@@ -70,7 +70,11 @@ body {
 		<hr />
 
 		<div class="footer">
-			<!-- Footer links here are omitted -->
+			<shiro:guest>
+					<p class="pull-right" style="color: rgb(119, 119, 119);">
+						<a href="#{loginController.signOutOfCASLink}" target="_blank">CAS Log Out</a>
+					</p>
+			</shiro:guest>
 		</div>
 	</div>
 	<!-- Le javascript
