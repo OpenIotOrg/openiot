@@ -61,16 +61,17 @@ class AccessControlUtilRest extends AccessControlUtil {
 		String secret = null;
 
 		IniSecurityManagerFactory factory = null;
-		if (moduleName != null && configDir != null) {
-			PropertyManagement props = new PropertyManagement();
-			String iniFilePath = configDir + "/rest-client-" + moduleName + ".ini";
-			Path path = Paths.get(iniFilePath);
-			if (!Files.exists(path) || Files.isDirectory(path)) {
-				logger.warn("The configuration file {} is not found.", iniFilePath);
-			} else {
-				factory = new IniSecurityManagerFactory("file:" + iniFilePath);
+		if (moduleName != null) {
+			if (configDir != null) {
+				String iniFilePath = configDir + "/rest-client-" + moduleName + ".ini";
+				Path path = Paths.get(iniFilePath);
+				if (!Files.exists(path) || Files.isDirectory(path)) {
+					logger.warn("The configuration file {} is not found.", iniFilePath);
+				} else {
+					factory = new IniSecurityManagerFactory("file:" + iniFilePath);
+				}
 			}
-
+			PropertyManagement props = new PropertyManagement();
 			key = props.getProperty("casOauthClient.key." + moduleName, null);
 			secret = props.getProperty("casOauthClient.secret." + moduleName, null);
 		}
@@ -87,7 +88,7 @@ class AccessControlUtilRest extends AccessControlUtil {
 			CasOAuthWrapperClientRest bean = (CasOAuthWrapperClientRest) factory.getBeans().get("casOauthClient");
 			bean.setKey(key);
 			bean.setSecret(secret);
-		} else if (moduleName != null && configDir != null) {
+		} else if (moduleName != null) {
 			logger.warn("casOauthClient.key.{} or/and casOauthClient.secret.{} is not set in the global properties file", moduleName, moduleName);
 		}
 

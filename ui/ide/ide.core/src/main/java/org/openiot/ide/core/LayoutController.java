@@ -26,6 +26,7 @@ import org.primefaces.model.menu.DefaultMenuModel;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Named;
+
 import java.io.Serializable;
 
 /**
@@ -43,11 +44,13 @@ public class LayoutController implements Serializable {
 
 	private DefaultMenuModel menu;
 
+	private final String DEFAULT_NAVIGATION = "welcome.jsf";
+
 	@PostConstruct
 	public void init() {
 
 		menu = menuFactory.createMainMenu();
-		navigation = "welcome.jsf";
+		navigation = DEFAULT_NAVIGATION;
 	}
 
 	public String getNavigation() {
@@ -60,6 +63,10 @@ public class LayoutController implements Serializable {
 
 	public DefaultMenuModel getMenu() {
 		return menu;
+	}
+	
+	public String getLogoutScript() {
+		return menuFactory.generateLogoutScript("logoutIframe", DEFAULT_NAVIGATION);
 	}
 
 }
