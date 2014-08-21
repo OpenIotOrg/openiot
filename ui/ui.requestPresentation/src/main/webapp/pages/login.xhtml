@@ -38,11 +38,14 @@
 
 		<p:separator />
 
+		
 		<p:outputPanel layout="block" style="text-align:center;">
 			<h:button value="#{messages.UI_LOGIN_REQUEST_PRESENTATION}" outcome="requestPresentation.xhtml" />
+			<ui:remove>
 			<shiro:guest>
 				<h:button value="Log out of CAS" onclick="window.open('#{loginPageController.signOutOfCASLink}', '_blank');"/>
 			</shiro:guest>
+			</ui:remove>
 		</p:outputPanel>
 
 		<ui:remove>
