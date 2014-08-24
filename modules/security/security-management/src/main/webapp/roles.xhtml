@@ -182,12 +182,12 @@
 					<h:form id="addRoleDlgForm">
 						<p:dialog id="addRoleDlg" header="New Role" widgetVar="addRoleDlgVar" modal="true" dynamic="true">
 							<p:ajax event="close" update="addRoleDlg" />
-							<h:panelGrid columns="2" style="margin-bottom:10px" cellpadding="5">
+							<h:panelGrid columns="2" style="margin-bottom:10px; width:100%;" cellpadding="5" columnClasses="labelColumn">
 								<!-- <p:messages for="addRoleDlg" id="addRoleDlg_messages" showDetail="true" autoUpdate="true" closable="true" />  -->
 								<h:outputLabel for="name" value="Name:" />
-								<p:inputText id="name" value="#{rolesController.newRole.name}" required="true" requiredMessage="Role name must not be empty." />
+								<p:inputText id="name" value="#{rolesController.newRole.name}" required="true" requiredMessage="Role name must not be empty." style="width:90%;"/>
 								<h:outputLabel for="description" value="Description:" />
-								<p:inputText id="description" value="#{rolesController.newRole.description}" required="true" requiredMessage="Role description must not be empty." />
+								<p:inputText id="description" value="#{rolesController.newRole.description}" required="true" requiredMessage="Role description must not be empty." style="width:90%;"/>
 								<f:facet name="footer">
 									<p:commandButton id="addRoleDlg_addButton" value="Add" actionListener="#{rolesController.addRole}" oncomplete="handleAddRoleRequest(xhr, status, args)"
 										update=":rolesForm:rolesTable :permForm:permissionsPanel :rolesForm:usersPanel" />

@@ -3,7 +3,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html" xmlns:p="http://primefaces.org/ui"
 	xmlns:f="http://java.sun.com/jsf/core" xmlns:openiot="http://openiot.org/tags" xmlns:c="http://java.sun.com/jsp/jstl/core">
 
-<head />
+<head/>
+	
 <body>
 	<ui:composition template="/WEB-INF/templates/main.xhtml">
 		<ui:define name="title">Manage Services</ui:define>
@@ -91,21 +92,21 @@
 					<h:form id="addServiceDlgForm">
 						<p:dialog id="addServiceDlg" header="#{not serviceController.editing ? 'New Service' : 'Edit Service'}" widgetVar="addServiceDlgVar" modal="true" dynamic="true">
 							<p:ajax event="close" update="addServiceDlg" />
-							<h:panelGrid columns="2" style="margin-bottom:10px" cellpadding="5">
+							<h:panelGrid columns="2" style="margin-bottom:10px" cellpadding="5" width="100%" columnClasses="labelColumn">
 								<!-- <p:messages for="addRoleDlg" id="addRoleDlg_messages" showDetail="true" autoUpdate="true" closable="true" />  -->
 								<h:outputLabel for="key" value="Key:" />
 								<p:inputText id="key" value="#{serviceController.newService.name}" required="true" requiredMessage="Service key must not be empty."
-									disabled="#{serviceController.editing}" />
+									disabled="#{serviceController.editing}" style="width:90%;"/>
 
 								<h:outputLabel for="secret" value="Secret:" />
-								<p:inputText id="secret" value="#{serviceController.newService.description}" required="true" requiredMessage="Secret must not be empty." />
+								<p:inputText id="secret" value="#{serviceController.newService.description}" required="true" requiredMessage="Secret must not be empty." style="width:90%;"/>
 
 								<h:outputLabel for="url" value="URL:" />
-								<p:inputText id="url" value="#{serviceController.newService.serviceId}" required="true" requiredMessage="Service URL must not be empty." />
+								<p:inputText id="url" value="#{serviceController.newService.serviceId}" required="true" requiredMessage="Service URL must not be empty." style="width:90%;"/>
 
 
 								<h:outputLabel for="theme" value="Display name:" />
-								<p:inputText id="theme" value="#{serviceController.newService.theme}" required="true" requiredMessage="Display name must not be empty." />
+								<p:inputText id="theme" value="#{serviceController.newService.theme}" required="true" requiredMessage="Display name must not be empty." style="width:90%;"/>
 
 								<f:facet name="footer">
 									<p:commandButton id="addServiceDlg_addButton" value="Submit" actionListener="#{serviceController.addService}"
@@ -119,13 +120,13 @@
 					<h:form id="addRestServiceDlgForm">
 						<p:dialog id="addRestServiceDlg" header="#{not serviceController.editing ? 'New Rest Service' : 'Edit Rest Service'}" widgetVar="addRestServiceDlgVar" modal="true" dynamic="true">
 							<p:ajax event="close" update="addRestServiceDlg" />
-							<h:panelGrid columns="2" style="margin-bottom:10px" cellpadding="5">
+							<h:panelGrid columns="2" style="margin-bottom:10px" cellpadding="5" width="100%" columnClasses="labelColumn">
 								<!-- <p:messages for="addRoleDlg" id="addRoleDlg_messages" showDetail="true" autoUpdate="true" closable="true" />  -->
 								<h:outputLabel for="key" value="Key:" />
 								<p:inputText id="key" value="#{serviceController.newService.name}" required="true" requiredMessage="Service key must not be empty."
-									disabled="#{serviceController.editing}" />
+									disabled="#{serviceController.editing}" style="width:90%;"/>
 								<h:outputLabel for="secret" value="Secret:" />
-								<p:inputText id="secret" value="#{serviceController.newService.description}" required="true" requiredMessage="Secret must not be empty." />
+								<p:inputText id="secret" value="#{serviceController.newService.description}" required="true" requiredMessage="Secret must not be empty." style="width:90%;"/>
 
 								<f:facet name="footer">
 									<p:commandButton id="addRestServiceDlg_addButton" value="Submit" actionListener="#{serviceController.addRestService}"

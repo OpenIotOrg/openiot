@@ -137,13 +137,13 @@
 					<h:form id="dlgForm">
 						<p:dialog id="addPermissionDlg" header="Add Permission" widgetVar="addPermissionDlgVar" modal="true" width="400" dynamic="true">
 							<p:ajax event="close" update=":dlgForm:addPermissionDlg" />
-							<h:panelGrid columns="2" style="margin-bottom:10px" cellpadding="5">
+							<h:panelGrid columns="2" style="margin-bottom:10px; width:100%;" cellpadding="5" columnClasses="labelColumn">
 								<!-- <p:messages for="addPermissionDlg" id="addPermissionDlg_messages" showDetail="true" autoUpdate="true" closable="true" />  -->
 								<h:outputLabel for="name" value="Name:" />
-								<p:inputText id="name" value="#{permissionsController.newPermission.name}" required="true" requiredMessage="Permission name must not be empty." />
+								<p:inputText id="name" value="#{permissionsController.newPermission.name}" required="true" requiredMessage="Permission name must not be empty." style="width:90%;"/>
 								<h:outputLabel for="description" value="Description:" />
 								<p:inputText id="description" value="#{permissionsController.newPermission.description}" required="true"
-									requiredMessage="Permission description must not be empty." />
+									requiredMessage="Permission description must not be empty." style="width:90%;"/>
 								<f:facet name="footer">
 									<p:commandButton id="addPermissionDlg_addButton" value="Add" actionListener="#{permissionsController.addPermission}"
 										oncomplete="handleAddPermissionRequest(xhr, status, args)" update=":rolesForm:permissionsPanel" />
