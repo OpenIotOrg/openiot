@@ -284,7 +284,7 @@ public class SensorManager {
 				lng+","+lat+")) as ?distance "+		
 					" from <"+ metaGraph +"> " + 			
 					"where {"+			
-					"?sensor <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://purl.oclc.org/NET/ssnx/ssn#Sensor>."+												
+					"?sensor <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://purl.oclc.org/NET/ssnx/ssn#Sensor>."+												
 					"?sensor <"+ VirtuosoConstantUtil.sensorHasPlacePrefix+"> ?place. "+
 					"?place <http://openiot.eu/ontology/ns/is_in_city> ?cityId."+
 					"?cityId <http://www.w3.org/2000/01/rdf-schema#label> ?city."+
@@ -321,17 +321,17 @@ public class SensorManager {
 
 	// **********************sensor table***************************/
 	@SuppressWarnings("unchecked")
-	public Sensor getSpecifiedSensorWithPlaceId(String placeId) {
+	public Sensor getSpecificSensorWithPlaceId(String placeId) {
 		Sensor sensor = null;
 		Connection conn = null;
 		PlaceManager placeManager = new PlaceManager(metaGraph,dataGraph);		
 		String sql = "sparql select ?sensor ?sensorType ?author  ?place "+
 				" from <"+ metaGraph +"> \n" +
 				"where{ "+
-				   "?sensor <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://purl.oclc.org/NET/ssnx/ssn#Sensor>."+
+				   "?sensor <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://purl.oclc.org/NET/ssnx/ssn#Sensor>."+
 				   "?sensor <http://www.w3.org/ns/prov#wasGeneratedBy> ?author."+
 				   "?sensor <http://www.loa-cnr.it/ontologies/DUL.owl#hasLocation> <"+placeId+">."+
-				   "?sensor rdf:type ?sensorType."+
+				   "?sensor <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?sensorType."+
 //				   "?typeId <http://www.w3.org/2000/01/rdf-schema#label> ?sensorType."+
 //				   "?sensor <http://lsm.deri.ie/ont/lsm.owl#hasSourceType> ?sourceType."+	  
 				"}";				
@@ -362,19 +362,17 @@ public class SensorManager {
 		return sensor;
 	}
 
-	public Sensor getSpecifiedSensorWithSensorId(String id) {
+	public Sensor getSpecificSensorWithSensorId(String id) {
 		Sensor sensor = null;
 		Connection conn = null;
 		String sql = "sparql select ?name ?sensorType ?author  ?place  "+
 				" from <"+ metaGraph +"> \n" +
 				"where{ "+
-				   "<"+id+"> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://purl.oclc.org/NET/ssnx/ssn#Sensor>."+
+				   "<"+id+"> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://purl.oclc.org/NET/ssnx/ssn#Sensor>."+
+				   "<"+id+"> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?sensorType."+
 				   "<"+id+"> <http://www.w3.org/ns/prov#wasGeneratedBy> ?author."+
 				   "<"+id+"> <http://www.loa-cnr.it/ontologies/DUL.owl#hasLocation> ?place."+
-				   "<"+id+"> <http://www.w3.org/2000/01/rdf-schema#label> ?name."+
-				   "<"+id+"> rdf:type ?sensorType."+
-//				   "?typeId <http://www.w3.org/2000/01/rdf-schema#label> ?sensorType."+
-//				   "<"+id+"> <http://lsm.deri.ie/ont/lsm.owl#hasSourceType> ?sourceType."+	  
+				   "<"+id+"> <http://www.w3.org/2000/01/rdf-schema#label> ?name."+	  
 				"}";		 
 	
 		try {
@@ -389,7 +387,6 @@ public class SensorManager {
 					sensor.setId(id);
 					sensor.setAuthor(rs.getString("author"));
 					sensor.setSensorType(rs.getString("sensorType"));
-					// sensor.setSourceType(rs.getString("sourceType"));
 					sensor.setName(rs.getString("name"));
 					Place place = placeManager.getPlaceWithPlaceId(rs.getString("place"));
 					sensor.setPlace(place);
@@ -406,19 +403,17 @@ public class SensorManager {
 		return sensor;
 	}
 
-	public Sensor getSpecifiedSensorWithLatLng(double lat, double lng) {
+	public Sensor getSpecificSensorWithLatLng(double lat, double lng) {
 		Sensor sensor = null;
 		Connection conn = null;
 //		String sql = "sparql select ?sensor ?source ?sourceType ?place "+
 		String sql = "sparql select ?sensor ?sensorType ?author  ?place "+
 				" from <"+ metaGraph +"> \n" +
 				"where{ "+
-				   "?sensor <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://purl.oclc.org/NET/ssnx/ssn#Sensor>."+
+				   "?sensor <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://purl.oclc.org/NET/ssnx/ssn#Sensor>."+
 				   "?sensor <http://www.w3.org/ns/prov#wasGeneratedBy> ?author."+
 				   "?sensor <http://www.loa-cnr.it/ontologies/DUL.owl#hasLocation> ?place."+
-				   "?sensor rdf:type ?sensorType."+
-//				   "?typeId <http://www.w3.org/2000/01/rdf-schema#label> ?sensorType."+
-//				   "?sensor <http://lsm.deri.ie/ont/lsm.owl#hasSourceType> ?sourceType."+				  
+				   "?sensor <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?sensorType."+			  
 				   "?place <http://www.w3.org/2003/01/geo/wgs84_pos#lat> "+lat+";" +
 				   "<http://www.w3.org/2003/01/geo/wgs84_pos#long> "+lng+"." +
 				"}";		 
@@ -435,7 +430,6 @@ public class SensorManager {
 					sensor.setId(rs.getString("sensor"));
 					sensor.setAuthor(rs.getString("author"));
 					sensor.setSensorType(rs.getString("sensorType"));
-					// sensor.setSourceType(rs.getString("sourceType"));
 					Place place = placeManager.getPlaceWithPlaceId(rs.getString("place"));
 					sensor.setPlace(place);
 					sensor.setProperties(getObservesListOfSensor(rs.getString("sensor")));
@@ -685,7 +679,7 @@ public class SensorManager {
 		return list;
 	}
 
-	public Sensor getSpecifiedSensorWithObservationId(String obsId) {
+	public Sensor getSpecificSensorWithObservationId(String obsId) {
 		// TODO Auto-generated method stub
 		Sensor sensor = null;
 		Connection conn = null;
@@ -800,35 +794,6 @@ public class SensorManager {
 
 	}
 
-//	public String getSensorTypeId(String sensorType) {
-//		// TODO Auto-generated method stub
-//		String typeId = "";
-//		Connection conn = null;
-//		String sql = "sparql select ?type "+
-//				" from <"+ metaGraph +"> \n" +
-//				"where{ "+
-//				  "?type <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://lsm.deri.ie/ont/lsm.owl#SensorType>."+
-//				  "?type <http://www.w3.org/2000/01/rdf-schema#label> \""+sensorType+"\"."+				 
-//				"}";			 
-//		try{
-//			conn = ConnectionManager.getConnectionPool().getConnection();							
-//			Statement st = conn.createStatement();
-//			logger.info("executing query:\n"+sql);
-//			if(st.execute(sql)){
-//				ResultSet rs = st.getResultSet();
-//				while(rs.next()){
-//					typeId = rs.getString("type");
-//				}
-//				ConnectionManager.attemptClose(rs);				
-//			}
-//			ConnectionManager.attemptClose(st);
-//			ConnectionManager.attemptClose(conn);
-//		}catch(Exception e){
-//			e.printStackTrace();
-//			ConnectionManager.attemptClose(conn);
-//		}
-//		return typeId;
-//	}
 
 	/**
 	 * *********************************************************************************************

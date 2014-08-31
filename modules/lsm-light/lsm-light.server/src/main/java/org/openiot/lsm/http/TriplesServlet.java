@@ -136,7 +136,7 @@ public class TriplesServlet extends HttpServlet {
 					
 					if(SecurityUtil.hasPermission(PermissionsUtil.LSM_ALL, getServletContext(), token, clientId)
 							||SecurityUtil.hasPermission(permissionString, getServletContext(), token, clientId)){
-	        			sensor = sensorManager.getSpecifiedSensorWithSensorId(sensorInfo);
+	        			sensor = sensorManager.getSpecificSensorWithSensorId(sensorInfo);
 	        			logger.info(sensor.getId());
 	        		}else
 			 			logger.info("You don't have permmison to operate this funtion");

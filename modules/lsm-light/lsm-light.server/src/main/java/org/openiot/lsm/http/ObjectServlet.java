@@ -42,7 +42,6 @@ import org.openiot.lsm.pooling.ConnectionManager;
 import org.openiot.lsm.utils.ConstantsUtil;
 import org.openiot.lsm.utils.NumberUtil;
 import org.openiot.lsm.utils.SecurityUtil;
-import org.openiot.lsm.utils.VirtuosoConstantUtil;
 import org.openiot.security.client.PermissionsUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -183,7 +182,7 @@ public class ObjectServlet extends HttpServlet {
 		        		sensorManager.setDataGraph(observation.getDataGraph());
 		        		sensorManager.setMetaGraph(observation.getMetaGraph());
 
-		        		sensor = sensorManager.getSpecifiedSensorWithSensorId(observation.getSensor());
+		        		sensor = sensorManager.getSpecificSensorWithSensorId(observation.getSensor());
 		        		if(sensor==null){
 		        			result="Sensor "+observation.getSensor()+" has not been registered yet. Please register your sensor!";
 		        			return result;
