@@ -37,6 +37,8 @@ import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.ResIterator;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.ResourceFactory;
+import com.hp.hpl.jena.vocabulary.RDF;
+import com.hp.hpl.jena.vocabulary.RDFS;
 
 public class SensorMetadata {
   private Model model = ModelFactory.createDefaultModel();  
@@ -46,8 +48,8 @@ public class SensorMetadata {
   private final static String rdfs="http://www.w3.org/2000/01/rdf-schema#";
   private final static String qu="http://purl.oclc.org/NET/ssnx/qu/qu#";
   private final static String rr="http://www.w3.org/ns/r2rml#";
-  private final static String prov="http://purl.org/net/provenance/ns#";
-  private final static String lsm="http://lsm.deri.ie.ont.lsm.owl#";
+  private final static String prov="http://www.w3.org/ns/prov#";
+  private final static String lsm="http://openiot.eu/ontology/ns#";
   private final static String dul="http://www.loa-cnr.it/ontologies/DUL.owl#";
   private final static String wgs84="http://www.w3.org/2003/01/geo/wgs84_pos#";
   private final static String lgdata="http://linkedgeodata.org/property/";
@@ -59,10 +61,10 @@ public class SensorMetadata {
   Property ssnOfFeature=ResourceFactory.createProperty(ssn+"ofFeature");
   Property quUnit=ResourceFactory.createProperty(qu+"unit");
   Property rrColumnName=ResourceFactory.createProperty(rr+"columnName");
-  Property provPerformedAt=ResourceFactory.createProperty(prov+"PerformedAt");
-  Property provPerformedBy=ResourceFactory.createProperty(prov+"PerformedBy");
-  Property lsmHasSourceType=ResourceFactory.createProperty(lsm+"hasSourceType");
-  Property lsmHasSensorType=ResourceFactory.createProperty(lsm+"hasSensorType");
+  //Property provPerformedAt=ResourceFactory.createProperty(prov+"PerformedAt");
+  Property provWasGeneratedBy=ResourceFactory.createProperty(prov+"wasGeneratedBy");
+  //Property lsmHasSourceType=ResourceFactory.createProperty(lsm+"hasSourceType");
+  //Property lsmHasSensorType=ResourceFactory.createProperty(lsm+"hasSensorType");
   Property dulHasLocation=ResourceFactory.createProperty(dul+"hasLocation");
   Property wgs84Lat=ResourceFactory.createProperty(wgs84+"lat");
   Property wgs84Long=ResourceFactory.createProperty(wgs84+"long");
@@ -75,15 +77,15 @@ public class SensorMetadata {
   
   public void createMetadata(LSMSensorMetaData meta){
 	  Resource sensorUri=model.createResource(meta.getSensorID());
-	  model.add(sensorUri, rdfType, ssnSensor);
+	  model.add(sensorUri, RDFS.subClassOf, ssnSensor);
 	  model.add(sensorUri,ssnOfFeature,model.createResource(meta.getFeatureOfInterest()));
 	  model.add(sensorUri,rdfsLabel,meta.getSensorName());
-	  model.add(sensorUri,lsmHasSourceType,meta.getSourceType());
-	  model.add(sensorUri,provPerformedBy,meta.getAuthor());
+	  //model.add(sensorUri,lsmHasSourceType,meta.getSourceType());
+	  model.add(sensorUri,provWasGeneratedBy,meta.getAuthor());
 	  System.out.println(sensorUri.getLocalName());
 	  Resource sType=model.createResource(sensorUri.getNameSpace()+meta.getSensorType());
-	  model.add(sensorUri,lsmHasSensorType,sType);
-	  model.add(sType,rdfsLabel,meta.getSensorType());
+	  model.add(sensorUri,rdfType,sType);
+	  //model.add(sType,rdfsLabel,meta.getSensorType());
 	  for (LSMFieldMetaData f:meta.getFields().values()){
 		  Resource prop=model.createResource(f.getLsmPropertyName());
 		  model.add(sensorUri,ssnObserves,prop);
@@ -112,7 +114,7 @@ public class SensorMetadata {
   
   public LSMSensorMetaData fillSensorMetadata(){
 	  LSMSensorMetaData md=new LSMSensorMetaData();
-	  ResIterator ri=model.listSubjectsWithProperty(rdfType, ssnSensor);
+	  ResIterator ri=model.listSubjectsWithProperty(RDFS.subClassOf, ssnSensor);
 	  if (!ri.hasNext()){
 		  throw new IllegalArgumentException("The rdf graph contains no instance of: "+ssnSensor);
 	  }
