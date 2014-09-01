@@ -18,7 +18,6 @@
 		<module>modules/security/security-client</module>
 		<module>modules/security/security-server</module>
 		<module>modules/security/security-management</module>
-		<module>modules/security/security-webapp-demo</module>
 		<module>modules/lsm-light/lsm-light.client</module>
 		<module>modules/lsm-light/lsm-light.server</module>
 		<module>modules/x-gsn</module>
