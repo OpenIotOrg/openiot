@@ -284,7 +284,8 @@ public class SensorManager {
 				lng+","+lat+")) as ?distance "+		
 					" from <"+ metaGraph +"> " + 			
 					"where {"+			
-					"?sensor <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://purl.oclc.org/NET/ssnx/ssn#Sensor>."+												
+					"?sensor <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?type."+
+					"?type <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://purl.oclc.org/NET/ssnx/ssn#Sensor>."+												
 					"?sensor <"+ VirtuosoConstantUtil.sensorHasPlacePrefix+"> ?place. "+
 					"?place <http://openiot.eu/ontology/ns/is_in_city> ?cityId."+
 					"?cityId <http://www.w3.org/2000/01/rdf-schema#label> ?city."+
@@ -328,7 +329,8 @@ public class SensorManager {
 		String sql = "sparql select ?sensor ?sensorType ?author  ?place "+
 				" from <"+ metaGraph +"> \n" +
 				"where{ "+
-				   "?sensor <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://purl.oclc.org/NET/ssnx/ssn#Sensor>."+
+				   "?sensor <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?type."+
+				   "?type <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://purl.oclc.org/NET/ssnx/ssn#Sensor>."+
 				   "?sensor <http://www.w3.org/ns/prov#wasGeneratedBy> ?author."+
 				   "?sensor <http://www.loa-cnr.it/ontologies/DUL.owl#hasLocation> <"+placeId+">."+
 				   "?sensor <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?sensorType."+
@@ -367,9 +369,9 @@ public class SensorManager {
 		Connection conn = null;
 		String sql = "sparql select ?name ?sensorType ?author  ?place  "+
 				" from <"+ metaGraph +"> \n" +
-				"where{ "+
-				   "<"+id+"> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://purl.oclc.org/NET/ssnx/ssn#Sensor>."+
+				"where{ "+				   
 				   "<"+id+"> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?sensorType."+
+				   "?sensorType <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://purl.oclc.org/NET/ssnx/ssn#Sensor>."+
 				   "<"+id+"> <http://www.w3.org/ns/prov#wasGeneratedBy> ?author."+
 				   "<"+id+"> <http://www.loa-cnr.it/ontologies/DUL.owl#hasLocation> ?place."+
 				   "<"+id+"> <http://www.w3.org/2000/01/rdf-schema#label> ?name."+	  
@@ -410,10 +412,10 @@ public class SensorManager {
 		String sql = "sparql select ?sensor ?sensorType ?author  ?place "+
 				" from <"+ metaGraph +"> \n" +
 				"where{ "+
-				   "?sensor <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://purl.oclc.org/NET/ssnx/ssn#Sensor>."+
+				   "?sensor <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?sensorType."+
+				   "?sensorType <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://purl.oclc.org/NET/ssnx/ssn#Sensor>."+
 				   "?sensor <http://www.w3.org/ns/prov#wasGeneratedBy> ?author."+
-				   "?sensor <http://www.loa-cnr.it/ontologies/DUL.owl#hasLocation> ?place."+
-				   "?sensor <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?sensorType."+			  
+				   "?sensor <http://www.loa-cnr.it/ontologies/DUL.owl#hasLocation> ?place."+				   			  
 				   "?place <http://www.w3.org/2003/01/geo/wgs84_pos#lat> "+lat+";" +
 				   "<http://www.w3.org/2003/01/geo/wgs84_pos#long> "+lng+"." +
 				"}";		 

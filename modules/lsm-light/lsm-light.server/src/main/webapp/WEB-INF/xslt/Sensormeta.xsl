@@ -42,7 +42,7 @@
 	</xsl:template>
 	
 	<xsl:template name="information">	
-		<xsl:value-of select="concat('&#10;','&#60;',$sensorId,'&#62; ',
+		<xsl:value-of select="concat('&#10;','&#60;',$sensorType,'&#62; ',
 	    			'&#60;','http://www.w3.org/2000/01/rdf-schema#subClassOf','&#62; ',
 	    			'&#60;','http://purl.oclc.org/NET/ssnx/ssn#Sensor','&#62;. '),
 	    			concat('&#10;','&#60;',$sensorId,'&#62; ',
@@ -58,19 +58,6 @@
            			" separator="&#10;"/>
 	</xsl:template>
 			
-<!-- 	<xsl:template name="featureOfInterest">		 -->
-<!--          <xsl:value-of select="concat('&#10;','&#60;',$foi,'&#62; ', -->
-<!-- 	    			'&#60;','http://www.w3.org/1999/02/22-rdf-syntax-ns#type','&#62; ', -->
-<!-- 	    			'&#60;','http://purl.oclc.org/NET/ssnx/ssn#FeatureOfInterest','&#62;.'), -->
-<!--          			concat('&#60;',$foi,'&#62; ', -->
-<!-- 	    			'&#60;','http://www.w3.org/2003/01/geo/wgs84_pos#lat','&#62; ', -->
-<!-- 	    			'&#34;',$lat,'&#34;&#94;&#94;&#60;','http://www.w3.org/2001/XMLSchema#decimal&#62;.'), -->
-<!-- 	    			concat('&#60;',$foi,'&#62; ', -->
-<!-- 	    			'&#60;','http://www.w3.org/2003/01/geo/wgs84_pos#long','&#62; ', -->
-<!-- 	    			'&#34;',$lng,'&#34;&#94;&#94;&#60;','http://www.w3.org/2001/XMLSchema#decimal&#62;.') -->
-<!-- 	    			" separator="&#10;"/> -->
-<!-- 	</xsl:template> -->
-
 	<xsl:template name="place">
 		<xsl:value-of select="concat('&#10;','&#60;',$sensorId,'&#62; ',
 	    			'&#60;','http://www.loa-cnr.it/ontologies/DUL.owl#hasLocation','&#62; ',

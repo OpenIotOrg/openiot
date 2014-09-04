@@ -36,10 +36,10 @@ the last 5 minutes (relative to the query execution time)
       SELECT DISTINCT AVG(?graphNodeEndpoint_11316402769431) AS ?VALUE
       WHERE
       {
-        ?graphNode_11316402653241_record <http://lsm.deri.ie/ont/lsm.owl#value> ?graphNodeEndpoint_11316402769431 .
+        ?graphNode_11316402653241_record <http://openiot.eu/ontology/ns/value> ?graphNodeEndpoint_11316402769431 .
         ?graphNode_11316402653241_record <http://www.w3.org/2000/01/rdf-schema#label> 'Temperature' .
         ?graphNode_11316402653241_record <http://purl.oclc.org/NET/ssnx/ssn#observationResultTime> ?graphNode_11316402653241_recordTime .
-        ?graphNode_11316402653241_record <http://lsm.deri.ie/ont/lsm.owl#isObservedPropertyOf> ?graphNode_11316402653241_sensor .
+        ?graphNode_11316402653241_record <http://openiot.eu/ontology/ns/isObservedValueOf> ?graphNode_11316402653241_sensor .
         ?graphNode_11316402653241_sensor <http://purl.oclc.org/NET/ssnx/ssn#observedBy> ?graphNode_11316402653241_sensorId .
         {
           SELECT ?graphNode_11316402653241_sensorId
@@ -87,10 +87,10 @@ the last 5 minutes (relative to the query execution time)
       SELECT DISTINCT AVG(?graphNodeEndpoint_11324134120939) AS ?VALUE
       WHERE
       {
-        ?graphNode_11324134002562_record <http://lsm.deri.ie/ont/lsm.owl#value> ?graphNodeEndpoint_11324134120939 .
+        ?graphNode_11324134002562_record <http://openiot.eu/ontology/ns/value> ?graphNodeEndpoint_11324134120939 .
         ?graphNode_11324134002562_record <http://www.w3.org/2000/01/rdf-schema#label> 'Temperature' .
         ?graphNode_11324134002562_record <http://purl.oclc.org/NET/ssnx/ssn#observationResultTime> ?graphNode_11324134002562_recordTime .
-        ?graphNode_11324134002562_record <http://lsm.deri.ie/ont/lsm.owl#isObservedPropertyOf> ?graphNode_11324134002562_sensor .
+        ?graphNode_11324134002562_record <http://openiot.eu/ontology/ns/isObservedValueOf> ?graphNode_11324134002562_sensor .
         ?graphNode_11324134002562_sensor <http://purl.oclc.org/NET/ssnx/ssn#observedBy> ?graphNode_11324134002562_sensorId .
         {
           SELECT ?graphNode_11324134002562_sensorId
@@ -158,10 +158,10 @@ the measured value into a radius value which will be visible on the map.
       SELECT DISTINCT AVG(?graphNodeEndpoint_37864512719523) AS ?VALUE ?graphNode_37864512490030_lat AS ?LAT ?graphNode_37864512490030_lon AS ?LON
       WHERE
       {
-        ?graphNode_37864512490030_record <http://lsm.deri.ie/ont/lsm.owl#value> ?graphNodeEndpoint_37864512719523 .
+        ?graphNode_37864512490030_record <http://openiot.eu/ontology/ns/value> ?graphNodeEndpoint_37864512719523 .
         ?graphNode_37864512490030_record <http://www.w3.org/2000/01/rdf-schema#label> 'Temperature' .
         ?graphNode_37864512490030_record <http://purl.oclc.org/NET/ssnx/ssn#observationResultTime> ?graphNode_37864512490030_recordTime .
-        ?graphNode_37864512490030_record <http://lsm.deri.ie/ont/lsm.owl#isObservedPropertyOf> ?graphNode_37864512490030_sensor .
+        ?graphNode_37864512490030_record <http://openiot.eu/ontology/ns/isObservedValueOf> ?graphNode_37864512490030_sensor .
         ?graphNode_37864512490030_sensor <http://purl.oclc.org/NET/ssnx/ssn#observedBy> ?graphNode_37864512490030_sensorId .
         {
           SELECT ?graphNode_37864512490030_sensorId
@@ -213,10 +213,10 @@ the measured value into a radius value which will be visible on the map.
       SELECT DISTINCT AVG(?graphNodeEndpoint_37864512719523) AS ?VALUE ?graphNode_37864512490030_lat AS ?LAT ?graphNode_37864512490030_lon AS ?LON
       WHERE
       {
-        ?graphNode_37864512490030_record <http://lsm.deri.ie/ont/lsm.owl#value> ?graphNodeEndpoint_37864512719523 .
+        ?graphNode_37864512490030_record <http://openiot.eu/ontology/ns/value> ?graphNodeEndpoint_37864512719523 .
         ?graphNode_37864512490030_record <http://www.w3.org/2000/01/rdf-schema#label> 'Temperature' .
         ?graphNode_37864512490030_record <http://purl.oclc.org/NET/ssnx/ssn#observationResultTime> ?graphNode_37864512490030_recordTime .
-        ?graphNode_37864512490030_record <http://lsm.deri.ie/ont/lsm.owl#isObservedPropertyOf> ?graphNode_37864512490030_sensor .
+        ?graphNode_37864512490030_record <http://openiot.eu/ontology/ns/isObservedValueOf> ?graphNode_37864512490030_sensor .
         ?graphNode_37864512490030_sensor <http://purl.oclc.org/NET/ssnx/ssn#observedBy> ?graphNode_37864512490030_sensorId .
         {
           SELECT ?graphNode_37864512490030_sensorId
@@ -281,10 +281,10 @@ sensor location.
       SELECT DISTINCT AVG(?graphNodeEndpoint_37864512719523) AS ?VALUE ?graphNode_37864512490030_lat AS ?LAT ?graphNode_37864512490030_lon AS ?LON
       WHERE
       {
-        ?graphNode_37864512490030_record <http://lsm.deri.ie/ont/lsm.owl#value> ?graphNodeEndpoint_37864512719523 .
+        ?graphNode_37864512490030_record <http://openiot.eu/ontology/ns/value> ?graphNodeEndpoint_37864512719523 .
         ?graphNode_37864512490030_record <http://www.w3.org/2000/01/rdf-schema#label> 'Temperature' .
         ?graphNode_37864512490030_record <http://purl.oclc.org/NET/ssnx/ssn#observationResultTime> ?graphNode_37864512490030_recordTime .
-        ?graphNode_37864512490030_record <http://lsm.deri.ie/ont/lsm.owl#isObservedPropertyOf> ?graphNode_37864512490030_sensor .
+        ?graphNode_37864512490030_record <http://openiot.eu/ontology/ns/isObservedValueOf> ?graphNode_37864512490030_sensor .
         ?graphNode_37864512490030_sensor <http://purl.oclc.org/NET/ssnx/ssn#observedBy> ?graphNode_37864512490030_sensorId .
         {
           SELECT ?graphNode_37864512490030_sensorId
@@ -345,10 +345,10 @@ discovered sensor at the two locations.
       SELECT DISTINCT COUNT(?graphNodeEndpoint_37161122233567) AS ?y1
       WHERE
       {
-        ?graphNode_37161122123692_record <http://lsm.deri.ie/ont/lsm.owl#value> ?graphNodeEndpoint_37161122233567 .
+        ?graphNode_37161122123692_record <http://openiot.eu/ontology/ns/value> ?graphNodeEndpoint_37161122233567 .
         ?graphNode_37161122123692_record <http://www.w3.org/2000/01/rdf-schema#label> 'Temperature' .
         ?graphNode_37161122123692_record <http://purl.oclc.org/NET/ssnx/ssn#observationResultTime> ?graphNode_37161122123692_recordTime .
-        ?graphNode_37161122123692_record <http://lsm.deri.ie/ont/lsm.owl#isObservedPropertyOf> ?graphNode_37161122123692_sensor .
+        ?graphNode_37161122123692_record <http://openiot.eu/ontology/ns/isObservedValueOf> ?graphNode_37161122123692_sensor .
         ?graphNode_37161122123692_sensor <http://purl.oclc.org/NET/ssnx/ssn#observedBy> ?graphNode_37161122123692_sensorId .
         {
           SELECT ?graphNode_37161122123692_sensorId
@@ -381,10 +381,10 @@ discovered sensor at the two locations.
       SELECT DISTINCT COUNT(?graphNodeEndpoint_37163500869077) AS ?y2
       WHERE
       {
-        ?graphNode_37163500754676_record <http://lsm.deri.ie/ont/lsm.owl#value> ?graphNodeEndpoint_37163500869077 .
+        ?graphNode_37163500754676_record <http://openiot.eu/ontology/ns/value> ?graphNodeEndpoint_37163500869077 .
         ?graphNode_37163500754676_record <http://www.w3.org/2000/01/rdf-schema#label> 'Temperature' .
         ?graphNode_37163500754676_record <http://purl.oclc.org/NET/ssnx/ssn#observationResultTime> ?graphNode_37163500754676_recordTime .
-        ?graphNode_37163500754676_record <http://lsm.deri.ie/ont/lsm.owl#isObservedPropertyOf> ?graphNode_37163500754676_sensor .
+        ?graphNode_37163500754676_record <http://openiot.eu/ontology/ns/isObservedValueOf> ?graphNode_37163500754676_sensor .
         ?graphNode_37163500754676_sensor <http://purl.oclc.org/NET/ssnx/ssn#observedBy> ?graphNode_37163500754676_sensorId .
         {
           SELECT ?graphNode_37163500754676_sensorId
@@ -443,10 +443,10 @@ results.
       SELECT DISTINCT MIN(?graphNodeEndpoint_3520517097209) AS ?attr1
       WHERE
       {
-        ?graphNode_3520516961658_record <http://lsm.deri.ie/ont/lsm.owl#value> ?graphNodeEndpoint_3520517097209 .
+        ?graphNode_3520516961658_record <http://openiot.eu/ontology/ns/value> ?graphNodeEndpoint_3520517097209 .
         ?graphNode_3520516961658_record <http://www.w3.org/2000/01/rdf-schema#label> 'Temperature' .
         ?graphNode_3520516961658_record <http://purl.oclc.org/NET/ssnx/ssn#observationResultTime> ?graphNode_3520516961658_recordTime .
-        ?graphNode_3520516961658_record <http://lsm.deri.ie/ont/lsm.owl#isObservedPropertyOf> ?graphNode_3520516961658_sensor .
+        ?graphNode_3520516961658_record <http://openiot.eu/ontology/ns/isObservedValueOf> ?graphNode_3520516961658_sensor .
         ?graphNode_3520516961658_sensor <http://purl.oclc.org/NET/ssnx/ssn#observedBy> ?graphNode_3520516961658_sensorId .
         {
           SELECT ?graphNode_3520516961658_sensorId
@@ -480,10 +480,10 @@ results.
       SELECT DISTINCT MAX(?graphNodeEndpoint_3520517097209) AS ?attr2
       WHERE
       {
-        ?graphNode_3520516961658_record <http://lsm.deri.ie/ont/lsm.owl#value> ?graphNodeEndpoint_3520517097209 .
+        ?graphNode_3520516961658_record <http://openiot.eu/ontology/ns/value> ?graphNodeEndpoint_3520517097209 .
         ?graphNode_3520516961658_record <http://www.w3.org/2000/01/rdf-schema#label> 'Temperature' .
         ?graphNode_3520516961658_record <http://purl.oclc.org/NET/ssnx/ssn#observationResultTime> ?graphNode_3520516961658_recordTime .
-        ?graphNode_3520516961658_record <http://lsm.deri.ie/ont/lsm.owl#isObservedPropertyOf> ?graphNode_3520516961658_sensor .
+        ?graphNode_3520516961658_record <http://openiot.eu/ontology/ns/isObservedValueOf> ?graphNode_3520516961658_sensor .
         ?graphNode_3520516961658_sensor <http://purl.oclc.org/NET/ssnx/ssn#observedBy> ?graphNode_3520516961658_sensorId .
         {
           SELECT ?graphNode_3520516961658_sensorId
@@ -517,10 +517,10 @@ results.
       SELECT DISTINCT AVG(?graphNodeEndpoint_3520517097209) AS ?attr3
       WHERE
       {
-        ?graphNode_3520516961658_record <http://lsm.deri.ie/ont/lsm.owl#value> ?graphNodeEndpoint_3520517097209 .
+        ?graphNode_3520516961658_record <http://openiot.eu/ontology/ns/value> ?graphNodeEndpoint_3520517097209 .
         ?graphNode_3520516961658_record <http://www.w3.org/2000/01/rdf-schema#label> 'Temperature' .
         ?graphNode_3520516961658_record <http://purl.oclc.org/NET/ssnx/ssn#observationResultTime> ?graphNode_3520516961658_recordTime .
-        ?graphNode_3520516961658_record <http://lsm.deri.ie/ont/lsm.owl#isObservedPropertyOf> ?graphNode_3520516961658_sensor .
+        ?graphNode_3520516961658_record <http://openiot.eu/ontology/ns/isObservedValueOf> ?graphNode_3520516961658_sensor .
         ?graphNode_3520516961658_sensor <http://purl.oclc.org/NET/ssnx/ssn#observedBy> ?graphNode_3520516961658_sensorId .
         {
           SELECT ?graphNode_3520516961658_sensorId
@@ -554,10 +554,10 @@ results.
       SELECT DISTINCT COUNT(?graphNodeEndpoint_3520517097209) AS ?attr4
       WHERE
       {
-        ?graphNode_3520516961658_record <http://lsm.deri.ie/ont/lsm.owl#value> ?graphNodeEndpoint_3520517097209 .
+        ?graphNode_3520516961658_record <http://openiot.eu/ontology/ns/value> ?graphNodeEndpoint_3520517097209 .
         ?graphNode_3520516961658_record <http://www.w3.org/2000/01/rdf-schema#label> 'Temperature' .
         ?graphNode_3520516961658_record <http://purl.oclc.org/NET/ssnx/ssn#observationResultTime> ?graphNode_3520516961658_recordTime .
-        ?graphNode_3520516961658_record <http://lsm.deri.ie/ont/lsm.owl#isObservedPropertyOf> ?graphNode_3520516961658_sensor .
+        ?graphNode_3520516961658_record <http://openiot.eu/ontology/ns/isObservedValueOf> ?graphNode_3520516961658_sensor .
         ?graphNode_3520516961658_sensor <http://purl.oclc.org/NET/ssnx/ssn#observedBy> ?graphNode_3520516961658_sensorId .
         {
           SELECT ?graphNode_3520516961658_sensorId
@@ -624,10 +624,10 @@ To check out the variable names and their default values click on the sensor nod
       SELECT DISTINCT MIN(?graphNodeEndpoint_3520517097209) AS ?attr1
       WHERE
       {
-        ?graphNode_3520516961658_record <http://lsm.deri.ie/ont/lsm.owl#value> ?graphNodeEndpoint_3520517097209 .
+        ?graphNode_3520516961658_record <http://openiot.eu/ontology/ns/value> ?graphNodeEndpoint_3520517097209 .
         ?graphNode_3520516961658_record <http://www.w3.org/2000/01/rdf-schema#label> 'Temperature' .
         ?graphNode_3520516961658_record <http://purl.oclc.org/NET/ssnx/ssn#observationResultTime> ?graphNode_3520516961658_recordTime .
-        ?graphNode_3520516961658_record <http://lsm.deri.ie/ont/lsm.owl#isObservedPropertyOf> ?graphNode_3520516961658_sensor .
+        ?graphNode_3520516961658_record <http://openiot.eu/ontology/ns/isObservedValueOf> ?graphNode_3520516961658_sensor .
         ?graphNode_3520516961658_sensor <http://purl.oclc.org/NET/ssnx/ssn#observedBy> ?graphNode_3520516961658_sensorId .
         {
           SELECT ?graphNode_3520516961658_sensorId
@@ -664,10 +664,10 @@ To check out the variable names and their default values click on the sensor nod
       SELECT DISTINCT MAX(?graphNodeEndpoint_3520517097209) AS ?attr2
       WHERE
       {
-        ?graphNode_3520516961658_record <http://lsm.deri.ie/ont/lsm.owl#value> ?graphNodeEndpoint_3520517097209 .
+        ?graphNode_3520516961658_record <http://openiot.eu/ontology/ns/value> ?graphNodeEndpoint_3520517097209 .
         ?graphNode_3520516961658_record <http://www.w3.org/2000/01/rdf-schema#label> 'Temperature' .
         ?graphNode_3520516961658_record <http://purl.oclc.org/NET/ssnx/ssn#observationResultTime> ?graphNode_3520516961658_recordTime .
-        ?graphNode_3520516961658_record <http://lsm.deri.ie/ont/lsm.owl#isObservedPropertyOf> ?graphNode_3520516961658_sensor .
+        ?graphNode_3520516961658_record <http://openiot.eu/ontology/ns/isObservedValueOf> ?graphNode_3520516961658_sensor .
         ?graphNode_3520516961658_sensor <http://purl.oclc.org/NET/ssnx/ssn#observedBy> ?graphNode_3520516961658_sensorId .
         {
           SELECT ?graphNode_3520516961658_sensorId
@@ -704,10 +704,10 @@ To check out the variable names and their default values click on the sensor nod
       SELECT DISTINCT AVG(?graphNodeEndpoint_3520517097209) AS ?attr3
       WHERE
       {
-        ?graphNode_3520516961658_record <http://lsm.deri.ie/ont/lsm.owl#value> ?graphNodeEndpoint_3520517097209 .
+        ?graphNode_3520516961658_record <http://openiot.eu/ontology/ns/value> ?graphNodeEndpoint_3520517097209 .
         ?graphNode_3520516961658_record <http://www.w3.org/2000/01/rdf-schema#label> 'Temperature' .
         ?graphNode_3520516961658_record <http://purl.oclc.org/NET/ssnx/ssn#observationResultTime> ?graphNode_3520516961658_recordTime .
-        ?graphNode_3520516961658_record <http://lsm.deri.ie/ont/lsm.owl#isObservedPropertyOf> ?graphNode_3520516961658_sensor .
+        ?graphNode_3520516961658_record <http://openiot.eu/ontology/ns/isObservedValueOf> ?graphNode_3520516961658_sensor .
         ?graphNode_3520516961658_sensor <http://purl.oclc.org/NET/ssnx/ssn#observedBy> ?graphNode_3520516961658_sensorId .
         {
           SELECT ?graphNode_3520516961658_sensorId
@@ -744,10 +744,10 @@ To check out the variable names and their default values click on the sensor nod
       SELECT DISTINCT COUNT(?graphNodeEndpoint_3520517097209) AS ?attr4
       WHERE
       {
-        ?graphNode_3520516961658_record <http://lsm.deri.ie/ont/lsm.owl#value> ?graphNodeEndpoint_3520517097209 .
+        ?graphNode_3520516961658_record <http://openiot.eu/ontology/ns/value> ?graphNodeEndpoint_3520517097209 .
         ?graphNode_3520516961658_record <http://www.w3.org/2000/01/rdf-schema#label> 'Temperature' .
         ?graphNode_3520516961658_record <http://purl.oclc.org/NET/ssnx/ssn#observationResultTime> ?graphNode_3520516961658_recordTime .
-        ?graphNode_3520516961658_record <http://lsm.deri.ie/ont/lsm.owl#isObservedPropertyOf> ?graphNode_3520516961658_sensor .
+        ?graphNode_3520516961658_record <http://openiot.eu/ontology/ns/isObservedValueOf> ?graphNode_3520516961658_sensor .
         ?graphNode_3520516961658_sensor <http://purl.oclc.org/NET/ssnx/ssn#observedBy> ?graphNode_3520516961658_sensorId .
         {
           SELECT ?graphNode_3520516961658_sensorId
@@ -827,10 +827,10 @@ the x axis value.
       SELECT DISTINCT AVG(?graphNodeEndpoint_3744158289874) AS ?y1 AVG( fn:year-from-dateTime(?graphNode_3744158090513_recordTime) ) AS ?x1_year AVG( fn:month-from-dateTime(?graphNode_3744158090513_recordTime) ) AS ?x1_month AVG( fn:day-from-dateTime(?graphNode_3744158090513_recordTime) ) AS ?x1_day
       WHERE
       {
-        ?graphNode_3744158090513_record <http://lsm.deri.ie/ont/lsm.owl#value> ?graphNodeEndpoint_3744158289874 .
+        ?graphNode_3744158090513_record <http://openiot.eu/ontology/ns/value> ?graphNodeEndpoint_3744158289874 .
         ?graphNode_3744158090513_record <http://www.w3.org/2000/01/rdf-schema#label> 'Temperature' .
         ?graphNode_3744158090513_record <http://purl.oclc.org/NET/ssnx/ssn#observationResultTime> ?graphNode_3744158090513_recordTime .
-        ?graphNode_3744158090513_record <http://lsm.deri.ie/ont/lsm.owl#isObservedPropertyOf> ?graphNode_3744158090513_sensor .
+        ?graphNode_3744158090513_record <http://openiot.eu/ontology/ns/isObservedValueOf> ?graphNode_3744158090513_sensor .
         ?graphNode_3744158090513_sensor <http://purl.oclc.org/NET/ssnx/ssn#observedBy> ?graphNode_3744158090513_sensorId .
         {
           SELECT ?graphNode_3744158090513_sensorId
@@ -911,10 +911,10 @@ the x axis value.
       SELECT DISTINCT AVG(?graphNodeEndpoint_3744158289874) AS ?y1 AVG( fn:year-from-dateTime(?graphNode_3744158090513_recordTime) ) AS ?x1_year AVG( fn:month-from-dateTime(?graphNode_3744158090513_recordTime) ) AS ?x1_month AVG( fn:day-from-dateTime(?graphNode_3744158090513_recordTime) ) AS ?x1_day
       WHERE
       {
-        ?graphNode_3744158090513_record <http://lsm.deri.ie/ont/lsm.owl#value> ?graphNodeEndpoint_3744158289874 .
+        ?graphNode_3744158090513_record <http://openiot.eu/ontology/ns/value> ?graphNodeEndpoint_3744158289874 .
         ?graphNode_3744158090513_record <http://www.w3.org/2000/01/rdf-schema#label> 'Temperature' .
         ?graphNode_3744158090513_record <http://purl.oclc.org/NET/ssnx/ssn#observationResultTime> ?graphNode_3744158090513_recordTime .
-        ?graphNode_3744158090513_record <http://lsm.deri.ie/ont/lsm.owl#isObservedPropertyOf> ?graphNode_3744158090513_sensor .
+        ?graphNode_3744158090513_record <http://openiot.eu/ontology/ns/isObservedValueOf> ?graphNode_3744158090513_sensor .
         ?graphNode_3744158090513_sensor <http://purl.oclc.org/NET/ssnx/ssn#observedBy> ?graphNode_3744158090513_sensorId .
         {
           SELECT ?graphNode_3744158090513_sensorId
@@ -950,10 +950,10 @@ the x axis value.
       SELECT DISTINCT AVG(?graphNodeEndpoint_3744158303494) AS ?y2 AVG( fn:year-from-dateTime(?graphNode_3744158090513_recordTime) ) AS ?x2_year AVG( fn:month-from-dateTime(?graphNode_3744158090513_recordTime) ) AS ?x2_month AVG( fn:day-from-dateTime(?graphNode_3744158090513_recordTime) ) AS ?x2_day
       WHERE
       {
-        ?graphNode_3744158090513_record <http://lsm.deri.ie/ont/lsm.owl#value> ?graphNodeEndpoint_3744158303494 .
+        ?graphNode_3744158090513_record <http://openiot.eu/ontology/ns/value> ?graphNodeEndpoint_3744158303494 .
         ?graphNode_3744158090513_record <http://www.w3.org/2000/01/rdf-schema#label> 'Humidity' .
         ?graphNode_3744158090513_record <http://purl.oclc.org/NET/ssnx/ssn#observationResultTime> ?graphNode_3744158090513_recordTime .
-        ?graphNode_3744158090513_record <http://lsm.deri.ie/ont/lsm.owl#isObservedPropertyOf> ?graphNode_3744158090513_sensor .
+        ?graphNode_3744158090513_record <http://openiot.eu/ontology/ns/isObservedValueOf> ?graphNode_3744158090513_sensor .
         ?graphNode_3744158090513_sensor <http://purl.oclc.org/NET/ssnx/ssn#observedBy> ?graphNode_3744158090513_sensorId .
         {
           SELECT ?graphNode_3744158090513_sensorId

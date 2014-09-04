@@ -164,7 +164,7 @@ public class SparqlGenerator extends AbstractGraphNodeVisitor {
 
 		// Encode attribute selection
 		if (attributeEndpoint != null) {
-			subWhereNode.appendToScope(new Expression("?" + sensorNode.getUID() + "_record <http://lsm.deri.ie/ont/lsm.owl#value> ?" + attributeEndpoint.getUID() + " ."));
+			subWhereNode.appendToScope(new Expression("?" + sensorNode.getUID() + "_record <http://openiot.eu/ontology/ns/value> ?" + attributeEndpoint.getUID() + " ."));
 			subWhereNode.appendToScope(new Expression("?" + sensorNode.getUID() + "_record <http://www.w3.org/2000/01/rdf-schema#label> '" + attributeEndpoint.getUserData() + "' ."));
 		}
 		subWhereNode.appendToScope(new Expression("?" + sensorNode.getUID() + "_record <http://purl.oclc.org/NET/ssnx/ssn#observationResultTime> ?" + sensorNode.getUID() + "_recordTime ."));
