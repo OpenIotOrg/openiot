@@ -62,6 +62,20 @@
 
 	<dependencies>
 
+      <!--======== JSTL Dependencies added by Prem Jayaraman to fix Eclipse Lunar issues -->
+		<!--standard.jar  -->
+       <dependency>
+               <groupId>taglibs</groupId>
+               <artifactId>standard</artifactId>
+               <version>1.1.2</version>
+       </dependency>
+
+       <!--  JSTL  -->
+       <dependency>
+               <groupId>javax.servlet</groupId>
+               <artifactId>jstl</artifactId>
+               <version>1.1.2</version>
+       </dependency>
 		<dependency>
 			<groupId>org.jasig.cas</groupId>
 			<artifactId>cas-server-webapp</artifactId>

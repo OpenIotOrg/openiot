@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<facelet-taglib xmlns="http://java.sun.com/xml/ns/javaee"
-	version="2.0">
+<facelet-taglib xmlns="http://java.sun.com/xml/ns/javaee 
+http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd" 
+        version="2.0">
 
 	<namespace>http://www.sensap.eu/jsf</namespace>
 
