@@ -189,7 +189,9 @@ public class PropertyManagement {
 	}
 
 	public String getRequestCommonsSdumHostUrl() {
-		return REQUEST_COMMONS_SDUM_CORE_HOST_URL;
+		
+		return props.getProperty(REQUEST_COMMONS_SDUM_CORE_HOST_URL);
+
 	}
 
 	public String getRequestCommonsSchedulerHostUrl() {
