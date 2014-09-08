@@ -37,10 +37,22 @@ public class StartSubscriber {
 
 	public static void main(String[] args) {
 
+//reading config file from location provided at runtime
+	String configFile = null;
+	String subscriptionFolderPath = null;
+	try {
+            configFile = args[0];
+	    subscriptionFolderPath = args[1];
+        } catch (Exception e) {
+            System.out.println("ERROR! Couldn't start publisher.");
+            System.out.println("\n Two command-line arguments needed - path to the config file and subscription folder!");
+            System.exit(-1);
+        }
+
 		// create a new subscriber and define notification listener (in this
 		// example received notifications are printed on the standard output)
 		// In notification listener a one can implement application logic
-		Subscriber subscriber = new Subscriber(new File("."+ File.separator+"config"+File.separator+"sub1.config"));
+		Subscriber subscriber = new Subscriber(new File(configFile));
 		subscriber.setNotificationListener(new NotificationListener() {
 			@Override
 			public void notify(UUID subscriberId, String subscriberName,
@@ -62,11 +74,11 @@ public class StartSubscriber {
 		// connect to the broker
 		subscriber.connect();
 
-		//subscribe to all subscriptions which are located in CUPUS\src\main\resources\in
-        File subscriptionFolder = new File("." +File.separator + "in");
+		//subscribe to all subscriptions which are located in an input folder
+        File subscriptionFolder = new File(subscriptionFolderPath);
         for (File content : subscriptionFolder.listFiles()) {
             if (content.getName().startsWith("subscription")) {
-            	subscriber.subscribeFromXMLFile(content.getName());
+            	subscriber.subscribeFromXMLFile(subscriptionFolderPath + System.getProperty("file.separator") + content.getName());
             }
         }
 
