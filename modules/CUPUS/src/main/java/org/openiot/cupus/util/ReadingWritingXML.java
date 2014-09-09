@@ -117,8 +117,9 @@ public class ReadingWritingXML {
 	 */
 	public void readFile() {
 		try {
-			BufferedReader in = new BufferedReader(new FileReader("in"
-					+ System.getProperty("file.separator") + this.fileName));
+//			BufferedReader in = new BufferedReader(new FileReader("in"
+//					+ System.getProperty("file.separator") + this.fileName));
+			BufferedReader in = new BufferedReader(new FileReader( this.fileName));
 			readBuffer(in);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();

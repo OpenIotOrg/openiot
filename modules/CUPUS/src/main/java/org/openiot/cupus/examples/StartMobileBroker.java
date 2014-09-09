@@ -38,10 +38,22 @@ public class StartMobileBroker {
 
 	public static void main(String[] args) {
 
+//reading config file from location provided at runtime
+	String configFile = null;
+	String inputFolderPath = null;
+	try {
+            configFile = args[0];
+	    inputFolderPath = args[1];
+        } catch (Exception e) {
+            System.out.println("ERROR! Couldn't start publisher.");
+            System.out.println("\n Two command-line arguments needed - path to the config file and input folder!");
+            System.exit(-1);
+        }
+
 		// create a new mobile broker and define notification listener (in this
 		// example received notifications are printed on the standard output)
 		// In notification listener a one can implement application logic
-		MobileBroker mb1 = new MobileBroker(new File("."+ File.separator+"config"+File.separator+"mb1.config"));
+		MobileBroker mb1 = new MobileBroker(new File(configFile));
 		mb1.setNotificationListener(new NotificationListener() {
 			@Override
 			public void notify(UUID subscriberId, String subscriberName,
@@ -63,25 +75,25 @@ public class StartMobileBroker {
 		// connect to the broker
 		mb1.connect();
 
-		//announce all announcements which are located in CUPUS\src\main\resources\in
-        File inputFolder = new File("." +File.separator + "in");
+		//announce all announcements which are located in an input folder
+        File inputFolder = new File(inputFolderPath);
         for (File content : inputFolder.listFiles()) {
             if (content.getName().startsWith("announcement")) {
-            	mb1.announceFromXMLFile(content.getName());
+            	mb1.announceFromXMLFile(inputFolderPath + System.getProperty("file.separator") + content.getName());
             }
         }
         
         try {
-			Thread.sleep(100);
+			Thread.sleep(1000);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
         
         //now publish all available data
-      //publish all publications which are located in CUPUS\src\main\resources\in
+      //publish all publications which are located in an input folder
         for (File content : inputFolder.listFiles()) {
             if (content.getName().startsWith("publication")) {
-            	mb1.publishFromXMLFile(content.getName());
+            	mb1.publishFromXMLFile(inputFolderPath + System.getProperty("file.separator") + content.getName());
             }
         }
 
