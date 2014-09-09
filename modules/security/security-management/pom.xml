@@ -135,12 +135,6 @@
 			<scope>compile</scope>
 		</dependency>
 
-		<dependency>
-			<groupId>org.apache.shiro</groupId>
-			<artifactId>shiro-web</artifactId>
-			<version>1.2.2</version>
-		</dependency>
-
 
 		<!-- First declare the APIs we depend on and need for compilation. All of them are provided by JBoss AS 7 -->
 

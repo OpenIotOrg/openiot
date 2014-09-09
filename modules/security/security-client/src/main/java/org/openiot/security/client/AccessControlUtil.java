@@ -30,6 +30,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.UnavailableSecurityManagerException;
 import org.apache.shiro.mgt.CachingSecurityManager;
 import org.apache.shiro.mgt.RealmSecurityManager;
 import org.apache.shiro.mgt.SecurityManager;
@@ -209,9 +210,13 @@ public abstract class AccessControlUtil {
 	 * Clears the state information.
 	 */
 	public void reset() {
-		Subject subject = SecurityUtils.getSubject();
-		if (subject.isAuthenticated())
-			getAuthorizationManager().clearCache(subject.getPrincipals());
+		try {
+			Subject subject = SecurityUtils.getSubject();
+			if (subject.isAuthenticated())
+				getAuthorizationManager().clearCache(subject.getPrincipals());
+		} catch (UnavailableSecurityManagerException e) {
+			logger.error("Error while reseting the cache", e);
+		}
 	}
 
 	public AuthorizationManager getAuthorizationManager() {
@@ -265,18 +270,6 @@ public abstract class AccessControlUtil {
 		}
 
 		return client;
-	}
-
-	/**
-	 * Returns the URL for logging out of CAS.
-	 * 
-	 * @return
-	 */
-	public String getLogoutURL() {
-		StringBuffer casOAuthUrl = new StringBuffer(((CasOAuthWrapperClient) getClient()).getCasOAuthUrl());
-		while (casOAuthUrl.charAt(casOAuthUrl.length() - 1) == '/')
-			casOAuthUrl.deleteCharAt(casOAuthUrl.length() - 1);
-		return casOAuthUrl.substring(0, casOAuthUrl.lastIndexOf("/")) + "/logout";
 	}
 
 	private static class AccessControlUtilWeb extends AccessControlUtil implements SessionListener {

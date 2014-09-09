@@ -142,10 +142,6 @@ public class LoginPageController implements Serializable {
 		this.sessionBean = sessionBean;
 	}
 
-	public String getSignOutOfCASLink() {
-		return AccessControlUtil.getInstance().getLogoutURL();
-	}
-
 	public String getUsername() {
 		String userIdURI = sessionBean.getUserId();
 		if (userIdURI != null) {

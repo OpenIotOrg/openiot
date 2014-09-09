@@ -19,21 +19,38 @@ import org.slf4j.LoggerFactory;
 
 public class SecurityInitializer {
 	private static Logger logger = LoggerFactory.getLogger(SecurityInitializer.class);
-	
+
 	private static final long ID_SERVICE_MANAGER = 1;
 	private static final long ID_HTTP = 2;
 	private static final long ID_LSM_SERVER = 3;
 	private static final long ID_SECURITY_MANAGEMENT = 4;
+	private static final long ID_SCHEDULER = 5;
+	private static final long ID_SDUM = 6;
+	private static final long ID_REQ_DEF = 7;
+	private static final long ID_REQ_PRES = 8;
 
 	public static final String ADMIN_USERNAME = "security.initialize.admin.username";
 	public static final String ADMIN_PASSWORD = "security.initialize.admin.password";
 	public static final String ADMIN_EMAIL = "security.initialize.admin.email";
 	public static final String LSM_SERVER_USERNAME = "security.initialize.lsmserver.username";
 	public static final String LSM_SERVER_PASSWORD = "security.initialize.lsmserver.password";
+	public static final String SCHEDULER_USERNAME = "security.initialize.scheduler.username";
+	public static final String SCHEDULER_PASSWORD = "security.initialize.scheduler.password";
+	public static final String SDUM_USERNAME = "security.initialize.sdum.username";
+	public static final String SDUM_PASSWORD = "security.initialize.sdum.password";
 	public static final String CAS_PREFIX = "security.initialize.cas.prefix";
 	public static final String MGMT_PREFIX = "security.initialize.management.prefix";
+	public static final String REQ_DEF_PREFIX = "security.initialize.reqDef.prefix";
+	public static final String REQ_PRES_PREFIX = "security.initialize.reqPres.prefix";
 	public static final String SECURITY_MANAGEMENT_SECRET = "security.initialize.management.secret";
 	public static final String SECURITY_MANAGEMENT_KEY = "security.initialize.management.key";
+	public static final String REQ_DEF_SECRET = "security.initialize.reqDef.secret";
+	public static final String REQ_DEF_KEY = "security.initialize.reqDef.key";
+	public static final String REQ_PRES_SECRET = "security.initialize.reqPres.secret";
+	public static final String REQ_PRES_KEY = "security.initialize.reqPres.key";
+
+	public static final String SERVICE_KEY_PREFIX = "casOauthClient.key.";
+	public static final String SERVICE_SECRET_PREFIX = "casOauthClient.key.";
 
 	private String lSMOauthGraphURL;
 	private static PropertyManagement props;
@@ -122,7 +139,7 @@ public class SecurityInitializer {
 		predefPermissions.add(new Permission(PermissionsUtil.DEL_SENSOR_GUESS, "delete sensor", ID_LSM_SERVER));
 		predefPermissions.add(new Permission(PermissionsUtil.DEL_READING_GUESS, "delete sensor reading", ID_LSM_SERVER));
 		predefPermissions.add(new Permission(PermissionsUtil.DEL_TRIPLES_GUESS, "delete triples", ID_LSM_SERVER));
-		
+
 		predefPermissions.add(new Permission(PermissionsUtil.ADD_SENSOR_DEMO, "add new sensor to server", ID_LSM_SERVER));
 		predefPermissions.add(new Permission(PermissionsUtil.ADD_TRIPLES_DEMO, "insert triples into server", ID_LSM_SERVER));
 		predefPermissions.add(new Permission(PermissionsUtil.UPDATE_SENSOR_DATA_DEMO, "add new sensor reading", ID_LSM_SERVER));
@@ -130,7 +147,7 @@ public class SecurityInitializer {
 		predefPermissions.add(new Permission(PermissionsUtil.DEL_SENSOR_DEMO, "delete sensor", ID_LSM_SERVER));
 		predefPermissions.add(new Permission(PermissionsUtil.DEL_READING_DEMO, "delete sensor reading", ID_LSM_SERVER));
 		predefPermissions.add(new Permission(PermissionsUtil.DEL_TRIPLES_DEMO, "delete triples", ID_LSM_SERVER));
-		
+
 		predefPermissions.add(new Permission(PermissionsUtil.ADD_SENSOR_MAIN, "add new sensor to server", ID_LSM_SERVER));
 		predefPermissions.add(new Permission(PermissionsUtil.ADD_TRIPLES_MAIN, "insert triples into server", ID_LSM_SERVER));
 		predefPermissions.add(new Permission(PermissionsUtil.UPDATE_SENSOR_DATA_MAIN, "add new sensor reading", ID_LSM_SERVER));
@@ -139,10 +156,35 @@ public class SecurityInitializer {
 		predefPermissions.add(new Permission(PermissionsUtil.DEL_READING_MAIN, "delete sensor reading", ID_LSM_SERVER));
 		predefPermissions.add(new Permission(PermissionsUtil.DEL_TRIPLES_MAIN, "delete triples", ID_LSM_SERVER));
 		predefPermissions.add(new Permission(PermissionsUtil.LSM_ALL, "all permissions", ID_LSM_SERVER));
-		
+
+		// Pre-defined permissions and roles for scheduler
+		Permission allPermScheduler = new Permission(PermissionsUtil.SCHEDULER_ALL, "all permissions", ID_SCHEDULER);
+		predefPermissions.add(allPermScheduler);
+
+		// Pre-defined permissions and roles for SDUM
+		Permission allPermSdum = new Permission(PermissionsUtil.SDUM_ALL, "all permissions", ID_SDUM);
+		predefPermissions.add(allPermSdum);
+
 		for (Permission permission : predefPermissions) {
 			addPermission(permission);
 		}
+
+		Role allPermRoleScheduler = new Role("AllPermRole", "This role has the permission *", ID_SCHEDULER);
+		allPermRoleScheduler.addPermission(allPermScheduler);
+		addRole(allPermRoleScheduler);
+
+		User schedulerUser = generateUser("Scheduler", "scheduler@openiot.eu", props.getProperty(SCHEDULER_USERNAME, "scheduleruser"),
+				md5(props.getProperty(SCHEDULER_PASSWORD, "scheduleruserpass")));
+		addUser(schedulerUser);
+
+		Role allPermRoleSDUM = new Role("AllPermRole", "This role has the permission *", ID_SDUM);
+		allPermRoleSDUM.addPermission(allPermSdum);
+		addRole(allPermRoleSDUM);
+
+		User sdumUser = generateUser("SDUM", "sdum@openiot.eu", props.getProperty(SDUM_USERNAME, "sdumuser"),
+				md5(props.getProperty(SDUM_PASSWORD, "sdumuserpass")));
+		addUser(sdumUser);
+
 	}
 
 	private List<LSMRegisteredServiceImpl> createDefaultServices() {
@@ -202,7 +244,70 @@ public class SecurityInitializer {
 		userManagementService.setTheme("Manager");
 		userManagementService.setSsoEnabled(true);
 
-		return Arrays.asList(new LSMRegisteredServiceImpl[] { defaultService, httpService, lsmServerService, userManagementService });
+		// Scheduler REST service
+		LSMRegisteredServiceImpl schedulerService = new LSMRegisteredServiceImpl();
+		schedulerService.setId(ID_SCHEDULER);
+		schedulerService.setAllowedToProxy(true);
+		schedulerService.setAnonymousAccess(false);
+		schedulerService.setDescription(props.getProperty(SERVICE_SECRET_PREFIX + "scheduler", "scheduler.secret"));
+		schedulerService.setEnabled(true);
+		schedulerService.setEvaluationOrder(0);
+		schedulerService.setIgnoreAttributes(false);
+		schedulerService.setName(props.getProperty(SERVICE_KEY_PREFIX + "scheduler", "scheduler"));
+		schedulerService.setServiceId("REST://scheduler");
+		schedulerService.setTheme("Scheduler");
+		schedulerService.setSsoEnabled(true);
+
+		// SDUM REST service
+		LSMRegisteredServiceImpl sdumService = new LSMRegisteredServiceImpl();
+		sdumService.setId(ID_SDUM);
+		sdumService.setAllowedToProxy(true);
+		sdumService.setAnonymousAccess(false);
+		sdumService.setDescription(props.getProperty(SERVICE_SECRET_PREFIX + "sdum", "sdum.secret"));
+		sdumService.setEnabled(true);
+		sdumService.setEvaluationOrder(0);
+		sdumService.setIgnoreAttributes(false);
+		sdumService.setName(props.getProperty(SERVICE_KEY_PREFIX + "sdum", "sdum"));
+		sdumService.setServiceId("REST://sdum");
+		sdumService.setTheme("SDUM");
+		sdumService.setSsoEnabled(true);
+
+		// Request Definition service
+		LSMRegisteredServiceImpl reqDefService = new LSMRegisteredServiceImpl();
+		reqDefService.setId(ID_REQ_DEF);
+		reqDefService.setAllowedToProxy(true);
+		reqDefService.setAnonymousAccess(false);
+		reqDefService.setDescription(props.getProperty(REQ_DEF_SECRET, "requestDefinitionUI-secret"));
+		reqDefService.setEnabled(true);
+		reqDefService.setEvaluationOrder(0);
+		reqDefService.setIgnoreAttributes(false);
+		reqDefService.setName(props.getProperty(REQ_DEF_KEY, "requestDefinitionUI"));
+		String reqDefPrefix = props.getProperty(REQ_DEF_PREFIX, "http://localhost:8080/ui.requestDefinition");
+		if (reqDefPrefix.endsWith("/") && reqDefPrefix.length() > 1)
+			reqDefPrefix = reqDefPrefix.substring(0, reqDefPrefix.length() - 1);
+		reqDefService.setServiceId(reqDefPrefix + "/callback?client_name=CasOAuthWrapperClient");
+		reqDefService.setTheme("RequestDefinition");
+		reqDefService.setSsoEnabled(true);
+
+		// Request Presentation service
+		LSMRegisteredServiceImpl reqPresService = new LSMRegisteredServiceImpl();
+		reqPresService.setId(ID_REQ_PRES);
+		reqPresService.setAllowedToProxy(true);
+		reqPresService.setAnonymousAccess(false);
+		reqPresService.setDescription(props.getProperty(REQ_PRES_SECRET, "requestPresentationUI-secret"));
+		reqPresService.setEnabled(true);
+		reqPresService.setEvaluationOrder(0);
+		reqPresService.setIgnoreAttributes(false);
+		reqPresService.setName(props.getProperty(REQ_PRES_KEY, "requestPresentationUI"));
+		String reqPresPrefix = props.getProperty(REQ_PRES_PREFIX, "http://localhost:8080/ui.requestPresentation");
+		if (reqPresPrefix.endsWith("/") && reqPresPrefix.length() > 1)
+			reqPresPrefix = reqPresPrefix.substring(0, reqPresPrefix.length() - 1);
+		reqPresService.setServiceId(reqPresPrefix + "/callback?client_name=CasOAuthWrapperClient");
+		reqPresService.setTheme("RequestPresentation");
+		reqPresService.setSsoEnabled(true);
+
+		return Arrays.asList(new LSMRegisteredServiceImpl[] { defaultService, httpService, lsmServerService, userManagementService, schedulerService,
+				sdumService, reqDefService, reqPresService });
 	}
 
 	private void addPermission(Permission permission) {
