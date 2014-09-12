@@ -28,6 +28,7 @@ public class SecurityInitializer {
 	private static final long ID_SDUM = 6;
 	private static final long ID_REQ_DEF = 7;
 	private static final long ID_REQ_PRES = 8;
+	private static final long ID_XGSN = 9;
 
 	public static final String ADMIN_USERNAME = "security.initialize.admin.username";
 	public static final String ADMIN_PASSWORD = "security.initialize.admin.password";
@@ -38,6 +39,8 @@ public class SecurityInitializer {
 	public static final String SCHEDULER_PASSWORD = "security.initialize.scheduler.password";
 	public static final String SDUM_USERNAME = "security.initialize.sdum.username";
 	public static final String SDUM_PASSWORD = "security.initialize.sdum.password";
+	public static final String XGSN_USERNAME = "security.initialize.xgsn.username";
+	public static final String XGSN_PASSWORD = "security.initialize.xgsn.password";
 	public static final String CAS_PREFIX = "security.initialize.cas.prefix";
 	public static final String MGMT_PREFIX = "security.initialize.management.prefix";
 	public static final String REQ_DEF_PREFIX = "security.initialize.reqDef.prefix";
@@ -48,9 +51,12 @@ public class SecurityInitializer {
 	public static final String REQ_DEF_KEY = "security.initialize.reqDef.key";
 	public static final String REQ_PRES_SECRET = "security.initialize.reqPres.secret";
 	public static final String REQ_PRES_KEY = "security.initialize.reqPres.key";
-
-	public static final String SERVICE_KEY_PREFIX = "casOauthClient.key.";
-	public static final String SERVICE_SECRET_PREFIX = "casOauthClient.key.";
+	public static final String SCHEDULER_SECRET = "security.initialize.scheduler.secret";
+	public static final String SCHEDULER_KEY = "security.initialize.scheduler.key";
+	public static final String SDUM_SECRET = "security.initialize.sdum.secret";
+	public static final String SDUM_KEY = "security.initialize.sdum.key";
+	public static final String XGSN_SECRET = "security.initialize.xgsn.secret";
+	public static final String XGSN_KEY = "security.initialize.xgsn.key";
 
 	private String lSMOauthGraphURL;
 	private static PropertyManagement props;
@@ -155,7 +161,9 @@ public class SecurityInitializer {
 		predefPermissions.add(new Permission(PermissionsUtil.DEL_SENSOR_MAIN, "delete sensor", ID_LSM_SERVER));
 		predefPermissions.add(new Permission(PermissionsUtil.DEL_READING_MAIN, "delete sensor reading", ID_LSM_SERVER));
 		predefPermissions.add(new Permission(PermissionsUtil.DEL_TRIPLES_MAIN, "delete triples", ID_LSM_SERVER));
-		predefPermissions.add(new Permission(PermissionsUtil.LSM_ALL, "all permissions", ID_LSM_SERVER));
+		
+		Permission allPermLSMServer = new Permission(PermissionsUtil.LSM_ALL, "all permissions", ID_LSM_SERVER);
+		predefPermissions.add(allPermLSMServer);
 
 		// Pre-defined permissions and roles for scheduler
 		Permission allPermScheduler = new Permission(PermissionsUtil.SCHEDULER_ALL, "all permissions", ID_SCHEDULER);
@@ -184,6 +192,13 @@ public class SecurityInitializer {
 		User sdumUser = generateUser("SDUM", "sdum@openiot.eu", props.getProperty(SDUM_USERNAME, "sdumuser"),
 				md5(props.getProperty(SDUM_PASSWORD, "sdumuserpass")));
 		addUser(sdumUser);
+
+		User xgsnUser = generateUser("XGSN User", "xgsn@openiot.eu", props.getProperty(XGSN_USERNAME, "gsnuser"),
+				md5(props.getProperty(XGSN_PASSWORD, "gsnpass")));
+		Role xgsnRoleOnLSM = new Role("xgsn-role", "Default XGSN Role", ID_LSM_SERVER);
+		xgsnRoleOnLSM.addPermission(allPermLSMServer);
+		xgsnUser.addRole(xgsnRoleOnLSM);
+		addUser(xgsnUser);
 
 	}
 
@@ -249,11 +264,11 @@ public class SecurityInitializer {
 		schedulerService.setId(ID_SCHEDULER);
 		schedulerService.setAllowedToProxy(true);
 		schedulerService.setAnonymousAccess(false);
-		schedulerService.setDescription(props.getProperty(SERVICE_SECRET_PREFIX + "scheduler", "scheduler.secret"));
+		schedulerService.setDescription(props.getProperty(SCHEDULER_SECRET, "scheduler.secret"));
 		schedulerService.setEnabled(true);
 		schedulerService.setEvaluationOrder(0);
 		schedulerService.setIgnoreAttributes(false);
-		schedulerService.setName(props.getProperty(SERVICE_KEY_PREFIX + "scheduler", "scheduler"));
+		schedulerService.setName(props.getProperty(SCHEDULER_KEY, "scheduler"));
 		schedulerService.setServiceId("REST://scheduler");
 		schedulerService.setTheme("Scheduler");
 		schedulerService.setSsoEnabled(true);
@@ -263,14 +278,28 @@ public class SecurityInitializer {
 		sdumService.setId(ID_SDUM);
 		sdumService.setAllowedToProxy(true);
 		sdumService.setAnonymousAccess(false);
-		sdumService.setDescription(props.getProperty(SERVICE_SECRET_PREFIX + "sdum", "sdum.secret"));
+		sdumService.setDescription(props.getProperty(SDUM_SECRET, "sdum.secret"));
 		sdumService.setEnabled(true);
 		sdumService.setEvaluationOrder(0);
 		sdumService.setIgnoreAttributes(false);
-		sdumService.setName(props.getProperty(SERVICE_KEY_PREFIX + "sdum", "sdum"));
+		sdumService.setName(props.getProperty(SDUM_KEY, "sdum"));
 		sdumService.setServiceId("REST://sdum");
 		sdumService.setTheme("SDUM");
 		sdumService.setSsoEnabled(true);
+
+		// XGSN REST service
+		LSMRegisteredServiceImpl xgsnService = new LSMRegisteredServiceImpl();
+		xgsnService.setId(ID_XGSN);
+		xgsnService.setAllowedToProxy(true);
+		xgsnService.setAnonymousAccess(false);
+		xgsnService.setDescription(props.getProperty(XGSN_SECRET, "xgsn.secret"));
+		xgsnService.setEnabled(true);
+		xgsnService.setEvaluationOrder(0);
+		xgsnService.setIgnoreAttributes(false);
+		xgsnService.setName(props.getProperty(XGSN_KEY, "xgsn"));
+		xgsnService.setServiceId("REST://xgsn");
+		xgsnService.setTheme("XGSN");
+		xgsnService.setSsoEnabled(true);
 
 		// Request Definition service
 		LSMRegisteredServiceImpl reqDefService = new LSMRegisteredServiceImpl();
@@ -307,7 +336,7 @@ public class SecurityInitializer {
 		reqPresService.setSsoEnabled(true);
 
 		return Arrays.asList(new LSMRegisteredServiceImpl[] { defaultService, httpService, lsmServerService, userManagementService, schedulerService,
-				sdumService, reqDefService, reqPresService });
+				sdumService, reqDefService, reqPresService, xgsnService });
 	}
 
 	private void addPermission(Permission permission) {
