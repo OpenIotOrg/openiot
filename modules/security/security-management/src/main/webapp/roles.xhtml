@@ -43,7 +43,8 @@
 							<h:panelGrid columns="1" style="width:100%" cellpadding="5">
 								<h:panelGroup layout="block" style="width:100%">
 									<p:dataTable var="role" value="#{rolesController.roles}" rowKey="#{role.name}" id="rolesTable" resizableColumns="true" editable="false"
-										selectionMode="single" selection="#{rolesController.selectedRole}" style="table-layout: fixed">
+										selectionMode="single" selection="#{rolesController.selectedRole}" style="table-layout: fixed"
+										paginator="true" rows="10" paginatorPosition="bottom">
 
 										<p:ajax event="rowEdit" listener="#{rolesController.onEditRole}" update=":messages" />
 										<p:ajax event="rowEditCancel" listener="#{rolesController.onCancelEditRole}" update=":messages" />
@@ -113,7 +114,7 @@
 										<p:ajax event="rowUnselect" update=":rolesForm:usersTable:removeUserBtn" />
 
 										<f:facet name="header">
-											<h:outputText value="Role Users" />
+											<h:outputText value="#{rolesController.selectedRole == null ? 'Role Users' : 'Role Users ('.concat(rolesController.selectedRole.name).concat(')')}" />
 										</f:facet>
 
 										<p:column headerText="Full name" width="35%">

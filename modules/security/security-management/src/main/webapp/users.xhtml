@@ -31,7 +31,8 @@
 							<h:panelGrid columns="1" style="width:100%" cellpadding="5">
 								<h:panelGroup id="usersPanel" layout="block" style="width:100%">
 									<p:dataTable var="user" value="#{usersController.users}" id="usersTable" tableStyle="width:100%;" selectionMode="single"
-										selection="#{usersController.selectedUser}" rowKey="#{user.username}" emptyMessage="User list is empty." resizableColumns="true">
+										selection="#{usersController.selectedUser}" rowKey="#{user.username}" emptyMessage="User list is empty." resizableColumns="true"
+										scrollable="true" scrollHeight="300">
 
 										<openiot:hasPermission name="admin:delete_user">
 											<p:ajax event="rowSelect" update=":rolesForm:usersTable:removeUserBtn :rolesForm:rolesTable :permForm:permissionsPanel" />

@@ -44,7 +44,8 @@
 							<h:panelGrid columns="1" style="width:100%" cellpadding="5">
 								<h:panelGroup id="permissionsPanel" layout="block" style="width:100%">
 									<p:dataTable var="perm" value="#{permissionsController.permissions}" id="permissionsTable" tableStyle="width:100%;" selectionMode="single"
-										selection="#{permissionsController.selectedPermission}" rowKey="#{perm.name}" emptyMessage="Permission list is empty." resizableColumns="true">
+										selection="#{permissionsController.selectedPermission}" rowKey="#{perm.name}" emptyMessage="Permission list is empty." resizableColumns="true" 
+										paginator="true" rows="10" paginatorPosition="bottom">
 
 										<p:ajax event="rowSelect" update=":rolesForm:permissionsTable:removePermBtn :rolesForm:usersTable :permForm:permRolesPanel" />
 										<p:ajax event="rowUnselect" update=":rolesForm:permissionsTable:removePermBtn :rolesForm:usersTable :permForm:permRolesPanel" />
@@ -82,7 +83,7 @@
 										style="table-layout: fixed; font-size:smaller;" emptyMessage="User list is empty.">
 
 										<f:facet name="header">
-											<h:outputText value="Permission Users" />
+											<h:outputText value="#{permissionsController.selectedPermission == null ? 'Permission Users' : 'Permission Users ('.concat(permissionsController.selectedPermission.name).concat(')')}" />
 										</f:facet>
 
 										<p:column headerText="Full name" width="35%">

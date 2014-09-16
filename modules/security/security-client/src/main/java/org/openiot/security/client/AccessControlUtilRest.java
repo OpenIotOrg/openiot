@@ -23,19 +23,15 @@ package org.openiot.security.client;
 import io.buji.pac4j.ClientToken;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.config.Ini;
 import org.apache.shiro.config.IniSecurityManagerFactory;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.subject.Subject;
-import org.openiot.commons.util.PropertyManagement;
-import org.openiot.security.client.rest.CasOAuthWrapperClientRest;
 import org.openiot.security.client.rest.OAuthCredentialsRest;
 import org.pac4j.oauth.client.BaseOAuth20Client;
 import org.slf4j.Logger;
@@ -57,23 +53,18 @@ class AccessControlUtilRest extends AccessControlUtil {
 	}
 
 	AccessControlUtilRest(String moduleName, String configDir) {
-		String key = null;
-		String secret = null;
 
 		IniSecurityManagerFactory factory = null;
-		if (moduleName != null) {
-			if (configDir != null) {
-				String iniFilePath = configDir + "/rest-client-" + moduleName + ".ini";
-				Path path = Paths.get(iniFilePath);
-				if (!Files.exists(path) || Files.isDirectory(path)) {
-					logger.warn("The configuration file {} is not found.", iniFilePath);
-				} else {
-					factory = new IniSecurityManagerFactory("file:" + iniFilePath);
-				}
+		if (moduleName != null && configDir != null) {
+			Ini ini;
+			if (configDir.equals(System.getProperty("jboss.server.config.dir"))) {
+				ini = ConfigFileReader.getIniConfig(configDir, moduleName);
+			} else {
+				ini = ConfigFileReader.getIniConfigByFile(configDir, "rest-client.ini");
 			}
-			PropertyManagement props = new PropertyManagement();
-			key = props.getProperty("casOauthClient.key." + moduleName, null);
-			secret = props.getProperty("casOauthClient.secret." + moduleName, null);
+			if (ini != null) {
+				factory = new IniSecurityManagerFactory(ini);
+			}
 		}
 		if (factory == null) {
 			logger.info("Falling back to the rest-client.ini in the class path");
@@ -83,15 +74,6 @@ class AccessControlUtilRest extends AccessControlUtil {
 
 		SecurityManager securityManager = factory.getInstance();
 		SecurityUtils.setSecurityManager(securityManager);
-
-		if (key != null && secret != null) {
-			CasOAuthWrapperClientRest bean = (CasOAuthWrapperClientRest) factory.getBeans().get("casOauthClient");
-			bean.setKey(key);
-			bean.setSecret(secret);
-		} else if (moduleName != null) {
-			logger.warn("casOauthClient.key.{} or/and casOauthClient.secret.{} is not set in the global properties file", moduleName, moduleName);
-		}
-
 	}
 
 	public OAuthorizationCredentials login(String username, String password) {

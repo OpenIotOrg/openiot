@@ -43,7 +43,6 @@ import org.apache.shiro.subject.Subject;
 import org.apache.shiro.web.util.WebUtils;
 import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.oauth.client.BaseOAuth20Client;
-import org.pac4j.oauth.client.CasOAuthWrapperClient;
 import org.pac4j.oauth.profile.casoauthwrapper.CasOAuthWrapperProfile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -109,7 +108,7 @@ public abstract class AccessControlUtil {
 	 */
 	public static AccessControlUtil getRestInstance(String moduleName, String configDir) {
 		if (instanceRest == null)
-			instanceRest = new AccessControlUtilRest(moduleName);
+			instanceRest = new AccessControlUtilRest(moduleName, configDir);
 		return instanceRest;
 	}
 
