@@ -25,16 +25,18 @@ import java.util.Date;
  * 
  */
 public class ObservedProperty implements java.io.Serializable{
-	private String value;
+
+	private static final long serialVersionUID = 1L;
+	private Object value;
 	private Date times;
 	private String propertyType;
 	private String unit;
 	private String observationId;
 	
-	public String getValue() {
+	public Object getValue() {
 		return value;
 	}
-	public void setValue(String value) {
+	public void setValue(Object value) {
 		this.value = value;
 	}
 	public void setValue(Double value) {

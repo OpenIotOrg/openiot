@@ -24,6 +24,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.StringWriter;
+import java.net.URI;
 
 import org.openiot.gsn.metadata.LSM.LSMFieldMetaData;
 import org.openiot.gsn.metadata.LSM.LSMSensorMetaData;
@@ -36,6 +37,8 @@ import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.ResIterator;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.ResourceFactory;
+import com.hp.hpl.jena.vocabulary.RDF;
+import com.hp.hpl.jena.vocabulary.RDFS;
 
 public class SensorMetadata {
   private Model model = ModelFactory.createDefaultModel();  
@@ -45,20 +48,73 @@ public class SensorMetadata {
   private final static String rdfs="http://www.w3.org/2000/01/rdf-schema#";
   private final static String qu="http://purl.oclc.org/NET/ssnx/qu/qu#";
   private final static String rr="http://www.w3.org/ns/r2rml#";
+  private final static String prov="http://www.w3.org/ns/prov#";
+  private final static String lsm="http://openiot.eu/ontology/ns#";
+  private final static String dul="http://www.loa-cnr.it/ontologies/DUL.owl#";
+  private final static String wgs84="http://www.w3.org/2003/01/geo/wgs84_pos#";
+  private final static String lgdata="http://linkedgeodata.org/property/";
+  Resource ssnSensor=ResourceFactory.createResource(ssn+"Sensor");
+  Resource dulPlace=ResourceFactory.createResource(dul+"Place");
+  Property rdfType=ResourceFactory.createProperty(rdf+"type");
+  Property rdfsLabel=ResourceFactory.createProperty(rdfs+"label");
+  Property ssnObserves=ResourceFactory.createProperty(ssn+"observes");
+  Property ssnOfFeature=ResourceFactory.createProperty(ssn+"ofFeature");
+  Property quUnit=ResourceFactory.createProperty(qu+"unit");
+  Property rrColumnName=ResourceFactory.createProperty(rr+"columnName");
+  //Property provPerformedAt=ResourceFactory.createProperty(prov+"PerformedAt");
+  Property provWasGeneratedBy=ResourceFactory.createProperty(prov+"wasGeneratedBy");
+  //Property lsmHasSourceType=ResourceFactory.createProperty(lsm+"hasSourceType");
+  //Property lsmHasSensorType=ResourceFactory.createProperty(lsm+"hasSensorType");
+  Property dulHasLocation=ResourceFactory.createProperty(dul+"hasLocation");
+  Property wgs84Lat=ResourceFactory.createProperty(wgs84+"lat");
+  Property wgs84Long=ResourceFactory.createProperty(wgs84+"long");
+ 
+
   public void loadFromFile(String rdfFile) throws FileNotFoundException,TurtleParseException{
 	  FileInputStream fis = new FileInputStream(rdfFile);
 	  model.read(fis,null,"TURTLE");
   }
   
+  public void createMetadata(LSMSensorMetaData meta){
+	  Resource sensorUri=model.createResource(meta.getSensorID());
+	  model.add(sensorUri, RDFS.subClassOf, ssnSensor);
+	  model.add(sensorUri,ssnOfFeature,model.createResource(meta.getFeatureOfInterest()));
+	  model.add(sensorUri,rdfsLabel,meta.getSensorName());
+	  //model.add(sensorUri,lsmHasSourceType,meta.getSourceType());
+	  model.add(sensorUri,provWasGeneratedBy,meta.getAuthor());
+	  System.out.println(sensorUri.getLocalName());
+	  Resource sType=model.createResource(sensorUri.getNameSpace()+meta.getSensorType());
+	  model.add(sensorUri,rdfType,sType);
+	  //model.add(sType,rdfsLabel,meta.getSensorType());
+	  for (LSMFieldMetaData f:meta.getFields().values()){
+		  Resource prop=model.createResource(f.getLsmPropertyName());
+		  model.add(sensorUri,ssnObserves,prop);
+		  model.add(prop,quUnit,f.getLsmUnit());
+	  }
+	  Resource location=model.createResource(sensorUri.getURI()+"_location");
+	  model.add(location,rdfType,dulPlace);
+	  model.add(sensorUri,dulHasLocation,location);
+	  model.add(location,wgs84Lat,""+meta.getLatitude());
+	  model.add(location,wgs84Long,""+meta.getLongitude());
+	  Resource city =model.createResource(sensorUri.getNameSpace()+"unknownCity");
+	  Resource province=model.createResource(sensorUri.getNameSpace()+"unknownProvince");
+	  Resource country=model.createResource(sensorUri.getNameSpace()+"unknownCountry");
+	  Resource continent=model.createResource(sensorUri.getNameSpace()+"unknownContinent");
+      model.add(location,model.createProperty(lsm+"is_in_city"),city);
+      model.add(city,rdfsLabel,"unknowncity");
+      model.add(location,model.createProperty(lgdata+"is_in_province"),province);
+      model.add(province,rdfsLabel,"unknownprovince");
+      model.add(location,model.createProperty(lgdata+"is_in_country"),country);
+      model.add(country,rdfsLabel,"unknowncountry");
+      model.add(location,model.createProperty(lgdata+"is_in_continent"),continent);
+      model.add(continent,rdfsLabel,"unknowncontinent");
+	  model.write(System.out,"TURTLE");
+	  
+  }
+  
   public LSMSensorMetaData fillSensorMetadata(){
 	  LSMSensorMetaData md=new LSMSensorMetaData();
-	  Resource ssnSensor=ResourceFactory.createResource(ssn+"Sensor");
-	  Property rdfType=ResourceFactory.createProperty(rdf+"type");
-	  Property rdfsLabel=ResourceFactory.createProperty(rdfs+"label");
-	  Property ssnObserves=ResourceFactory.createProperty(ssn+"observes");
-	  Property quUnit=ResourceFactory.createProperty(qu+"unit");
-	  Property rrColumnName=ResourceFactory.createProperty(rr+"columnName");
-	  ResIterator ri=model.listSubjectsWithProperty(rdfType, ssnSensor);
+	  ResIterator ri=model.listSubjectsWithProperty(RDFS.subClassOf, ssnSensor);
 	  if (!ri.hasNext()){
 		  throw new IllegalArgumentException("The rdf graph contains no instance of: "+ssnSensor);
 	  }
@@ -74,11 +130,16 @@ public class SensorMetadata {
 		  if (!units.hasNext())
 			  throw new IllegalArgumentException("The property "+prop+" has no unit");
 		  Resource unit=prop.getPropertyResourceValue(quUnit);
-		  String column=prop.listProperties(rrColumnName).next().getObject().toString();
+		  //String column=prop.listProperties(rrColumnName).next().getObject().toString();		  
 		  lsmField.setLsmPropertyName(prop.getURI());
 		  lsmField.setLsmUnit(unit.getURI());
-		  md.getFields().put(column, lsmField);
+		  md.getFields().put(prop.getURI(), lsmField);
 	  }
+	  Resource feature=sensor.getPropertyResourceValue(ssnOfFeature);
+	  if (feature!=null)
+	    md.setFeatureOfInterest(feature.getURI());
+	  else 
+		  md.setFeatureOfInterest("nofeature");
  	  md.setSensorName("");
  	  
       return md;

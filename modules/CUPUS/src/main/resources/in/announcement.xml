@@ -2,4 +2,6 @@
 <announcement type="booleanTriplet">
 	<validity>300000</validity>
 	<attribute name="a" operator="LESS_OR_EQUAL" type="double">10000</attribute>
-</subscription>
+	<attribute name="b" operator="LESS_OR_EQUAL" type="double">10000</attribute>
+	<attribute name="c" operator="EQUAL" type="string">a</attribute>
+</announcement>

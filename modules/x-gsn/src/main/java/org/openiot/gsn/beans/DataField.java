@@ -40,6 +40,8 @@ public final class DataField implements Serializable {
 
     private String            type;
 
+    private String property;
+    
     private DataField ( ) {}
 
     public DataField ( final String fieldName , final String type , final String description ) throws GSNRuntimeException {
@@ -119,4 +121,7 @@ public final class DataField implements Serializable {
         return this.type;
     }
 
+    public String getProperty(){
+    	return property;
+    }
 }

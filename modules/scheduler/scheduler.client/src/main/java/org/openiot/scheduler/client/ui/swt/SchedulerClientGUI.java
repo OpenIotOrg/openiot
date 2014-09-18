@@ -108,7 +108,7 @@ public class SchedulerClientGUI {
 		public void widgetSelected(SelectionEvent e) {
 			
 			
-			schedulerClient.discoverSensors(6.631622,46.520131,5f);
+			schedulerClient.discoverSensors(6.631622,46.520131,5f, null, null);
 			
 			
 		}
@@ -118,7 +118,7 @@ public class SchedulerClientGUI {
 		public void widgetSelected(SelectionEvent e) {
 			
 			
-			schedulerClient.registerDemoService();
+			schedulerClient.registerDemoService(null, null);
 			
 			
 		}

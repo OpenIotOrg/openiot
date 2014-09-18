@@ -20,6 +20,7 @@
 
 package org.openiot.ui.request.presentation.web.scopes.controllers.pages;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ResourceBundle;
 
@@ -29,6 +30,7 @@ import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.RequestScoped;
 import javax.faces.context.FacesContext;
 
+import org.openiot.security.client.AccessControlUtil;
 import org.openiot.ui.request.commons.providers.SchedulerAPIWrapper;
 import org.openiot.ui.request.commons.providers.exceptions.APICommunicationException;
 import org.openiot.ui.request.commons.providers.exceptions.APIException;
@@ -72,13 +74,13 @@ public class LoginPageController implements Serializable {
 	// ------------------------------------
 	// Controllers
 	// ------------------------------------
-	public void handleLogout() {
+	public void handleLogout() throws IOException {
 		sessionBean.setUserId(null);
 		getContext().dispose();
-		
-		FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
 
-		applicationBean.redirect("/pages/login.xhtml?faces-redirect=true");
+//		FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
+		FacesContext.getCurrentInstance().getExternalContext().redirect("../logout?faces-redirect=true");
+
 	}
 
 	public void handleLogin() {
@@ -110,4 +112,14 @@ public class LoginPageController implements Serializable {
 	public void setSessionBean(SessionBean sessionBean) {
 		this.sessionBean = sessionBean;
 	}
+	
+	
+	public String getUsername() {
+		String userIdURI = sessionBean.getUserId();
+		if (userIdURI != null) {
+			return userIdURI.substring(userIdURI.lastIndexOf("/") + 1);
+		}
+		return null;
+	}
+
 }

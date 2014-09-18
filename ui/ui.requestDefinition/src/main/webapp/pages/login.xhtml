@@ -1,20 +1,22 @@
-<!DOCTYPE HTML>
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui"
 	xmlns:pe="http://primefaces.org/ui/extensions"
 	xmlns:s="http://www.sensap.eu/jsf"
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:dialogs="http://java.sun.com/jsf/composite/components/dialogs"
-	xmlns:widgets="http://java.sun.com/jsf/composite/components/widgets">
+	xmlns:widgets="http://java.sun.com/jsf/composite/components/widgets"
+	xmlns:shiro="http://shiro.apache.org/tags">
 
 <f:view contentType="text/html">
 	<h:head>
-		<meta content='text/html; charset=UTF-8' http-equiv="Conmenutent-Type" />
+		<meta content='text/html; charset=UTF-8' http-equiv="Content-Type" />
 		<h:outputStylesheet library="css" name="core.css" />
 		<h:outputScript library="js" name="core.js" />
-		<title>#{messages.UI_LOGIN_OR_REGISTER}</title>
+		<title>#{messages.UI_APPLICATION_DESIGNER_TITLE}</title>
 	</h:head>
 
 	<h:body styleClass="login" id="body">
@@ -35,7 +37,19 @@
 		</div>
 
 		<p:separator />
-
+		
+		
+		
+		<p:outputPanel layout="block" style="text-align:center;">
+			<h:button value="#{messages.UI_LOGIN_APPLICATION_DESIGNER}" outcome="applicationDesign.xhtml" />
+			<ui:remove>
+			<shiro:guest>
+				<h:button value="Log out of CAS" onclick="window.open('#{loginPageController.signOutOfCASLink}', '_blank');"/>
+			</shiro:guest>
+			</ui:remove>
+		</p:outputPanel>
+		
+		<ui:remove>
 		<p:outputPanel layout="block" style="text-align:center;">
 			<h:panelGrid columns="2" cellpadding="20" style="margin:0 auto;"
 				columnClasses="align-top, align-top">
@@ -87,6 +101,7 @@
 				</p:panel>
 			</h:panelGrid>
 		</p:outputPanel>
+		</ui:remove>
 
 		<p:dialog></p:dialog>
 	</h:body>

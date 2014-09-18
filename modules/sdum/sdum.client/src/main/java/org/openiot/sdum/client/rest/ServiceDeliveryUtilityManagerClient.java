@@ -31,7 +31,6 @@ import javax.xml.transform.stream.StreamSource;
 import org.jboss.resteasy.client.ClientRequest;
 import org.jboss.resteasy.client.ClientRequestFactory;
 import org.jboss.resteasy.client.ClientResponse;
-
 import org.openiot.commons.sdum.serviceresultset.model.PresentationAttr;
 import org.openiot.commons.sdum.serviceresultset.model.SdumServiceResultSet;
 import org.openiot.commons.sdum.serviceresultset.model.Widget;
@@ -41,7 +40,6 @@ import org.openiot.commons.sparql.result.model.Binding;
 import org.openiot.commons.sparql.result.model.Result;
 import org.openiot.commons.sparql.result.model.Results;
 import org.openiot.commons.sparql.result.model.Variable;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -83,12 +81,14 @@ public class ServiceDeliveryUtilityManagerClient
 		}
 	}
 
-	public void pollForReport(String serviceID)
+	public void pollForReport(String serviceID, String clientId, String token)
 	{
 		ClientRequest pollForReportClientRequest = 
 				clientRequestFactory.createRelativeRequest("/rest/services/pollforreport");
 
 		pollForReportClientRequest.queryParameter("serviceID", serviceID);
+		pollForReportClientRequest.queryParameter("clientId", clientId);
+		pollForReportClientRequest.queryParameter("token", token);
 
 		pollForReportClientRequest.accept("application/xml");
 

@@ -54,11 +54,11 @@ public class OAMOManager {
 	 * @param userId
 	 * @throws APIException
 	 */
-	public void loadUserOAMOs(String userId) throws APIException {
+	public void loadUserOAMOs(String userId, String clientId, String token) throws APIException {
 		this.userId = userId;
 		availableOAMOs.clear();
 		selectOAMO(null);
-		OSDSpec spec = SchedulerAPIWrapper.getAvailableApps(userId);
+		OSDSpec spec = SchedulerAPIWrapper.getAvailableApps(userId, clientId, token);
 		loadOSDSPec(spec);
 	}
 	
@@ -202,12 +202,12 @@ public class OAMOManager {
 	 * @param oamo
 	 * @throws APIException
 	 */
-	protected void saveOAMO(OAMO oamo) throws APIException {
+	protected void saveOAMO(OAMO oamo, String clientId, String token) throws APIException {
 		OSDSpec spec = new OSDSpec();
 		spec.setUserID(this.userId);
 		spec.getOAMO().add(oamo);
 
-		SchedulerAPIWrapper.registerService(spec);
+		SchedulerAPIWrapper.registerService(spec, clientId, token);
 	}
 
 	/**
@@ -215,12 +215,12 @@ public class OAMOManager {
 	 * 
 	 * @throws APIException
 	 */
-	public void saveSelectedOAMO() throws APIException {
+	public void saveSelectedOAMO(String clientId, String token) throws APIException {
 		if (selectedOAMO == null) {
 			return;
 		}
 
-		saveOAMO(selectedOAMO);
+		saveOAMO(selectedOAMO, clientId, token);
 	}
 
 	/**

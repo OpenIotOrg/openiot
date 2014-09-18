@@ -37,7 +37,7 @@ import com.jolbox.bonecp.BoneCPConfig;
 public class ConnectionManager {
 	private static BoneCP SQLPooled; 
 	final static Logger logger = LoggerFactory.getLogger(ConnectionManager.class);
-	static private PropertyManagement propertyManagement = null;
+	static public PropertyManagement propertyManagement = null;
 	
 	public static BoneCP getConnectionPool(){
 		return SQLPooled;

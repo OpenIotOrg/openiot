@@ -60,7 +60,7 @@
         <display-name>GSN Main Menu</display-name>
         <servlet-class>org.openiot.gsn.http.MenuServlet</servlet-class>
     </servlet>
-
+<!-- 
     <servlet>
         <servlet-name>MyCreateGroupServlet</servlet-name>
         <display-name>MyCreateGroupServlet</display-name>
@@ -211,7 +211,7 @@
         <display-name>MyAccessRightsManagementServlet</display-name>
         <servlet-class>org.openiot.gsn.http.ac.MyAccessRightsManagementServlet</servlet-class>
     </servlet>
-
+-->
 
    <servlet>
        <servlet-name>GridDataServlet</servlet-name>
@@ -290,7 +290,7 @@
         <servlet-name>MenuServlet</servlet-name>
         <url-pattern>/menu.jsp</url-pattern>
     </servlet-mapping>
-
+<!-- 
      <servlet-mapping>
             <servlet-name>MyCreateGroupServlet</servlet-name>
             <url-pattern>/gsn/MyCreateGroupServlet</url-pattern>
@@ -419,7 +419,7 @@
             <servlet-name>MyAccessRightsManagementServlet</servlet-name>
             <url-pattern>/gsn/MyAccessRightsManagementServlet</url-pattern>
      </servlet-mapping>
-
+-->
 
      
 
@@ -460,7 +460,10 @@
        <url-pattern>/griddata</url-pattern>
    </filter-mapping>
 
-      
+<context-param>
+    <param-name>resteasy.use.deployment.sensitive.factory</param-name>
+    <param-value>false</param-value>
+</context-param>
      
     <mime-mapping>
         <extension>inc</extension>

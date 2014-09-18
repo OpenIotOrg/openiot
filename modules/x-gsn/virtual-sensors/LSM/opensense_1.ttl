@@ -10,25 +10,24 @@
 @prefix aws:  <http://purl.oclc.org/NET/ssnx/meteo/aws#> .
 @prefix cf-property:<http://purl.oclc.org/NET/ssnx/cf/cf-property#> .
 @prefix cf-feature: <http://purl.oclc.org/NET/ssnx/cf/cf-feature#> .
-@prefix prov: <http://purl.org/net/provenance/ns#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
 @prefix phenonet: <http://sensordb.csiro.au/ontology/phenonet#> .
 @prefix wgs84: <http://www.w3.org/2003/01/geo/wgs84_pos#> .
 @prefix lgd: <http://linkedgeodata.org/property/> .
-@prefix lsm: <http://lsm.deri.ie/ont/lsm.owl#> .
+@prefix lsm: <http://openiot.eu/ontology/ns#> .
 @base <http://sensordb.csiro.au/id/> .
 
-<sensor/5010> rdf:type aws:CapacitiveBead,ssn:Sensor;
+<sensor/5010> rdfs:subClassOf ssn:Sensor;
               rdfs:label "Sensor 5010";
               ssn:observes aws:air_temperature ;
               phenonet:hasSerialNumber <sensor/5010/serial/serial2> ;
               ssn:onPlatform <site/narrabri/Pweather> ;
               ssn:ofFeature <site/narrabri/sf/sf_narrabri> ;
               ssn:hasMeasurementProperty <sensor/5010/accuracy/acc_1> ;
-              prov:PerformedBy "SensorSource";
+              prov:wasGeneratedBy "AuthorName";
               DUL:hasLocation <place/location1>;
-              lsm:hasSensorType <sensorType1>;
-              lsm:hasSourceType "SourceType".
-              	
+              rdf:type <sensorType1>.
+                                                   	
 <sensorType1> rdfs:label "TypeName".
 
 <sensor/5010/serial/serial2> rdf:type phenonet:SerialNumber; 
@@ -46,9 +45,7 @@
                              qu:numericalValue "0.3"^^xsd:double ;
                              DUL:hasParameter phenonet:degreeCelsius .
                              
-aws:air_temperature qu:unit phenonet:degreeCelsius;
-                    rr:columnName "temperature" .
-
+aws:air_temperature qu:unit phenonet:degreeCelsius.
 
 <place/location1> rdf:type DUL:Place;
                   wgs84:lat 52.3;

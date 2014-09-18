@@ -2,7 +2,7 @@ sensorID="http://lsm.deri.ie/resource/61330620147099"
 sensorName=opensense_1
 source="http://planetdata.epfl.ch:22002/gsn?REQUEST=113&name=opensense_1"
 sourceType=lausanne
-sensorType=lausanne
+sensorType="http://demo.org/ns#TestType"
 information=Air Quality Sensors from Lausanne station 1
 author=opensense
 feature="http://lsm.deri.ie/OpenIoT/opensensefeature"

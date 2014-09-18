@@ -22,12 +22,21 @@
 
 package org.openiot.gsn.vsensor;
 
+import org.openiot.gsn.beans.DataField;
+import org.openiot.gsn.beans.DataTypes;
 import org.openiot.gsn.beans.StreamElement;
 import org.openiot.gsn.beans.VSensorConfig;
+import org.openiot.gsn.metadata.LSM.LSMFieldMetaData;
 import org.openiot.gsn.metadata.LSM.LSMRepository;
 import org.openiot.gsn.metadata.LSM.LSMSensorMetaData;
+import org.openiot.gsn.metadata.LSM.SensorAnnotator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+//import com.typesafe.config.Config;
+//import com.typesafe.config.ConfigFactory;
+
+
 
 import java.util.*;
 
@@ -39,25 +48,34 @@ public class LSMExporter extends AbstractVirtualSensor {
     private String sensorName;
     private boolean allow_nulls = false;
     private boolean publish_to_lsm = false;
-
-    private LSMSensorMetaData loadMetadata(VSensorConfig vsConfig) throws Exception{
-    	LSMRepository lsm=LSMRepository.getInstance();
-    	return lsm.loadMetadata(vsConfig);
-    }
+    private Map<String,String> fieldUris=new HashMap<String,String>();
     
     public boolean initialize() {
 
+    	//Config prefixes=ConfigFactory.load().getConfig("prefixes");
+    	LSMSensorMetaData metadata;
         VSensorConfig vsensor = getVirtualSensorConfiguration();
-        try {
-        	loadMetadata(vsensor);
+        try {        	
+        	metadata = LSMRepository.getInstance().loadMetadata(vsensor);
         } catch (Exception e){
         	e.printStackTrace();
-        	logger.error("Could not load vsensor LSM metadata for "+vsensor.getName());
+        	logger.error("No LSM metadata available for loading vsensor "+vsensor.getName());
         	return false;
         }
-        //publish_to_lsm = vsensor.getPublishToLSM();
         TreeMap<String, String> params = vsensor.getMainClassInitialParams();
         sensorName = vsensor.getName();        
+        
+        for (DataField df:vsensor.getOutputStructure()){
+        	logger.info("Property:"+ df.getName()+"--"+df.getProperty());
+        	if (df.getProperty()!=null)
+        	  fieldUris.put(df.getName().toUpperCase(), df.getProperty());
+        	else {
+              for (LSMFieldMetaData md:metadata.getFields().values()){
+            	  if (md.getGsnFieldName().equals(df.getName()))
+              		fieldUris.put(df.getName().toUpperCase(), md.getLsmPropertyName());            		  
+              }        				
+        	}
+        }
         
         String allow_nulls_str = params.get("allow-nulls");
         if (allow_nulls_str != null)
@@ -79,20 +97,29 @@ public class LSMExporter extends AbstractVirtualSensor {
     }
 
     public void dataAvailable(String inputStreamName, StreamElement data) {
-
+    	
+            	
         Long t = data.getTimeStamp();
         for (int i = 0; i < fields.size(); i++) {
             String field = fields.get(i);
-            Double v = (Double) data.getData(field);
+            Object val;
+            if (data.getFieldTypes()[i].equals(DataTypes.VAR_CHAR_PATTERN_STRING) ||
+                    data.getFieldTypes()[i].equals(DataTypes.VARCHAR) ||
+                    data.getFieldTypes()[i].equals(DataTypes.VARCHAR_NAME) ){
+            	val = (String) data.getData(field);
+            }
+            else {
+            	val = (Double) data.getData(field);
+            }
             Date d = new Date(t);
             String fieldName = data.getFieldNames()[i];
-            logger.debug(fieldName + " : t=" + d + " v=" + v);
-
-            if (!allow_nulls && v == null)
-                continue; // skipping null values if allow_nulls flag is not st to true
-
+            logger.debug(fieldName + " : t=" + d + " v=" + val);
+            
+            if (!allow_nulls && val == null)
+                return; // skipping null values if allow_nulls flag is not st to true
+          
             if (publish_to_lsm) {
-                LSMRepository.getInstance().publishSensorDataToLSM(sensorName, fieldName, v, d);
+                SensorAnnotator.updateSensorDataOnLSM(sensorName, fieldName, fieldUris.get(fieldName), val, d);                
             }
 
             //dataProduced(data);

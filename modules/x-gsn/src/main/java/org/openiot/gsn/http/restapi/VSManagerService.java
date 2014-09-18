@@ -39,7 +39,7 @@ import org.apache.commons.io.IOUtils;
 import org.openiot.gsn.Main;
 import org.openiot.gsn.VSensorLoader;
 import org.openiot.gsn.metadata.LSM.LSMSensorMetaData;
-import org.openiot.gsn.metadata.LSM.MetadataCreator;
+import org.openiot.gsn.metadata.LSM.SensorAnnotator;
 import org.openiot.gsn.metadata.rdf.SensorMetadata;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,6 +61,7 @@ public class VSManagerService {
 	}
 
 	//public VSManagerService() { super(VSManagerService.class); }
+
 	@POST
 	@Path("/{vsname}/create")
 	public Response createVS(Reader vsconfig, @PathParam("vsname") String vsname) {
@@ -89,7 +90,7 @@ public class VSManagerService {
 		logger.info("Finalized loading.");
 		return Response.ok(vsname).build();
 	}
-
+	
 	@POST
 	@Path("/{vsname}/registerRdf")
 	public Response registerRdfVS(Reader metadata, @PathParam("vsname") String vsname) {
@@ -103,16 +104,16 @@ public class VSManagerService {
 			}
 			InputStream is = new ByteArrayInputStream(concat.getBytes());
 			meta.load(is);
-			MetadataCreator.addRdfMetadatatoLSM(meta);
-			FileWriter fw = new FileWriter(filePath, true);
-			IOUtils.writeLines(lines, "\n", fw);
-			fw.close();
+		    SensorAnnotator.addRdfMetadatatoLSM(meta);
+			FileWriter fw = new FileWriter(filePath, true);			
+		    IOUtils.writeLines(lines, "\n", fw);
+	        fw.close();
 		} catch (Exception e) {
 			logger.error("Unable to load RDF metadata for sensor.", e);
 			throw new VSensorConfigException("Unable to load RDF metadata for sensor.", e);
 		}
 		return Response.ok().build();
-	}
+	}	
 
 	@POST
 	@Path("/{vsname}/register")
@@ -132,7 +133,7 @@ public class VSManagerService {
 				sensorIdOld = configData.getString(LSMSensorMetaData.KEY_SENSOR_ID);
 			}
 			lsmmd.init(configData, true);
-			sensorId = MetadataCreator.addSensorToLSM(lsmmd);
+			sensorId = SensorAnnotator.addSensorToLSM(lsmmd);
 
 			if (sensorIdOld == null || sensorId.compareTo(sensorIdOld) != 0) {
 				logger.info("SensorId has changed from {} to {}.", sensorIdOld, sensorId);
@@ -176,7 +177,7 @@ public class VSManagerService {
 
 						String sensorId = sensorConfig.getString(LSMSensorMetaData.KEY_SENSOR_ID);
 						logger.info("Deleting sensor {} from LSM. SensorId: {}.", vsname, sensorId);
-						MetadataCreator.deleteSensorFromLSM(sensorId);
+						SensorAnnotator.deleteSensorFromLSM(sensorId);
 
 						if (!vsMetaFile.delete()) {
 							logger.error("Failed to delete sensor metadata file.");
@@ -199,8 +200,7 @@ public class VSManagerService {
 	}
 }
 
-class VSensorConfigException extends WebApplicationException {
-
+ class VSensorConfigException extends WebApplicationException {
 	private static final long serialVersionUID = -2199585164343127464L;
 
 	public VSensorConfigException(String message) {

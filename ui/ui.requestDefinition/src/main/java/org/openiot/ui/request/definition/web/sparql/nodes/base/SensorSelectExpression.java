@@ -19,19 +19,25 @@
  */
 package org.openiot.ui.request.definition.web.sparql.nodes.base;
 
-import java.io.Serializable;
-
 import org.apache.commons.lang3.StringUtils;
+import org.openiot.commons.util.PropertyManagement;
+
+import java.io.Serializable;
 
 public class SensorSelectExpression extends AbstractSparqlNode implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
+	static {
+		PropertyManagement propertyManagement = new PropertyManagement();
+	}
+
 	public SensorSelectExpression(String nodeId,String type, Object lat, Object lon, Object rad, boolean includeGeoCoordFields) {
 		super();
 
+
 		// Generate Expr
-		appendToScope(new Expression("?" + nodeId + "_record <http://lsm.deri.ie/ont/lsm.owl#isObservedPropertyOf> ?" + nodeId + "_sensor ."));
+		appendToScope(new Expression("?" + nodeId + "_record <http://openiot.eu/ontology/ns/isObservedValueOf> ?" + nodeId + "_sensor ."));
 		appendToScope(new Expression("?" + nodeId + "_sensor <http://purl.oclc.org/NET/ssnx/ssn#observedBy> ?" + nodeId + "_sensorId ."));
 		Scope scope = new Scope();
 		appendToScope(scope);
@@ -43,8 +49,8 @@ public class SensorSelectExpression extends AbstractSparqlNode implements Serial
 		scope.appendToScope(new From(AbstractSparqlNode.GRAPH_META_URI));
 		Where where = new Where();
 		scope.appendToScope(where);
-		where.appendToScope(new Expression("?" + nodeId + "_sensorId <http://lsm.deri.ie/ont/lsm.owl#hasSensorType> ?" + nodeId + "_sensorType ."));
-		where.appendToScope(new Expression("?" + nodeId + "_sensorType  <http://www.w3.org/2000/01/rdf-schema#label> '"+type+"' ."));
+		where.appendToScope(new Expression("?" + nodeId + "_sensorId <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <" + type + "> ."));
+		where.appendToScope(new Expression("<" + type + "> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://purl.oclc.org/NET/ssnx/ssn#Sensor> ."));
 		where.appendToScope(new Expression("?" + nodeId + "_sensorId <http://www.loa-cnr.it/ontologies/DUL.owl#hasLocation> ?" + nodeId + "_loc ."));
 		where.appendToScope(new Expression("?" + nodeId + "_loc geo:geometry ?" + nodeId + "_geo ."));
 		where.appendToScope(new Expression("?" + nodeId + "_loc geo:lat ?" + nodeId + "_lat ."));

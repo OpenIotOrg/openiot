@@ -19,28 +19,39 @@
  */
 package org.openiot.ui.request.commons.providers;
 
-import java.io.StringReader;
+import org.jboss.resteasy.client.ClientRequest;
+import org.jboss.resteasy.client.ClientRequestFactory;
+import org.jboss.resteasy.client.ClientResponse;
+import org.openiot.commons.sdum.serviceresultset.model.SdumServiceResultSet;
+import org.openiot.commons.util.PropertyManagement;
+import org.openiot.ui.request.commons.providers.exceptions.APICommunicationException;
+import org.openiot.ui.request.commons.providers.exceptions.APIException;
 
 import javax.ws.rs.core.UriBuilder;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.stream.StreamSource;
 
-import org.jboss.resteasy.client.ClientRequest;
-import org.jboss.resteasy.client.ClientRequestFactory;
-import org.jboss.resteasy.client.ClientResponse;
-import org.openiot.commons.sdum.serviceresultset.model.SdumServiceResultSet;
-import org.openiot.ui.request.commons.providers.exceptions.APICommunicationException;
-import org.openiot.ui.request.commons.providers.exceptions.APIException;
+import java.io.StringReader;
+import java.net.URI;
 
 public class SDUMAPIWrapper {
 
-	public static SdumServiceResultSet pollForReport(String serviceId) throws APICommunicationException, APIException {
-		ClientRequestFactory clientRequestFactory = new ClientRequestFactory(UriBuilder.fromUri("http://localhost:8080/sdum.core").build());
+	private static final URI SDUM_HOST_URL;
+
+	static  {
+		PropertyManagement propertyManagement = new PropertyManagement();
+		SDUM_HOST_URL =  UriBuilder.fromUri(propertyManagement.getRequestCommonsSdumHostUrl()).build();
+	}
+
+	public static SdumServiceResultSet pollForReport(String serviceId, String clientId, String token) throws APICommunicationException, APIException {
+		ClientRequestFactory clientRequestFactory = new ClientRequestFactory(SDUM_HOST_URL);
 		ClientRequest pollForReportClientRequest = clientRequestFactory.createRelativeRequest("/rest/services/pollforreport");
 
 		pollForReportClientRequest.queryParameter("serviceID", serviceId);
 		pollForReportClientRequest.accept("application/xml");
+		pollForReportClientRequest.queryParameter("clientId", clientId);
+		pollForReportClientRequest.queryParameter("token", token);
 
 		ClientResponse<String> response;
 		String responseText = null;

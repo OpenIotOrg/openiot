@@ -140,7 +140,7 @@ public class ServiceDeliveryUtilityManagerUI {
 	{
 		public void actionPerformed(ActionEvent e) 
 		{			
-			sdumClient.pollForReport(textFieldServiceID.getText());
+			sdumClient.pollForReport(textFieldServiceID.getText(), null, null);
 		}
 	}
 	

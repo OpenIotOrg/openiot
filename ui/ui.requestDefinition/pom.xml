@@ -11,7 +11,7 @@
 	the LGPL for * the specific language governing rights and limitations. * 
 	* Contact: OpenIoT mailto: info@openiot.eu */ -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<!-- =========================================================== -->
 	<!-- Basics -->
@@ -25,6 +25,12 @@
 	<name>OpenIoT request definition web app</name>
 	<url>https://github.com/OpenIotOrg/openiot</url>
 
+	<parent>
+		<groupId>org.openiot</groupId>
+		<artifactId>openiot</artifactId>
+		<version>0.1-SNAPSHOT</version>
+		<relativePath>../../pom.xml</relativePath>
+	</parent>
 
 	<licenses>
 		<license>
@@ -52,7 +58,7 @@
 		<version.war.plugin>2.1.1</version.war.plugin>
 
 		<!-- maven-compiler-plugin -->
-		<maven.compiler.source>1.6</maven.compiler.source>
+		<maven.compiler.source>1.7</maven.compiler.source>
 		<maven.compiler.target>1.7</maven.compiler.target>
 
 	</properties>
@@ -81,14 +87,15 @@
 			<version>0.0.1</version>
 		</dependency>
 
-		<!-- To Solve JAXB Dependency. Need Moxy persistence API which is not part of eclipse -->
-		<dependency>
-		    <groupId>org.eclipse.persistence</groupId>
-    		<artifactId>org.eclipse.persistence.moxy</artifactId>
-    		<version>2.5.1</version>
-		</dependency>
-		
+
+        <!-- To Solve JAXB Dependency. Need Moxy persistence API -->
+        <dependency>
+            <groupId>org.eclipse.persistence</groupId>
+            <artifactId>org.eclipse.persistence.moxy</artifactId>
+        	<version>2.5.1</version>
+         </dependency>
 		<!-- MISC -->
+
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
@@ -158,6 +165,19 @@
 			<artifactId>javamelody-core</artifactId>
 			<version>1.45.0</version>
 		</dependency>
+
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<version>3.0.1</version>
+		</dependency>
+
+
+		<dependency>
+			<groupId>org.openiot</groupId>
+			<artifactId>security.client</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
 
 
@@ -168,7 +188,7 @@
 
 	<build>
 		<!-- Maven will append the version to the finalName (which is the name 
-			given to the generated war, and hence the context root) -->
+		given to the generated war, and hence the context root) -->
 		<finalName>${project.artifactId}</finalName>
 		<plugins>
 			<plugin>
@@ -209,11 +229,11 @@
 	<profiles>
 		<profile>
 			<!-- When built in OpenShift the 'openshift' profile will be used when 
-				invoking mvn. -->
+			invoking mvn. -->
 			<!-- Use this profile for any OpenShift specific customization your app 
-				will need. -->
+			will need. -->
 			<!-- By default that is to put the resulting archive into the 'deployments' 
-				folder. -->
+			folder. -->
 			<!-- http://maven.apache.org/guides/mini/guide-building-for-different-environments.html -->
 			<id>openshift</id>
 			<build>

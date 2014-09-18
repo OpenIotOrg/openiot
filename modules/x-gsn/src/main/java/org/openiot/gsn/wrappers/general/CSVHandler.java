@@ -323,6 +323,7 @@ public class CSVHandler {
         return input.toLowerCase().startsWith("timestampl(") && input.endsWith(")");
     }
 
+
     public char getSeparator() {
         return separator;
     }

@@ -1,0 +1,65 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>org.openiot</groupId>
+	<artifactId>openiot</artifactId>
+	<packaging>pom</packaging>
+	<version>0.2-SNAPSHOT</version>
+	<name>OpenIoT</name>
+	<description>OpenIoT master project.</description>
+	<url>http://openiot.eu/</url>
+
+	<prerequisites>
+		<maven>3.0.4</maven>
+	</prerequisites>
+
+	<modules>
+		<module>utils/utils.commons</module>
+		<module>modules/security/security-client</module>
+		<module>modules/security/security-server</module>
+		<module>modules/security/security-management</module>
+		<module>modules/lsm-light/lsm-light.client</module>
+		<module>modules/lsm-light/lsm-light.server</module>
+		<module>modules/x-gsn</module>
+		<module>modules/sdum/sdum.core</module>
+		<module>modules/sdum/sdum.client</module>
+		<module>modules/scheduler/scheduler.core</module>
+		<module>modules/scheduler/scheduler.client</module>
+		<module>ui/ide/ide.core</module>
+		<module>ui/ui.requestCommons</module>
+		<module>ui/ui.requestDefinition</module>
+		<module>ui/ui.requestPresentation</module>
+	</modules>
+
+	<issueManagement>
+		<system>GitHub</system>
+		<url>https://github.com/OpenIotOrg/openiot/issues</url>
+	</issueManagement>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.1</version>
+				<configuration>
+					<source>1.7</source>
+					<target>1.7</target>
+					<showDeprecation>true</showDeprecation>
+					<encoding>UTF-8</encoding>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<scm>
+		<connection>scm:git:https://github.com/OpenIotOrg/openiot.git</connection>
+		<developerConnection>scm:git:ssh://git@github.com:OpenIotOrg/openiot.git</developerConnection>
+		<url>https://github.com/OpenIotOrg/openiot</url>
+	</scm>
+
+</project>

@@ -1,66 +1,72 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:p="http://primefaces.org/ui"
-      xmlns:pe="http://primefaces.org/ui/extensions">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions" xmlns:ui="http://java.sun.com/jsf/facelets">
 
 <h:head>
-    <h:outputStylesheet library="css" name="style.css"/>
-    <title>OpenIOT IDE</title>
+	<h:outputStylesheet library="css" name="style.css" />
+	<title>OpenIOT IDE</title>
+	<script type="text/javascript">
+         <h:outputText value="#{layout.logoutScript}" /> 
+    </script>
 </h:head>
 
 <h:body>
-    <pe:layout id="page" fullPage="true">
+	<pe:layout id="page" fullPage="true">
 
-        <!-- North -->
-        <pe:layoutPane position="north" size="10%" closable="true"
-                       resizable="false">
-            <h:form>
-                <p:commandLink actionListener="#{layout.setNavigation(nav.welcomePage)}"
-                               update=":centerPanel">
-                    <p:graphicImage value="/resources/img/openiotlogo_left_IDE.jpg"
-                                    style="max-width: 100% !important; max-height:100% !important; margin-left: 10px"/>
-                </p:commandLink>
-            </h:form>
-        </pe:layoutPane>
+		<!-- North -->
+		<ui:remove>
+		<pe:layoutPane position="north" size="10%" closable="true" resizable="false">
+			<h:form>
+				<p:commandLink actionListener="#{layout.setNavigation(nav.welcomePage)}" update=":centerPanel">
+					<p:graphicImage value="/resources/img/openiotlogo_left_IDE.jpg" style="max-width: 100% !important; max-height:100% !important; margin-left: 10px" />
+				</p:commandLink>
+			</h:form>
+		</pe:layoutPane>
+		</ui:remove>
 
-        <!-- West -->
-        <pe:layoutPane id="westPane" position="west" size="220" effect="slide"
-                       resizable="false" spacingClosed="6" spacingOpen="6"
-                       styleClassHeader="menuBar">
-            <f:facet name="header">Menu</f:facet>
-            <h:form id="menuForm" prependId="false">
-                <p:menu model="#{layout.menu}"/>
+		<!-- West -->
+		<pe:layoutPane id="westPane" position="west" size="220" effect="slide" resizable="false" spacingClosed="6" spacingOpen="6" styleClassHeader="menuBar">
+			<f:facet name="header">Menu</f:facet>
+			<h:form id="menuForm" prependId="false">
+				<p:menu model="#{layout.menu}" />
 
-                <br/>
-                <p:commandButton value="Refresh Menu"
-                                 actionListener="#{layout.init}"
-                                 update=":centerPanel @form"/>
-            </h:form>
-        </pe:layoutPane>
+				<br />
+				<p:commandButton value="Refresh Menu" actionListener="#{layout.init}" update=":centerPanel @form" />
+				
+				<br />
+				<br />
+				<p:commandButton value="CAS Sign out" oncomplete="logoutApps();return false;" >
+       				 <p:confirm header="Logout Confirmation" message="This will log you out of all open applications." icon="ui-icon-alert" />
+    			</p:commandButton>
+			</h:form>
+		</pe:layoutPane>
 
-        <!-- Center -->
-        <pe:layoutPane id="center" position="center" maskContents="true"
-                       resizable="false">
+		<!-- Center -->
+		<pe:layoutPane id="center" position="center" maskContents="true" resizable="false">
 
-            <h:panelGroup id="centerPanel" layout="block">
-                <iframe id="navigation" src="#{layout.navigation}" onload="hideDialog()"
-                        class="centerPanel">
-                </iframe>
-            </h:panelGroup>
-        </pe:layoutPane>
+			<h:panelGroup id="centerPanel" layout="block">
+				<iframe id="navigation" src="#{layout.navigation}" onload="hideDialog()" class="centerPanel"> </iframe>
+			</h:panelGroup>
+		</pe:layoutPane>
 
-    </pe:layout>
+	</pe:layout>
 
 
-    <p:ajaxStatus onstart="start()"/>
+	<p:ajaxStatus onstart="start()" />
 
-    <p:dialog widgetVar="statusDialog" resizable="false" showHeader="false"
-              draggable="false" closable="false">
-        <p:graphicImage value="/resources/img/progress.gif"/>
-    </p:dialog>
+	<p:dialog widgetVar="statusDialog" resizable="false" showHeader="false" draggable="false" closable="false">
+		<p:graphicImage value="/resources/img/progress.gif" />
+	</p:dialog>
+	
+    <p:confirmDialog global="true" showEffect="fade" hideEffect="explode">
+        <p:commandButton value="Logout" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+        <p:commandButton value="Cancel" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+    </p:confirmDialog>
+	
+	
+	<iframe id="logoutIframe" name="logoutIframe" style="visibility: hidden;" />
+	<a href="#" id="logout-link" style="visibility: hidden;" target="_blank"/>
 
-    <h:outputScript name="js/script.js"/>
+	<h:outputScript name="js/script.js" />
 </h:body>
 </html>

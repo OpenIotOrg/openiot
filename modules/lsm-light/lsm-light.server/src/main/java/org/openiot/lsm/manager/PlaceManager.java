@@ -72,7 +72,7 @@ public class PlaceManager {
 					  "?place <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.loa-cnr.it/ontologies/DUL.owl#Place>."+
 					  "?place <http://www.w3.org/2003/01/geo/wgs84_pos#lat> ?lat."+
 					  "?place <http://www.w3.org/2003/01/geo/wgs84_pos#long> ?lng."+
-					  "?place <http://lsm.deri.ie/ont/lsm.owl#is_in_city> ?cityId."+
+					  "?place <http://openiot.eu/ontology/ns/is_in_city> ?cityId."+
 					  "?cityId <http://www.w3.org/2000/01/rdf-schema#label> ?city."+
 					  "?place <http://linkedgeodata.org/property/is_in_province> ?proId."+
 					  "?proId <http://www.w3.org/2000/01/rdf-schema#label> ?province."+
@@ -119,7 +119,7 @@ public class PlaceManager {
 					  "?place <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.loa-cnr.it/ontologies/DUL.owl#Place>."+
 					  "?place <http://www.w3.org/2003/01/geo/wgs84_pos#lat> ?lat."+
 					  "?place <http://www.w3.org/2003/01/geo/wgs84_pos#long> ?lng."+
-					  "?place <http://lsm.deri.ie/ont/lsm.owl#is_in_city> ?cityId."+
+					  "?place <http://openiot.eu/ontology/ns/is_in_city> ?cityId."+
 					  "?cityId <http://www.w3.org/2000/01/rdf-schema#label> \"" + city +"\"."+					  
 					"}";			 
 		try{
@@ -188,7 +188,7 @@ public class PlaceManager {
 					"<"+id+">" + " <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.loa-cnr.it/ontologies/DUL.owl#Place>."+
 					"<"+id+">" + " <http://www.w3.org/2003/01/geo/wgs84_pos#lat> ?lat."+
 					"<"+id+">" + " <http://www.w3.org/2003/01/geo/wgs84_pos#long> ?lng."+
-					"<"+id+">" + " <http://lsm.deri.ie/ont/lsm.owl#is_in_city> ?cityId."+
+					"<"+id+">" + " <http://openiot.eu/ontology/ns/is_in_city> ?cityId."+
 					  "?cityId <http://www.w3.org/2000/01/rdf-schema#label> ?city."+
 					  "<"+id+">" + " <http://linkedgeodata.org/property/is_in_province> ?proId."+
 					  "?proId <http://www.w3.org/2000/01/rdf-schema#label> ?province."+

@@ -26,6 +26,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Properties;
 
+
+
 //import lsm.beans.User;
 import org.openiot.lsm.schema.LSMSchema;
 import org.openiot.lsm.server.LSMTripleStore;
@@ -37,12 +39,14 @@ import org.openiot.commons.osdspec.model.PresentationAttr;
 import org.openiot.commons.osdspec.model.Widget;
 import org.openiot.commons.sparql.protocoltypes.model.QueryRequest;
 import org.openiot.commons.util.PropertyManagement;
+import org.openiot.scheduler.core.utils.SecurityUtil;
 import org.openiot.scheduler.core.utils.lsmpa.entities.Query;
 import org.openiot.scheduler.core.utils.lsmpa.entities.Service;
 import org.openiot.scheduler.core.utils.lsmpa.entities.WidgetAttributes;
 import org.openiot.scheduler.core.utils.lsmpa.entities.WidgetAvailable;
 import org.openiot.scheduler.core.utils.lsmpa.entities.WidgetPresentation;
 import org.openiot.scheduler.core.utils.sparql.SesameSPARQLClient;
+import org.openiot.security.client.OAuthorizationCredentials;
 import org.openrdf.query.TupleQueryResult;
 
 import org.slf4j.Logger;
@@ -215,7 +219,8 @@ public class RegisterServiceImpl {
 
 		logger.debug(myOntInstance.exportToTriples("TURTLE"));
 //		boolean ok = 
-		lsmStore.pushRDF(lsmFunctionalGraph, myOntInstance.exportToTriples("N-TRIPLE"));
+		OAuthorizationCredentials credentials = SecurityUtil.getCredentials();
+		lsmStore.pushRDF(lsmFunctionalGraph, myOntInstance.exportToTriples("N-TRIPLE"), credentials.getClientId(), credentials.getAccessToken());
 
 //		if (ok) {
 //			replyMessage = "regester service successfull";

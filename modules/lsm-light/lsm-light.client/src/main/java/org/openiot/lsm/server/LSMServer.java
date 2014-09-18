@@ -35,21 +35,20 @@ public interface LSMServer {
 	 * add new Sensor
 	 *
 	 */
+
+	public void sensorDelete(String sensorURL,String graphURL,String clientId, String token);
+	public Sensor getSensorById(String sensorURL,String graphURL,String clientId, String token);
 	
-	public String sensorAdd(Sensor sensor);
-	public void sensorAdd(String triple,String graphURL);
-	public void sensorDelete(String sensorURL,String graphURL);
-	public Sensor getSensorById(String sensorURL,String graphURL);
-	public Sensor getSensorBySource(String sensorsource,String graphURL);
+	public void sensorDataUpdate(Observation observation,String clientId, String token);
+	public void deleteAllReadings(String sensorURL,String graphURL,String clientId, String token);
+	public void deleteAllReadings(String sensorURL, String graphURL,String dateOperator, Date fromTime, Date toTime,String clientId, String token);
 	
-	public void sensorDataUpdate(String triples,String graphURL);
-	public void sensorDataUpdate(Observation observation);
-	public void deleteAllReadings(String sensorURL,String graphURL);
-	public void deleteAllReadings(String sensorURL, String graphURL,String dateOperator, Date fromTime, Date toTime);
-	
-	public boolean pushRDF(String graphURL,String triples);
-	public void deleteTriples(String graphURL, String triples);
-	public void deleteTriples(String graphURL);
-	public void updateTriples(String graphURL, String newTriplePatterns, String oldTriplePatterns);
-	public void uploadSchema(LSMSchema schema,String name);
+	public void deleteTriples(String graphURL, String triples,String clientId, String token);
+	public void deleteTriples(String graphURL,String clientId, String token);
+	public void updateTriples(String graphURL, String newTriplePatterns, String oldTriplePatterns,String clientId, String token);
+	public void uploadSchema(LSMSchema schema,String name,String clientId, String token);
+	public String sensorAdd(Sensor sensor, String clientId, String token);
+	boolean pushRDF(String graphURL, String triples, String clientId,
+			String token);
+
 }

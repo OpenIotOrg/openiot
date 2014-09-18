@@ -78,7 +78,7 @@ public class SafeStorageServer {
   public void shutdown () {
 	  acceptor.unbind();
   }
-
+  
   public static void main(String[] args) throws Exception {
 	PropertyConfigurator.configure ( DEFAULT_SAFESTORAGE_LOG4J_PROPERTIES );
 	int safeStorageServerPort = Integer.parseInt(args[0]);

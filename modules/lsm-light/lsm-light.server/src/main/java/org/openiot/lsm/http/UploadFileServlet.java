@@ -104,7 +104,7 @@ public class UploadFileServlet extends HttpServlet {
          
         // sends response to client
         response.getWriter().print("UPLOAD DONE");
-        response.getWriter().print("You can download from this link: http://lsm.deri.ie/");
+        response.getWriter().print("You can download from this link: http://services.openiot.eu/");
     }
 
 }

@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<facelet-taglib version="2.0" xmlns="http://java.sun.com/xml/ns/javaee"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facelettaglibrary_2_0.xsd">
+ <namespace>http://openiot.org/tags</namespace>
+ <tag>
+  <tag-name>hasPermission</tag-name>
+  <handler-class>org.openiot.security.client.tags.jsf.HasPermissionTag</handler-class>
+  <attribute>
+   <name>name</name>
+   <required>true</required>
+  </attribute>
+ </tag>
+ <tag>
+  <tag-name>lacksPermission</tag-name>
+  <handler-class>org.openiot.security.client.tags.jsf.LacksPermissionTag</handler-class>
+  <attribute>
+   <name>name</name>
+   <required>true</required>
+  </attribute>
+ </tag>
+ <tag>
+  <tag-name>hasRole</tag-name>
+  <handler-class>org.openiot.security.client.tags.jsf.HasRoleTag</handler-class>
+  <attribute>
+   <name>name</name>
+   <required>true</required>
+  </attribute>
+ </tag>
+ <tag>
+  <tag-name>lacksRole</tag-name>
+  <handler-class>org.openiot.security.client.tags.jsf.LacksRoleTag</handler-class>
+  <attribute>
+   <name>name</name>
+   <required>true</required>
+  </attribute>
+ </tag>
+ <tag>
+  <tag-name>hasAnyRoles</tag-name>
+  <handler-class>org.openiot.security.client.tags.jsf.HasAnyRolesTag</handler-class>
+  <attribute>
+   <name>name</name>
+   <required>true</required>
+  </attribute>
+ </tag>
+</facelet-taglib>

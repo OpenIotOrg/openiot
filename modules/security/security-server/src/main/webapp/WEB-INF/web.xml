@@ -108,6 +108,13 @@
     </init-param>
     <load-on-startup>1</load-on-startup>
   </servlet>
+
+	<!-- Enabling RESTful api -->
+	<servlet>
+		<servlet-name>restlet</servlet-name>
+		<servlet-class>com.noelios.restlet.ext.spring.RestletFrameworkServlet</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
 	
   <servlet-mapping>
     <servlet-name>cas</servlet-name>
@@ -214,11 +221,18 @@
     <session-timeout>5</session-timeout>
   </session-config>
 
-<!-- Enabling OAuth support -->
+	<!-- Enabling OAuth support -->
   <servlet-mapping>
     <servlet-name>cas</servlet-name>
     <url-pattern>/oauth2.0/*</url-pattern>
   </servlet-mapping>
+
+	<!-- Enabling RESTful api -->
+	<servlet-mapping>
+		<servlet-name>restlet</servlet-name>
+		<url-pattern>/openiot1/*</url-pattern>
+	</servlet-mapping>
+
 
   <error-page>
     <exception-type>org.springframework.context.ApplicationContextException</exception-type>

@@ -1,5 +1,6 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>org.openiot</groupId>
@@ -7,23 +8,39 @@
 	<version>1.0-SNAPSHOT</version>
 	<packaging>war</packaging>
 
-	<name>security.server</name>
+	<name>OpenIoT Security server</name>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<cas.version>3.5.2</cas.version>
 		<version.war.plugin>2.4</version.war.plugin>
 		<war-name>openiot-cas</war-name>
+		<!-- maven-compiler-plugin -->
+		<version.compiler.plugin>2.3.1</version.compiler.plugin>
+		<maven.compiler.target>1.6</maven.compiler.target>
+		<maven.compiler.source>1.6</maven.compiler.source>
+		<spring.version>3.1.1.RELEASE</spring.version>
 	</properties>
 
 	<build>
-		<!-- Maven will append the version to the finalName (which is the name 
-			given to the generated war, and hence the context root) -->
+		<!-- Maven will append the version to the finalName (which is the name given to the generated war, and hence the context root) -->
 		<finalName>${war-name}</finalName>
 		<plugins>
 			<plugin>
 				<artifactId>maven-war-plugin</artifactId>
 				<version>${version.war.plugin}</version>
+				<configuration>
+					<!--
+					  Exclude LOG4J and slf4j-log4j, pulled in by cas-server-webapp,
+					  since all logging should go through SLF4J.
+					  Note that we're excluding log4j-<version>.jar but keeping
+					  log4j-over-slf4j-<version>.jar
+					-->
+					<packagingExcludes>
+						%regex[.*log4j-(?!over-slf4j).*jar],
+						%regex[.*slf4j-log4j.*jar]
+					</packagingExcludes>
+				</configuration>
 			</plugin>
 
 			<plugin>
@@ -31,33 +48,124 @@
 				<artifactId>jboss-as-maven-plugin</artifactId>
 				<version>7.4.Final</version>
 			</plugin>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>${version.compiler.plugin}</version>
+				<configuration>
+					<source>${maven.compiler.source}</source>
+					<target>${maven.compiler.target}</target>
+				</configuration>
+			</plugin>
 
 		</plugins>
 	</build>
 
 	<dependencies>
 
+      <!--======== JSTL Dependencies added by Prem Jayaraman to fix Eclipse Lunar issues -->
+		<!--standard.jar  -->
+       <dependency>
+               <groupId>taglibs</groupId>
+               <artifactId>standard</artifactId>
+               <version>1.1.2</version>
+       </dependency>
+
+       <!--  JSTL  -->
+       <dependency>
+               <groupId>javax.servlet</groupId>
+               <artifactId>jstl</artifactId>
+               <version>1.1.2</version>
+       </dependency>
 		<dependency>
 			<groupId>org.jasig.cas</groupId>
 			<artifactId>cas-server-webapp</artifactId>
 			<version>${cas.version}</version>
 			<type>war</type>
-			<scope>runtime</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>org.jasig.cas</groupId>
 			<artifactId>cas-server-support-oauth</artifactId>
 			<version>${cas.version}</version>
-			<scope>runtime</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>org.perf4j</groupId>
+					<artifactId>perf4j</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>log4j</groupId>
+					<artifactId>log4j</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-log4j12</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-api</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+
+		<!--======== Restlet dependencies ============ -->
+
+		<dependency>
+			<groupId>org.restlet</groupId>
+			<artifactId>org.restlet</artifactId>
+			<version>1.1.1</version>
+			<scope>compile</scope>
 		</dependency>
 
 		<dependency>
-			<groupId>org.jasig.cas</groupId>
-			<artifactId>cas-server-support-jdbc</artifactId>
-			<version>${cas.version}</version>
+			<groupId>org.restlet</groupId>
+			<artifactId>org.restlet.ext.spring</artifactId>
+			<version>1.1.1</version>
+			<scope>runtime</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>*</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
-		
+
+		<dependency>
+			<groupId>com.noelios.restlet</groupId>
+			<artifactId>com.noelios.restlet.ext.spring</artifactId>
+			<version>1.1.1</version>
+			<scope>runtime</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>*</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<dependency>
+			<groupId>com.noelios.restlet</groupId>
+			<artifactId>com.noelios.restlet.ext.servlet</artifactId>
+			<version>1.1.1</version>
+			<type>jar</type>
+			<scope>runtime</scope>
+		</dependency>
+
+		<!--Spring dependencies Added by Chris Georgoulis to address
+		compilation problems and spring-mvc version conflicts-->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-web</artifactId>
+			<version>${spring.version}</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-webmvc</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>servlet-api</artifactId>
@@ -70,5 +178,41 @@
 			<version>3.8.1</version>
 			<scope>test</scope>
 		</dependency>
+
+		<!--======== OpenIoT dependencies ============ -->
+		<dependency>
+			<groupId>org.openiot</groupId>
+			<artifactId>utils.commons</artifactId>
+			<version>0.0.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.openiot</groupId>
+			<artifactId>lsm-light.client</artifactId>
+			<version>0.0.1</version>
+		</dependency>
+
+		<!-- ======== LogBack Dependencies ========== -->
+
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>1.1.2</version>
+			<!--<version>1.0.13</version> -->
+		</dependency>
+
+		<dependency>
+			<groupId>org.perf4j</groupId>
+			<artifactId>perf4j</artifactId>
+			<version>0.9.16</version>
+		</dependency>
 	</dependencies>
+
+	<repositories>
+		<repository>
+			<id>restlet-repository</id>
+			<name>Restlet Repository</name>
+			<url>http://maven.restlet.org</url>
+		</repository>
+	</repositories>
 </project>

@@ -20,6 +20,7 @@
 
 package org.openiot.ui.request.definition.web.scopes.controllers.pages;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ResourceBundle;
 
@@ -29,6 +30,7 @@ import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.RequestScoped;
 import javax.faces.context.FacesContext;
 
+import org.openiot.security.client.AccessControlUtil;
 import org.openiot.ui.request.commons.providers.SchedulerAPIWrapper;
 import org.openiot.ui.request.commons.providers.exceptions.APICommunicationException;
 import org.openiot.ui.request.commons.providers.exceptions.APIException;
@@ -72,49 +74,60 @@ public class LoginPageController implements Serializable {
 	// ------------------------------------
 	// Controllers
 	// ------------------------------------
-	public void handleLogout() {
+	public void handleLogout() throws IOException {
 		sessionBean.setUserId(null);
 		getContext().dispose();
 
-		FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
-		
-		applicationBean.redirect("/pages/login.xhtml?faces-redirect=true");
+		// FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
+		FacesContext.getCurrentInstance().getExternalContext().redirect("../logout?faces-redirect=true");
 	}
 
 	public void handleLogin() {
 		LoginPageContext context = getContext();
-		
+
 		// Invoke user login service API
-		try{
+		try {
 			String userId = SchedulerAPIWrapper.userLogin(context.getEmail(), context.getPassword());
 			sessionBean.setUserId(userId);
 			context.dispose();
 
 			applicationBean.redirect("/pages/applicationDesign.xhtml?faces-redirect=true");
 			return;
-		}catch(APICommunicationException ex){
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, messages.getString("GROWL_ERROR_HEADER"), FaceletLocalization.getLocalisedMessage(messages, "ERROR_CONNECTING_TO_REGISTRATION_SERVICE")));
-		}catch(APIException ex){
+		} catch (APICommunicationException ex) {
+			FacesContext.getCurrentInstance().addMessage(
+					null,
+					new FacesMessage(FacesMessage.SEVERITY_FATAL, messages.getString("GROWL_ERROR_HEADER"), FaceletLocalization.getLocalisedMessage(messages,
+							"ERROR_CONNECTING_TO_REGISTRATION_SERVICE")));
+		} catch (APIException ex) {
 			context.dispose();
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, messages.getString("GROWL_ERROR_HEADER"), FaceletLocalization.getLocalisedMessage(messages, "ERROR_INVALID_CREDENTIALS")));
+			FacesContext.getCurrentInstance().addMessage(
+					null,
+					new FacesMessage(FacesMessage.SEVERITY_FATAL, messages.getString("GROWL_ERROR_HEADER"), FaceletLocalization.getLocalisedMessage(messages,
+							"ERROR_INVALID_CREDENTIALS")));
 		}
 	}
 
 	public void handleRegistration() {
 		LoginPageContext context = getContext();
-		
+
 		// Invoke user regustration service API
-		try{
+		try {
 			String userId = SchedulerAPIWrapper.userRegister(context.getRegUserName(), context.getRegEmail(), context.getRegPassword());
 			sessionBean.setUserId(userId);
 			context.dispose();
 
 			applicationBean.redirect("/pages/applicationDesign.xhtml?faces-redirect=true");
 			return;
-		}catch(APICommunicationException ex){
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, messages.getString("GROWL_ERROR_HEADER"), FaceletLocalization.getLocalisedMessage(messages, "ERROR_CONNECTING_TO_REGISTRATION_SERVICE")));
-		}catch(APIException ex){
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, messages.getString("GROWL_ERROR_HEADER"), FaceletLocalization.getLocalisedMessage(messages, "ERROR_EMAIL_IN_USE")));
+		} catch (APICommunicationException ex) {
+			FacesContext.getCurrentInstance().addMessage(
+					null,
+					new FacesMessage(FacesMessage.SEVERITY_FATAL, messages.getString("GROWL_ERROR_HEADER"), FaceletLocalization.getLocalisedMessage(messages,
+							"ERROR_CONNECTING_TO_REGISTRATION_SERVICE")));
+		} catch (APIException ex) {
+			FacesContext.getCurrentInstance().addMessage(
+					null,
+					new FacesMessage(FacesMessage.SEVERITY_FATAL, messages.getString("GROWL_ERROR_HEADER"), FaceletLocalization.getLocalisedMessage(messages,
+							"ERROR_EMAIL_IN_USE")));
 		}
 	}
 
@@ -128,4 +141,13 @@ public class LoginPageController implements Serializable {
 	public void setSessionBean(SessionBean sessionBean) {
 		this.sessionBean = sessionBean;
 	}
+
+	public String getUsername() {
+		String userIdURI = sessionBean.getUserId();
+		if (userIdURI != null) {
+			return userIdURI.substring(userIdURI.lastIndexOf("/") + 1);
+		}
+		return null;
+	}
+
 }

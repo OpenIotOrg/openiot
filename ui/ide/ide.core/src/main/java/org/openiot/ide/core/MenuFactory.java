@@ -23,6 +23,7 @@ package org.openiot.ide.core;
 import org.apache.commons.collections.map.MultiValueMap;
 import org.apache.commons.lang3.StringUtils;
 import org.omnifaces.util.Faces;
+import org.openiot.commons.util.PropertyManagement;
 import org.primefaces.model.menu.DefaultMenuItem;
 import org.primefaces.model.menu.DefaultMenuModel;
 import org.primefaces.model.menu.DefaultSubMenu;
@@ -30,6 +31,7 @@ import org.primefaces.model.menu.DefaultSubMenu;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+
 import java.io.IOException;
 import java.io.Serializable;
 import java.net.HttpURLConnection;
@@ -38,7 +40,8 @@ import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author Chris Georgoulis e-mail: cgeo@ait.edu.gr
@@ -53,8 +56,7 @@ public class MenuFactory implements Serializable {
 	private static final String FIELD_MONITORING = "monitoring";
 	private static final String FIELD_URL = "url";
 
-	private static final String IDE_CORE_MONITORING_URL = Faces.getRequestDomainURL()
-			+ "/" + IDE_CORE_RELATIVE_URL + "/" + FIELD_MONITORING;
+	private static final String IDE_CORE_MONITORING_URL = Faces.getRequestDomainURL() + "/" + IDE_CORE_RELATIVE_URL + "/" + FIELD_MONITORING;
 
 	private static final String SUBMENU_MAIN = "Main Menu";
 	private static final String SUBMENU_MONITORS = "Monitors";
@@ -72,7 +74,6 @@ public class MenuFactory implements Serializable {
 		propertyMap = createPropertyMap();
 	}
 
-
 	/**
 	 * Creates the main menu according to the Injected Navigation map from Resources
 	 */
@@ -80,32 +81,30 @@ public class MenuFactory implements Serializable {
 
 		DefaultMenuModel menu = new DefaultMenuModel();
 
-		//Main SubMenu
+		// Main SubMenu
 		DefaultSubMenu mainMenu = new DefaultSubMenu();
 		mainMenu.setLabel(SUBMENU_MAIN);
 		menu.addElement(mainMenu);
 
-		//Monitor Submenu
+		// Monitor Submenu
 		DefaultSubMenu monitorMenu = new DefaultSubMenu();
 		monitorMenu.setLabel(SUBMENU_MONITORS);
 		menu.addElement(monitorMenu);
 
-		validateUrls();
+		// validateUrls();
 
-		//build submenus
+		// build submenus
 		for (HashMap<String, String> map : propertyMap.values()) {
-			//build main menu item
+			// build main menu item
 			try {
 
-				DefaultMenuItem item = createMenuItem(
-						map.get(FIELD_TITLE), map.get(FIELD_URL));
+				DefaultMenuItem item = createMenuItem(map.get(FIELD_TITLE), map.get(FIELD_URL));
 				mainMenu.addElement(item);
 
-				//build monitor item
+				// build monitor item
 				if (map.get(FIELD_MONITORING).equals("true")) {
 					String monitoringUrl = createMonitorURL(map.get(FIELD_URL));
-					DefaultMenuItem monitorItem =
-							createMenuItem(map.get(FIELD_TITLE), monitoringUrl);
+					DefaultMenuItem monitorItem = createMenuItem(map.get(FIELD_TITLE), monitoringUrl);
 					monitorMenu.addElement(monitorItem);
 				}
 			} catch (Exception e) {
@@ -113,19 +112,16 @@ public class MenuFactory implements Serializable {
 			}
 		}
 
-
-		//add Ide Core Monitor
+		// add Ide Core Monitor
 		DefaultMenuItem ideCoreMonitor = createMenuItem("IDE", IDE_CORE_MONITORING_URL);
 		monitorMenu.addElement(ideCoreMonitor);
 
 		return menu;
 	}
 
-
 	/**
-	 * Creates a single menu item and sets it's ActionListener to update the current
-	 * navigation Url
-	 *
+	 * Creates a single menu item and sets it's ActionListener to update the current navigation Url
+	 * 
 	 * @param value
 	 * @param url
 	 * @return
@@ -144,17 +140,15 @@ public class MenuFactory implements Serializable {
 		return item;
 	}
 
-
 	/**
-	 * Groups the navigation properties in a Linked Hashmap where
-	 * Key = the navigation group name e.g. Request Presentation
-	 * Values = a Hashmap with the group fields e.g. Url, Title, Active Monitoring
-	 *
+	 * Groups the navigation properties in a Linked Hashmap where Key = the navigation group name
+	 * e.g. Request Presentation Values = a Hashmap with the group fields e.g. Url, Title, Active
+	 * Monitoring
+	 * 
 	 * @return
 	 */
 	private HashMap<String, HashMap<String, String>> createPropertyMap() {
 		HashMap<String, HashMap<String, String>> itemMap = null;
-
 
 		HashMap<String, String> navigationMap = resources.getNavigationMap();
 		MultiValueMap groupMap = new MultiValueMap();
@@ -184,21 +178,23 @@ public class MenuFactory implements Serializable {
 			itemMap.put((String) parentKey, childMap);
 		}
 
+		System.out.println("ItemMap size: " + itemMap.size());
+
 		return itemMap;
 	}
 
 	/**
 	 * checks if the base Url ends with a '/' character and appends accordingly
-	 *
+	 * 
 	 * @param baseUrl
 	 * @return
 	 */
 	private String createMonitorURL(String baseUrl) {
-//		if (!StringUtils.endsWith(baseUrl, "/")) {
-//			baseUrl += "/";
-//		}
+		// if (!StringUtils.endsWith(baseUrl, "/")) {
+		// baseUrl += "/";
+		// }
 
-//		int indexDomainUrl = StringUtils.indexOf(baseUrl, );
+		// int indexDomainUrl = StringUtils.indexOf(baseUrl, );
 		String suffix = StringUtils.substring(baseUrl, Faces.getRequestDomainURL().length(), baseUrl.length() - 1);
 		String moduleName = StringUtils.split(suffix, "/")[0];
 
@@ -210,16 +206,18 @@ public class MenuFactory implements Serializable {
 	 */
 	private void validateUrls() {
 
-		//TODO Remove comments for old way
-		//Spawn a new Thread for each url Validation
-//		List<Thread> threads = new ArrayList<>(propertyMap.size());
+		// TODO Remove comments for old way
+		// Spawn a new Thread for each url Validation
+		// List<Thread> threads = new ArrayList<>(propertyMap.size());
+
+		if (propertyMap.isEmpty())
+			return;
 
 		ExecutorService es = Executors.newFixedThreadPool(propertyMap.entrySet().size());
 
-
 		for (Map.Entry<String, HashMap<String, String>> entry : propertyMap.entrySet()) {
 			es.execute(new ValidatorRunnable(entry));
-//			threads.add(new Thread(new ValidatorRunnable(entry)));
+			// threads.add(new Thread(new ValidatorRunnable(entry)));
 		}
 
 		es.shutdown();
@@ -229,24 +227,24 @@ public class MenuFactory implements Serializable {
 			e.printStackTrace();
 		}
 
-		//alternative way to do the above with threads
-//		for (Thread t : threads) {
-//			t.start();
-//		}
-//
-//		for (Thread t : threads) {
-//			try {
-//				t.join();
-//			} catch (InterruptedException e) {
-//				e.printStackTrace();
-//			}
-//		}
+		// alternative way to do the above with threads
+		// for (Thread t : threads) {
+		// t.start();
+		// }
+		//
+		// for (Thread t : threads) {
+		// try {
+		// t.join();
+		// } catch (InterruptedException e) {
+		// e.printStackTrace();
+		// }
+		// }
 
 	}
 
 	/**
-	 * This private class validates the URLs in the property map and accordingly
-	 * removes the invalid ones
+	 * This private class validates the URLs in the property map and accordingly removes the invalid
+	 * ones
 	 */
 	private class ValidatorRunnable implements Runnable {
 
@@ -283,5 +281,32 @@ public class MenuFactory implements Serializable {
 		}
 	}
 
+	public String generateLogoutScript(String iframeId, String defaultNavigation) {
+		Pattern pattern = Pattern.compile("(http|https)://(.*?)/(.*?)/.*");
+		StringBuilder script = new StringBuilder("function logoutApps() { statusDialog.show(); document.getElementById('navigation').src='");
+		script.append(defaultNavigation).append("'; var ifrmWn = document.getElementById('").append(iframeId).append("');\n");
+		int i = 0;
+		int time = 1000;
+		for (HashMap<String, String> map : propertyMap.values()) {
+			String url = map.get(FIELD_URL);
+			Matcher matcher = pattern.matcher(url);
+			if (matcher.matches()) {
+				String logoutURL = url.substring(0, matcher.end(3)) + "/logout";
+				if (i > 0)
+					script.append("setTimeout(function() {");
+				script.append("ifrmWn.src = '").append(logoutURL).append("'");
+				if (i > 0)
+					script.append(";}, ").append(time *  i).append(")");
+				script.append(";\n");
+				i += 1;
+			}
+		}
+
+		PropertyManagement props = new PropertyManagement();
+		
+		script.append("setTimeout(function() {statusDialog.hide(); var link = document.getElementById('logout-link'); link.href='").append(props.getCASLogoutURL()).append("'; link.click();},").append(time * i).append(");\n");
+		script.append("};");
+		return script.toString();
+	}
 
 }

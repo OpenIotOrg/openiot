@@ -1,0 +1,89 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui"
+	xmlns:shiro="http://shiro.apache.org/tags" xmlns:openiot="http://openiot.org/tags">
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title><ui:insert name="title" /></title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<!-- <h:outputStylesheet library="css" name="main.css" /> -->
+	<!-- Le styles -->
+	<h:outputStylesheet name="bootstrap/css/bootstrap.css" />
+
+
+	<style type="text/css">
+body {
+	padding-top: 60px;
+	padding-bottom: 40px;
+}
+
+.sidebar-nav {
+	padding: 9px 0;
+}
+
+.navbar-logo {
+	padding: 0px 10px;
+	float: left;
+	margin-left: -20px;
+}
+
+.labelColumn {width: 100px;}
+
+</style>
+	<h:outputStylesheet name="bootstrap/css/bootstrap-responsive.css" />
+</h:head>
+<body>
+	<div class="header"></div>
+
+	<div class="navbar navbar-fixed-top">
+		<div class="navbar-inner">
+			<div class="container">
+				<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"> <span class="icon-bar"></span> <span class="icon-bar"></span> <span
+					class="icon-bar"></span>
+				</a>
+				<!-- <a class="brand" href="#">OpenIoT Authorization Management</a>  -->
+				<h:graphicImage library="images" name="openiotlogo_right-small.jpg" class="navbar-logo" />
+				<div class="nav-collapse">
+					<ul class="nav">
+						<ui:insert name="nav-links" />
+					</ul>
+					<shiro:user>
+						<p class="navbar-text pull-right">Logged in as <a href="#"><shiro:principal type="org.pac4j.oauth.profile.casoauthwrapper.CasOAuthWrapperProfile" property="id"/></a> &nbsp; &nbsp; <a href="logout">Log Out</a></p>
+					</shiro:user>
+
+					<shiro:guest>
+						<h:form>
+							<p class="navbar-text pull-right">
+								<h:commandLink action="#{loginController.signInWithOpenIoT()}" value="Log In" />
+								&nbsp; &nbsp; <a href="signup.xhtml">Sign Up</a>
+							</p>
+						</h:form>
+
+					</shiro:guest>
+				</div>
+				<!--/.nav-collapse -->
+			</div>
+		</div>
+	</div>
+
+	<div class="container">
+			<ui:insert name="content">
+                    [Template content will be inserted here]
+         </ui:insert>
+		<hr />
+
+		<div class="footer">
+			<shiro:guest>
+					<p class="pull-right" style="color: rgb(119, 119, 119);">
+						<a href="#{loginController.signOutOfCASLink}" target="_blank">CAS Log Out</a>
+					</p>
+			</shiro:guest>
+		</div>
+	</div>
+	<!-- Le javascript
+    ================================================== -->
+	<!-- Placed at the end of the document so the pages load faster -->
+	<!-- <h:outputScript name="bootstrap/js/jquery-1.7.2.min.js" /> -->
+	<h:outputScript name="bootstrap/js/bootstrap.js" />
+</body>
+</html>
