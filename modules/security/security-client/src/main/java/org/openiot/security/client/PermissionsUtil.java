@@ -56,6 +56,9 @@ public class PermissionsUtil {
 	
 	public final static String SEC_MGMT_SERVICE_MGMT = "admin:service_mgmt:";
 	
+	public final static String SCHEMA_EDITOR_CREATE_SENSOR = "createSensor";
+	public final static String SCHEMA_EDITOR_CREATE_SENSOR_INSTANCE = "createSensorInstance";
+	
 	public final static ArrayList<String> GUESS_GRAPHS = new ArrayList<String>();
 	public final static ArrayList<String> DEMO_GRAPHS = new ArrayList<String>();
 	public final static ArrayList<String> MAIN_GRAPHS = new ArrayList<String>();

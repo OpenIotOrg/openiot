@@ -23,13 +23,6 @@
 		generated from the jboss-javaee6-webapp archetype
 	</description>
 
-	<parent>
-		<groupId>org.openiot</groupId>
-		<artifactId>openiot</artifactId>
-		<version>0.1-SNAPSHOT</version>
-		<relativePath>../../../pom.xml</relativePath>
-	</parent>
-
 	<url>http://jboss.org/jbossas</url>
 	<licenses>
 		<license>

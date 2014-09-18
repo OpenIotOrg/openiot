@@ -29,6 +29,7 @@ public class SecurityInitializer {
 	private static final long ID_REQ_DEF = 7;
 	private static final long ID_REQ_PRES = 8;
 	private static final long ID_XGSN = 9;
+	private static final long ID_SCHEMA_EDITOR = 10;
 
 	public static final String ADMIN_USERNAME = "security.initialize.admin.username";
 	public static final String ADMIN_PASSWORD = "security.initialize.admin.password";
@@ -45,12 +46,15 @@ public class SecurityInitializer {
 	public static final String MGMT_PREFIX = "security.initialize.management.prefix";
 	public static final String REQ_DEF_PREFIX = "security.initialize.reqDef.prefix";
 	public static final String REQ_PRES_PREFIX = "security.initialize.reqPres.prefix";
+	public static final String SCHEMA_EDITOR_PREFIX = "security.initialize.schemaEditor.prefix";
 	public static final String SECURITY_MANAGEMENT_SECRET = "security.initialize.management.secret";
 	public static final String SECURITY_MANAGEMENT_KEY = "security.initialize.management.key";
 	public static final String REQ_DEF_SECRET = "security.initialize.reqDef.secret";
 	public static final String REQ_DEF_KEY = "security.initialize.reqDef.key";
 	public static final String REQ_PRES_SECRET = "security.initialize.reqPres.secret";
 	public static final String REQ_PRES_KEY = "security.initialize.reqPres.key";
+	public static final String SCHEMA_EDITOR_SECRET = "security.initialize.schemaEditor.secret";
+	public static final String SCHEMA_EDITOR_KEY = "security.initialize.schemaEditor.key";
 	public static final String SCHEDULER_SECRET = "security.initialize.scheduler.secret";
 	public static final String SCHEDULER_KEY = "security.initialize.scheduler.key";
 	public static final String SDUM_SECRET = "security.initialize.sdum.secret";
@@ -161,9 +165,15 @@ public class SecurityInitializer {
 		predefPermissions.add(new Permission(PermissionsUtil.DEL_SENSOR_MAIN, "delete sensor", ID_LSM_SERVER));
 		predefPermissions.add(new Permission(PermissionsUtil.DEL_READING_MAIN, "delete sensor reading", ID_LSM_SERVER));
 		predefPermissions.add(new Permission(PermissionsUtil.DEL_TRIPLES_MAIN, "delete triples", ID_LSM_SERVER));
-		
+
 		Permission allPermLSMServer = new Permission(PermissionsUtil.LSM_ALL, "all permissions", ID_LSM_SERVER);
 		predefPermissions.add(allPermLSMServer);
+		
+		// Permissions for the sensor schema editor
+		Permission schemeEditorCreateSensorPerm = new Permission(PermissionsUtil.SCHEMA_EDITOR_CREATE_SENSOR, "Create sensors", ID_SCHEMA_EDITOR);
+		Permission schemeEditorCreateSensorInstancePerm = new Permission(PermissionsUtil.SCHEMA_EDITOR_CREATE_SENSOR_INSTANCE, "Create sensor instances", ID_SCHEMA_EDITOR);
+		predefPermissions.add(schemeEditorCreateSensorPerm);
+		predefPermissions.add(schemeEditorCreateSensorInstancePerm);
 
 		// Pre-defined permissions and roles for scheduler
 		Permission allPermScheduler = new Permission(PermissionsUtil.SCHEDULER_ALL, "all permissions", ID_SCHEDULER);
@@ -199,7 +209,11 @@ public class SecurityInitializer {
 		xgsnRoleOnLSM.addPermission(allPermLSMServer);
 		xgsnUser.addRole(xgsnRoleOnLSM);
 		addUser(xgsnUser);
-
+		
+		Role allPermsRoleSchemaEditor = new Role("Default-Role", "The default role with createSensor and createSensorInstance permissions", ID_SCHEMA_EDITOR);
+		allPermsRoleSchemaEditor.addPermission(schemeEditorCreateSensorPerm);
+		allPermsRoleSchemaEditor.addPermission(schemeEditorCreateSensorInstancePerm);
+		addRole(allPermsRoleSchemaEditor);
 	}
 
 	private List<LSMRegisteredServiceImpl> createDefaultServices() {
@@ -335,8 +349,25 @@ public class SecurityInitializer {
 		reqPresService.setTheme("RequestPresentation");
 		reqPresService.setSsoEnabled(true);
 
+		// Sensor schema editor service
+		LSMRegisteredServiceImpl schemaEditorService = new LSMRegisteredServiceImpl();
+		schemaEditorService.setId(ID_SCHEMA_EDITOR);
+		schemaEditorService.setAllowedToProxy(true);
+		schemaEditorService.setAnonymousAccess(false);
+		schemaEditorService.setDescription(props.getProperty(SCHEMA_EDITOR_SECRET, "schemaEditor.secret"));
+		schemaEditorService.setEnabled(true);
+		schemaEditorService.setEvaluationOrder(0);
+		schemaEditorService.setIgnoreAttributes(false);
+		schemaEditorService.setName(props.getProperty(SCHEMA_EDITOR_KEY, "schemaEditor"));
+		String schemaEditorPrefix = props.getProperty(SCHEMA_EDITOR_PREFIX, "http://localhost:8080/sensorschema");
+		if (schemaEditorPrefix.endsWith("/") && schemaEditorPrefix.length() > 1)
+			schemaEditorPrefix = schemaEditorPrefix.substring(0, schemaEditorPrefix.length() - 1);
+		schemaEditorService.setServiceId(schemaEditorPrefix + "/callback?client_name=CasOAuthWrapperClient");
+		schemaEditorService.setTheme("SchemaEditor");
+		schemaEditorService.setSsoEnabled(true);
+
 		return Arrays.asList(new LSMRegisteredServiceImpl[] { defaultService, httpService, lsmServerService, userManagementService, schedulerService,
-				sdumService, reqDefService, reqPresService, xgsnService });
+				sdumService, reqDefService, reqPresService, xgsnService, schemaEditorService });
 	}
 
 	private void addPermission(Permission permission) {
