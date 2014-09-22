@@ -37,6 +37,7 @@ import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.ResIterator;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.ResourceFactory;
+import com.hp.hpl.jena.vocabulary.RDFS;
 
 public class XGSNMetaDataCreator{
 
@@ -46,17 +47,15 @@ public class XGSNMetaDataCreator{
 		  StringWriter metadata = new StringWriter();
 		  
 		  Resource sensorUri=model.createResource(meta.getSensorID());
-		  model.add(sensorUri, OpeniotVocab.rdfType, OpeniotVocab.ssnSensor);
+		  model.add(sensorUri, RDFS.subClassOf, OpeniotVocab.ssnSensor);
 		  model.add(sensorUri,OpeniotVocab.ssnOfFeature,model.createResource(meta.getFeatureOfInterest()));
 		  model.add(sensorUri,OpeniotVocab.rdfsLabel,meta.getSensorName());
-		  model.add(sensorUri,OpeniotVocab.lsmHasSourceType,meta.getSourceType());
-		  model.add(sensorUri,OpeniotVocab.provPerformedBy,meta.getAuthor());
+		  //model.add(sensorUri,lsmHasSourceType,meta.getSourceType());
+		  model.add(sensorUri,OpeniotVocab.provWasGeneratedBy,meta.getAuthor());
 		  System.out.println(sensorUri.getLocalName());
-		  
-		  Resource sType=model.createResource(meta.getSensorType());
-		  model.add(sensorUri,OpeniotVocab.lsmHasSensorType,sType);
-		  model.add(sType,OpeniotVocab.rdfsLabel,meta.getSensorType());
-		  
+		  Resource sType=model.createResource(sensorUri.getNameSpace()+meta.getSensorType());
+		  model.add(sensorUri,OpeniotVocab.rdfType,sType);
+		  //model.add(sType,rdfsLabel,meta.getSensorType());
 		  for (FieldMetaDataBean f:meta.getFields().values()){
 			  Resource prop=model.createResource(f.getLsmPropertyName());
 			  model.add(sensorUri,OpeniotVocab.ssnObserves,prop);
@@ -88,7 +87,7 @@ public class XGSNMetaDataCreator{
 	  
 	  public SensorMetaDataBean fillSensorMetadata(){
 		  SensorMetaDataBean md=new SensorMetaDataBean();
-		  ResIterator ri=model.listSubjectsWithProperty(OpeniotVocab.rdfType, OpeniotVocab.ssnSensor);
+		  ResIterator ri=model.listSubjectsWithProperty(RDFS.subClassOf, OpeniotVocab.ssnSensor);
 		  if (!ri.hasNext()){
 			  throw new IllegalArgumentException("The rdf graph contains no instance of: "+OpeniotVocab.ssnSensor);
 		  }

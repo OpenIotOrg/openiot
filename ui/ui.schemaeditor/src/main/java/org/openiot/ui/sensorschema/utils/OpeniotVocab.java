@@ -64,7 +64,6 @@ public class OpeniotVocab {
 	  public final static String lsm="http://lsm.deri.ie.ont.lsm.owl#";
 	  public final static String lgdata="http://linkedgeodata.org/property/";
 	  
-	  
 	  /**
 	   * <p>
 	   * Properties and Resources for x-gsn sensor schema creator
@@ -86,6 +85,8 @@ public class OpeniotVocab {
 	  public final static Property dulHasLocation=ResourceFactory.createProperty(dul+"hasLocation");
 	  public final static Property wgs84Lat=ResourceFactory.createProperty(wgs84+"lat");
 	  public final static Property wgs84Long=ResourceFactory.createProperty(wgs84+"long");
+	  public final static Property provWasGeneratedBy=ResourceFactory.createProperty(prov+"wasGeneratedBy");
+	  
 	  
 	  
 	  /**
@@ -94,14 +95,14 @@ public class OpeniotVocab {
 	   * </p>
 	   */
 	  
-	  public static final String NS = propertyManagement.getSensorSchemaEditorNS();
-	  public static final String TITLE = propertyManagement.getSensorSchemaEditorTITLE();
-	  public static final String URL = propertyManagement.getSensorSchemaEditorURL();
+	  public static final String NS = propertyManagement.getOpeniotOntologyNamespace();
+	  public static final String TITLE = propertyManagement.getSchemaEditorTitle();
+	  public static final String URL = propertyManagement.getSchemaEditorUrl();
 	  
-	  public static final String LSM_SERVER_URL = propertyManagement.getSensorSchemaEditorLSMSERVER();
-	  public static final String LSM_METAGRAPH = propertyManagement.getSensorSchemaEditorLSMMETAGRAPH();
-	  public static final String LSM_DATAGRAPH = propertyManagement.getSensorSchemaEditorLSMDATAGRAPH();
-	  public static final String LSM_SPARQL_ENDPOINT = propertyManagement.getSensorSchemaEditorSPARQLENDPOINT();
+	  public static final String LSM_SERVER_URL = propertyManagement.getSchedulerLsmRemoteServer();
+	  public static final String LSM_METAGRAPH = propertyManagement.getSchedulerLsmMetaGraph();
+	  public static final String LSM_DATAGRAPH = propertyManagement.getSchedulerLsmDataGraph();
+	  public static final String LSM_SPARQL_ENDPOINT = propertyManagement.getSchedulerLsmSparqlEndPoint();
 	  
 	  
 	  public static final String RDF_SUBCLASS = "http://www.w3.org/2000/01/rdf-schema#subClassOf";

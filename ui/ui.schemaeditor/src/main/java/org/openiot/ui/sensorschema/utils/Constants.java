@@ -32,4 +32,6 @@ public class Constants {
 	  public static final String LANG_TURTLE = "TURTLE";
 	  public static final String LANG_NTRIPLE = "N-TRIPLE";
 
+	  
+	  public static final String DISPLAYSTRING = "CLICK TO EDIT";
 }

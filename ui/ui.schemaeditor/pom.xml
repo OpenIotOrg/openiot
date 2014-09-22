@@ -2,7 +2,7 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.openiot</groupId>
-  <artifactId>ui.sensorschema</artifactId>
+  <artifactId>ui.schemaeditor</artifactId>
   <packaging>war</packaging>
   <version>0.0.3-Development</version>
   <name>OpenIoT RDF Sensor Schema Editor</name>
@@ -84,6 +84,12 @@
 		<artifactId>lsm-light.client</artifactId>
 		<version>0.0.1</version>
 	</dependency>    
+	
+	<dependency>
+		<groupId>org.openiot</groupId>
+		<artifactId>security.client</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</dependency>
     
     
     <!-- Logging framework sl4j with log4j-->
@@ -138,7 +144,7 @@
 		</configuration>
 	</plugin>     
   </plugins>
-  <finalName>sensorschema</finalName>
+  <finalName>ui.schemaeditor</finalName>
     <resources>
 		<resource>
 			<directory>src/main/resources</directory>

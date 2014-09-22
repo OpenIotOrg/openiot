@@ -36,9 +36,8 @@ import javax.faces.model.ListDataModel;
 
 import org.openiot.ui.sensorschema.rdf.SensorTypeSchema;
 import org.openiot.ui.sensorschema.register.AbstractSensorRegistrarFactory;
-import org.openiot.ui.sensorschema.register.SensorRegistrar;
-import org.openiot.ui.sensorschema.register.SensorRegistrarLSM;
 import org.openiot.ui.sensorschema.register.SensorRegistratFactoryLSM;
+import org.openiot.ui.sensorschema.utils.Constants;
 import org.openiot.ui.sensorschema.utils.OpeniotVocab;
 
 

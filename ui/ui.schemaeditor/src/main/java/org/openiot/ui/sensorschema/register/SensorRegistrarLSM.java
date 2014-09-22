@@ -29,6 +29,10 @@ import java.util.Set;
 import org.openiot.lsm.beans.Place;
 import org.openiot.lsm.beans.Sensor;
 import org.openiot.lsm.server.LSMTripleStore;
+import org.openiot.security.client.AccessControlUtil;
+import org.openiot.security.client.OAuthorizationCredentials;
+import org.openiot.security.client.PermissionsUtil;
+
 import org.openiot.ui.sensorschema.bean.SensorMetaDataBean;
 import org.openiot.ui.sensorschema.utils.OpeniotVocab;
 import org.openiot.ui.sensorschema.utils.SesameSPARQLClient;
@@ -50,9 +54,11 @@ public class SensorRegistrarLSM implements SensorRegistrar {
 	private static final transient Logger logger = LoggerFactory.getLogger(SensorRegistrarLSM.class);
 	
 	private static SensorRegistrarLSM instance = null;
+	private AccessControlUtil acUtil;
 	
 	public SensorRegistrarLSM(){
 		//class initialisation
+		acUtil = AccessControlUtil.getInstance();
 	}
 	
 	
@@ -81,8 +87,8 @@ public class SensorRegistrarLSM implements SensorRegistrar {
             sensor.setName(metadata.getSensorName());
             sensor.setAuthor(metadata.getAuthor());
             sensor.setSensorType(metadata.getSensorType());
-            sensor.setSourceType(metadata.getSourceType());
-            sensor.setSource(metadata.getSource());  
+            //sensor.setSourceType(metadata.getSourceType());
+            //sensor.setSource(metadata.getSource());  
             sensor.setInfor(metadata.getInformation());
             
             
@@ -104,7 +110,19 @@ public class SensorRegistrarLSM implements SensorRegistrar {
             // create LSMTripleStore instance
             logger.info("Connecting to LSM: "+OpeniotVocab.LSM_SERVER_URL);
             LSMTripleStore lsmStore = new LSMTripleStore(OpeniotVocab.LSM_SERVER_URL);
-            sensorID=lsmStore.sensorAdd(sensor);
+            
+            //checking for security authorisation
+            
+            OAuthorizationCredentials cred=acUtil.getOAuthorizationCredentials(); 
+            boolean hasPermission = acUtil.hasPermission(PermissionsUtil.SCHEMA_EDITOR_CREATE_SENSOR_INSTANCE);
+  		  	if(hasPermission){
+  		  		sensorID=lsmStore.sensorAdd(sensor, cred.getClientId(),cred.getAccessToken());
+  		  	}
+  		  	else
+  		  	{
+  		  		System.out.println("User does not have required permission");
+  		  		return null;
+  		  	}
             
             
         } catch (Exception ex) {
@@ -126,8 +144,18 @@ public class SensorRegistrarLSM implements SensorRegistrar {
 		// TODO Auto-generated method stub
 		  LSMTripleStore lsmStore = new LSMTripleStore(OpeniotVocab.LSM_SERVER_URL);
 		  logger.info("Connecting to LSM and Storing data to graph: "+OpeniotVocab.LSM_SERVER_URL + ";" + OpeniotVocab.LSM_METAGRAPH);        
-	      boolean success = lsmStore.pushRDF(OpeniotVocab.LSM_METAGRAPH,rdf);
-	      return success;
+		//checking for security authorisation
+          
+          OAuthorizationCredentials cred=acUtil.getOAuthorizationCredentials(); 
+          boolean hasPermission = acUtil.hasPermission(PermissionsUtil.SCHEMA_EDITOR_CREATE_SENSOR);
+		  if(hasPermission){
+			  boolean success = lsmStore.pushRDF(OpeniotVocab.LSM_METAGRAPH,rdf, cred.getClientId(),cred.getAccessToken());
+			  return success;
+		  }
+		  else{
+			  System.out.println("User does not have required permission");
+			  return false;
+		  }
 	}
 
 	@Override

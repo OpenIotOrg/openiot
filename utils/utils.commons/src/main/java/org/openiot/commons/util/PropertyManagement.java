@@ -97,7 +97,12 @@ public class PropertyManagement {
 	private static final String REQUEST_COMMONS_SDUM_CORE_HOST_URL = "request.commons.sdum.core.host.url";
 
 	private static final String IDE_CORE_NAVIGATION_PREFIX = "ide.core.navigation";
-
+	
+	
+	// ==============Sensor Schema Editor====================
+	private static final String SCHEMA_EDITOR_TITLE = "ide.core.navigation.sensorSchemaEditor.title";
+	private static final String SCHEMA_EDITOR_URL = "ide.core.navigation.sensorSchemaEditor.url";
+	
 	private Properties props = null;
 
 	public PropertyManagement() {
@@ -285,6 +290,14 @@ public class PropertyManagement {
 		String serverPrefix = props.getProperty("server.prefix");
 		String appName = serverPrefix.substring(serverPrefix.lastIndexOf("/") + 1);
 		return serverName + "/" + appName + "/logout";
+	}
+
+	public String getSchemaEditorTitle() {
+		return props.getProperty(SCHEMA_EDITOR_TITLE);
+	}
+
+	public String getSchemaEditorUrl() {
+		return props.getProperty(SCHEMA_EDITOR_URL);
 	}
 
 }

@@ -1,0 +1,48 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+xmlns:f="http://java.sun.com/jsf/core"
+xmlns:h="http://java.sun.com/jsf/html"
+xmlns:ui="http://java.sun.com/jsf/facelets"
+xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	<meta name="author" content="Prem Prakash Jayaraman" />
+	<meta name="author-email" content="Prem.Jayaraman@csiro.au" />
+	
+	<title>
+		<ui:insert name="title">OpenIoT Sensor Schema Editor</ui:insert>
+	</title>
+
+</h:head>
+
+<h:body>
+
+<h:form>
+		<div align="center">
+			<div class="logo" />
+			<div class="slogan">Open Source Solution for the Internet of
+				Things into the Cloud</div>
+		</div>
+		
+		<p:outputPanel layout="block" style="text-align:center;">
+			<h:button value="Login to Schema Editor" outcome="navigator.xhtml" />
+		</p:outputPanel>
+	
+	<ui:remove>
+	<p:layout style="min-width:400px;min-height:200px;">
+    <p:layoutUnit position="west" resizable="true" size="100" minSize="40" maxSize="200">
+        <a href="sensortypeeditor.xhtml" target="center">Sensor Type Editor</a>
+    	<a href="sensorinstanceeditor.xhtml" target="center">Sensor Instance Editor</a>
+    </p:layoutUnit>
+ 
+    <p:layoutUnit position="center" name="center">
+        Center
+    </p:layoutUnit>
+	</p:layout>
+	<h3>Server Time</h3>  
+	<p:clock pattern="HH:mm:ss dd.MM.yyyy" mode="server" />		
+	</ui:remove>	
+</h:form>
+</h:body>
+</html>
