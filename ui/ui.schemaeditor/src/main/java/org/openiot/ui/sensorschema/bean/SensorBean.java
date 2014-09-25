@@ -195,7 +195,7 @@ public class SensorBean implements Serializable{
 		//clear the session for new sensor type creation
 		FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
 		try {
-			FacesContext.getCurrentInstance().getExternalContext().redirect("/SensorSchemaEditor/sensortypeeditor.jsf");
+			FacesContext.getCurrentInstance().getExternalContext().redirect(OpeniotVocab.SCHEMAEDITOR_URI + "/sensortypeeditor.jsf");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

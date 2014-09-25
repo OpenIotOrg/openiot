@@ -39,13 +39,11 @@ import javax.faces.model.ListDataModel;
 
 import org.openiot.ui.sensorschema.register.AbstractSensorRegistrarFactory;
 import org.openiot.ui.sensorschema.register.SensorRegistratFactoryLSM;
+import org.openiot.ui.sensorschema.utils.OpeniotVocab;
+import org.openiot.ui.sensorschema.utils.Utils;
 import org.openiot.ui.sensorschema.utils.XGSNMetaDataCreator;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
-import org.primefaces.model.map.DefaultMapModel;
-import org.primefaces.model.map.LatLng;
-import org.primefaces.model.map.MapModel;
-import org.primefaces.model.map.Marker;
 
 @ManagedBean
 @SessionScoped
@@ -101,17 +99,28 @@ public class SensorInstanceCreatorBean implements Serializable {
 		//This will be updated if xGSN metadata format changes.
 		
 		//create the field data for each property		
-		populatemetadata();
+		//populatemetadata();
 		
 		XGSNMetaDataCreator xgsn = new XGSNMetaDataCreator();		
 		sensormeatadata.setSensorID(sensorID);		
-		String rdfmetadata = xgsn.createMetadata(sensormeatadata);
+		
+		Utils utils = new Utils();
+		String gsnoutput = utils.writetoTemplate(sensormeatadata);
+		InputStream stream = new ByteArrayInputStream(gsnoutput.getBytes(StandardCharsets.UTF_8));
+		file = new DefaultStreamedContent(stream, "text/plain", sensormeatadata.getSensorName() + ".metadata");
+		fileready = true;
+		
+		
+		//To download the schmea in RDF turtle format
+		//currently not used. we use simple metadata decsription format
+		//String rdfmetadata = xgsn.createMetadata(sensormeatadata);
+		
 		//System.out.println(rdfmetadata);
 		
 		//creating a file download option for the user
-		InputStream stream = new ByteArrayInputStream(rdfmetadata.getBytes(StandardCharsets.UTF_8));
-		file = new DefaultStreamedContent(stream, "text/plain", sensormeatadata.getSensorName() + ".metadata");
-		fileready = true;
+		//InputStream stream = new ByteArrayInputStream(rdfmetadata.getBytes(StandardCharsets.UTF_8));
+		//file = new DefaultStreamedContent(stream, "text/plain", sensormeatadata.getSensorName() + ".metadata");
+		//fileready = true;
 		
 	}
 	
@@ -210,7 +219,9 @@ public class SensorInstanceCreatorBean implements Serializable {
 		//clear the session for new sensor type creation
 		FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
 		try {
-			FacesContext.getCurrentInstance().getExternalContext().redirect("/SensorSchemaEditor/sensorinstanceeditor.jsf");
+			
+			
+			FacesContext.getCurrentInstance().getExternalContext().redirect(OpeniotVocab.SCHEMAEDITOR_URI + "/sensorinstanceeditor.jsf");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

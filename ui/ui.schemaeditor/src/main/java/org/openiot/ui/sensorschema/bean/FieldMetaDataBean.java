@@ -53,7 +53,7 @@ public class FieldMetaDataBean {
 
     @Override
     public String toString() {
-        return "LSMFieldMetaData{" +
+        return "FieldMetaData{" +
                 "gsnFieldName='" + gsnFieldName + '\'' +
                 ", lsmPropertyName='" + lsmPropertyName + '\'' +
                 ", unit='" + lsmUnit + '\'' +

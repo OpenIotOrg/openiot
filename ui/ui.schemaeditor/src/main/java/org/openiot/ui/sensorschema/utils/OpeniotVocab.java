@@ -36,7 +36,10 @@ public class OpeniotVocab {
 	//read data from the properties file
 	  private static PropertyManagement propertyManagement = new PropertyManagement();
 	  
-	
+	  //construct the sensor schema editor URI
+	  public final static String SCHEMAEDITOR_URI = 
+			 propertyManagement.getSchemaEditorUrl().replace("/navigator.xhtml", "");
+	  
 	/**
 	   * <p>
 	   * The ontology model that holds the vocabulary terms

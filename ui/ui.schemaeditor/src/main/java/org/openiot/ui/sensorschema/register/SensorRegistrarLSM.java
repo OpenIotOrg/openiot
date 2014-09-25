@@ -227,7 +227,8 @@ public class SensorRegistrarLSM implements SensorRegistrar {
 //				System.out.println(text);
 //				System.out.println(OpeniotVocab.NS);
 //				text = text.replace(OpeniotVocab.NS, "");
-				sensorlist.add(text);
+				if (getSensorDescription(text).size()!=0)
+					sensorlist.add(text);
 					
 			}						
 		}

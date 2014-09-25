@@ -124,6 +124,14 @@
 		<version>20140107</version>
 	</dependency>
 	
+	
+	<!-- For Output templating based on xGSN Format -->
+	<dependency>
+		<groupId>org.freemarker</groupId>
+		<artifactId>freemarker</artifactId>
+		<version>2.3.14</version>
+	</dependency>
+
 		
   </dependencies>
   <build>
