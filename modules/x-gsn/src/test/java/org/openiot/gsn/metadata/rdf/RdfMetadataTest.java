@@ -18,6 +18,7 @@ public class RdfMetadataTest {
 	   LSMFieldMetaData f=new LSMFieldMetaData();
 	   f.setLsmPropertyName("http://example.org/propTemp");
 	   f.setLsmUnit("celsius");
+	   f.setGsnFieldName("temp");
 	   meta.getFields().put("temp", f);
 	   
 	   sm.createMetadata(meta );
