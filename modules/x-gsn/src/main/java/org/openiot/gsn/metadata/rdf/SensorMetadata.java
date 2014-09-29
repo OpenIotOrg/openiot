@@ -24,12 +24,12 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.StringWriter;
-import java.net.URI;
 
 import org.openiot.gsn.metadata.LSM.LSMFieldMetaData;
 import org.openiot.gsn.metadata.LSM.LSMSensorMetaData;
 
 import com.hp.hpl.jena.n3.turtle.TurtleParseException;
+import com.hp.hpl.jena.rdf.model.Literal;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.NodeIterator;
@@ -37,7 +37,6 @@ import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.ResIterator;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.ResourceFactory;
-import com.hp.hpl.jena.vocabulary.RDF;
 import com.hp.hpl.jena.vocabulary.RDFS;
 
 public class SensorMetadata {
@@ -68,6 +67,7 @@ public class SensorMetadata {
   Property dulHasLocation=ResourceFactory.createProperty(dul+"hasLocation");
   Property wgs84Lat=ResourceFactory.createProperty(wgs84+"lat");
   Property wgs84Long=ResourceFactory.createProperty(wgs84+"long");
+  Property lsmFieldName=ResourceFactory.createProperty(lsm+"fieldName");
  
 
   public void loadFromFile(String rdfFile) throws FileNotFoundException,TurtleParseException{
@@ -90,6 +90,7 @@ public class SensorMetadata {
 		  Resource prop=model.createResource(f.getLsmPropertyName());
 		  model.add(sensorUri,ssnObserves,prop);
 		  model.add(prop,quUnit,f.getLsmUnit());
+		  model.add(prop,lsmFieldName,f.getGsnFieldName());
 	  }
 	  Resource location=model.createResource(sensorUri.getURI()+"_location");
 	  model.add(location,rdfType,dulPlace);
@@ -131,6 +132,13 @@ public class SensorMetadata {
 			  throw new IllegalArgumentException("The property "+prop+" has no unit");
 		  Resource unit=prop.getPropertyResourceValue(quUnit);
 		  //String column=prop.listProperties(rrColumnName).next().getObject().toString();		  
+		  NodeIterator fnames=model.listObjectsOfProperty(prop, lsmFieldName);
+		  if (!fnames.hasNext())
+			  throw new IllegalArgumentException("The property "+prop+" has no associated GSN field name");
+		  Literal fn=fnames.next().asLiteral();
+		  lsmField.setGsnFieldName(fn.getString());
+		  
+		  
 		  lsmField.setLsmPropertyName(prop.getURI());
 		  lsmField.setLsmUnit(unit.getURI());
 		  md.getFields().put(prop.getURI(), lsmField);

@@ -45,7 +45,8 @@
                              qu:numericalValue "0.3"^^xsd:double ;
                              DUL:hasParameter phenonet:degreeCelsius .
                              
-aws:air_temperature qu:unit phenonet:degreeCelsius.
+aws:air_temperature qu:unit phenonet:degreeCelsius;
+	  lsm:fieldName "noise" .
 
 <place/location1> rdf:type DUL:Place;
                   wgs84:lat 52.3;

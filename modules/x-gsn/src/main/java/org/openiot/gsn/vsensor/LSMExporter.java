@@ -66,15 +66,16 @@ public class LSMExporter extends AbstractVirtualSensor {
         sensorName = vsensor.getName();        
         
         for (DataField df:vsensor.getOutputStructure()){
-        	logger.info("Property:"+ df.getName()+"--"+df.getProperty());
+        	/*logger.info("Property:"+ df.getName()+"--"+df.getProperty());
         	if (df.getProperty()!=null)
         	  fieldUris.put(df.getName().toUpperCase(), df.getProperty());
-        	else {
+        	else {*/
               for (LSMFieldMetaData md:metadata.getFields().values()){
+            	  logger.debug("The GSN fieldName: "+md.getGsnFieldName());
             	  if (md.getGsnFieldName().equals(df.getName()))
               		fieldUris.put(df.getName().toUpperCase(), md.getLsmPropertyName());            		  
               }        				
-        	}
+        	//}
         }
         
         String allow_nulls_str = params.get("allow-nulls");
