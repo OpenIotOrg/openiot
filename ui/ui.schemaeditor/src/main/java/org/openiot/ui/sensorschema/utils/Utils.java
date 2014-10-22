@@ -142,12 +142,12 @@ public class Utils {
             // Build the data-model
             Map<String, Object> data = new HashMap<String, Object>();
             data.put("sensorname", metadata.getSensorName());
-            data.put("source", metadata.getSensorName());
-            data.put("sensortype", metadata.getSensorName());
-            data.put("sourcetype", metadata.getSensorName());
-            data.put("information", metadata.getSensorName());
-            data.put("authors", metadata.getSensorName());
-            data.put("featureofinterest", metadata.getSensorName());
+            data.put("source", metadata.getSource());
+            data.put("sensortype", metadata.getSensorType());
+            data.put("sourcetype", metadata.getSourceType());
+            data.put("information", metadata.getInformation());
+            data.put("authors", metadata.getAuthor());
+            data.put("featureofinterest", metadata.getFeatureOfInterest());
             
             List<FieldMetaDataBean> fielddata = new ArrayList<FieldMetaDataBean>();
             Map<String, FieldMetaDataBean> fieldmetadata = metadata.getFields();
