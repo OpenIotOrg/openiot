@@ -2,7 +2,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:p="http://primefaces.org/ui">
+      xmlns:p="http://primefaces.org/ui"
+xmlns:shiro="http://shiro.apache.org/tags">
     <h:head>
     	<meta name="author" content="Prem Prakash Jayaraman" />
 		<meta name="author-email" content="Prem.Jayaraman@csiro.au" />
@@ -18,14 +19,24 @@
 		<link rel="stylesheet" href="css/core.css" />
     </h:head>
     <h:body styleClass="login">
- 
+		<div align = "right">		
+		<shiro:user>
+			<p:commandButton icon="ui-icon-unlocked"
+				style="margin-left:10px;"
+				value="Logout" process="@this"
+				actionListener="#{sensorInstanceCreatorBean.handleLogout()}" />
+		</shiro:user>	
+
+		</div>
+
  <div align="center">
 			<div class="logo" />
 			<div class="slogan">Open Source Solution for the Internet of
 				Things into the Cloud</div>
 		</div>
 		
-        <p:panel id="sensorschema" header="#{sensorBean.pageTitle}">
+		
+	        <p:panel id="sensorschema" header="#{sensorBean.pageTitle}">
                		
 	        <h:form id="MainForm">
 	        	<h3>Sensor Type Name 	
@@ -118,7 +129,7 @@
 				
 				<p:commandButton validateClient="true" 
 	        	value="Generate Description" actionListener="#{sensorBean.generateRDF}" id="generate" styleClass="ui-priority-primary" ajax="true" update="form2 :out growl"/>
-				<p:commandButton value = "Clear" actionListener="#{sensorBean.clearSession}" ajax = "false"/>	        	
+				<p:commandButton value = "Clear" actionListener="#{sensorBean.clearSession}" ajax = "false" immediate="true"/>	        	
 	        	<p:commandButton value = "Register Sensor Type" actionListener="#{sensorBean.pushRDF}" id="submitlsm" ajax = "true" update="growl"/>	
 	        	
 	        	<p:growl id="growl" for="buttongrowl" sticky="true" /> 				

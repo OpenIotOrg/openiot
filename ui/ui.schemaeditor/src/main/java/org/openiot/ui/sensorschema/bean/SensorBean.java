@@ -117,6 +117,17 @@ public class SensorBean implements Serializable{
         return model;
     }
 
+//logout of shiro and redirect to main page.
+	public void handleLogout() throws IOException {
+		//sessionBean.setUserId(null);
+		//FacesContext.getCurrentInstance().getExternalContext().dispose();
+
+//		FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
+		FacesContext.getCurrentInstance().getExternalContext().redirect("logout?faces-redirect=true");
+
+	}
+
+
     public ObservedPropertyBean getObservation() {
         return observation;
     }

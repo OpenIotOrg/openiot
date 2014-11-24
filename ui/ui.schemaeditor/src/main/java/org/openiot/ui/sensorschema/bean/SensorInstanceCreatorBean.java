@@ -123,6 +123,14 @@ public class SensorInstanceCreatorBean implements Serializable {
 		//fileready = true;
 		
 	}
+	public void handleLogout() throws IOException {
+		//sessionBean.setUserId(null);
+		//FacesContext.getCurrentInstance().getExternalContext().dispose();
+
+//		FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
+		FacesContext.getCurrentInstance().getExternalContext().redirect("logout?faces-redirect=true");
+
+	}
 	
 	public void registersensorinstance(){
 		populatemetadata();

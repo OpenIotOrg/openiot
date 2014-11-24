@@ -6,6 +6,11 @@
     <param-value>Development</param-value>
   </context-param>
   
+  	<context-param>
+		<param-name>module-name</param-name>
+		<param-value>schemaEditor</param-value>
+	</context-param>
+  
   <context-param>
 		<param-name>shiroEnvironmentClass</param-name>
 		<param-value>org.openiot.security.client.CustomIniWebEnvironment</param-value>

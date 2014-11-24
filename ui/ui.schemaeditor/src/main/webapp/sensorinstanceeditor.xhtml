@@ -4,7 +4,8 @@
 xmlns:f="http://java.sun.com/jsf/core"
 xmlns:h="http://java.sun.com/jsf/html"
 xmlns:ui="http://java.sun.com/jsf/facelets"
-xmlns:p="http://primefaces.org/ui">
+xmlns:p="http://primefaces.org/ui"
+xmlns:shiro="http://shiro.apache.org/tags">
 
 <h:head>
 	
@@ -70,11 +71,23 @@ xmlns:p="http://primefaces.org/ui">
 
 <h:body onload="initialize()" styleClass="login">
 
+
 <div align="center">
 			<div class="logo" />
 			<div class="slogan">Open Source Solution for the Internet of
 				Things into the Cloud</div>
 		</div>
+		<div align = "right">
+		
+		<shiro:user>
+			<p:commandButton icon="ui-icon-unlocked"
+				style="margin-left:10px;"
+				value="Logout" process="@this"
+				actionListener="#{sensorInstanceCreatorBean.handleLogout()}" />
+		</shiro:user>	
+	
+		</div>
+		
 	<h:form id="form1">
 	<div align="center">
 	<p:panelGrid style="margin-top:20px">
@@ -110,7 +123,7 @@ xmlns:p="http://primefaces.org/ui">
 			</p:column>		
 		</p:row>
 	</p:panelGrid>
-	<p:commandButton value="Clear Session/Restart" style="margin-top:5px" action="#{sensorInstanceCreatorBean.clearSession}"/>
+	<p:commandButton value="Clear Session/Restart" style="margin-top:5px" action="#{sensorInstanceCreatorBean.clearSession}" immediate="true"/>
 	
 	
 	<p:panelGrid style="margin-top:20px" rendered="#{sensorInstanceCreatorBean.showsensorinstance}">
