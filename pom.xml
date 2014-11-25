@@ -29,6 +29,7 @@
 		<module>ui/ui.requestCommons</module>
 		<module>ui/ui.requestDefinition</module>
 		<module>ui/ui.requestPresentation</module>
+		<module>ui/ui.schemaeditor</module>
 	</modules>
 
 	<issueManagement>
