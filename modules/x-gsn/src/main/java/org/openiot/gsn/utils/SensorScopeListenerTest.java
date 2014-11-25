@@ -1,6 +1,6 @@
 /**
 *    Copyright (c) 2011-2014, OpenIoT
-*   
+*
 *    This file is part of OpenIoT.
 *
 *    OpenIoT is free software: you can redistribute it and/or modify
@@ -22,11 +22,9 @@
 package org.openiot.gsn.utils;
 import java.net.*;
 import org.apache.log4j.Logger;
-import org.apache.log4j.PropertyConfigurator;
 
 public class SensorScopeListenerTest
 {
-    public static final String CONF_LOG4J_SENSORSCOPE_PROPERTIES = "conf/log4j_sensorscope.properties";
     private static transient Logger logger = Logger.getLogger(SensorScopeListenerTest.class);
     public SensorScopeListenerTest(int port)
     {
@@ -59,7 +57,6 @@ public class SensorScopeListenerTest
 
     public static void main(String args[])
     {
-        PropertyConfigurator.configure(CONF_LOG4J_SENSORSCOPE_PROPERTIES);
         new SensorScopeListenerTest(1234);
     }
 }

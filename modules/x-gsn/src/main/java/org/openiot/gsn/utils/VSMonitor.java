@@ -1,6 +1,6 @@
 /**
 *    Copyright (c) 2011-2014, OpenIoT
-*   
+*
 *    This file is part of OpenIoT.
 *
 *    OpenIoT is free software: you can redistribute it and/or modify
@@ -67,7 +67,7 @@ import org.xml.sax.InputSource;
 * Syntax for calling:
 * java -jar VSMonitor.jar <config_file> <list_of_mails>
 *  e.g.  java -jar VSMonitor.jar conf/monitoring.cfg user@gmail.com admin@gmail.com
-* As input, a config file containing list sensors described by: 
+* As input, a config file containing list sensors described by:
 * name of sensor,
 * timeout (expressing expected update period, for example every 1h),
 * gsn session address (e.g. www.server.com:22001/gsn)
@@ -80,7 +80,6 @@ import org.xml.sax.InputSource;
 public class VSMonitor {
 
     public static final String CONFIG_SEPARATOR = "@";
-    public static final String DEFAULT_GSN_LOG4J_PROPERTIES = "conf/log4j.properties";
 
     private static transient final Logger logger = Logger.getLogger(VSMonitor.class);
 
@@ -418,7 +417,6 @@ public class VSMonitor {
 
     public static void main(String[] args) {
 
-        PropertyConfigurator.configure(DEFAULT_GSN_LOG4J_PROPERTIES);
         String configFileName;
 
         if (args.length >= 2) {

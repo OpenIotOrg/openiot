@@ -1,6 +1,6 @@
 /**
  *    Copyright (c) 2011-2014, OpenIoT
- *   
+ *
  *    This file is part of OpenIoT.
  *
  *    OpenIoT is free software: you can redistribute it and/or modify
@@ -108,12 +108,11 @@ public final class Main {
 
 	private Main() throws Exception {
 
-		ValidityTools.checkAccessibilityOfFiles(DEFAULT_GSN_LOG4J_PROPERTIES,
+		ValidityTools.checkAccessibilityOfFiles(
 				WrappersUtil.DEFAULT_WRAPPER_PROPERTIES_FILE,
 				DEFAULT_GSN_CONF_FILE);
 		ValidityTools
 				.checkAccessibilityOfDirs(DEFAULT_VIRTUAL_SENSOR_DIRECTORY);
-		PropertyConfigurator.configure(Main.DEFAULT_GSN_LOG4J_PROPERTIES);
 
 		// initializeConfiguration();
 
@@ -295,8 +294,6 @@ public final class Main {
 
 	public static final int DEFAULT_MAX_DB_CONNECTIONS = 8;
 
-	public static final String DEFAULT_GSN_LOG4J_PROPERTIES = "conf/log4j.properties";
-
 	public static transient Logger logger = Logger.getLogger(Main.class);
 
 	public static final String DEFAULT_GSN_CONF_FILE = "conf/gsn.xml";
@@ -306,7 +303,11 @@ public final class Main {
 	public static final String DEFAULT_WEB_APP_PATH = "webapp";
 
 	public static void main(String[] args) {
-		Main.gsnControllerPort = Integer.parseInt(args[0]);
+		if (args.length > 0) {
+			Main.gsnControllerPort = Integer.parseInt(args[0]);
+		} else {
+			Main.gsnControllerPort = 22232;
+		}
 		updateSplashIfNeeded(new String[] { "GSN is trying to start.",
 				"All GSN logs are available at: logs/gsn.log" });
 		try {
@@ -342,12 +343,10 @@ public final class Main {
 			NoSuchProviderException, KeyStoreException, CertificateException,
 			SecurityException, SignatureException, IOException {
 		ValidityTools.checkAccessibilityOfFiles(
-				Main.DEFAULT_GSN_LOG4J_PROPERTIES,
 				WrappersUtil.DEFAULT_WRAPPER_PROPERTIES_FILE,
 				Main.DEFAULT_GSN_CONF_FILE);
 		ValidityTools
 				.checkAccessibilityOfDirs(Main.DEFAULT_VIRTUAL_SENSOR_DIRECTORY);
-		PropertyConfigurator.configure(Main.DEFAULT_GSN_LOG4J_PROPERTIES);
 		ContainerConfig toReturn = null;
 		try {
 			toReturn = loadContainerConfig(DEFAULT_GSN_CONF_FILE);
@@ -437,7 +436,7 @@ public final class Main {
 
 	/**
 	 * Get's the GSN configuration without starting GSN.
-	 * 
+	 *
 	 * @return
 	 * @throws Exception
 	 */
@@ -602,6 +601,6 @@ public final class Main {
 	public static StorageManager getWindowStorage() {
 		return windowStorage;
 	}
-	
-	
+
+
 }

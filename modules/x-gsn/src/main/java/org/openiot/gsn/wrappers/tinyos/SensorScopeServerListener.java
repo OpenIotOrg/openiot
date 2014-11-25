@@ -27,7 +27,6 @@ import org.openiot.gsn.utils.Formatter;
 import org.openiot.gsn.utils.Helpers;
 import org.openiot.gsn.utils.UnsignedByte;
 import org.apache.log4j.Logger;
-import org.apache.log4j.PropertyConfigurator;
 
 import java.io.*;
 import java.io.Serializable;
@@ -44,7 +43,6 @@ public class SensorScopeServerListener {
 
     private static final int TX_BUFFER_SIZE = 10;
     private static final int RX_BUFFER_SIZE = 100000;
-    public static final String CONF_LOG4J_SENSORSCOPE_PROPERTIES = "conf/log4j_sensorscope.properties";
     private static final String DEFAULT_PACKETS_LOGFILE = "logs/packets.txt";
     private static final int PLUS_SIGN = 43;
 
@@ -1564,8 +1562,6 @@ public class SensorScopeServerListener {
     }
 
     public static void main(java.lang.String[] args) {
-        PropertyConfigurator.configure(CONF_LOG4J_SENSORSCOPE_PROPERTIES);
-
         SensorScopeServerListener server = new SensorScopeServerListener();
 
         logger.warn("Entering server mode...");

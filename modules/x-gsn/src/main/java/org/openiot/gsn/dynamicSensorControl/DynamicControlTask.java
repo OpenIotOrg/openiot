@@ -18,9 +18,9 @@ import org.openiot.gsn.utils.PropertiesReader;
 import org.openrdf.repository.RepositoryException;
 
 /**
- * 
+ *
  * @author Christos Georgoulis (cgeo) e-mail: cgeo@ait.edu.gr
- * 
+ *
  */
 public class DynamicControlTask extends TimerTask {
 
@@ -57,8 +57,6 @@ public class DynamicControlTask extends TimerTask {
 	// Class Methods
 	@Override
 	public void run() {
-		PropertyConfigurator.configure(Main.DEFAULT_GSN_LOG4J_PROPERTIES);
-
 		sparqlClient = loadSparqlClient();
 
 		if (sparqlClient != null) {
@@ -80,7 +78,7 @@ public class DynamicControlTask extends TimerTask {
 
 	/**
 	 * Activates - deactivates sensors according to SPARQL query results
-	 * 
+	 *
 	 * @param sensorDefinitions
 	 * @param activeGSNSensors
 	 * @param availableGSNSensors
@@ -113,7 +111,7 @@ public class DynamicControlTask extends TimerTask {
 
 	/**
 	 * Obtains sensors from directory and maps Sensor names to Sensor Files
-	 * 
+	 *
 	 * @return
 	 */
 	private HashMap<String, File> getGSNSensors(String dir) {
@@ -145,7 +143,7 @@ public class DynamicControlTask extends TimerTask {
 	/**
 	 * Sends a SPARQL Query that retrieves sensors that are being defined as
 	 * used on the LSM
-	 * 
+	 *
 	 * @return
 	 */
 	private ArrayList<String> getSensorDefinitions() {
@@ -159,7 +157,7 @@ public class DynamicControlTask extends TimerTask {
 
 	/**
 	 * deletes file from virtual-sensors directory
-	 * 
+	 *
 	 * @param file
 	 */
 	private void deactivateSensor(File file) {
@@ -177,7 +175,7 @@ public class DynamicControlTask extends TimerTask {
 
 	/**
 	 * copies file from LSM directory to virtual-sensors directory
-	 * 
+	 *
 	 * @param xmlSource
 	 */
 	private void activateSensor(File xmlSource) {

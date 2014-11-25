@@ -1,6 +1,6 @@
 /**
 *    Copyright (c) 2011-2014, OpenIoT
-*   
+*
 *    This file is part of OpenIoT.
 *
 *    OpenIoT is free software: you can redistribute it and/or modify
@@ -25,16 +25,15 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.*;
 import java.util.Properties;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import org.apache.log4j.Logger;
-import org.apache.log4j.PropertyConfigurator;
 
 public class SensorScopeListener {
-    public static final String CONF_LOG4J_SENSORSCOPE_PROPERTIES = "conf/log4j_sensorscope.properties";
     private static final String CONF_SENSORSCOPE_SERVER_PROPERTIES = "conf/sensorscope_server.properties";
     private static final String DEFAULT_FOLDER_FOR_CSV_FILES = "logs";
 
-    private static transient Logger logger = Logger.getLogger(SensorScopeListener.class);
+	private static transient final Logger logger = LoggerFactory.getLogger(SensorScopeListener.class);
     private static String csvFolderName = null;
     private static String DEFAULT_NULL_STRING = "null";
     private static String nullString = DEFAULT_NULL_STRING;
@@ -43,7 +42,7 @@ public class SensorScopeListener {
     public SensorScopeListener(int port) {
         ServerSocket server;
 
-        logger.info("Starting server on port " + port);
+        logger.info("Starting server on port {}.", port);
 
         try {
             server = new ServerSocket(port);
@@ -55,11 +54,11 @@ public class SensorScopeListener {
                     if (socket != null)
                         new SensorScopeListenerClient(socket);
                 } catch (Exception e) {
-                    logger.error("Error while accepting a new client: " + e);
+                    logger.error("Error while accepting a new client: ", e);
                 }
             }
         } catch (Exception e) {
-            logger.error("Could not create the server: " + e);
+            logger.error("Could not create the server: ", e);
         }
     }
 
@@ -68,8 +67,8 @@ public class SensorScopeListener {
         try {
             propertiesFile.load(new FileInputStream(CONF_SENSORSCOPE_SERVER_PROPERTIES));
         } catch (IOException e) {
-            logger.error("Couldn't load configuration file: " + CONF_SENSORSCOPE_SERVER_PROPERTIES);
-            logger.error(e.getMessage(), e);
+            logger.error("Couldn't load configuration file: {}.", CONF_SENSORSCOPE_SERVER_PROPERTIES);
+			logger.error("Exception:", e);
             System.exit(-1);
         }
 
@@ -79,20 +78,19 @@ public class SensorScopeListener {
         String str_port = propertiesFile.getProperty("serverPort");
 
         if (str_port == null) {
-            logger.error("Couldn't find serverPort value in configuration file: " + CONF_SENSORSCOPE_SERVER_PROPERTIES);
+            logger.error("Couldn't find serverPort value in configuration file: {}", CONF_SENSORSCOPE_SERVER_PROPERTIES);
             System.exit(-1);
         }
         try {
             port = Integer.parseInt(str_port);
         } catch (NumberFormatException e) {
-            logger.error("Incorrect value (" + str_port + ") for serverPort in configuration file: " + CONF_SENSORSCOPE_SERVER_PROPERTIES);
+            logger.error("Incorrect value ({}) for serverPort in configuration file: {}", str_port, CONF_SENSORSCOPE_SERVER_PROPERTIES);
             System.exit(-1);
         }
     }
 
     public static void main(String args[]) {
         config();
-        PropertyConfigurator.configure(CONF_LOG4J_SENSORSCOPE_PROPERTIES);
         new SensorScopeListener(port);
     }
 }

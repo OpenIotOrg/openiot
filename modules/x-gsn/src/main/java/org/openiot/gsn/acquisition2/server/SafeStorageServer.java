@@ -32,25 +32,21 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.log4j.Logger;
-import org.apache.log4j.PropertyConfigurator;
-import org.apache.mina.core.service.IoAcceptor;
 import org.apache.mina.filter.codec.ProtocolCodecFilter;
 import org.apache.mina.filter.codec.serialization.ObjectSerializationCodecFactory;
 import org.apache.mina.filter.executor.ExecutorFilter;
-import org.apache.mina.transport.socket.SocketAcceptor;
 import org.apache.mina.transport.socket.nio.NioSocketAcceptor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class SafeStorageServer {
 
 	public static final byte SS_START_MODE   = 1;
 	public static final byte SS_CLEAN_MODE   = 100;
 
-	public static transient Logger logger = Logger.getLogger(SafeStorageServer.class);
+	private static transient final Logger logger = LoggerFactory.getLogger(SafeStorageServer.class);
 
-	private static final String DEFAULT_SAFESTORAGE_LOG4J_PROPERTIES = "conf/log4j_safestorage.properties";
-
-	private NioSocketAcceptor acceptor;
+	private final NioSocketAcceptor acceptor;
 
 	public SafeStorageServer(int portNo) throws IOException, ClassNotFoundException, SQLException {
 		SafeStorage ss  = new SafeStorage(portNo);
@@ -66,21 +62,17 @@ public class SafeStorageServer {
 	    ThreadPoolExecutor tpe = new ThreadPoolExecutor (0, Integer.MAX_VALUE, Long.MAX_VALUE, TimeUnit.NANOSECONDS, new LinkedBlockingQueue<Runnable>()) ;
 	    acceptor.getFilterChain().addLast("threadPool", new ExecutorFilter(tpe));
 
-	    logger.debug("MINA Decoder MAX: " + oscf.getDecoderMaxObjectSize() + " MINA Encoder MAX: " + oscf.getEncoderMaxObjectSize());
+	    logger.debug("MINA Decoder MAX: {} MINA Encoder MAX: {}.",oscf.getDecoderMaxObjectSize(), oscf.getEncoderMaxObjectSize());
 		acceptor.setHandler(new SafeStorageServerSessionHandler(ss));
 	    acceptor.bind(new InetSocketAddress(portNo));
-		logger.info("Safe Storage Server is listening on port: " + portNo);
-
-
-
+		logger.info("Safe Storage Server is listening on port: {}.", portNo);
 	}
 
   public void shutdown () {
 	  acceptor.unbind();
   }
-  
+
   public static void main(String[] args) throws Exception {
-	PropertyConfigurator.configure ( DEFAULT_SAFESTORAGE_LOG4J_PROPERTIES );
 	int safeStorageServerPort = Integer.parseInt(args[0]);
 	int safeStorageControllerPort = Integer.parseInt(args[1]);
 	byte safeStorageMode = Byte.parseByte(args[2]);
@@ -96,7 +88,7 @@ public class SafeStorageServer {
 			logger.warn("SafeStorage database is now clean and empty.");
 			break;
 		}
-		default : logger.error("Not valid SafeStorage mode >" + safeStorageMode + "<");
+		default : logger.error("Not valid SafeStorage mode >{}<", safeStorageMode);
 	}
   }
 }

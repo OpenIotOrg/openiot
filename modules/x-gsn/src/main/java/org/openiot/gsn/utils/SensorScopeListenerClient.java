@@ -1,6 +1,6 @@
 /**
 *    Copyright (c) 2011-2014, OpenIoT
-*   
+*
 *    This file is part of OpenIoT.
 *
 *    OpenIoT is free software: you can redistribute it and/or modify
@@ -23,13 +23,13 @@ package org.openiot.gsn.utils;
 
 import org.openiot.gsn.beans.DataField;
 import org.openiot.gsn.beans.StreamElement;
-import org.apache.log4j.Logger;
-import org.apache.log4j.PropertyConfigurator;
 
 import java.io.*;
 import java.net.*;
 import java.text.DecimalFormat;
 import java.util.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class SensorScopeListenerClient extends Thread {
 
@@ -478,10 +478,9 @@ public class SensorScopeListenerClient extends Thread {
 
     private final int OUTPUT_STRUCTURE_SIZE = outputStructureCache.length;
 
-    public static final String CONF_LOG4J_SENSORSCOPE_PROPERTIES = "conf/log4j_sensorscope.properties";
     private static final String CONF_SENSORSCOPE_SERVER_PROPERTIES = "conf/sensorscope_server.properties";
     private static final String DEFAULT_FOLDER_FOR_CSV_FILES = "logs";
-    private static transient Logger logger = Logger.getLogger(SensorScopeListenerClient.class);
+	private static transient final Logger logger = LoggerFactory.getLogger(SensorScopeListenerClient.class);
 
     private static String csvFolderName = null;
     private static String DEFAULT_NULL_STRING = "null";
@@ -538,7 +537,7 @@ public class SensorScopeListenerClient extends Thread {
             fs = new FileInputStream(CONF_SENSORSCOPE_SERVER_PROPERTIES);
             propertiesFile.load(fs);
         } catch (IOException e) {
-            logger.error("Couldn't load configuration file: " + CONF_SENSORSCOPE_SERVER_PROPERTIES);
+            logger.error("Couldn't load configuration file: {}", CONF_SENSORSCOPE_SERVER_PROPERTIES);
             logger.error(e.getMessage(), e);
             System.exit(-1);
         }
@@ -549,13 +548,12 @@ public class SensorScopeListenerClient extends Thread {
         try {
             fs.close();
         } catch (IOException e) {
-            logger.error("Couldn't close file: " + CONF_SENSORSCOPE_SERVER_PROPERTIES);
+            logger.error("Couldn't close file: {}", CONF_SENSORSCOPE_SERVER_PROPERTIES);
         }
 
     }
 
     public SensorScopeListenerClient(Socket socket) {
-        PropertyConfigurator.configure(CONF_LOG4J_SENSORSCOPE_PROPERTIES);
         mSocket = socket;
         config();
         start();

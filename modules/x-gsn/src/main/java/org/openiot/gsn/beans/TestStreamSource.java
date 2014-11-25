@@ -1,6 +1,6 @@
 /**
 *    Copyright (c) 2011-2014, OpenIoT
-*   
+*
 *    This file is part of OpenIoT.
 *
 *    OpenIoT is free software: you can redistribute it and/or modify
@@ -55,13 +55,12 @@ public class TestStreamSource {
 	private AbstractWrapper wrapper = new SystemTime();
 	private static StorageManager sm =  null;//StorageManager.getInstance();
   private AddressBean[] addressing = new AddressBean[] {new AddressBean("system-time")};
-   
+
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-	  PropertyConfigurator.configure ( Main.DEFAULT_GSN_LOG4J_PROPERTIES );
 	  DriverManager.registerDriver( new org.h2.Driver( ) );
 	  sm = StorageManagerFactory.getInstance("org.h2.Driver","sa","" ,"jdbc:h2:mem:.", Main.DEFAULT_MAX_DB_CONNECTIONS);
-		
+
 	}
 
 	@Before
@@ -120,31 +119,31 @@ public class TestStreamSource {
 		InputStream is = new InputStream();
 	StreamSource 	ss = new StreamSource().setAlias("my-stream").setAddressing(addressing).setSqlQuery("select * from wrapper").setRawHistorySize("10  min").setInputStream(is);
 	}
-	
+
 	@Test (expected=GSNRuntimeException.class)
 	public void testBadStreamSources2() throws GSNRuntimeException{
 		InputStream is = new InputStream();
 	StreamSource 	ss = new StreamSource().setAlias("my-stream").setAddressing(addressing).setSqlQuery("select * from wrapper").setRawHistorySize("10  m20").setInputStream(is);
 	}
-	
+
 	@Test (expected=GSNRuntimeException.class)
 	public void testBadStreamSources3() throws GSNRuntimeException{
 		InputStream is = new InputStream();
 	StreamSource 	ss = new StreamSource().setAlias("my-stream").setAddressing(addressing).setSqlQuery("select * from wrapper").setRawHistorySize("m").setInputStream(is);
 	}
-	
+
 	@Test
 	public void testBadWindowSize() throws GSNRuntimeException{
 		StreamSource ss = new StreamSource().setAlias("my-stream").setAddressing(addressing).setSqlQuery("select * from wrapper").setRawHistorySize("10  sec");
 		assertFalse(ss.validate());
 	}
-	
+
 	@Test
 	public void testBadSlideValue() throws GSNRuntimeException{
 		StreamSource ss = new StreamSource().setAlias("my-stream").setAddressing(addressing).setSqlQuery("select * from wrapper").setRawHistorySize("10  s").setRawSlideValue("5 sec");
 		assertFalse(ss.validate());
 	}
-	
+
 	@Test
 	public void testWindowType1(){
 		StreamSource ss = new StreamSource().setAlias("my-stream").setAddressing(addressing).setSqlQuery("select * from wrapper").setRawHistorySize("10 s");
@@ -156,7 +155,7 @@ public class TestStreamSource {
 		ss.setRawSlideValue("");
 		assertEquals(ss.getWindowingType(), WindowType.TIME_BASED_SLIDE_ON_EACH_TUPLE);
 	}
-	
+
 	@Test
 	public void testWindowType2(){
 		StreamSource ss = new StreamSource().setAlias("my-stream").setAddressing(addressing).setSqlQuery("select * from wrapper").setRawHistorySize("10 ");
@@ -173,7 +172,7 @@ public class TestStreamSource {
 		ss.setRawSlideValue("");
 		assertEquals(ss.getWindowingType(), WindowType.TUPLE_BASED_SLIDE_ON_EACH_TUPLE);
 	}
-	
+
 	@Test
 	public void testUID() {
 		InputStream is = new InputStream();
@@ -311,7 +310,7 @@ public class TestStreamSource {
 	@Test
 	public void testCountBasedWindowSize2() throws SQLException{
 		InputStream is = new InputStream();
-		StreamSource 	ss = new StreamSource().setAlias("my-stream").setAddressing(addressing).setSqlQuery("select * from wrapper").setRawHistorySize("2").setInputStream(is);		
+		StreamSource 	ss = new StreamSource().setAlias("my-stream").setAddressing(addressing).setSqlQuery("select * from wrapper").setRawHistorySize("2").setInputStream(is);
 		ss.setSamplingRate(1);
 		ss.setWrapper(wrapper );
 		assertTrue(ss.validate());
@@ -340,11 +339,11 @@ public class TestStreamSource {
 	/**
 	 * This method is only used for testing purposes.
 	 * @param query
-	 * @throws SQLException 
+	 * @throws SQLException
 	 */
 	public static void printTable(StringBuilder query) throws SQLException {
 		System.out.println("Printing for Query : "+query);
-		DataEnumerator dm = sm.executeQuery(query, true); 
+		DataEnumerator dm = sm.executeQuery(query, true);
 		while (dm.hasMoreElements()) {
 			StreamElement se = dm.nextElement();
 			for (int i=0;i<se.getData().length;i++) {

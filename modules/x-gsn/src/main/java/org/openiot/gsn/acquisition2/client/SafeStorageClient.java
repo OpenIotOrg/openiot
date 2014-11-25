@@ -83,7 +83,6 @@ public class SafeStorageClient {
   }
 
   public static void main(String[] args) {
-    PropertyConfigurator.configure ( Main.DEFAULT_GSN_LOG4J_PROPERTIES );
     AddressBean wrapperDetails = new AddressBean("mem2",new KeyValueImp("MyKey","MyValue"));
     new SafeStorageClient("localhost",12345,wrapperDetails);
   }

@@ -1,6 +1,6 @@
 /**
 *    Copyright (c) 2011-2014, OpenIoT
-*   
+*
 *    This file is part of OpenIoT.
 *
 *    OpenIoT is free software: you can redistribute it and/or modify
@@ -29,17 +29,14 @@ import org.openiot.gsn.utils.ValidityTools;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Properties;
 import java.util.StringTokenizer;
 
 import org.antlr.stringtemplate.StringTemplate;
 import org.antlr.stringtemplate.StringTemplateGroup;
-import org.apache.log4j.helpers.OptionConverter;
 import org.jibx.runtime.BindingDirectory;
 import org.jibx.runtime.IBindingFactory;
 import org.jibx.runtime.IUnmarshallingContext;
@@ -235,11 +232,7 @@ public class ContainerConfig {
 
 	public static final String     FIELD_NAME_gsnLogFileName          = "gsnLogFileName";
 
-	private String                 gsnLog4jFile;
-
 	private String                 gsnConfigurationFileName;
-
-	private Properties             gsnLog4JProperties;
 
 	public static final String     FIELD_NAME_directoryServiceHost    = "directoryServiceHost";
 
@@ -349,33 +342,17 @@ public class ContainerConfig {
 		return toReturn;
 	}
 
-	public static ContainerConfig getConfigurationFromFile ( String containerConfigurationFileName , String gsnLog4jFile , String dirLog4jFile ) throws JiBXException , FileNotFoundException {
+	public static ContainerConfig getConfigurationFromFile ( String containerConfigurationFileName ) throws JiBXException , FileNotFoundException {
 		IBindingFactory bfact = BindingDirectory.getFactory( ContainerConfig.class );
 		IUnmarshallingContext uctx = bfact.createUnmarshallingContext( );
 		ContainerConfig toReturn = ( ContainerConfig ) uctx.unmarshalDocument( new FileInputStream( containerConfigurationFileName ) , null );
 
-		Properties gsnLog4j = new Properties( );
-		try {
-			gsnLog4j.load( new FileInputStream( gsnLog4jFile ) );
-		} catch ( IOException e ) {
-			System.out.println( "Can't read the log4j files, please check the 2nd and 3rd parameters and try again." );
-			e.printStackTrace( );
-			System.exit( 1 );
-		}
-		toReturn.initLog4JProperties( gsnLog4j  );
-		toReturn.setSourceFiles( containerConfigurationFileName , gsnLog4jFile , dirLog4jFile );
+		toReturn.setSourceFiles( containerConfigurationFileName );
 		return toReturn;
 	}
 
-	private void initLog4JProperties ( Properties gsnLog4j  ) {
-		this.gsnLog4JProperties = gsnLog4j;
-		setGsnLoggingLevel( extractLoggingLevel( gsnLog4j.getProperty( "log4j.rootLogger" ) , ContainerConfig.LOGGING_LEVELS , DEFAULT_LOGGING_LEVEL ) );
-		setMaxGSNLogSizeInMB( OptionConverter.toFileSize( gsnLog4j.getProperty( "log4j.appender.file.MaxFileSize" ) , ContainerConfig.DEFAULT_GSN_LOG_SIZE ) / ( 1024 * 1024 ) );
-	}
-
-	private void setSourceFiles ( String gsnConfigurationFileName , String gsnLog4jFile , String dirLog4jFile ) {
+	private void setSourceFiles ( String gsnConfigurationFileName ) {
 		this.gsnConfigurationFileName = gsnConfigurationFileName;
-		this.gsnLog4jFile = gsnLog4jFile;
 	}
 
 	public void setdatabaseSystem ( String newValue ) {
@@ -419,8 +396,6 @@ public class ContainerConfig {
 	}
 
 	public void writeConfigurations ( ) throws FileNotFoundException , IOException {
-		gsnLog4JProperties.put( "log4j.rootLogger" , getGsnLoggingLevel( ) + ",file" );
-		gsnLog4JProperties.put( "log4j.appender.file.MaxFileSize" , getMaxGSNLogSizeInMB( ) + "MB" );
 		StringTemplateGroup templateGroup = new StringTemplateGroup( "gsn" );
 		StringTemplate st = templateGroup.getInstanceOf( "gsn/gui/templates/templateConf" );
 		st.setAttribute( "name" , getWebName( ) );
@@ -433,7 +408,6 @@ public class ContainerConfig {
 		st.setAttribute( "db_url" , storage.getJdbcURL( ) );
 		st.setAttribute( "gsn_port" , getContainerPort( ) );
 
-		gsnLog4JProperties.store( new FileOutputStream( gsnLog4jFile ) , "" );
 		FileWriter writer = new FileWriter( gsnConfigurationFileName );
 		writer.write( st.toString( ) );
 		writer.close( );
@@ -473,7 +447,7 @@ public class ContainerConfig {
 	public String getSSLKeyPassword(){
 		return sslKeyPassword == null ? DEFAULT_SSL_KEY_PWD : sslKeyPassword;
 	}
-	
+
 	/**
 	 * MSR MAP PART.
 	 */
@@ -495,5 +469,5 @@ public class ContainerConfig {
 	public String getTimeFormat() {
 		return timeFormat;
 	}
-	
+
 }

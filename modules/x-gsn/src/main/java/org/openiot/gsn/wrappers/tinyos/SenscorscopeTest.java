@@ -961,7 +961,6 @@ public class SenscorscopeTest {
     }
 
     public static void main(java.lang.String[] args) {
-        PropertyConfigurator.configure(org.openiot.gsn.Main.DEFAULT_GSN_LOG4J_PROPERTIES);
         System.out.println(args[0]);
         String source = args[0];
         reader = BuildSource.makePacketSource(source);

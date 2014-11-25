@@ -1,6 +1,6 @@
 /**
 *    Copyright (c) 2011-2014, OpenIoT
-*   
+*
 *    This file is part of OpenIoT.
 *
 *    OpenIoT is free software: you can redistribute it and/or modify
@@ -80,49 +80,47 @@ import org.apache.log4j.PropertyConfigurator;
 import javax.imageio.ImageIO;
 
 public class WebCamWrapper extends AbstractWrapper implements ControllerListener {
-   
+
    public static final String            PICTURE_KEY                  = "PICTURE";
-   
+
    private final ByteArrayOutputStream   baos                         = new ByteArrayOutputStream( 16 * 1024 );
-   
+
    private Buffer                        buff                         = new Buffer( );
-   
+
    private PushBufferStream              camStream;                                                             // Global
-   
+
    private BufferToImage                 converter;                                                             // Global
-                                                                                                                 
+
    private JPanel                        lable                        = new JPanel( );
-   
+
    private ImageWrapper                  reading;                                                               // Contains
-                                                                                                                 
+
    private Object                        stateLock                    = new Object( );
-   
+
    private int                           height;
-   
+
    private int                           width;
-   
+
    private JFrame                        mainFrame;
-   
+
    private DataSource                    ds                           = null;
-   
+
    private Processor                     deviceProc                   = null;
-   
+
    private PushBufferDataSource          source                       = null;
-   
+
    private static final transient Logger logger                       = Logger.getLogger( WebCamWrapper.class );
-   
+
    /**
     * for debugging purposes.
     */
    private static int                    threadCounter                = 0;
-   
-   public static final String            DEFAULT_GSN_LOG4J_PROPERTIES = "conf/log4j.properties";
-   
+
    private transient final static  DataField [] dataField = new DataField[] {new DataField( PICTURE_KEY , "binary:image/jpeg" , "The pictures observerd from the webcam." )};
    // -----------------------------------START----------------------------------------
    // DEVICE NAME FOR LINUX CAM: "v4l:OV518 USB Camera:0"
    private boolean isLiveViewEnabled = false;
-   
+
    public boolean initialize ( ) {
       setName( "WebCamWrapper-Thread:" + ( ++threadCounter ) );
       AddressBean addressBean = getActiveAddressBean( );
@@ -141,7 +139,7 @@ public class WebCamWrapper extends AbstractWrapper implements ControllerListener
       }
       return webcamInitialization( isLiveViewEnabled ,deviceName);
    }
-   
+
    private boolean webcamInitialization ( boolean liveView,String deviceName ) {
 	  CaptureDeviceInfo device = CaptureDeviceManager.getDevice( deviceName );
       if (device==null) {
@@ -166,22 +164,22 @@ public class WebCamWrapper extends AbstractWrapper implements ControllerListener
          logger.error( "DataSource not a CaptureDevice" );
          return false;
       }
-      
+
       FormatControl [ ] fmtControls = ( ( CaptureDevice ) ds ).getFormatControls( );
-      
+
       if ( fmtControls == null || fmtControls.length == 0 ) {
          logger.error( "No FormatControl available" );
          return false;
       }
-      
+
       Format setFormat = null;
       YUVFormat userFormat = null;
       for ( Format format : device.getFormats( ) )
          if ( format instanceof YUVFormat ) userFormat = ( YUVFormat ) format;
-      
+
       this.width = userFormat.getSize( ).width;
       this.height = userFormat.getSize( ).height;
-      
+
       for ( int i = 0 ; i < fmtControls.length ; i++ ) {
          if ( fmtControls[ i ] == null ) continue;
          if ( ( setFormat = fmtControls[ i ].setFormat( userFormat ) ) != null ) {
@@ -192,7 +190,7 @@ public class WebCamWrapper extends AbstractWrapper implements ControllerListener
          logger.error( "Failed to set device to specified mode" );
          return false;
       }
-      
+
       try {
          ds.connect( );
       } catch ( IOException ioe ) {
@@ -219,7 +217,7 @@ public class WebCamWrapper extends AbstractWrapper implements ControllerListener
 
       deviceProc.addControllerListener( this );
       deviceProc.realize( );
-      
+
       while ( deviceProc.getState( ) != Controller.Realized ) {
          synchronized ( stateLock ) {
             try {
@@ -228,9 +226,9 @@ public class WebCamWrapper extends AbstractWrapper implements ControllerListener
                logger.error( "Device failed to get to realized state" );
                return false;
             }
-         } 		
+         }
       }
-      
+
       deviceProc.start( );
       System.out.println( "Just before streaming." );
       logger.info( "Before Streaming" );
@@ -340,15 +338,14 @@ public class WebCamWrapper extends AbstractWrapper implements ControllerListener
    public String getWrapperName() {
     return "usb webcam camera ov511 ov516";
 }
-   
+
    public static void main ( String [ ] args ) {
-	   PropertyConfigurator.configure( DEFAULT_GSN_LOG4J_PROPERTIES );
 	   if (args.length==0)
 		   printDeviceList();
 	   else if (args.length==1) {
 		   System.out.println("Trying to connect to capturing device: "+args[0]);
 		   WebCamWrapper test = new WebCamWrapper( );
-		   boolean initialization = test.webcamInitialization( true ,args[0]); 
+		   boolean initialization = test.webcamInitialization( true ,args[0]);
 		   if ( initialization ) test.start( );
 		   else
 			   System.out.println( "Start Failed." );

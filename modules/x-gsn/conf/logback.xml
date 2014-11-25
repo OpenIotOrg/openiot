@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<Pattern>%d{HH:mm:ss.SSS} [%21thread] %-5level %logger{36} - %msg%n</Pattern>
+		</encoder>
+	</appender>
+
+	<appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>logs/gsn.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<!-- daily rollover -->
+			<fileNamePattern>logs/gsn.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+			<timeBasedFileNamingAndTriggeringPolicy
+				class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+				<!-- or whenever the file size reaches 50MB -->
+				<maxFileSize>50MB</maxFileSize>
+			</timeBasedFileNamingAndTriggeringPolicy>
+			<!-- keep 30 days' worth of history -->
+			<maxHistory>30</maxHistory>
+		</rollingPolicy>
+
+		<encoder>
+			<Pattern>%d{HH:mm:ss.SSS} [%21thread] %-5level %logger{36} - %msg%n</Pattern>
+		</encoder>
+	</appender>
+
+	<logger name="java.sql" level="WARN"/>
+	<logger name="org.apache.http" level="WARN"/>
+	<logger name="org.apache.mina" level="WARN"/>
+	<logger name="org.eclipse" level="WARN"/>
+	<logger name="org.hibernate.cfg" level="INFO"/>
+	<logger name="org.hibernate" level="WARN"/>
+	<logger name="org.jboss" level="WARN"/>
+	<logger name="org.openiot.gsn.storage" level="WARN"/>
+	<logger name="org.openiot.gsn.beans" level="WARN"/>
+	<logger name="org.openiot.gsn.vsensor" level="DEBUG"/>
+	<logger name="org.openiot.gsn.VirtualSensor" level="DEBUG"/>
+	<logger name="org.openiot.gsn.VSensorLoader" level="WARN"/>
+	<logger name="org.openiot.gsn.Mappings" level="WARN"/>
+	<logger name="org.openiot.gsn.wrappers.tcplistener" level="DEBUG"/>
+	<logger name="org.openiot.gsn.wrappers" level="INFO"/>
+
+	<root level="debug">
+		<appender-ref ref="STDOUT" />
+		<appender-ref ref="FILE" />
+	</root>
+</configuration>
