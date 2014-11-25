@@ -1,6 +1,6 @@
 /**
 *    Copyright (c) 2011-2014, OpenIoT
-*   
+*
 *    This file is part of OpenIoT.
 *
 *    OpenIoT is free software: you can redistribute it and/or modify
@@ -78,6 +78,7 @@ public class H2StorageManager extends StorageManager {
                     case Types.TINYINT:
                         return DataTypes.TINYINT;
                     case Types.VARCHAR:
+					case Types.CLOB:
                         return DataTypes.VARCHAR;
                     case Types.CHAR:
                         return DataTypes.CHAR;
@@ -126,7 +127,7 @@ public class H2StorageManager extends StorageManager {
 
     @Override
     public String getStatementDifferenceTimeInMillis() {
-        return "call NOW_MILLIS()";    
+        return "call NOW_MILLIS()";
     }
 
     @Override
