@@ -57,6 +57,8 @@ public class CASUtils {
 
 	public synchronized static OAuthorizationCredentials login() {
 		if (credentials == null) {
+			//log out the user if necessary
+			acUtil.logout();
 			logger.debug("Logging into CAS by username {}", username);
 			OAuthorizationCredentials cred = acUtil.login(username, password);
 			logger.debug("Credentials obtained after logging in is {}", cred);

@@ -24,6 +24,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
@@ -57,9 +58,9 @@ public class LSMSecurityManagerService implements Serializable, SecurityManagerS
 
 	private static final long serialVersionUID = -2254514562625584422L;
 
-	private static Logger logger = LoggerFactory.getLogger(LSMSecurityManagerService.class);
+	private static final Logger logger = LoggerFactory.getLogger(LSMSecurityManagerService.class);
 
-	private final HashSet<String> filteredServices;
+	private final Set<String> filteredServices;
 
 	private String lSMOauthGraphURL;
 	private String sparqlEndPoint;
@@ -72,7 +73,7 @@ public class LSMSecurityManagerService implements Serializable, SecurityManagerS
 		lSMOauthGraphURL = propertyManagement.getSecurityLsmGraphURL();
 		lsmOAuthHttpManager = new LSMOAuthHttpManager(lSMOauthGraphURL);
 		instancesPrefix = propertyManagement.getOpeniotResourceNamespace();
-				
+
 		filteredServices = new HashSet<String>();
 		filteredServices.add("Service Manager");
 		filteredServices.add("HTTP");
@@ -120,14 +121,14 @@ public class LSMSecurityManagerService implements Serializable, SecurityManagerS
 	}
 
 	public void addUser(User user) {
-		if (user.getRoles() == null)
+		if (user.getRoles() == null) {
 			user.setRoles(new ArrayList<Role>());
+		}
 		lsmOAuthHttpManager.addUser(user);
 	}
 
 	public LSMRegisteredServiceImpl getRegisteredService(long serviceId) {
-		final LSMRegisteredServiceImpl registeredService = lsmOAuthHttpManager.getRegisteredService(serviceId);
-		return registeredService;
+		return lsmOAuthHttpManager.getRegisteredService(serviceId);
 	}
 
 	@Override
@@ -139,7 +140,7 @@ public class LSMSecurityManagerService implements Serializable, SecurityManagerS
 	public void deleteRegisteredService(long id) {
 		lsmOAuthHttpManager.deleteRegisteredService(id);
 	}
-	
+
 	@Override
 	public void createGuestServices(User user, String serviceURL) {
 		lsmOAuthHttpManager.createGuestServices(user.getId(), serviceURL);
@@ -149,9 +150,9 @@ public class LSMSecurityManagerService implements Serializable, SecurityManagerS
 	public LSMRegisteredServiceImpl addRegisteredService(LSMRegisteredServiceImpl registeredService) {
 		final boolean isNew = registeredService.getId() == -1;
 		LSMRegisteredServiceImpl lsmRegisteredServiceImpl;
-		if (registeredService instanceof LSMRegisteredServiceImpl)
+		if (registeredService instanceof LSMRegisteredServiceImpl) {
 			lsmRegisteredServiceImpl = (LSMRegisteredServiceImpl) registeredService;
-		else {
+		} else {
 			lsmRegisteredServiceImpl = new LSMRegisteredServiceImpl();
 			lsmRegisteredServiceImpl.copyFrom(registeredService);
 		}
@@ -159,10 +160,13 @@ public class LSMSecurityManagerService implements Serializable, SecurityManagerS
 		if (isNew) {
 			final List<RegisteredService> allRegisteredServices = getAllRegisteredServices();
 			long id = 1;
-			if (allRegisteredServices != null)
-				for (RegisteredService service : allRegisteredServices)
-					if (service.getId() >= id)
+			if (allRegisteredServices != null) {
+				for (RegisteredService service : allRegisteredServices) {
+					if (service.getId() >= id) {
 						id = service.getId() + 1;
+					}
+				}
+			}
 			lsmRegisteredServiceImpl.setId(id);
 
 			lsmOAuthHttpManager.addRegisteredService(lsmRegisteredServiceImpl);
@@ -179,8 +183,9 @@ public class LSMSecurityManagerService implements Serializable, SecurityManagerS
 	 * @param username
 	 * @return
 	 */
-	public User getUserByUsername(String username) {
+	public User getUserByUsername(String usrname) {
 		org.openiot.lsm.security.oauth.mgmt.User user = null;
+		String username = usrname;
 		String userURL = instancesPrefix + "user/" + username;
 		if (username.contains(instancesPrefix + "user/")) {
 			userURL = username;
@@ -202,12 +207,13 @@ public class LSMSecurityManagerService implements Serializable, SecurityManagerS
 				user.setPassword(soln.get("?pass").toString());
 				user.setName(soln.get("?nick").toString());
 				List<Role> roles = getUserRoles(username);
-				if (roles != null)
+				if (roles != null) {
 					user.setRoles(roles);
+				}
 			}
 			vqe.close();
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("Error retrieving user by username", e);
 			return null;
 		}
 		return user;
@@ -219,8 +225,9 @@ public class LSMSecurityManagerService implements Serializable, SecurityManagerS
 	 * @param username
 	 * @return
 	 */
-	public List<Role> getUserRoles(String username) {
+	public List<Role> getUserRoles(String usrname) {
 		List<Role> roles = new ArrayList<Role>();
+		String username = usrname;
 		String userURL = instancesPrefix + "user/" + username;
 		if (username.contains(instancesPrefix + "user/")) {
 			userURL = username;
@@ -240,7 +247,7 @@ public class LSMSecurityManagerService implements Serializable, SecurityManagerS
 			}
 			vqe.close();
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("Error retrieving user roles", e);
 			return null;
 		}
 		return roles;
@@ -269,7 +276,7 @@ public class LSMSecurityManagerService implements Serializable, SecurityManagerS
 			}
 			vqe.close();
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("Error retrieving user by email", e);
 			return null;
 		}
 		return user;
@@ -292,7 +299,7 @@ public class LSMSecurityManagerService implements Serializable, SecurityManagerS
 			}
 			vqe.close();
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("Error retrieving all roles", e);
 			return null;
 		}
 		return roleList;
@@ -314,7 +321,9 @@ public class LSMSecurityManagerService implements Serializable, SecurityManagerS
 			}
 			vqe.close();
 		} catch (Exception e) {
-			e.printStackTrace();
+			if (logger.isErrorEnabled()) {
+				logger.error("Error retrieving users having role {" + role + "}", e);
+			}
 			return null;
 		}
 		return userList;
@@ -338,7 +347,7 @@ public class LSMSecurityManagerService implements Serializable, SecurityManagerS
 			logger.debug("{} users retrieved.", userList.size());
 			vqe.close();
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("Error retrieving all users", e);
 			return null;
 		}
 		return userList;
@@ -361,7 +370,7 @@ public class LSMSecurityManagerService implements Serializable, SecurityManagerS
 			}
 			vqe.close();
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("Error retrieving all permissions", e);
 			return null;
 		}
 		return permissionList;
@@ -389,7 +398,7 @@ public class LSMSecurityManagerService implements Serializable, SecurityManagerS
 			}
 			vqe.close();
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("Error retrieving all registered services", e);
 			return null;
 		}
 		return serviceList;
@@ -400,11 +409,11 @@ public class LSMSecurityManagerService implements Serializable, SecurityManagerS
 		final List<RegisteredService> allRegisteredServices = getAllRegisteredServices();
 		List<RegisteredService> filteredList = new ArrayList<RegisteredService>();
 		for (RegisteredService service : allRegisteredServices) {
-			if (!filteredServices.contains(service.getName()))
+			if (!filteredServices.contains(service.getName())){
 				filteredList.add(service);
+			}
 		}
 		return filteredList;
 	}
-
 
 }
