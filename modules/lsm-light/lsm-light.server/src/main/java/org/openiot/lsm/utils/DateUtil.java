@@ -1,35 +1,39 @@
 package org.openiot.lsm.utils;
-/**
-*    Copyright (c) 2011-2014, OpenIoT
-*   
-*    This file is part of OpenIoT.
-*
-*    OpenIoT is free software: you can redistribute it and/or modify
-*    it under the terms of the GNU Lesser General Public License as published by
-*    the Free Software Foundation, version 3 of the License.
-*
-*    OpenIoT is distributed in the hope that it will be useful,
-*    but WITHOUT ANY WARRANTY; without even the implied warranty of
-*    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*    GNU Lesser General Public License for more details.
-*
-*    You should have received a copy of the GNU Lesser General Public License
-*    along with OpenIoT.  If not, see <http://www.gnu.org/licenses/>.
-*
-*     Contact: OpenIoT mailto: info@openiot.eu
-*/
 
+/**
+ * Copyright (c) 2011-2014, OpenIoT
+ *
+ * This file is part of OpenIoT.
+ *
+ * OpenIoT is free software: you can redistribute it and/or modify it under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation, version 3 of the License.
+ *
+ * OpenIoT is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with OpenIoT. If not, see <http://www.gnu.org/licenses/>.
+ *
+ * Contact: OpenIoT mailto: info@openiot.eu
+ */
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.logging.Level;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
- * 
+ *
  * @author Hoan Nguyen Mau Quoc
- * 
+ *
  */
 public class DateUtil {
-	
+
 	/**
 	 * @param time the format should be like:"yyyyMMddHHmmss"
 	 * @return the Date
@@ -47,7 +51,7 @@ public class DateUtil {
 		}
 		return date;
 	}
-	
+
 	/**
 	 * parse the time to string under the format.
 	 * @param time
@@ -64,19 +68,19 @@ public class DateUtil {
 		}
 		return result;
 	}
-	
+
 	public static Date RFC822Section5Format_to_Date(String time){
 		String format = "EEE, dd MMM yyyy hh:mm a";
 		Date date = string2Date(time,format);
 		return date;
 	}
-	
+
 	public static Date RFC822WUnderGroundFormat_to_date(String time){
 		String format = "EEE, dd MMM yyyy hh:mm:ss";
 		Date date = string2Date(time,format);
 		return date;
 	}
-		
+
 	public static boolean isRFC822WUnderGroundFormat(String time){
 		String regex = "EEE, dd MMM yyyy hh:mm:ss";
 		SimpleDateFormat sdf = new SimpleDateFormat(regex);
@@ -87,15 +91,15 @@ public class DateUtil {
 		}
 		return true;
 	}
-	
+
 	public static String date2StandardString(Date time){
-		return date2FormatString(time,"yyyy-MM-dd'T'HH:mm:ss");
+		return date2FormatString(time,"yyyy-MM-dd'T'HH:mm:ss.SSS");
 	}
-	
+
 	public static Date standardString2Date(String time){
-		return string2Date(time,"yyyy-MM-dd'T'HH:mm:ss");
+		return string2Date(time,"yyyy-MM-dd'T'HH:mm:ss.SSS");
 	}
-	
+
 	public static String getYearMonthDay(Date date){
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(date);
@@ -106,7 +110,7 @@ public class DateUtil {
 		String day_str = (day < 10 ?("0" + day) : "" + day);
 		return year + "-" + month_str + "-" + day_str;
 	}
-	
+
 	public static Date string2Date(String time, String regex){
 		Date date = null;
 		SimpleDateFormat sdf = new SimpleDateFormat(regex);
@@ -119,7 +123,8 @@ public class DateUtil {
 	}
 
 	/**
-	 * time1 < time2 + days
+	 * time1 &lt; time2 + days.
+	 *
 	 * @param time1
 	 * @param time2
 	 * @param days
@@ -142,13 +147,14 @@ public class DateUtil {
 		}
 		return result;
 	}
-	
-	public static boolean isBefore(Date time1, Date time2){
-		return isBefore_day(time1,time2,0);
+
+	public static boolean isBefore(Date time1, Date time2) {
+		return time1.before(time2);
 	}
-	
+
 	/**
-	 * time1 < time2 - 7_days
+	 * time1 &lt; time2 - 7_days.
+	 *
 	 * @param time1
 	 * @param time2
 	 * @return
@@ -156,17 +162,17 @@ public class DateUtil {
 	public static boolean isBeforeOneWeek(Date time1, Date time2){
 		return isBefore_day(time1,time2,-7);
 	}
-	
+
 	public static void main(String[] args) {
 		String time = "2012-03-21T11:13:36.089+07:00";
 		Date date = DateUtil.string2Date(time,"yyyy-MM-dd'T'HH:mm:ss.SSS");
-		System.out.println(date.toString());	
+		System.out.println(date.toString());
 		System.out.println(DateUtil.date2StandardString(new Date()));
 //		DateTimeFormatter parser = ISODateTimeFormat.dateTime();
 //        DateTime dt = parser.parseDateTime(time);
-//        
+//
 //        DateTimeFormatter formatter = DateTimeFormat.mediumDateTime();
 //        System.out.println(dt.toString());
 	}
-	
+
 }
