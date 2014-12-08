@@ -102,6 +102,8 @@ public class SecurityUtil {
 	public static synchronized OAuthorizationCredentials login(ServletContext context) {
 		OAuthorizationCredentials credentials = (OAuthorizationCredentials) context.getAttribute(CREDENTIALS);
 		if (credentials == null) {
+			//log out the user if necessary
+			acUtil.logout();
 			logger.debug("Logging into CAS by username {}", username);
 			credentials = acUtil.login(username, password);
 			logger.debug("Credentials obtained after logging in is {}", credentials);

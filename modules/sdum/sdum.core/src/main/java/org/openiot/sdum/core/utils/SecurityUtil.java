@@ -102,6 +102,8 @@ public class SecurityUtil {
 		if (credentials != null) {
 			logger.debug("Credentials found in context. Aborting login process.");
 		} else {
+			//log out the user if necessary
+			acUtil.logout();
 			logger.debug("Logging into CAS by username {}", username);
 			OAuthorizationCredentials creds = acUtil.login(username, password);
 			logger.debug("Credentials obtained after logging in is {}", creds);

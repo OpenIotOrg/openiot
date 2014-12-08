@@ -226,7 +226,7 @@ public class SecurityInitializer {
 		defaultService.setEvaluationOrder(0);
 		defaultService.setIgnoreAttributes(true);
 		defaultService.setName("Service Manager");
-		String casPrefix = props.getProperty(CAS_PREFIX, "https://localhost:8443/openiot-cas");
+		String casPrefix = props.getProperty(CAS_PREFIX, "https://localhost:8443/openiot-cas").trim();
 		if (casPrefix.endsWith("/") && casPrefix.length() > 1)
 			casPrefix = casPrefix.substring(0, casPrefix.length() - 1);
 		defaultService.setServiceId(casPrefix + "/services/j_acegi_cas_security_check");
@@ -266,7 +266,7 @@ public class SecurityInitializer {
 		userManagementService.setEvaluationOrder(0);
 		userManagementService.setIgnoreAttributes(false);
 		userManagementService.setName(props.getProperty(SECURITY_MANAGEMENT_KEY, "openiot-security-manager-app"));
-		String mgmtAppPrefix = props.getProperty(MGMT_PREFIX, "http://localhost:8080/security.management");
+		String mgmtAppPrefix = props.getProperty(MGMT_PREFIX, "http://localhost:8080/security.management").trim();
 		if (mgmtAppPrefix.endsWith("/") && mgmtAppPrefix.length() > 1)
 			mgmtAppPrefix = mgmtAppPrefix.substring(0, mgmtAppPrefix.length() - 1);
 		userManagementService.setServiceId(mgmtAppPrefix + "/callback?client_name=CasOAuthWrapperClient");
@@ -325,7 +325,7 @@ public class SecurityInitializer {
 		reqDefService.setEvaluationOrder(0);
 		reqDefService.setIgnoreAttributes(false);
 		reqDefService.setName(props.getProperty(REQ_DEF_KEY, "requestDefinitionUI"));
-		String reqDefPrefix = props.getProperty(REQ_DEF_PREFIX, "http://localhost:8080/ui.requestDefinition");
+		String reqDefPrefix = props.getProperty(REQ_DEF_PREFIX, "http://localhost:8080/ui.requestDefinition").trim();
 		if (reqDefPrefix.endsWith("/") && reqDefPrefix.length() > 1)
 			reqDefPrefix = reqDefPrefix.substring(0, reqDefPrefix.length() - 1);
 		reqDefService.setServiceId(reqDefPrefix + "/callback?client_name=CasOAuthWrapperClient");
@@ -342,7 +342,7 @@ public class SecurityInitializer {
 		reqPresService.setEvaluationOrder(0);
 		reqPresService.setIgnoreAttributes(false);
 		reqPresService.setName(props.getProperty(REQ_PRES_KEY, "requestPresentationUI"));
-		String reqPresPrefix = props.getProperty(REQ_PRES_PREFIX, "http://localhost:8080/ui.requestPresentation");
+		String reqPresPrefix = props.getProperty(REQ_PRES_PREFIX, "http://localhost:8080/ui.requestPresentation").trim();
 		if (reqPresPrefix.endsWith("/") && reqPresPrefix.length() > 1)
 			reqPresPrefix = reqPresPrefix.substring(0, reqPresPrefix.length() - 1);
 		reqPresService.setServiceId(reqPresPrefix + "/callback?client_name=CasOAuthWrapperClient");
@@ -359,7 +359,7 @@ public class SecurityInitializer {
 		schemaEditorService.setEvaluationOrder(0);
 		schemaEditorService.setIgnoreAttributes(false);
 		schemaEditorService.setName(props.getProperty(SCHEMA_EDITOR_KEY, "schemaEditor"));
-		String schemaEditorPrefix = props.getProperty(SCHEMA_EDITOR_PREFIX, "http://localhost:8080/sensorschema");
+		String schemaEditorPrefix = props.getProperty(SCHEMA_EDITOR_PREFIX, "http://localhost:8080/sensorschema").trim();
 		if (schemaEditorPrefix.endsWith("/") && schemaEditorPrefix.length() > 1)
 			schemaEditorPrefix = schemaEditorPrefix.substring(0, schemaEditorPrefix.length() - 1);
 		schemaEditorService.setServiceId(schemaEditorPrefix + "/callback?client_name=CasOAuthWrapperClient");
