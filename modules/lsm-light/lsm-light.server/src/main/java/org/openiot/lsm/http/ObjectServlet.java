@@ -157,7 +157,7 @@ public class ObjectServlet extends HttpServlet {
 		        		logger.info("Add new sensor");
 //		        		logger.debug("Add new sensor");
 					}else{
-			 			result ="You don't have permmison to operate this funtion";
+			 			result ="User "+clientId+" doesn't have permission "+permissionString+" to operate this funtion";
 			 			logger.info(result);
 					}
 	        		break;
@@ -208,7 +208,7 @@ public class ObjectServlet extends HttpServlet {
 		        		sensorManager.insertTriplesToGraph(observation.getDataGraph(), triples);
 		        		logger.info("Add new sensor data successfully");
 	        		}else{
-			 			result ="You don't have permmison to operate this funtion";
+			 			result ="User "+clientId+" doesn't have permission "+permissionString+" to operate this funtion";
 			 			logger.info(result);
 					}
 	        		break;
@@ -230,7 +230,7 @@ public class ObjectServlet extends HttpServlet {
 		        		sensorManager.insertTriplesToGraph(tuple.getGraphURL(), tuple.getNtriple());
 		        		logger.info("Add triples to graph "+tuple.getGraphURL());
 					}else{
-			 			result ="You don't have permmison to operate this funtion";
+			 			result ="User "+clientId+" doesn't have permission "+permissionString+" to operate this funtion";
 			 			logger.info(result);
 					}
 	        		break;
@@ -256,7 +256,7 @@ public class ObjectServlet extends HttpServlet {
 							logger.info("Delete triples patterns of graph "+tuple.getGraphURL());
 						}
 					}else{
-			 			result ="You don't have permmison to operate this funtion";
+			 			result ="User "+clientId+" doesn't have permission "+permissionString+" to operate this funtion";
 			 			logger.info(result);
 					}
 	        		break;
@@ -275,7 +275,7 @@ public class ObjectServlet extends HttpServlet {
 		        			patterns = (HashMap<String, String>) object;
 		        		sensorManager.updateGraph(patterns.get("graph"),patterns.get("update"),patterns.get("delete"));
 					}else{
-			 			result ="You don't have permmison to operate this funtion";
+			 			result ="User "+clientId+" doesn't have permission "+permissionString+" to operate this funtion";
 			 			logger.info(result);
 					}
 	        	default:
