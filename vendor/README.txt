@@ -1,1 +1,0 @@
-This folder contains vendor branches from background software used in OpenIoT.
