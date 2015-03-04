@@ -1,5 +1,26 @@
 package org.openiot.gsn.wrappers;
 
+
+/**
+ *    Copyright (c) 2011-2014, OpenIoT
+ *
+ *    This file is part of OpenIoT.
+ *
+ *    OpenIoT is free software: you can redistribute it and/or modify
+ *    it under the terms of the GNU Lesser General Public License as published by
+ *    the Free Software Foundation, version 3 of the License.
+ *
+ *    OpenIoT is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *    GNU Lesser General Public License for more details.
+ *
+ *    You should have received a copy of the GNU Lesser General Public License
+ *    along with OpenIoT.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *     Contact: OpenIoT mailto: info@openiot.eu
+ */
+
 import gnu.io.CommPortIdentifier;
 import gnu.io.NoSuchPortException;
 import gnu.io.SerialPort;
@@ -20,6 +41,9 @@ import org.openiot.gsn.beans.AddressBean;
 import org.openiot.gsn.beans.DataField;
 import org.openiot.gsn.wrappers.AbstractWrapper;
 
+/**
+ * @author Salma Abdulaziz e-mail: salma.abdulaziz@insight-centre.org
+ */
 
 public class ArduinoWrapper extends AbstractWrapper implements SerialPortEventListener  {
 	SerialPort serialPort;
@@ -112,54 +136,7 @@ public class ArduinoWrapper extends AbstractWrapper implements SerialPortEventLi
 	}
 	
 	
-	/*public void run(){
-		while (isActive()) {
-			try {
-				// delay 
-		          Thread.sleep(rate);
-		    } catch (InterruptedException e) {
-		          logger.error(e.getMessage(), e);
-		    }
-		}
-	}*/
-	
 	@Override
-/*	public void serialEvent(SerialPortEvent oEvent) {
-		// TODO Auto-generated method stub
-		
-		if (oEvent.getEventType() == SerialPortEvent.DATA_AVAILABLE) {
-		try {			
-			InputStream inputStream = serialPort.getInputStream();
-			try {
-				//byte[] inputBuffer = new byte[messagesize];
-				input = new BufferedReader(new InputStreamReader(serialPort.getInputStream()));
-                
-				//inputStream.read( inputBuffer );
-                String inputLine=input.readLine();
-                
-				//String frequency = new String(inputBuffer);
-                System.out.println(inputLine);
-                double lightvalue=0;
-                
-                if (inputLine != null){
-                     lightvalue = Double.parseDouble(inputLine);
-                }
-				
-				// post the data to GSN
-				if(lightvalue > 0)
-					postStreamElement(new Serializable[] { lightvalue });
-
-			//	do with the buffer whatever you want!
-				} catch (IOException ex) {
-					ex.printStackTrace();
-				}
-			
-			} catch (Exception e) {
-				e.printStackTrace();
-			}		    
-		    // Ignore all the other eventTypes, but you should consider the other ones.
-		}
-	}*/
     
     public void serialEvent(SerialPortEvent oEvent) {
         double lightvalue=0;
