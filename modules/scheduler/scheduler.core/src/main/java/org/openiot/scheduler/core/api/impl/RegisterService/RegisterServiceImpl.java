@@ -24,14 +24,15 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Date;
 import java.util.Properties;
+
 
 
 
 //import lsm.beans.User;
 import org.openiot.lsm.schema.LSMSchema;
 import org.openiot.lsm.server.LSMTripleStore;
-
 import org.openiot.commons.osdspec.model.OAMO;
 import org.openiot.commons.osdspec.model.OSDSpec;
 import org.openiot.commons.osdspec.model.OSMO;
@@ -48,7 +49,6 @@ import org.openiot.scheduler.core.utils.lsmpa.entities.WidgetPresentation;
 import org.openiot.scheduler.core.utils.sparql.SesameSPARQLClient;
 import org.openiot.security.client.OAuthorizationCredentials;
 import org.openrdf.query.TupleQueryResult;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -95,6 +95,11 @@ public class RegisterServiceImpl {
 	public String replyMessage() {
 		return replyMessage;
 	}
+	
+	private String timestamp(){
+		Date date = new Date();
+		return date.getTime() + "";
+	}
 
 	private void registerService() {
 //		User user = new User();
@@ -119,7 +124,11 @@ public class RegisterServiceImpl {
 
 			org.openiot.scheduler.core.utils.lsmpa.entities.OAMO oamoEnt = new org.openiot.scheduler.core.utils.lsmpa.entities.OAMO(
 					myOnt, myOntInstance, lsmFunctionalGraph, lsmStore);
-			oamoEnt.setId(oamo.getId());
+			if (oamo.getId() != null)
+				oamoEnt.setId(oamo.getId());
+			else //prem modifited codei
+				oamoEnt.setId("nodeID://b" + timestamp());
+			
 			oamoEnt.setName(oamo.getName());
 			oamoEnt.setUser(userEnt);
 			oamoEnt.setDescription(oamo.getDescription());
@@ -144,13 +153,22 @@ public class RegisterServiceImpl {
 				}
 
 				Service srvcEnt = new Service(myOnt, myOntInstance, lsmFunctionalGraph, lsmStore);
-				srvcEnt.setId(osmo.getId());
+				if (osmo.getId()!=null)
+					srvcEnt.setId(osmo.getId());
+				else //prem modifited code
+					srvcEnt.setId("nodeID://b" + timestamp());
+				
 				srvcEnt.setName(osmo.getName());
 				srvcEnt.setDescription(osmo.getDescription());
-				//
+
+			
 
 				for (QueryRequest qr : osmo.getQueryRequest()) {
 					Query qstring = new Query(myOnt, myOntInstance, lsmFunctionalGraph, lsmStore);
+					
+					//prem modifited code
+					qstring.setId("nodeID://b" + timestamp());
+					
 					qstring.setqString(qr.getQuery());
 					//
 					qstring.createClassIdv();
@@ -167,6 +185,11 @@ public class RegisterServiceImpl {
 
 				for (Widget widget : osmo.getRequestPresentation().getWidget()) {
 					WidgetPresentation widgetPre = new WidgetPresentation(myOnt, myOntInstance,	lsmFunctionalGraph, lsmStore);
+
+					//prem modifited code
+					widgetPre.setId("nodeID://b" + timestamp());
+					
+					
 					widgetPre.setService(srvcEnt);
 					//
 					widgetPre.createClassIdv();
@@ -194,6 +217,11 @@ public class RegisterServiceImpl {
 						wAttr.setName(pAttr.getName());
 						wAttr.setWidgetPre(widgetPre);
 						// /
+						
+						//prem modifited code
+						wAttr.setId("nodeID://b" + timestamp());
+						
+						
 						wAttr.createClassIdv();
 						wAttr.createPdesc();
 						wAttr.createPname();
@@ -213,11 +241,14 @@ public class RegisterServiceImpl {
 				//
 				oamoEnt.createPoamoService();
 				//
+				
+				//setting the return message with the service id
+				replyMessage = srvcEnt.getId();
 
 			}// osmo
 		}// oamo
 
-		logger.debug(myOntInstance.exportToTriples("TURTLE"));
+		logger.debug(myOntInstance.exportToTriples("N-TRIPLE"));
 //		boolean ok = 
 		OAuthorizationCredentials credentials = SecurityUtil.getCredentials();
 		lsmStore.pushRDF(lsmFunctionalGraph, myOntInstance.exportToTriples("N-TRIPLE"), credentials.getClientId(), credentials.getAccessToken());
@@ -226,8 +257,8 @@ public class RegisterServiceImpl {
 //			replyMessage = "regester service successfull";
 //		} else {
 //			replyMessage = "regester service error";
-//		}
-
+//		}		
+		
 		logger.debug(replyMessage);
 	}
 }

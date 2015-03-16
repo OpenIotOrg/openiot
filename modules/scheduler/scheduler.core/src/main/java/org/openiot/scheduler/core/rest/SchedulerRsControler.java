@@ -194,7 +194,7 @@ public class SchedulerRsControler {
 	@POST
 	@Path("/registerService")
 	@Consumes(MediaType.APPLICATION_XML)
-	@Produces(MediaType.TEXT_PLAIN)
+	//@Produces(MediaType.TEXT_PLAIN)
 	public String registerService(OSDSpec osdSpec,  @QueryParam("clientId") String clientId, @QueryParam("token") String token) throws JAXBException {
 
 		System.out.println("osdSpec: " + osdSpec);
@@ -206,8 +206,7 @@ public class SchedulerRsControler {
 		}
 		
 		RegisterServiceImpl registerServiceImpl = new RegisterServiceImpl(osdSpec);
-		
-
+		logger.debug("The service was registered with the ID -->" + registerServiceImpl.replyMessage());
 		return registerServiceImpl.replyMessage();
 
 	}

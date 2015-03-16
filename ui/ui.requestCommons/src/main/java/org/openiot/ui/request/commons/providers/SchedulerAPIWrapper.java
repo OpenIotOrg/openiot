@@ -20,6 +20,18 @@
 
 package org.openiot.ui.request.commons.providers;
 
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.InputStreamReader;
+import java.io.StringReader;
+import java.net.URI;
+
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.UriBuilder;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Unmarshaller;
+import javax.xml.transform.stream.StreamSource;
+
 import org.jboss.resteasy.client.ClientRequest;
 import org.jboss.resteasy.client.ClientRequestFactory;
 import org.jboss.resteasy.client.ClientResponse;
@@ -28,15 +40,6 @@ import org.openiot.commons.sensortypes.model.SensorTypes;
 import org.openiot.commons.util.PropertyManagement;
 import org.openiot.ui.request.commons.providers.exceptions.APICommunicationException;
 import org.openiot.ui.request.commons.providers.exceptions.APIException;
-
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.UriBuilder;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.transform.stream.StreamSource;
-
-import java.io.StringReader;
-import java.net.URI;
 
 public class SchedulerAPIWrapper {
 
@@ -83,13 +86,14 @@ public class SchedulerAPIWrapper {
 		}
 	}
 
-	public static void registerService(OSDSpec osdSpec, String clientId, String token) throws APICommunicationException, APIException {
+	public static String registerService(OSDSpec osdSpec, String clientId, String token) throws APICommunicationException, APIException {
 
 		ClientRequestFactory clientRequestFactory = new ClientRequestFactory(SCHEDULER_HOST_URL);
 		ClientRequest registerServiceRequest = clientRequestFactory.createRelativeRequest("/rest/services/registerService");
 
 		registerServiceRequest.queryParameter("clientId", clientId);
 		registerServiceRequest.queryParameter("token", token);
+		String responseText = "";
 
 		try {
 			registerServiceRequest.body(MediaType.APPLICATION_XML, osdSpec);
@@ -103,13 +107,24 @@ public class SchedulerAPIWrapper {
 					throw new APICommunicationException("Error communicating with scheduler (method: registerService, HTTP error code : "
 							+ response.getStatus() + ")");
 				}
+				BufferedReader br = new BufferedReader(
+						new InputStreamReader(
+								new ByteArrayInputStream(response.getEntity().getBytes())));
+				String output = "";
+				while ((output = br.readLine())!=null)
+					responseText = responseText + output;
+					
+				
+				
+				return responseText;
+				
 
 			} catch (Throwable ex) {
 				throw new APIException(ex);
 			}
 		} catch (Exception ex) {
 			throw new APIException(ex);
-		}
+		}		
 	}
 
 	public static OSDSpec getAvailableApps(String userId, String clientId, String token) throws APICommunicationException, APIException {

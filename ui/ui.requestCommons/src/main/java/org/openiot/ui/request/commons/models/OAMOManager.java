@@ -202,12 +202,13 @@ public class OAMOManager {
 	 * @param oamo
 	 * @throws APIException
 	 */
-	protected void saveOAMO(OAMO oamo, String clientId, String token) throws APIException {
+	protected String saveOAMO(OAMO oamo, String clientId, String token) throws APIException {
 		OSDSpec spec = new OSDSpec();
 		spec.setUserID(this.userId);
 		spec.getOAMO().add(oamo);
-
-		SchedulerAPIWrapper.registerService(spec, clientId, token);
+		
+		String response = SchedulerAPIWrapper.registerService(spec, clientId, token);
+		return response;
 	}
 
 	/**
@@ -215,12 +216,12 @@ public class OAMOManager {
 	 * 
 	 * @throws APIException
 	 */
-	public void saveSelectedOAMO(String clientId, String token) throws APIException {
+	public String saveSelectedOAMO(String clientId, String token) throws APIException {
 		if (selectedOAMO == null) {
-			return;
+			return null;
 		}
 
-		saveOAMO(selectedOAMO, clientId, token);
+		return saveOAMO(selectedOAMO, clientId, token);
 	}
 
 	/**

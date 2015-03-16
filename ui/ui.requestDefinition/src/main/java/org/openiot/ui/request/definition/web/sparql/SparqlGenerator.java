@@ -41,6 +41,7 @@ import org.openiot.ui.request.commons.nodes.interfaces.GraphNodeConnection;
 import org.openiot.ui.request.commons.nodes.interfaces.GraphNodeEndpoint;
 import org.openiot.ui.request.commons.nodes.interfaces.GraphNodeProperty;
 import org.openiot.ui.request.definition.web.model.nodes.impl.sinks.LineChart;
+import org.openiot.ui.request.definition.web.model.nodes.impl.sinks.MobileDevice;
 import org.openiot.ui.request.definition.web.model.nodes.impl.sinks.Passthrough;
 import org.openiot.ui.request.definition.web.model.nodes.impl.sinks.Pie;
 import org.openiot.ui.request.definition.web.model.nodes.impl.sources.GenericSource;
@@ -264,12 +265,67 @@ public class SparqlGenerator extends AbstractGraphNodeVisitor {
 			visitMapSink((org.openiot.ui.request.definition.web.model.nodes.impl.sinks.Map) node);
 		} else if (node instanceof Pie) {
 			visitPieSink((Pie) node);
-		} else {
+		} else if (node instanceof MobileDevice) {
+			visitMobileSink(node);	
+		}
+		else {
 			visitGenericSink(node);
 		}
 	}
 
 	public void visitGenericSink(GraphNode node) {
+
+		beginQueryBlock(node, 1, 1);
+
+		// Visit incoming neighbors
+		for (GraphNodeEndpoint endpoint : node.getEndpointDefinitions()) {
+			if (endpoint.getType().equals(EndpointType.Output)) {
+				continue;
+			}
+
+			List<GraphNodeConnection> incomingConnections = model.findGraphEndpointConnections(endpoint);
+			for (GraphNodeConnection connection : incomingConnections) {
+
+				// Generate primary select
+				primarySelectNode.appendToScope(new Expression("?" + endpoint.getLabel()));
+
+				// Generate new scope for assembling the selection queries
+				// *unless* this is a grp_Date scope where
+				// we re use the current
+				Scope subScope = new Scope();
+				primaryWhereNode.appendToScope(subScope);
+
+				// Generate subquery helpers
+				subSelectNode = subSelectOriginalNode = new Select();
+				subWhereNode = new Where();
+				subGroupNode = new Group();
+				subScope.appendToScope(subSelectNode);
+				subScope.appendToScope(subWhereNode);
+				subScope.appendToScope(subGroupNode);
+
+				// Explore graph till we reach a sensor node.
+				targetDataSource = null;
+				targetAttribute = null;
+				this.visitedConnectionGraphStack.push(connection);
+				this.visitViaReflection(connection.getSourceNode());
+
+				// Append the endpoint label to the end of the generated select
+				// statement
+				subSelectNode.appendToScope(new Expression("AS ?" + endpoint.getLabel()));
+
+				//
+				this.visitedConnectionGraphStack.pop();
+			}
+		}
+
+		endQueryBlock();
+	}
+	
+	//this is where registration request for the external google cloud server
+	//will have to be prepared.
+	//after successful generation of the query and application saving, this information will be published
+	
+	public void visitMobileSink(GraphNode node) {
 
 		beginQueryBlock(node, 1, 1);
 
@@ -579,6 +635,28 @@ public class SparqlGenerator extends AbstractGraphNodeVisitor {
 			}
 		}
 	}
+	
+	public void visit(org.openiot.ui.request.definition.web.model.nodes.impl.filters.SelectionFilterNumber node) {
+
+		// Visit all outgoing connections except the one connecting to the
+		// sensor
+		for (GraphNodeEndpoint endpoint : node.getEndpointDefinitions()) {
+			if (endpoint.getType().equals(EndpointType.Input)) {
+				continue;
+			}
+
+			List<GraphNodeConnection> incomingConnections = model.findGraphEndpointConnections(endpoint);
+			for (GraphNodeConnection connection : incomingConnections) {
+				if (connection.getDestinationNode() instanceof GenericSource) {
+					continue;
+				}
+
+				this.visitedConnectionGraphStack.push(connection);
+				this.visitViaReflection(connection.getDestinationNode());
+				this.visitedConnectionGraphStack.pop();
+			}
+		}
+	}
 
 	protected void generateTimeGroups(List<String> groupList) {
 	}
@@ -622,6 +700,21 @@ public class SparqlGenerator extends AbstractGraphNodeVisitor {
 	// Comparator node visitors
 	// -------------------------------------------------------------------------
 
+	public void visit(org.openiot.ui.request.definition.web.model.nodes.impl.comparators.CompareNumber node) {
+
+		//Prem Implemented this extension to support Number Comparison and mobile notification 
+		
+		Number cmpValue = (Number) node.getPropertyValueMap().get("CMP_VALUE");
+		GraphNodeProperty prop = node.getPropertyByName("CMP_VALUE");
+		if (prop.isVariable()) {
+			defineVariable(prop, cmpValue);		
+			
+		}
+
+		subWhereNode.appendToScope(new Expression("FILTER (?" + targetAttribute.getUID() + node.getPropertyValueMap().get("OPERATOR") +  cmpValue  + ")."));
+	}
+	
+	
 	public void visit(org.openiot.ui.request.definition.web.model.nodes.impl.comparators.CompareAbsoluteDateTime node) {
 		// Generate date string in appropriate format.
 		// xsd:datetime type formats dates a bit differently than the pattern

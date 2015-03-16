@@ -304,8 +304,10 @@ public class ApplicationDesignPageController implements Serializable {
 		if (encodeApplication()) {
 			try {
 				OAuthorizationCredentials creds = acUtil.getOAuthorizationCredentials();
-				getContext().getAppManager().saveSelectedOAMO(creds.getClientId(), creds.getAccessToken());
-				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, messages.getString("GROWL_INFO_HEADER"), FaceletLocalization.getLocalisedMessage(messages, "UI_GRAPH_SAVE_SUCCESS")));
+				String serviceid = getContext().getAppManager().saveSelectedOAMO(creds.getClientId(), creds.getAccessToken());
+				//prem added sys out to test service id registration
+				//System.out.println("The id of the service that was created is %s" + serviceid);
+				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, messages.getString("GROWL_INFO_HEADER"), FaceletLocalization.getLocalisedMessage(messages, "UI_GRAPH_SAVE_SUCCESS with Service ID: "+ serviceid)));
 			} catch (APIException ex) {
 				LoggerService.log(ex);
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, messages.getString("GROWL_ERROR_HEADER"), FaceletLocalization.getLocalisedMessage(messages, "ERROR_CONNECTING_TO_REGISTRATION_SERVICE")));
