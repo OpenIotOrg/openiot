@@ -1,6 +1,6 @@
 /**
  *    Copyright (c) 2011-2014, OpenIoT
- *   
+ *
  *    This file is part of OpenIoT.
  *
  *    OpenIoT is free software: you can redistribute it and/or modify
@@ -23,13 +23,14 @@ package org.openiot.ui.request.presentation.web.scopes.session;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
+
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 
 import org.openiot.ui.request.presentation.web.scopes.session.base.DisposableContext;
-import org.openiot.ui.request.commons.logging.LoggerService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -38,6 +39,10 @@ import org.openiot.ui.request.commons.logging.LoggerService;
 @ManagedBean(name = "sessionBean")
 @SessionScoped
 public class SessionBean implements Serializable {
+	/**
+	 * The logger for this class.
+	 */
+	private static final Logger LOGGER = LoggerFactory.getLogger(SessionBean.class);
 	private static final long serialVersionUID = 1L;
 
     private Map<String, DisposableContext> contextMap;
@@ -49,11 +54,11 @@ public class SessionBean implements Serializable {
     public SessionBean() {
         contextMap = new HashMap<String, DisposableContext>();
     }
-    
+
     public String getUserId(){
     	return userId;
     }
-    
+
     public void setUserId(String userId) {
 		this.userId = userId;
 	}
@@ -74,7 +79,7 @@ public class SessionBean implements Serializable {
             for (Map.Entry<String, DisposableContext> entry : contextMap.entrySet()) {
                 if (entry.getValue().equals(context)) {
                     contextMap.remove(entry.getKey());
-                    LoggerService.log(Level.FINER, "SessionBean: purged context '" + entry.getKey() + "' of type " + entry.getValue().getClass().getSimpleName());
+                    LOGGER.trace("SessionBean: purged context '" + entry.getKey() + "' of type " + entry.getValue().getClass().getSimpleName());
                     return;
                 }
             }
@@ -83,10 +88,10 @@ public class SessionBean implements Serializable {
 
     public void registerContext(DisposableContext context) {
         if (contextMap.containsValue(context)) {
-            LoggerService.log(Level.FINER, "SessionBean: overwriting old context '" + context.getContextUID() + "' of type " + context.getClass().getSimpleName());
+            LOGGER.trace("SessionBean: overwriting old context '" + context.getContextUID() + "' of type " + context.getClass().getSimpleName());
         }
         contextMap.put(context.getContextUID(), context);
-        LoggerService.log(Level.FINER, "SessionBean: registered context '" + context.getContextUID() + "' of type " + context.getClass().getSimpleName());
+        LOGGER.trace("SessionBean: registered context '" + context.getContextUID() + "' of type " + context.getClass().getSimpleName());
     }
 
     public String addToFlashScopeAndRedirect(String key, String value, String redirectTo) {

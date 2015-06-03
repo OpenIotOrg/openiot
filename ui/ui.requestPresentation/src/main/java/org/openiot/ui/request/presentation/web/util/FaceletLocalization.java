@@ -1,6 +1,6 @@
 /**
  *    Copyright (c) 2011-2014, OpenIoT
- *   
+ *
  *    This file is part of OpenIoT.
  *
  *    OpenIoT is free software: you can redistribute it and/or modify
@@ -22,20 +22,27 @@ package org.openiot.ui.request.presentation.web.util;
 
 import java.text.MessageFormat;
 import java.util.*;
+
 import javax.faces.context.FacesContext;
-import org.openiot.ui.request.commons.logging.LoggerService;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author Achilleas Anagnostopoulos (aanag) email: aanag@sensap.eu
  */
 public class FaceletLocalization {
+	/**
+	 * The logger for this class.
+	 */
+	private static final Logger LOGGER = LoggerFactory.getLogger(FaceletLocalization.class);
 
     private static String format(final String messageTemplate, final Object[] params) {
         try {
             return new MessageFormat(messageTemplate).format(params);
         } catch (Throwable ex) {
-            LoggerService.log(ex);
+            LOGGER.error("", ex);
             return "[LOCALIZATION EXCEPTION]";
         }
     }
@@ -120,21 +127,21 @@ public class FaceletLocalization {
     }
 
     public static String getLabelTranslation1(ResourceBundle commonMessages, String fallbackTranslation, String labelKey0) {
-        
+
         if (commonMessages.containsKey(labelKey0)) {
             return commonMessages.getString(labelKey0);
         }
-        
+
         return fallbackTranslation;
     }
     public static String getLabelTranslation2(ResourceBundle commonMessages, String fallbackTranslation, String labelKey0, String labelKey1) {
-        
+
         if (commonMessages.containsKey(labelKey0)) {
             return commonMessages.getString(labelKey0);
         }else if (commonMessages.containsKey(labelKey1)) {
             return commonMessages.getString(labelKey1);
         }
-        
+
         return fallbackTranslation;
     }
 

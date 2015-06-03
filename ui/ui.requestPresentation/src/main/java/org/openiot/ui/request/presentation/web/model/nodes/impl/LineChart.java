@@ -1,6 +1,6 @@
 /**
  *    Copyright (c) 2011-2014, OpenIoT
- *   
+ *
  *    This file is part of OpenIoT.
  *
  *    OpenIoT is free software: you can redistribute it and/or modify
@@ -26,7 +26,6 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.logging.Level;
 
 import javax.faces.application.Application;
 import javax.faces.component.html.HtmlOutputText;
@@ -40,7 +39,6 @@ import org.openiot.commons.sdum.serviceresultset.model.SdumServiceResultSet;
 import org.openiot.commons.sparql.protocoltypes.model.QueryResult;
 import org.openiot.commons.sparql.result.model.Binding;
 import org.openiot.commons.sparql.result.model.Result;
-import org.openiot.ui.request.commons.logging.LoggerService;
 import org.openiot.ui.request.presentation.web.model.nodes.interfaces.VisualizationWidget;
 import org.openiot.ui.request.presentation.web.util.FaceletLocalization;
 import org.primefaces.component.commandlink.CommandLink;
@@ -50,7 +48,7 @@ import org.primefaces.model.chart.CartesianChartModel;
 import org.primefaces.model.chart.ChartSeries;
 
 public class LineChart implements VisualizationWidget {
-	
+
 	private enum XAxisType {
 		Number, DateFromResultSet, DateFromObservation
 	};
@@ -84,7 +82,7 @@ public class LineChart implements VisualizationWidget {
 		widget.setLegendPosition("s");
 		if( ! xAxisType.Number.equals(xAxisType)){
 			widget.setExtender("lineChartExtender");
-		}		
+		}
 		widget.setRendered(false);
 
 		// Instanciate a panel to host the widget
@@ -233,7 +231,7 @@ public class LineChart implements VisualizationWidget {
 				series.getData().put(seriesFormatters[i].format(entry.getKey()), entry.getValue());
 			}
 		}
-		
+
 		return triggerUpdate;
 	}
 
@@ -329,7 +327,7 @@ public class LineChart implements VisualizationWidget {
 				int seriesIndex = Integer.valueOf(attr.getName().split("_")[1]);
 				seriesLabels[seriesIndex] = attr.getValue();
 			}
-		}		
+		}
 	}
 
 	@Override

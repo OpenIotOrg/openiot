@@ -1,13 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- /** * Copyright (c) 2011-2014, OpenIoT * * This library is free software; you can redistribute it and/or * modify it either
-	under the terms of the GNU Lesser General Public * License version 2.1 as published by the Free Software Foundation * (the "LGPL").
-	If you do not alter this * notice, a recipient may use your version of this file under the LGPL. * * You should have received
-	a copy of the LGPL along with this library * in the file COPYING-LGPL-2.1; if not, write to the Free Software * Foundation, Inc.,
-	59 Temple Place, Suite 330, Boston, MA 02111-1307 USA * * This software is distributed on an "AS IS" basis, WITHOUT WARRANTY
-	* OF ANY KIND, either express or implied. See the LGPL for * the specific language governing rights and limitations. * * Contact:
-	OpenIoT mailto: info@openiot.eu */ -->
+<!--
+     Copyright (c) 2011-2014, OpenIoT
+
+     This file is part of OpenIoT.
+
+     OpenIoT is free software: you can redistribute it and/or modify
+     it under the terms of the GNU Lesser General Public License as published by
+     the Free Software Foundation, version 3 of the License.
+
+     OpenIoT is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU Lesser General Public License for more details.
+
+     You should have received a copy of the GNU Lesser General Public License
+     along with OpenIoT.  If not, see <http://www.gnu.org/licenses/>.
+
+	  Contact: OpenIoT mailto: info@openiot.eu
+/ -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<!-- =========================================================== -->
 	<!-- Basics -->
@@ -21,6 +33,12 @@
 	<name>OpenIoT security management web app</name>
 	<url>https://github.com/OpenIotOrg/openiot</url>
 
+	<parent>
+		<groupId>org.openiot</groupId>
+		<artifactId>openiot</artifactId>
+		<version>0.2-SNAPSHOT</version>
+		<relativePath>../../../pom.xml</relativePath>
+	</parent>
 
 	<licenses>
 		<license>
@@ -47,7 +65,7 @@
 		<!-- Define the version of the JBoss BOMs we want to import to specify tested stacks. -->
 		<version.jboss.bom>1.0.4.Final</version.jboss.bom>
 		<!-- Alternatively, comment out the above line, and un-comment the line below to use version 1.0.2.Final-redhat-1 which is
-			a release certified to work with JBoss EAP 6. It requires you have access to the JBoss EAP 6 maven repository. -->
+		a release certified to work with JBoss EAP 6. It requires you have access to the JBoss EAP 6 maven repository. -->
 		<!-- <version.jboss.bom>1.0.2.Final-redhat-1</version.jboss.bom>> -->
 
 		<!-- other plugin versions -->
@@ -69,10 +87,10 @@
 	<dependencyManagement>
 		<dependencies>
 			<!-- JBoss distributes a complete set of Java EE 6 APIs including a Bill of Materials (BOM). A BOM specifies the versions
-				of a "stack" (or a collection) of artifacts. We use this here so that we always get the correct versions of artifacts. Here we
-				use the jboss-javaee-6.0-with-tools stack (you can read this as the JBoss stack of the Java EE 6 APIs, with some extras tools
-				for your project, such as Arquillian for testing) and the jboss-javaee-6.0-with-hibernate stack you can read this as the JBoss
-				stack of the Java EE 6 APIs, with extras from the Hibernate family of projects) -->
+			of a "stack" (or a collection) of artifacts. We use this here so that we always get the correct versions of artifacts. Here we
+			use the jboss-javaee-6.0-with-tools stack (you can read this as the JBoss stack of the Java EE 6 APIs, with some extras tools
+			for your project, such as Arquillian for testing) and the jboss-javaee-6.0-with-hibernate stack you can read this as the JBoss
+			stack of the Java EE 6 APIs, with extras from the Hibernate family of projects) -->
 			<dependency>
 				<groupId>org.jboss.bom</groupId>
 				<artifactId>jboss-javaee-6.0-with-tools</artifactId>
@@ -104,19 +122,11 @@
 		<dependency>
 			<groupId>org.openiot</groupId>
 			<artifactId>lsm-light.client</artifactId>
-			<version>0.0.1</version>
-				<exclusions>
-			    	<exclusion>
-				 		<groupId>org.slf4j</groupId>
-				 		<artifactId>slf4j-log4j12</artifactId>
-					</exclusion>
-				</exclusions>
 		</dependency>
 
 		<dependency>
 			<groupId>org.openiot</groupId>
 			<artifactId>utils.commons</artifactId>
-			<version>0.0.1</version>
 		</dependency>
 
 		<!-- MISC -->
@@ -131,56 +141,8 @@
 		<dependency>
 			<groupId>org.openiot</groupId>
 			<artifactId>security.client</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-			<scope>compile</scope>
 		</dependency>
 
-
-		<!-- First declare the APIs we depend on and need for compilation. All of them are provided by JBoss AS 7 -->
-
-		<!-- Import the CDI API, we use provided scope as the API is included in JBoss AS 7 -->
-		<dependency>
-			<groupId>javax.enterprise</groupId>
-			<artifactId>cdi-api</artifactId>
-			<scope>provided</scope>
-		</dependency>
-
-		<!-- Import the Common Annotations API (JSR-250), we use provided scope as the API is included in JBoss AS 7 -->
-		<dependency>
-			<groupId>org.jboss.spec.javax.annotation</groupId>
-			<artifactId>jboss-annotations-api_1.1_spec</artifactId>
-			<scope>provided</scope>
-		</dependency>
-
-		<!-- Import the JAX-RS API, we use provided scope as the API is included in JBoss AS 7 -->
-		<!-- <dependency> -->
-		<!-- <groupId>org.jboss.spec.javax.ws.rs</groupId> -->
-		<!-- <artifactId>jboss-jaxrs-api_1.1_spec</artifactId> -->
-		<!-- <scope>provided</scope> -->
-		<!-- </dependency> -->
-
-
-		<!-- Import the EJB API, we use provided scope as the API is included in JBoss AS 7 -->
-		<!-- <dependency> -->
-		<!-- <groupId>org.jboss.spec.javax.ejb</groupId> -->
-		<!-- <artifactId>jboss-ejb-api_3.1_spec</artifactId> -->
-		<!-- <scope>provided</scope> -->
-		<!-- </dependency> -->
-
-
-
-		<!-- Import the JSF API, we use provided scope as the API is included in JBoss AS 7 -->
-		<dependency>
-			<groupId>org.jboss.spec.javax.faces</groupId>
-			<artifactId>jboss-jsf-api_2.1_spec</artifactId>
-			<scope>provided</scope>
-		</dependency>
-
-		<!-- Now we declare any tools needed -->
-
-		<!-- Annotation processor to generate the JPA 2.0 metamodel classes for typesafe criteria queries -->
-
-		<!-- Annotation processor that raising compilation errors whenever constraint annotations are incorrectly used. -->
 
 		<!-- Needed for running tests (you may also use TestNG) -->
 		<dependency>
@@ -188,10 +150,6 @@
 			<artifactId>junit</artifactId>
 			<scope>test</scope>
 		</dependency>
-
-		<!-- Optional, but highly recommended -->
-		<!-- Arquillian allows you to test enterprise code such as EJBs and Transactional(JTA) JPA from JUnit/TestNG -->
-
 
 		<dependency>
 			<groupId>org.primefaces</groupId>
@@ -212,19 +170,17 @@
 		</dependency>
 
 		<dependency>
-			<groupId>javax.servlet.jsp</groupId>
-			<artifactId>jsp-api</artifactId>
-			<version>2.1</version>
+			<groupId>javax</groupId>
+			<artifactId>javaee-web-api</artifactId>
+			<version>6.0</version>
+			<scope>provided</scope>
 		</dependency>
-
 
 		<!-- ======== LogBack Dependencies ========== -->
 
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
-			<version>1.1.2</version>
-			<!--<version>1.0.13</version> -->
 		</dependency>
 	</dependencies>
 

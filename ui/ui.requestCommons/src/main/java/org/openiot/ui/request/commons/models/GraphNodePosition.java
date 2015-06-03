@@ -1,6 +1,6 @@
 /**
  *    Copyright (c) 2011-2014, OpenIoT
- *   
+ *
  *    This file is part of OpenIoT.
  *
  *    OpenIoT is free software: you can redistribute it and/or modify
@@ -24,13 +24,18 @@ import java.io.Serializable;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.openiot.ui.request.commons.logging.LoggerService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author Achilleas Anagnostopoulos (aanag) email: aanag@sensap.eu
  */
 public class GraphNodePosition implements Serializable {
+	/**
+	 * The logger for this class.
+	 */
+	private static final Logger LOGGER = LoggerFactory.getLogger(GraphNodePosition.class);
 	private static final long serialVersionUID = 1L;
 
     double x;
@@ -56,18 +61,18 @@ public class GraphNodePosition implements Serializable {
     public void setY(double y) {
         this.y = y;
     }
-    
+
     public JSONObject toJSON(){
     	JSONObject spec = new JSONObject();
     	try{
     		spec.put("x", x);
     		spec.put("y", y);
     	}catch(JSONException ex){
-    		LoggerService.log(ex);
+    		LOGGER.error("Failed to convert GraphNodePosition to JSON.", ex);
     	}
     	return spec;
     }
-    
+
     public void importJSON(JSONObject spec) throws JSONException{
     	x = spec.getDouble("x");
     	y = spec.getDouble("y");

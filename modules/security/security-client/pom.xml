@@ -1,11 +1,18 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.openiot</groupId>
 	<artifactId>security.client</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<name>OpenIoT Security Client</name>
+
+	<parent>
+		<groupId>org.openiot</groupId>
+		<artifactId>openiot</artifactId>
+		<version>0.2-SNAPSHOT</version>
+		<relativePath>../../../pom.xml</relativePath>
+	</parent>
 
 	<build>
 		<resources>
@@ -61,7 +68,6 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.11</version>
 			<scope>compile</scope>
 		</dependency>
 
@@ -92,14 +98,11 @@
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
-			<version>1.1.1</version>
-			<!-- <version>1.0.13</version> -->
 		</dependency>
 
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>servlet-api</artifactId>
-			<version>2.5</version>
 		</dependency>
 
 		<dependency>
@@ -127,41 +130,27 @@
 			<artifactId>resteasy-jaxrs</artifactId>
 		</dependency>
 		<dependency>
-        	<groupId>org.jboss.resteasy</groupId>
-        	<artifactId>resteasy-jaxb-provider</artifactId>
-        </dependency>
+			<groupId>org.jboss.resteasy</groupId>
+			<artifactId>resteasy-jaxb-provider</artifactId>
+		</dependency>
 
 		<dependency>
 			<groupId>org.openiot</groupId>
 			<artifactId>utils.commons</artifactId>
-			<version>0.0.1</version>
 		</dependency>
 	</dependencies>
 
 	<properties>
 		<jdk.version>1.7</jdk.version>
 		<junit.version>4.11</junit.version>
-		<shiro.version>1.2.2</shiro.version>
+		<shiro.version>1.2.3</shiro.version>
 		<skipTests>true</skipTests>
 		<!-- Define the version of JBoss' Java EE 6 APIs and Tools we want
-            to import. -->
-        <version.jboss.bom>1.0.4.Final</version.jboss.bom>
+		to import. -->
+		<version.jboss.bom>1.0.4.Final</version.jboss.bom>
 	</properties>
 
 	<repositories>
-	<!--
-		<repository>
-			<id>sonatype-nexus-snapshots</id>
-			<name>Sonatype Nexus Snapshots</name>
-			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
-			<releases>
-				<enabled>false</enabled>
-			</releases>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</repository>
- -->
 		<repository>
 			<id>deluan.repo</id>
 			<name>Deluan's Projects Repository</name>

@@ -7,6 +7,14 @@
 	<packaging>jar</packaging>
 	<version>1.1.4</version>
 	<name>xgsn</name>
+
+	<parent>
+		<groupId>org.openiot</groupId>
+		<artifactId>openiot</artifactId>
+		<version>0.2-SNAPSHOT</version>
+		<relativePath>../../pom.xml</relativePath>
+	</parent>
+
 	<build>
 		<pluginManagement>
 			<plugins>
@@ -122,8 +130,7 @@
 		<artifactId>jmxtools</artifactId> </exclusion> </exclusions> </dependency> -->
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
-			<artifactId>logback-core</artifactId>
-			<version>1.1.2</version>
+			<artifactId>logback-classic</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>com.typesafe</groupId>
@@ -153,7 +160,6 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.10</version>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.jetty.aggregate</groupId>
@@ -261,7 +267,7 @@
 			<artifactId>groovy-all</artifactId>
 			<version>2.3.7</version>
 		</dependency>
-<!--  		<dependency>
+		<!--  		<dependency>
 			<groupId>org.fusesource.jansi</groupId>
 			<artifactId>jansi</artifactId>
 			<version>1.10</version>
@@ -390,17 +396,6 @@
 		<dependency>
 			<groupId>org.openiot</groupId>
 			<artifactId>lsm-light.client</artifactId>
-			<version>0.0.1</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.slf4j</groupId>
-					<artifactId>slf4j-log4j12</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.jboss.resteasy</groupId>
-					<artifactId>resteasy-jaxrs</artifactId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>winterwell.jtwitter</groupId>
@@ -434,7 +429,6 @@
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
-			<version>1.7.5</version>
 		</dependency>
 		<dependency>
 			<groupId>org.glassfish.jersey.containers</groupId>

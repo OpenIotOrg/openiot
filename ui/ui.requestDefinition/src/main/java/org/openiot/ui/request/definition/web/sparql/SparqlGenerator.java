@@ -1,6 +1,6 @@
 /**
  *    Copyright (c) 2011-2014, OpenIoT
- *   
+ *
  *    This file is part of OpenIoT.
  *
  *    OpenIoT is free software: you can redistribute it and/or modify
@@ -30,10 +30,8 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
-import java.util.logging.Level;
 
 import org.openiot.ui.request.commons.interfaces.GraphModel;
-import org.openiot.ui.request.commons.logging.LoggerService;
 import org.openiot.ui.request.commons.nodes.base.AbstractGraphNodeVisitor;
 import org.openiot.ui.request.commons.nodes.enums.EndpointType;
 import org.openiot.ui.request.commons.nodes.interfaces.GraphNode;
@@ -56,13 +54,18 @@ import org.openiot.ui.request.definition.web.sparql.nodes.base.Scope;
 import org.openiot.ui.request.definition.web.sparql.nodes.base.Select;
 import org.openiot.ui.request.definition.web.sparql.nodes.base.SensorSelectExpression;
 import org.openiot.ui.request.definition.web.sparql.nodes.base.Where;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * 
+ *
  * @author Achilleas Anagnostopoulos (aanag) email: aanag@sensap.eu
  */
 public class SparqlGenerator extends AbstractGraphNodeVisitor {
-
+	/**
+	 * The logger for this class.
+	 */
+	private static final Logger LOGGER = LoggerFactory.getLogger(SparqlGenerator.class);
 	private GraphModel model;
 	// Nodes
 	private Root primaryRootNode;
@@ -206,7 +209,7 @@ public class SparqlGenerator extends AbstractGraphNodeVisitor {
 			return;
 		}
 
-		LoggerService.log(Level.SEVERE, "[SparqlGenerator] Default visitor called for node of class: " + node.getClass().getSimpleName());
+		LOGGER.error("[SparqlGenerator] Default visitor called for node of class: " + node.getClass().getSimpleName());
 	}
 
 	public void visit(GenericSource node) {
@@ -334,7 +337,7 @@ public class SparqlGenerator extends AbstractGraphNodeVisitor {
 				continue;
 			}
 
-			LoggerService.log(Level.INFO, "Visit endpoint with scope: " + endpoint.getScope());
+			LOGGER.info("Visit endpoint with scope: " + endpoint.getScope());
 
 			List<GraphNodeConnection> incomingConnections = model.findGraphEndpointConnections(endpoint);
 			for (GraphNodeConnection connection : incomingConnections) {
@@ -539,7 +542,7 @@ public class SparqlGenerator extends AbstractGraphNodeVisitor {
 			endQueryBlock();
 		}
 	}
-	
+
 	private void visitIncomingConnections(GraphNode destinationNode) {
 		for (GraphNodeEndpoint endpoint : destinationNode.getEndpointDefinitions()) {
 			if (endpoint.getType().equals(EndpointType.Output)) {

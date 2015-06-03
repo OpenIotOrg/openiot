@@ -1,6 +1,6 @@
 /**
  *    Copyright (c) 2011-2014, OpenIoT
- *   
+ *
  *    This file is part of OpenIoT.
  *
  *    OpenIoT is free software: you can redistribute it and/or modify
@@ -27,7 +27,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
-import java.util.logging.Level;
 
 import org.openiot.ui.request.commons.annotations.Endpoint;
 import org.openiot.ui.request.commons.annotations.Endpoints;
@@ -35,7 +34,6 @@ import org.openiot.ui.request.commons.annotations.GraphNodeClass;
 import org.openiot.ui.request.commons.annotations.NodeProperties;
 import org.openiot.ui.request.commons.annotations.NodeProperty;
 import org.openiot.ui.request.commons.interfaces.GraphModel;
-import org.openiot.ui.request.commons.logging.LoggerService;
 import org.openiot.ui.request.commons.nodes.base.DefaultGraphNode;
 import org.openiot.ui.request.commons.nodes.base.DefaultGraphNodeEndpoint;
 import org.openiot.ui.request.commons.nodes.enums.AnchorType;
@@ -43,14 +41,12 @@ import org.openiot.ui.request.commons.nodes.enums.ConnectorType;
 import org.openiot.ui.request.commons.nodes.enums.EndpointType;
 import org.openiot.ui.request.commons.nodes.enums.PropertyType;
 import org.openiot.ui.request.commons.nodes.interfaces.GraphNode;
-import org.openiot.ui.request.commons.nodes.interfaces.GraphNodeConnection;
 import org.openiot.ui.request.commons.nodes.interfaces.GraphNodeEndpoint;
 import org.openiot.ui.request.commons.nodes.interfaces.GraphNodeEventListener;
-import org.openiot.ui.request.definition.web.model.nodes.impl.sources.GenericSource;
 import org.openiot.ui.request.definition.web.util.EndpointListLabelOrderComparator;
 
 /**
- * 
+ *
  * @author Achilleas Anagnostopoulos (aanag) email: aanag@sensap.eu
  */
 @GraphNodeClass(label = "Group", type = "FILTER", scanProperties = true)
@@ -145,7 +141,7 @@ public class Group extends DefaultGraphNode implements GraphNodeEventListener, S
 		if(!"ATTRIBUTES".equals(thisNodeEndpoint.getLabel())){
 			return;
 		}
-		
+
 		GraphNodeEndpoint dst = new DefaultGraphNodeEndpoint();
 		dst.setType(EndpointType.Output);
 		dst.setAnchor(AnchorType.Right);
@@ -160,7 +156,7 @@ public class Group extends DefaultGraphNode implements GraphNodeEventListener, S
 		if(!"ATTRIBUTES".equals(thisNodeEndpoint.getLabel())){
 			return;
 		}
-		
+
 		// Remove output endpoint
 		String label = "grp_" + otherNodeEndpoint.getLabel();
 		GraphNodeEndpoint ep = this.getEndpointByLabel(label);

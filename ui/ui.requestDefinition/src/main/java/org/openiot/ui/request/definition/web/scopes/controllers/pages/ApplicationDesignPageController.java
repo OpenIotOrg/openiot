@@ -1,6 +1,6 @@
 /**
  *    Copyright (c) 2011-2014, OpenIoT
- *   
+ *
  *    This file is part of OpenIoT.
  *
  *    OpenIoT is free software: you can redistribute it and/or modify
@@ -57,7 +57,6 @@ import org.openiot.commons.sparql.protocoltypes.model.QueryRequest;
 import org.openiot.security.client.AccessControlUtil;
 import org.openiot.security.client.OAuthorizationCredentials;
 import org.openiot.ui.request.commons.interfaces.GraphModel;
-import org.openiot.ui.request.commons.logging.LoggerService;
 import org.openiot.ui.request.commons.models.DefaultGraphModel;
 import org.openiot.ui.request.commons.models.OAMOManager;
 import org.openiot.ui.request.commons.nodes.interfaces.GraphNode;
@@ -77,14 +76,20 @@ import org.openiot.ui.request.definition.web.sparql.SparqlGenerator;
 import org.openiot.ui.request.definition.web.util.FaceletLocalization;
 import org.primefaces.context.RequestContext;
 import org.primefaces.model.DefaultStreamedContent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * 
+ *
  * @author Achilleas Anagnostopoulos (aanag) email: aanag@sensap.eu
  */
 @ManagedBean(name = "applicationDesignPageController")
 @RequestScoped
 public class ApplicationDesignPageController implements Serializable {
+	/**
+	 * The logger for this class.
+	 */
+	private static final Logger LOGGER = LoggerFactory.getLogger(ApplicationDesignPageController.class);
 	private static final long serialVersionUID = 1L;
 
 	// Cached context
@@ -108,7 +113,7 @@ public class ApplicationDesignPageController implements Serializable {
 				OAuthorizationCredentials credentials = acUtil.getOAuthorizationCredentials();
 				if(credentials == null)
 					return null;
-				else 
+				else
 					sessionBean.setUserId(credentials.getUserIdURI());
 			}
 
@@ -205,7 +210,7 @@ public class ApplicationDesignPageController implements Serializable {
 			SensorTypes sensorTypes = SchedulerAPIWrapper.getAvailableSensors("user000", context.getFilterLocationLat(), context.getFilterLocationLon(), context.getFilterLocationRadius(), creds.getClientId(), creds.getAccessToken());
 			context.updateAvailableSensors(sensorTypes);
 		} catch (APIException ex) {
-			LoggerService.log(ex);
+			LOGGER.error("", ex);
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, messages.getString("GROWL_ERROR_HEADER"), FaceletLocalization.getLocalisedMessage(messages, "ERROR_CONNECTING_TO_DISCOVERY_SERVICE")));
 		}
 	}
@@ -285,7 +290,7 @@ public class ApplicationDesignPageController implements Serializable {
 				JSONObject spec = new JSONObject(new JSONTokener(graphMeta));
 				graphModel.importJSON(spec);
 			} catch (JSONException ex) {
-				LoggerService.log(ex);
+				LOGGER.error("", ex);
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, messages.getString("GROWL_ERROR_HEADER"), FaceletLocalization.getLocalisedMessage(messages, "ERROR_LOADING_APPLICATION_DESIGN")));
 
 				context.setGraphModel(null);
@@ -296,7 +301,7 @@ public class ApplicationDesignPageController implements Serializable {
 
 		context.setGraphModel(graphModel);
 		context.clearAvailableSensors();
-		applicationBean.redirect("/pages/applicationDesign.xhtml?faces-redirect=true");	
+		applicationBean.redirect("/pages/applicationDesign.xhtml?faces-redirect=true");
 	}
 
 	public void saveApplication() {
@@ -307,7 +312,7 @@ public class ApplicationDesignPageController implements Serializable {
 				getContext().getAppManager().saveSelectedOAMO(creds.getClientId(), creds.getAccessToken());
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, messages.getString("GROWL_INFO_HEADER"), FaceletLocalization.getLocalisedMessage(messages, "UI_GRAPH_SAVE_SUCCESS")));
 			} catch (APIException ex) {
-				LoggerService.log(ex);
+				LOGGER.error("", ex);
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, messages.getString("GROWL_ERROR_HEADER"), FaceletLocalization.getLocalisedMessage(messages, "ERROR_CONNECTING_TO_REGISTRATION_SERVICE")));
 			}
 		}
@@ -328,7 +333,7 @@ public class ApplicationDesignPageController implements Serializable {
 			}
 
 		} catch (APIException ex) {
-			LoggerService.log(ex);
+			LOGGER.error("", ex);
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, messages.getString("GROWL_ERROR_HEADER"), FaceletLocalization.getLocalisedMessage(messages, "ERROR_CONNECTING_TO_REGISTRATION_SERVICE")));
 		}
 
@@ -350,30 +355,30 @@ public class ApplicationDesignPageController implements Serializable {
 
 		// Try to parse OSDSpec
 		OSDSpec spec = null;
-		try {			
+		try {
 			// Unserialize
 			JAXBContext jaxbContext = JAXBContext.newInstance(OSDSpec.class);
 			Unmarshaller um = jaxbContext.createUnmarshaller();
 			spec = (OSDSpec) um.unmarshal(new StreamSource(
-					new StringReader(IOUtils.toString(context.getUploadedSpec().getInputstream(), "UTF-8"))));			
+					new StringReader(IOUtils.toString(context.getUploadedSpec().getInputstream(), "UTF-8"))));
 		} catch (Exception ex) {
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, messages.getString("GROWL_ERROR_HEADER"), FaceletLocalization.getLocalisedMessage(messages, "ERROR_COULD_NOT_PARSE_OSDSPEC_FILE")));
 			return;
 		}
 
 		context.getAppManager().loadOSDSPec(spec);
-		context.cleanupWorkspace();	
-		
+		context.cleanupWorkspace();
+
 		if( context.isPersistSpec() ){
 			try{
 				OAuthorizationCredentials creds = acUtil.getOAuthorizationCredentials();
 				SchedulerAPIWrapper.registerService(context.getAppManager().exportOSDSpec(), creds.getClientId(), creds.getAccessToken());
 			} catch (APIException ex) {
-				LoggerService.log(ex);
+				LOGGER.error("", ex);
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, messages.getString("GROWL_ERROR_HEADER"), FaceletLocalization.getLocalisedMessage(messages, "ERROR_CONNECTING_TO_REGISTRATION_SERVICE")));
 			}
 		}
-		
+
 		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, messages.getString("GROWL_INFO_HEADER"), FaceletLocalization.getLocalisedMessage(messages, "INFO_APPLICATION_IMPORT_SUCCESS")));
 		applicationBean.redirect("/pages/applicationDesign.xhtml?faces-redirect=true");
 	}
@@ -435,7 +440,7 @@ public class ApplicationDesignPageController implements Serializable {
 						OSMO osmo = new OSMO();
 						//osmo.setId("node://" + node.getUID());
 						// Force new id generation
-						oamo.setId(null);						
+						oamo.setId(null);
 
 						// Setup query controlls
 						QueryControls queryControls = new QueryControls();

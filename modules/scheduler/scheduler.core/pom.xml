@@ -38,6 +38,12 @@
 	<description>A Java EE 6 webapp project for JBoss AS 7.1 / EAP 6</description>
 	<url>https://github.com/OpenIotOrg/openiot</url>
 
+	<parent>
+		<groupId>org.openiot</groupId>
+		<artifactId>openiot</artifactId>
+		<version>0.2-SNAPSHOT</version>
+		<relativePath>../../../pom.xml</relativePath>
+	</parent>
 
 	<licenses>
 		<license>
@@ -124,7 +130,6 @@
 		<dependency>
 			<groupId>org.openiot</groupId>
 			<artifactId>utils.commons</artifactId>
-			<version>0.0.1</version>
 		</dependency>
 
 
@@ -258,7 +263,6 @@
 		<dependency>
 			<groupId>org.openiot</groupId>
 			<artifactId>lsm-light.client</artifactId>
-			<version>0.0.1</version>
 		</dependency>
 
 		<dependency>
@@ -273,13 +277,11 @@
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
-			<version>1.1.2</version>
 		</dependency>
 		<!-- Apache commons-logging Required By Sesame -->
 		<dependency>
-			<groupId>commons-logging</groupId>
-			<artifactId>commons-logging</artifactId>
-			<version>1.1.2</version>
+			<groupId>org.slf4j</groupId>
+			<artifactId>jcl-over-slf4j</artifactId>
 		</dependency>
 
 

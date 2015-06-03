@@ -2,7 +2,7 @@ package org.openiot.lsm.manager;
 
 /**
  *    Copyright (c) 2011-2014, OpenIoT
- *   
+ *
  *    This file is part of OpenIoT.
  *
  *    OpenIoT is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@ package org.openiot.lsm.manager;
  *     Contact: OpenIoT mailto: info@openiot.eu
  */
 /**
- * 
+ *
  * @author Hoan Nguyen Mau Quoc
  *
  */
@@ -58,7 +58,7 @@ import org.springframework.util.SerializationUtils;
 
 /**
  * @author Hoan Nguyen Mau Quoc
- * 
+ *
  */
 public class SensorManager {
 	private String dataGraph;
@@ -118,7 +118,7 @@ public class SensorManager {
 		Connection conn = null;
 		try {
 			logger.info("insert triples into graph " + graphName);
-			logger.info("triples:\n" + triples);
+			logger.debug("triples:\n" + triples);
 			conn = ConnectionManager.getConnectionPool().getConnection();
 			String sql = "sparql insert into graph <" + graphName + ">{" + triples + "}";
 			PreparedStatement ps = conn.prepareStatement(sql);
@@ -128,7 +128,7 @@ public class SensorManager {
 			ConnectionManager.attemptClose(conn);
 		} catch (Exception e) {
 			// e.printStackTrace();
-			logger.info("Fail to insert triples into graph " + graphName, e);
+			logger.warn("Fail to insert triples into graph " + graphName, e);
 			ConnectionManager.attemptClose(conn);
 		}
 	}
@@ -169,10 +169,10 @@ public class SensorManager {
 			conn = ConnectionManager.getConnectionPool().getConnection();
 			String sql = "sparql delete from <" + graphName + "> {" + triples + "}";
 			logger.info("Start deleting triples ");
-			logger.info("executing query:\n" + sql);
+			logger.debug("executing query:\n{}", sql);
 			PreparedStatement ps = conn.prepareStatement(sql);
 			boolean i = ps.execute(sql);
-			System.out.println("Remove triples of graph " + graphName);
+			logger.info("Removed triples of graph {}", graphName);
 			ConnectionManager.attemptClose(ps);
 			ConnectionManager.attemptClose(conn);
 		} catch (Exception e) {
@@ -189,7 +189,7 @@ public class SensorManager {
 		String sql = "sparql delete from <"+graphURL+"> {?s ?p ?o} "+
 						"where{ "+
 							"{ "+
-								"?observation <http://purl.oclc.org/NET/ssnx/ssn#observedBy>  <"+sensorURL+">."+    
+								"?observation <http://purl.oclc.org/NET/ssnx/ssn#observedBy>  <"+sensorURL+">."+
 								"?s <http://openiot.eu/ontology/ns/isObservedValueOf> ?observation."+
 								"?s ?p ?o."+
 							"}"+
@@ -197,12 +197,11 @@ public class SensorManager {
 							"?s <http://purl.oclc.org/NET/ssnx/ssn#observedBy>  <"+sensorURL+">."+
 							"?s ?p  ?o."+
 						"}"+
-					"}";	
+					"}";
 		try {
 			conn = ConnectionManager.getConnectionPool().getConnection();
-			logger.info("execute query:" + sql);
 			PreparedStatement ps = conn.prepareStatement(sql);
-			logger.info("executing query:\n" + sql);
+			logger.debug("executing query:\n{}", sql);
 			ps.executeQuery();
 			logger.info("All triples were deleted");
 			ConnectionManager.attemptClose(ps);
@@ -223,7 +222,7 @@ public class SensorManager {
 			sql = "sparql delete from <"+ dataGraph+"> {?s ?p ?o} "+
 				"where{ "+
 					"{ {"+
-							"?observation <http://purl.oclc.org/NET/ssnx/ssn#observedBy>  <"+sensorURL+">."+  						
+							"?observation <http://purl.oclc.org/NET/ssnx/ssn#observedBy>  <"+sensorURL+">."+
 							"?observation <http://purl.oclc.org/NET/ssnx/ssn#observationResultTime> ?time."+
 						    "filter( ?time "+dateOperator+" \""+DateUtil.date2StandardString(fromTime)+"\"^^xsd:dateTime && "+
 						    "?time <= \""+DateUtil.date2StandardString(toTime)+"\"^^xsd:dateTime)."+
@@ -240,7 +239,7 @@ public class SensorManager {
 			sql = "sparql delete from <"+ dataGraph+"> {?s ?p ?o} "+
 					"where{ "+
 						"{ {"+
-								"?observation <http://purl.oclc.org/NET/ssnx/ssn#observedBy>  <"+sensorURL+">."+  						
+								"?observation <http://purl.oclc.org/NET/ssnx/ssn#observedBy>  <"+sensorURL+">."+
 								"?observation <http://purl.oclc.org/NET/ssnx/ssn#observationResultTime> ?time."+
 							    "filter( ?time "+dateOperator+" \""+DateUtil.date2StandardString(fromTime)+"\"^^xsd:dateTime)."+
 							 "}"+
@@ -251,20 +250,20 @@ public class SensorManager {
 						"?s <http://purl.oclc.org/NET/ssnx/ssn#observedBy>  <"+sensorURL+">."+
 						"?s ?p  ?o."+
 					"}"+
-				"}";					
+				"}";
 		}
 
 		try {
 			conn = ConnectionManager.getConnectionPool().getConnection();
 			PreparedStatement ps = conn.prepareStatement(sql);
-			logger.info("executing query:" + sql);
+			logger.debug("executing query: {}", sql);
 			ps.executeQuery();
 			logger.info("All triples were deleted");
 			ConnectionManager.attemptClose(ps);
 			ConnectionManager.attemptClose(conn);
 		} catch (Exception e) {
 			// e.printStackTrace();
-			logger.info("fail to execute query:" + sql, e);
+			logger.error("fail to execute query:" + sql, e);
 			ConnectionManager.attemptClose(conn);
 		}
 	}
@@ -281,11 +280,11 @@ public class SensorManager {
 		List<Double> l3 = new ArrayList<Double>();
 		Connection conn = null;
 		String sql = "sparql select distinct(?sensor) ?city ?country <bif:st_distance>(?geo,<bif:st_point>("+
-				lng+","+lat+")) as ?distance "+		
-					" from <"+ metaGraph +"> " + 			
-					"where {"+			
+				lng+","+lat+")) as ?distance "+
+					" from <"+ metaGraph +"> " +
+					"where {"+
 					"?sensor <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?type."+
-					"?type <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://purl.oclc.org/NET/ssnx/ssn#Sensor>."+												
+					"?type <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://purl.oclc.org/NET/ssnx/ssn#Sensor>."+
 					"?sensor <"+ VirtuosoConstantUtil.sensorHasPlacePrefix+"> ?place. "+
 					"?place <http://openiot.eu/ontology/ns/is_in_city> ?cityId."+
 					"?cityId <http://www.w3.org/2000/01/rdf-schema#label> ?city."+
@@ -294,12 +293,12 @@ public class SensorManager {
 					"?place geo:geometry ?geo."+
 					"filter (<bif:"+ spatialOperator +">(?geo,<bif:st_point>("+
 							lng+","+lat+"),"+distance+"))." +
-					"} order by ?distance";				
+					"} order by ?distance";
 		try {
 			if (conn.isClosed())
 				conn = ConnectionManager.getConnectionPool().getConnection();
 			PreparedStatement ps = conn.prepareStatement(sql);
-			logger.info("executing query:" + sql);
+			logger.debug("executing query: {}", sql);
 			ResultSet rs = ps.executeQuery();
 			while (rs.next()) {
 				l1.add(rs.getString(1));
@@ -313,7 +312,7 @@ public class SensorManager {
 			ConnectionManager.attemptClose(ps);
 			ConnectionManager.attemptClose(conn);
 		} catch (Exception e) {
-			logger.info("fail to execute query:" + sql, e);
+			logger.error("fail to execute query:" + sql, e);
 			// e.printStackTrace();
 			ConnectionManager.attemptClose(conn);
 		}
@@ -325,7 +324,7 @@ public class SensorManager {
 	public Sensor getSpecificSensorWithPlaceId(String placeId) {
 		Sensor sensor = null;
 		Connection conn = null;
-		PlaceManager placeManager = new PlaceManager(metaGraph,dataGraph);		
+		PlaceManager placeManager = new PlaceManager(metaGraph,dataGraph);
 		String sql = "sparql select ?sensor ?sensorType ?author  ?place "+
 				" from <"+ metaGraph +"> \n" +
 				"where{ "+
@@ -335,12 +334,12 @@ public class SensorManager {
 				   "?sensor <http://www.loa-cnr.it/ontologies/DUL.owl#hasLocation> <"+placeId+">."+
 				   "?sensor <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?sensorType."+
 //				   "?typeId <http://www.w3.org/2000/01/rdf-schema#label> ?sensorType."+
-//				   "?sensor <http://lsm.deri.ie/ont/lsm.owl#hasSourceType> ?sourceType."+	  
-				"}";				
+//				   "?sensor <http://lsm.deri.ie/ont/lsm.owl#hasSourceType> ?sourceType."+
+				"}";
 		try {
 			conn = ConnectionManager.getConnectionPool().getConnection();
 			Statement st = conn.createStatement();
-			logger.info("executing query:\n" + sql);
+			logger.debug("executing query:\n{}", sql);
 			if (st.execute(sql)) {
 				ResultSet rs = st.getResultSet();
 				while (rs.next()) {
@@ -369,19 +368,19 @@ public class SensorManager {
 		Connection conn = null;
 		String sql = "sparql select ?name ?sensorType ?author  ?place  "+
 				" from <"+ metaGraph +"> \n" +
-				"where{ "+				   
+				"where{ "+
 				   "<"+id+"> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?sensorType."+
 				   "?sensorType <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://purl.oclc.org/NET/ssnx/ssn#Sensor>."+
 				   "<"+id+"> <http://www.w3.org/ns/prov#wasGeneratedBy> ?author."+
 				   "<"+id+"> <http://www.loa-cnr.it/ontologies/DUL.owl#hasLocation> ?place."+
-				   "<"+id+"> <http://www.w3.org/2000/01/rdf-schema#label> ?name."+	  
-				"}";		 
-	
+				   "<"+id+"> <http://www.w3.org/2000/01/rdf-schema#label> ?name."+
+				"}";
+
 		try {
 			conn = ConnectionManager.getConnectionPool().getConnection();
 			PlaceManager placeManager = new PlaceManager(metaGraph, dataGraph);
 			Statement st = conn.createStatement();
-			logger.info("executing query:\n" + sql);
+			logger.debug("executing query:\n{}", sql);
 			if (st.execute(sql)) {
 				ResultSet rs = st.getResultSet();
 				while (rs.next()) {
@@ -415,16 +414,16 @@ public class SensorManager {
 				   "?sensor <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?sensorType."+
 				   "?sensorType <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://purl.oclc.org/NET/ssnx/ssn#Sensor>."+
 				   "?sensor <http://www.w3.org/ns/prov#wasGeneratedBy> ?author."+
-				   "?sensor <http://www.loa-cnr.it/ontologies/DUL.owl#hasLocation> ?place."+				   			  
+				   "?sensor <http://www.loa-cnr.it/ontologies/DUL.owl#hasLocation> ?place."+
 				   "?place <http://www.w3.org/2003/01/geo/wgs84_pos#lat> "+lat+";" +
 				   "<http://www.w3.org/2003/01/geo/wgs84_pos#long> "+lng+"." +
-				"}";		 
-		
+				"}";
+
 		try {
 			conn = ConnectionManager.getConnectionPool().getConnection();
 			PlaceManager placeManager = new PlaceManager(metaGraph, dataGraph);
 			Statement st = conn.createStatement();
-			logger.info("executing query:\n" + sql);
+			logger.debug("executing query:\n{}", sql);
 			if (st.execute(sql)) {
 				ResultSet rs = st.getResultSet();
 				while (rs.next()) {
@@ -455,7 +454,7 @@ public class SensorManager {
 		try {
 			conn = ConnectionManager.getConnectionPool().getConnection();
 			Statement st = conn.createStatement();
-			logger.info("executing query:\n" + sql);
+			logger.debug("executing query:\n{}", sql);
 			if (st.execute(sql)) {
 				ResultSet rs = st.getResultSet();
 				while (rs.next()) {
@@ -482,7 +481,7 @@ public class SensorManager {
 		try {
 			conn = ConnectionManager.getConnectionPool().getConnection();
 			Statement st = conn.createStatement();
-			logger.info("executing query:\n" + sql);
+			logger.debug("executing query:\n{}", sql);
 			if (st.execute(sql)) {
 				ResultSet rs = st.getResultSet();
 				while (rs.next()) {
@@ -521,7 +520,7 @@ public class SensorManager {
 		try {
 			conn = ConnectionManager.getConnectionPool().getConnection();
 			Statement st = conn.createStatement();
-			logger.info("executing query:\n" + sql);
+			logger.debug("executing query:\n{}", sql);
 			if (st.execute(sql)) {
 				ResultSet rs = st.getResultSet();
 				while (rs.next()) {
@@ -548,7 +547,7 @@ public class SensorManager {
 		try {
 			conn = ConnectionManager.getConnectionPool().getConnection();
 			Statement st = conn.createStatement();
-			logger.info("executing query:\n" + sql);
+			logger.debug("executing query:\n{}", sql);
 			if (st.execute(sql)) {
 				ResultSet rs = st.getResultSet();
 				while (rs.next()) {
@@ -584,7 +583,7 @@ public class SensorManager {
 					   "?sign <http://openiot.eu/ontology/ns/isObservedValueOf> ?obs."+
 					   "?sign rdf:type ?type." +
 					   "?sign <http://openiot.eu/ontology/ns/value> ?value."+
-					   "?sign <http://purl.oclc.org/NET/ssnx/ssn#observationResultTime> ?time."+					  
+					   "?sign <http://purl.oclc.org/NET/ssnx/ssn#observationResultTime> ?time."+
 					   " filter regex(?type,'"+readingType+"','i')"+
 					   " filter (?value" + oper + value +")" +
 					"}order by desc(?time) limit 1";
@@ -592,8 +591,8 @@ public class SensorManager {
 				sql= "sparql select ?obs"+
 						" from <"+ dataGraph +"> \n" +
 						"where{ "+
-						   "?obs <http://purl.oclc.org/NET/ssnx/ssn#observedBy>  <"+sensorId+">."+						   
-						   "?obs <http://purl.oclc.org/NET/ssnx/ssn#observationResultTime> ?time."+	
+						   "?obs <http://purl.oclc.org/NET/ssnx/ssn#observedBy>  <"+sensorId+">."+
+						   "?obs <http://purl.oclc.org/NET/ssnx/ssn#observationResultTime> ?time."+
 						"}order by desc(?time) limit 1";
 			}
 		}else{
@@ -605,7 +604,7 @@ public class SensorManager {
 						   "?sign <http://openiot.eu/ontology/ns/isObservedValueOf> ?obs."+
 						   "?sign rdf:type ?type." +
 						   "?sign <http://openiot.eu/ontology/ns/value> ?value."+
-						   "?sign <http://purl.oclc.org/NET/ssnx/ssn#observationResultTime> ?time."+					  
+						   "?sign <http://purl.oclc.org/NET/ssnx/ssn#observationResultTime> ?time."+
 						   " filter regex(?type,'"+readingType+"','i')"+
 						   " filter (?value" + oper + value +" && ?time "+timeOper+" \""+dateTime+"\"^^xsd:dateTime)" +
 						"}";
@@ -617,10 +616,10 @@ public class SensorManager {
 						   "?sign <http://openiot.eu/ontology/ns/isObservedValueOf> ?obs."+
 						   "?sign rdf:type ?type." +
 						   "?sign <http://openiot.eu/ontology/ns/value> ?value."+
-						   "?sign <http://purl.oclc.org/NET/ssnx/ssn#observationResultTime> ?time."+					  
+						   "?sign <http://purl.oclc.org/NET/ssnx/ssn#observationResultTime> ?time."+
 						   " filter regex(?type,'"+readingType+"','i')"+
 						   " filter (?time "+timeOper+" \""+dateTime+"\"^^xsd:dateTime)" +
-						"}";				
+						"}";
 			}
 		}
 		List<String> observations = new ArrayList<String>();
@@ -653,13 +652,13 @@ public class SensorManager {
 				   "?sign <http://openiot.eu/ontology/ns/isObservedValueOf> <"+observationId+">."+
 				   "?sign rdf:type ?type." +
 				   "?sign <http://openiot.eu/ontology/ns/value> ?value."+
-				   "OPTIONAL{?sign <http://openiot.eu/ontology/ns/unit> ?unit.}" +				  
+				   "OPTIONAL{?sign <http://openiot.eu/ontology/ns/unit> ?unit.}" +
 				   "OPTIONAL{?sign <http://www.w3.org/2000/01/rdf-schema#label> ?name.}"+
-				"}";			 
+				"}";
 		try{
-			conn = ConnectionManager.getConnectionPool().getConnection();	
+			conn = ConnectionManager.getConnectionPool().getConnection();
 			Statement st = conn.createStatement();
-			logger.info("executing query:\n" + sql);
+			logger.debug("executing query:\n{}", sql);
 			if (st.execute(sql)) {
 				ResultSet rs = st.getResultSet();
 				while (rs.next()) {
@@ -697,12 +696,12 @@ public class SensorManager {
 				   "?sensor <http://www.loa-cnr.it/ontologies/DUL.owl#hasLocation> ?place."+
 				   "?sensor rdf:type ?sensorType."+
 //				   "?typeId <http://www.w3.org/2000/01/rdf-schema#label> ?sensorType."+
-//				   "?sensor <http://lsm.deri.ie/ont/lsm.owl#hasSourceType> ?sourceType."+		  
-				"}";			 
+//				   "?sensor <http://lsm.deri.ie/ont/lsm.owl#hasSourceType> ?sourceType."+
+				"}";
 		try{
 			conn = ConnectionManager.getConnectionPool().getConnection();
 			Statement st = conn.createStatement();
-			logger.info("executing query:\n" + sql);
+			logger.debug("executing query:\n{}", sql);
 			if (st.execute(sql)) {
 				ResultSet rs = st.getResultSet();
 				while (rs.next()) {
@@ -739,18 +738,18 @@ public class SensorManager {
 					       "?observation <http://purl.oclc.org/NET/ssnx/ssn#observedBy>  <"+sensorURL+">. "+
 					       "?observation <http://purl.oclc.org/NET/ssnx/ssn#observationResultTime> ?time. "+
 					    "filter( ?time >\""+DateUtil.date2StandardString(fromTime)+"\"^^xsd:dateTime).} "+
-					  "} "+ 
+					  "} "+
 					  "?s <http://openiot.eu/ontology/ns/isObservedValueOf> ?observation. "+
 					  "?s <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?type. "+
 					  "?s <http://openiot.eu/ontology/ns/value> ?value."+
 					  "?s <http://purl.oclc.org/NET/ssnx/ssn#observationResultTime> ?time. "+
 					  "OPTIONAL{?s <http://www.w3.org/2000/01/rdf-schema#label> ?name.}"+
-					"}";			 
+					"}";
 		try{
-			conn = ConnectionManager.getConnectionPool().getConnection();		
+			conn = ConnectionManager.getConnectionPool().getConnection();
 			Statement st = conn.createStatement();
 			String sign = "";
-			logger.info("executing query:\n" + query);
+			logger.debug("executing query:\n{}", query);
 			if (st.execute(query)) {
 				ResultSet rs = st.getResultSet();
 				while (rs.next()) {
@@ -784,8 +783,8 @@ public class SensorManager {
 		try {
 			conn = ConnectionManager.getConnectionPool().getConnection();
 			Statement st = conn.createStatement();
-			logger.info("deleting sensor " + sensorURL + "\n");
-			logger.info("executing query:\n" + sql);
+			logger.info("deleting sensor " + sensorURL + "");
+			logger.debug("executing query:\n{}", sql);
 			st.execute(sql);
 			ConnectionManager.attemptClose(st);
 			ConnectionManager.attemptClose(conn);
@@ -816,8 +815,8 @@ public class SensorManager {
 		try {
 			conn = ConnectionManager.getConnectionPool().getConnection();
 			Statement st = conn.createStatement();
-			logger.info("get Role by Id\n");
-			logger.info("executing query:\n" + sql);
+			logger.info("get Role by Id");
+			logger.debug("executing query:\n{}", sql);
 			if (st.execute(sql)) {
 				ResultSet rs = st.getResultSet();
 				while (rs.next()) {
@@ -857,8 +856,8 @@ public class SensorManager {
 			// delete Role
 			conn = ConnectionManager.getConnectionPool().getConnection();
 			Statement st = conn.createStatement();
-			logger.info("deleting role by id \n");
-			logger.info("executing query:\n" + sql);
+			logger.info("deleting role by id ");
+			logger.debug("executing query:\n{}", sql);
 			st.execute(sql);
 			ConnectionManager.attemptClose(st);
 			ConnectionManager.attemptClose(conn);
@@ -878,8 +877,8 @@ public class SensorManager {
 		try {
 			conn = ConnectionManager.getConnectionPool().getConnection();
 			Statement st = conn.createStatement();
-			logger.info("get permissions for role\n");
-			logger.info("executing query:\n" + sql);
+			logger.info("get permissions for role");
+			logger.debug("executing query:\n{}", sql);
 			if (st.execute(sql)) {
 				ResultSet rs = st.getResultSet();
 				permissions = new ArrayList<Permission>();
@@ -931,8 +930,8 @@ public class SensorManager {
 		try {
 			conn = ConnectionManager.getConnectionPool().getConnection();
 			Statement st = conn.createStatement();
-			logger.info("deleting role from user \n");
-			logger.info("executing query:\n" + sql);
+			logger.info("deleting role from user ");
+			logger.debug("executing query:\n{}", sql);
 			st.execute(sql);
 			ConnectionManager.attemptClose(st);
 			ConnectionManager.attemptClose(conn);
@@ -959,8 +958,8 @@ public class SensorManager {
 		try {
 			conn = ConnectionManager.getConnectionPool().getConnection();
 			Statement st = conn.createStatement();
-			logger.info("get permission by id\n");
-			logger.info("executing query:\n" + sql);
+			logger.info("get permission by id");
+			logger.debug("executing query:\n{}", sql);
 			if (st.execute(sql)) {
 				ResultSet rs = st.getResultSet();
 				while (rs.next()) {
@@ -980,7 +979,7 @@ public class SensorManager {
 
 	/**
 	 * Deletes permission from the corresponding roles and then deletes the permission.
-	 * 
+	 *
 	 * @param perId
 	 * @return
 	 */
@@ -1001,8 +1000,8 @@ public class SensorManager {
 			// delete permission
 			conn = ConnectionManager.getConnectionPool().getConnection();
 			Statement st = conn.createStatement();
-			logger.info("deleting permission by id \n");
-			logger.info("executing query:\n" + sql);
+			logger.info("deleting permission by id ");
+			logger.debug("executing query:\n{}", sql);
 			st.execute(sql);
 			ConnectionManager.attemptClose(st);
 			ConnectionManager.attemptClose(conn);
@@ -1024,8 +1023,8 @@ public class SensorManager {
 		try {
 			conn = ConnectionManager.getConnectionPool().getConnection();
 			Statement st = conn.createStatement();
-			logger.info("deleting permission from roles\n");
-			logger.info("executing query:\n" + sql);
+			logger.info("deleting permission from roles");
+			logger.debug("executing query:\n{}", sql);
 			st.execute(sql);
 			ConnectionManager.attemptClose(st);
 			ConnectionManager.attemptClose(conn);
@@ -1052,8 +1051,8 @@ public class SensorManager {
 		try {
 			conn = ConnectionManager.getConnectionPool().getConnection();
 			Statement st = conn.createStatement();
-			logger.info("deleting permission from role\n");
-			logger.info("executing query:\n" + sql);
+			logger.info("deleting permission from role");
+			logger.debug("executing query:\n{}", sql);
 			st.execute(sql);
 			ConnectionManager.attemptClose(st);
 			ConnectionManager.attemptClose(conn);
@@ -1081,8 +1080,8 @@ public class SensorManager {
 		try {
 			conn = ConnectionManager.getConnectionPool().getConnection();
 			Statement st = conn.createStatement();
-			logger.info("getting OAuthUser by id \n");
-			logger.info("executing query:\n" + sql);
+			logger.info("getting OAuthUser by id ");
+			logger.debug("executing query:\n{}", sql);
 			if (st.execute(sql)) {
 				ResultSet rs = st.getResultSet();
 				if (rs.next()) {
@@ -1122,8 +1121,8 @@ public class SensorManager {
 		try {
 			conn = ConnectionManager.getConnectionPool().getConnection();
 			Statement st = conn.createStatement();
-			logger.info("getting user's roles\n");
-			logger.info("executing query:\n" + sql);
+			logger.info("getting user's roles");
+			logger.debug("executing query:\n{}", sql);
 			if (st.execute(sql)) {
 				ResultSet rs = st.getResultSet();
 				while (rs.next()) {
@@ -1154,8 +1153,8 @@ public class SensorManager {
 		try {
 			conn = ConnectionManager.getConnectionPool().getConnection();
 			Statement st = conn.createStatement();
-			logger.info("deleting user by id \n");
-			logger.info("executing query:\n" + sql);
+			logger.info("deleting user by id ");
+			logger.debug("executing query:\n{}", sql);
 			st.execute(sql);
 			ConnectionManager.attemptClose(st);
 			ConnectionManager.attemptClose(conn);
@@ -1189,8 +1188,8 @@ public class SensorManager {
 		try {
 			conn = ConnectionManager.getConnectionPool().getConnection();
 			Statement st = conn.createStatement();
-			logger.info("getting service by id \n");
-			logger.info("executing query:\n" + sql);
+			logger.info("getting service by id ");
+			logger.debug("executing query:\n{}", sql);
 			if (st.execute(sql)) {
 				ResultSet rs = st.getResultSet();
 				while (rs.next()) {
@@ -1246,8 +1245,8 @@ public class SensorManager {
 			deleteAllowedAttributesForService(serviceURL);
 			conn = ConnectionManager.getConnectionPool().getConnection();
 			Statement st = conn.createStatement();
-			logger.info("deleting service by id \n");
-			logger.info("executing query:\n" + sql);
+			logger.info("deleting service by id ");
+			logger.debug("executing query:\n{}", sql);
 			st.execute(sql);
 			ConnectionManager.attemptClose(st);
 			ConnectionManager.attemptClose(conn);
@@ -1274,8 +1273,8 @@ public class SensorManager {
 		try {
 			conn = ConnectionManager.getConnectionPool().getConnection();
 			Statement st = conn.createStatement();
-			logger.info("getting allowed attributes for service\n");
-			logger.info("executing query:\n" + sql);
+			logger.info("getting allowed attributes for service");
+			logger.debug("executing query:\n{}", sql);
 			if (st.execute(sql)) {
 				ResultSet rs = st.getResultSet();
 				while (rs.next()) {
@@ -1307,8 +1306,8 @@ public class SensorManager {
 		try {
 			conn = ConnectionManager.getConnectionPool().getConnection();
 			Statement st = conn.createStatement();
-			logger.info("deleting allowed attributes for service\n");
-			logger.info("executing query:\n" + sql);
+			logger.info("deleting allowed attributes for service");
+			logger.debug("executing query:\n{}", sql);
 			st.execute(sql);
 			ConnectionManager.attemptClose(st);
 			ConnectionManager.attemptClose(conn);
@@ -1342,8 +1341,8 @@ public class SensorManager {
 		try {
 			conn = ConnectionManager.getConnectionPool().getConnection();
 			Statement st = conn.createStatement();
-			logger.info("getting tiket scheduler by id\n");
-			logger.info("executing query:\n" + sql);
+			logger.info("getting tiket scheduler by id");
+			logger.debug("executing query:\n{}", sql);
 			if (st.execute(sql)) {
 				ResultSet rs = st.getResultSet();
 				while (rs.next()) {
@@ -1390,8 +1389,8 @@ public class SensorManager {
 		try {
 			conn = ConnectionManager.getConnectionPool().getConnection();
 			Statement st = conn.createStatement();
-			logger.info("deleting tiket scheduler by id\n");
-			logger.info("executing query:\n" + sql);
+			logger.info("deleting tiket scheduler by id");
+			logger.debug("executing query:\n{}", sql);
 			st.execute(sql);
 			ConnectionManager.attemptClose(st);
 			ConnectionManager.attemptClose(conn);
@@ -1423,8 +1422,8 @@ public class SensorManager {
 		try {
 			conn = ConnectionManager.getConnectionPool().getConnection();
 			Statement st = conn.createStatement();
-			logger.info("getting tiket by id\n");
-			logger.info("executing query:\n" + sql);
+			logger.info("getting tiket by id");
+			logger.debug("executing query:\n{}", sql);
 			if (st.execute(sql)) {
 				ResultSet rs = st.getResultSet();
 				while (rs.next()) {
@@ -1467,8 +1466,8 @@ public class SensorManager {
 		try {
 			conn = ConnectionManager.getConnectionPool().getConnection();
 			Statement st = conn.createStatement();
-			logger.info("deleting tiket by id\n");
-			logger.info("executing query:\n" + sql);
+			logger.info("deleting tiket by id");
+			logger.debug("executing query:\n{}", sql);
 			st.execute(sql);
 			ConnectionManager.attemptClose(st);
 			ConnectionManager.attemptClose(conn);
@@ -1495,8 +1494,8 @@ public class SensorManager {
 		try {
 			conn = ConnectionManager.getConnectionPool().getConnection();
 			Statement st = conn.createStatement();
-			logger.info("getting all service tiket\n");
-			logger.info("executing query:\n" + sql);
+			logger.info("getting all service tiket");
+			logger.debug("executing query:\n{}", sql);
 			if (st.execute(sql)) {
 				ResultSet rs = st.getResultSet();
 				ticketList = new ArrayList<LSMServiceTicketImpl>();
@@ -1518,7 +1517,7 @@ public class SensorManager {
 
 	/**
 	 * Returns the list of all LSMTicketGrantingTicketImpls
-	 * 
+	 *
 	 * @return
 	 */
 	public List<LSMTicketGrantingTicketImpl> getAllTicketGrantingTickets() {
@@ -1529,8 +1528,8 @@ public class SensorManager {
 		try {
 			conn = ConnectionManager.getConnectionPool().getConnection();
 			Statement st = conn.createStatement();
-			logger.info("getting all tiket granting ticket\n");
-			logger.info("executing query:\n" + sql);
+			logger.info("getting all tiket granting ticket");
+			logger.debug("executing query:\n{}", sql);
 			if (st.execute(sql)) {
 				ResultSet rs = st.getResultSet();
 				grantList = new ArrayList<LSMTicketGrantingTicketImpl>();
@@ -1552,7 +1551,7 @@ public class SensorManager {
 
 	/**
 	 * Returns the list of all LSMServiceTicketImpls
-	 * 
+	 *
 	 * @return
 	 */
 	public List<LSMServiceTicketImpl> getAllServiceTickets() {
@@ -1563,8 +1562,8 @@ public class SensorManager {
 		try {
 			conn = ConnectionManager.getConnectionPool().getConnection();
 			Statement st = conn.createStatement();
-			logger.info("getting all service tikets\n");
-			logger.info("executing query:\n" + sql);
+			logger.info("getting all service tikets");
+			logger.debug("executing query:\n{}", sql);
 			if (st.execute(sql)) {
 				ResultSet rs = st.getResultSet();
 				ticketList = new ArrayList<LSMServiceTicketImpl>();
@@ -1586,7 +1585,7 @@ public class SensorManager {
 
 	/**
 	 * Retrieves all LSMRegisteredServiceImpls
-	 * 
+	 *
 	 * @return
 	 */
 	public List<RegisteredService> getAllRegisteredServices() {
@@ -1597,8 +1596,8 @@ public class SensorManager {
 		try {
 			conn = ConnectionManager.getConnectionPool().getConnection();
 			Statement st = conn.createStatement();
-			logger.info("getting all registered services\n");
-			logger.info("executing query:\n" + sql);
+			logger.info("getting all registered services");
+			logger.debug("executing query:\n{}", sql);
 			if (st.execute(sql)) {
 				ResultSet rs = st.getResultSet();
 				serviceList = new ArrayList<RegisteredService>();

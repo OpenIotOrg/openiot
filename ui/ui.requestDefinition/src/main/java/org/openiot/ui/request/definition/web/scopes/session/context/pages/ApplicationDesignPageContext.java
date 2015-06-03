@@ -1,6 +1,6 @@
 /**
  *    Copyright (c) 2011-2014, OpenIoT
- *   
+ *
  *    This file is part of OpenIoT.
  *
  *    OpenIoT is free software: you can redistribute it and/or modify
@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
-import java.util.logging.Level;
 
 import org.apache.commons.lang3.StringUtils;
 import org.openiot.commons.sensortypes.model.MeasurementCapability;
@@ -33,7 +32,6 @@ import org.openiot.commons.sensortypes.model.SensorType;
 import org.openiot.commons.sensortypes.model.SensorTypes;
 import org.openiot.ui.request.commons.annotations.scanners.GraphNodeScanner;
 import org.openiot.ui.request.commons.interfaces.GraphModel;
-import org.openiot.ui.request.commons.logging.LoggerService;
 import org.openiot.ui.request.commons.models.OAMOManager;
 import org.openiot.ui.request.commons.nodes.base.DefaultGraphNodeEndpoint;
 import org.openiot.ui.request.commons.nodes.enums.AnchorType;
@@ -48,12 +46,18 @@ import org.openiot.ui.request.definition.web.scopes.session.base.DisposableConte
 import org.primefaces.extensions.model.dynaform.DynaFormModel;
 import org.primefaces.model.StreamedContent;
 import org.primefaces.model.UploadedFile;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * 
+ *
  * @author Achilleas Anagnostopoulos (aanag) email: aanag@sensap.eu
  */
 public class ApplicationDesignPageContext extends DisposableContext {
+	/**
+	 * The logger for this class.
+	 */
+	private static final Logger LOGGER = LoggerFactory.getLogger(ApplicationDesignPageContext.class);
 
 	private OAMOManager appManager;
 	// The Node graph model
@@ -101,7 +105,7 @@ public class ApplicationDesignPageContext extends DisposableContext {
 	public OAMOManager getAppManager() {
 		return appManager;
 	}
-	
+
 	public void setAppManager(OAMOManager appManager) {
 		this.appManager = appManager;
 	}
@@ -365,16 +369,16 @@ public class ApplicationDesignPageContext extends DisposableContext {
 		availableNodesByTypeMap.clear();
 		availableNodesByTypeMap.put("SOURCE", new ArrayList<GraphNode>());
 
-		LoggerService.log(Level.FINE, "[ServiceDesignPageContext] Scanning for available graph node classes");
+		LOGGER.debug("[ServiceDesignPageContext] Scanning for available graph node classes");
 		Set<Class<?>> graphNodeClasses = GraphNodeScanner.detectGraphNodeClasses("org.openiot.ui.request.definition.web.model.nodes.impl");
 		if (graphNodeClasses == null) {
-			LoggerService.log(Level.WARNING, "[ServiceDesignPageContext] No graph node classes detected");
+			LOGGER.warn("[ServiceDesignPageContext] No graph node classes detected");
 			return;
 		}
 
 		for (Class<?> classDefinition : graphNodeClasses) {
 			try {
-				LoggerService.log(Level.FINE, "[ServiceDesignPageContext]   Detected graph node class: " + classDefinition.getCanonicalName());
+				LOGGER.debug("[ServiceDesignPageContext]   Detected graph node class: " + classDefinition.getCanonicalName());
 				GraphNode instance = (GraphNode) (classDefinition.newInstance());
 
 				// Lookup type
@@ -391,7 +395,7 @@ public class ApplicationDesignPageContext extends DisposableContext {
 				groupList.add(instance);
 
 			} catch (Throwable ex) {
-				LoggerService.log(ex);
+				LOGGER.error("", ex);
 			}
 		}
 	}

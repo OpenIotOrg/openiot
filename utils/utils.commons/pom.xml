@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
-<!-- 
+<!--
      Copyright (c) 2011-2014, OpenIoT
-     
+
      This file is part of OpenIoT.
- 
+
      OpenIoT is free software: you can redistribute it and/or modify
      it under the terms of the GNU Lesser General Public License as published by
      the Free Software Foundation, version 3 of the License.
@@ -13,24 +12,20 @@
      but WITHOUT ANY WARRANTY; without even the implied warranty of
      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
      GNU Lesser General Public License for more details.
- 
+
      You should have received a copy of the GNU Lesser General Public License
      along with OpenIoT.  If not, see <http://www.gnu.org/licenses/>.
- 
+
       Contact: OpenIoT mailto: info@openiot.eu
 / -->
-
 <!-- Author: Nikos Kefalakis (nkef@ait.edu.gr) -->
-
-
-
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-   
+
   <!-- =========================================================== -->
   <!-- Basics -->
   <!-- =========================================================== -->
-   
+
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.openiot</groupId>
     <artifactId>utils.commons</artifactId>
@@ -39,6 +34,13 @@
     <name>OpenIoT Common files</name>
     <description>OpenIoT Commons library</description>
     <url>https://github.com/OpenIotOrg/openiot</url>
+
+	<parent>
+		<groupId>org.openiot</groupId>
+		<artifactId>openiot</artifactId>
+		<version>0.2-SNAPSHOT</version>
+		<relativePath>../../pom.xml</relativePath>
+	</parent>
 
 	<licenses>
         <license>
@@ -54,35 +56,19 @@
   <!-- =========================================================== -->
 
     <properties>
-      
+
         <!-- other plugin versions -->
         <version.compiler.plugin>2.3.2</version.compiler.plugin>
         <version.surefire.plugin>2.4.3</version.surefire.plugin>
 
         <!-- maven-compiler-plugin -->
         <maven.compiler.target>1.7</maven.compiler.target>
-        <!-- 
+        <!--
         	Java 1.7+ throws compilation errors like 'error: unmappable character for encoding UTF8'
         	for JAXB-generated classes. We need to force the source level to 1.5 to be able to compile
 	-->
         <maven.compiler.source>1.5</maven.compiler.source>
     </properties>
-
-  <!-- =========================================================== -->
-  <!-- Parent -->
-  <!-- =========================================================== -->
-             <!-- to be filled -->
-
-
-
-
-
-
-
-
-
-
-
 
   <!-- =========================================================== -->
   <!-- Dependencies -->
@@ -93,32 +79,15 @@
         <dependencies>
          </dependencies>
     </dependencyManagement>
-    
-    
-    
-    <dependencies>
-       
-		<!-- ======== LogBack Dependencies ========== -->
 
 
-       <dependency>
-         <groupId>ch.qos.logback</groupId>
-         <artifactId>logback-classic</artifactId>
-         <version>1.0.11</version>
-         <scope>provided</scope>
-       </dependency>
-
-         <!-- Apache commons-logging Required By Sesame -->
-<!--
+	<dependencies>
+		<!-- ======== Logging Dependencies ========== -->
 		<dependency>
-			<groupId>commons-logging</groupId>
-			<artifactId>commons-logging</artifactId>
-			<version>1.1.2</version>
-      <scope>provided</scope>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
 		</dependency>
- -->
-
-    </dependencies>
+	</dependencies>
 
 
   <!-- =========================================================== -->
@@ -140,7 +109,7 @@
                     <target>${maven.compiler.target}</target>
                 </configuration>
             </plugin>
-            
+
         </plugins>
 
     </build>
@@ -151,13 +120,13 @@
 
 
     <profiles>
-    
-<!--     
+
+<!--
         <profile>
  -->
-            <!-- The default profile skips all tests, though you can tune it to run 
+            <!-- The default profile skips all tests, though you can tune it to run
                 just unit tests based on a custom pattern -->
-            <!-- Separate profiles are provided for running all tests, including Arquillian 
+            <!-- Separate profiles are provided for running all tests, including Arquillian
                 tests that execute in the specified container -->
 <!--             <id>default</id>
             <activation>
@@ -176,16 +145,16 @@
             </build>
         </profile>
 
- -->
-    </profiles>
-    
-  <!-- =========================================================== -->
-  <!-- Repositories -->
-  <!-- =========================================================== -->
+		-->
+	</profiles>
 
-  <repositories>
-  </repositories>
+	<!-- =========================================================== -->
+	<!-- Repositories -->
+	<!-- =========================================================== -->
 
-  <pluginRepositories>
-  </pluginRepositories>
+	<repositories>
+	</repositories>
+
+	<pluginRepositories>
+	</pluginRepositories>
 </project>

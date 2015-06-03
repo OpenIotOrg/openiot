@@ -1,6 +1,6 @@
 /**
  *    Copyright (c) 2011-2014, OpenIoT
- *   
+ *
  *    This file is part of OpenIoT.
  *
  *    OpenIoT is free software: you can redistribute it and/or modify
@@ -23,6 +23,7 @@ package org.openiot.ui.request.presentation.web.scopes.application;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.logging.Level;
+
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
@@ -30,22 +31,25 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 
 import org.openiot.ui.request.presentation.web.scopes.session.SessionBean;
-import org.openiot.ui.request.commons.logging.LoggerService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * 
+ *
  * @author Achilleas Anagnostopoulos (aanag) email: aanag@sensap.eu
  */
 @ManagedBean(name = "applicationBean", eager = true)
 @ApplicationScoped
 public class ApplicationBean implements Serializable {
+	/**
+	 * The logger for this class.
+	 */
+	private static final Logger LOGGER = LoggerFactory.getLogger(ApplicationBean.class);
 	private static final long serialVersionUID = 1L;
 
 	@PostConstruct
 	public void init() {
-		LoggerService.setApplicationName("OpenIoT:RequestPresentation");
-		LoggerService.setLevel(Level.FINE);
-		LoggerService.log(Level.INFO, "Initializing");
+		LOGGER.info("Initializing");
 	}
 
 	public void redirect(String location) {
@@ -55,7 +59,7 @@ public class ApplicationBean implements Serializable {
 			String url = extContext.encodeActionURL(ctx.getApplication().getViewHandler().getActionURL(ctx, location));
 			extContext.redirect(url);
 		} catch (IOException ex) {
-			LoggerService.log(ex);
+			LOGGER.error("", ex);
 		} catch (java.lang.IllegalStateException ex) {
 		}
 	}

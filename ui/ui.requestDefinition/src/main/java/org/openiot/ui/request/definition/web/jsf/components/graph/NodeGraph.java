@@ -1,6 +1,6 @@
 /**
  *    Copyright (c) 2011-2014, OpenIoT
- *   
+ *
  *    This file is part of OpenIoT.
  *
  *    OpenIoT is free software: you can redistribute it and/or modify
@@ -39,13 +39,14 @@ import javax.faces.event.AjaxBehaviorEvent;
 import javax.faces.event.FacesEvent;
 
 import org.openiot.ui.request.commons.interfaces.GraphModel;
-import org.openiot.ui.request.commons.logging.LoggerService;
 import org.openiot.ui.request.commons.nodes.interfaces.GraphNode;
 import org.openiot.ui.request.commons.nodes.interfaces.GraphNodeConnection;
 import org.openiot.ui.request.commons.nodes.interfaces.GraphNodeEndpoint;
 import org.openiot.ui.request.definition.web.jsf.components.events.NodeInsertedEvent;
 import org.primefaces.component.api.Widget;
 import org.primefaces.util.Constants;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -58,7 +59,10 @@ import org.primefaces.util.Constants;
     @ResourceDependency(library = "node-graph", name = "1-node-graph.js"),
     @ResourceDependency(library = "node-graph", name = "node-graph.css"),})
 public class NodeGraph extends UIComponentBase implements Widget, ClientBehaviorHolder {
-
+	/**
+	 * The logger for this class.
+	 */
+	private static final Logger LOGGER = LoggerFactory.getLogger(NodeGraph.class);
     public static final String COMPONENT_TYPE = "org.openiot.ui.request.definition.web.jsf.components.graph.NodeGraph";
     public static final String COMPONENT_FAMILY = "org.openiot.ui.request.definition.web.jsf.components.graph";
     private static final String DEFAULT_RENDERER = "org.openiot.ui.request.definition.web.jsf.components.graph.NodeGraphRenderer";
@@ -246,7 +250,7 @@ public class NodeGraph extends UIComponentBase implements Widget, ClientBehavior
                     super.queueEvent(wrappedEvent);
                     return;
                 } catch (Throwable ex) {
-                    LoggerService.log("Error instanciating node of type: " + type, ex);
+                    LOGGER.error("Error instanciating node of type: " + type, ex);
                     return;
                 }
             } else if ("delete".equals(eventName)) {

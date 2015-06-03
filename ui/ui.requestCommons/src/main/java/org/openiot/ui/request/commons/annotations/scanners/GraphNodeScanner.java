@@ -1,6 +1,6 @@
 /**
  *    Copyright (c) 2011-2014, OpenIoT
- *   
+ *
  *    This file is part of OpenIoT.
  *
  *    OpenIoT is free software: you can redistribute it and/or modify
@@ -30,19 +30,23 @@ import org.openiot.ui.request.commons.annotations.Endpoints;
 import org.openiot.ui.request.commons.annotations.GraphNodeClass;
 import org.openiot.ui.request.commons.annotations.NodeProperties;
 import org.openiot.ui.request.commons.annotations.NodeProperty;
-import org.openiot.ui.request.commons.logging.LoggerService;
 import org.openiot.ui.request.commons.nodes.base.DefaultGraphNodeEndpoint;
 import org.openiot.ui.request.commons.nodes.base.DefaultGraphNodeProperty;
 import org.openiot.ui.request.commons.nodes.interfaces.GraphNodeEndpoint;
 import org.openiot.ui.request.commons.nodes.interfaces.GraphNodeProperty;
 import org.reflections.Reflections;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author Achilleas Anagnostopoulos (aanag) email: aanag@sensap.eu
  */
 public class GraphNodeScanner {
-
+	/**
+	 * The logger for this class.
+	 */
+	private static final Logger LOGGER = LoggerFactory.getLogger(GraphNodeScanner.class);
     public static List<GraphNodeProperty> detectPropertyDefinitions(Class<?> clazz) {
         List<GraphNodeProperty> propertyDefinitions = new ArrayList<GraphNodeProperty>();
         if (!clazz.isAnnotationPresent(NodeProperties.class)) {
@@ -107,11 +111,11 @@ public class GraphNodeScanner {
         			setIt.remove();
         		}
         	}
-            return detectedClasses; 
+            return detectedClasses;
         } catch (Exception ex) {
-            LoggerService.log(ex);
+            LOGGER.warn("Exception in detectGraphNodeClasses:", ex);
         }
-        
+
         return null;
     }
 }

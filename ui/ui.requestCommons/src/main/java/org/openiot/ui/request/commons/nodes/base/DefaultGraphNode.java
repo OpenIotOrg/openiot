@@ -1,23 +1,22 @@
 /**
- *    Copyright (c) 2011-2014, OpenIoT
- *   
- *    This file is part of OpenIoT.
+ * Copyright (c) 2011-2014, OpenIoT
  *
- *    OpenIoT is free software: you can redistribute it and/or modify
- *    it under the terms of the GNU Lesser General Public License as published by
- *    the Free Software Foundation, version 3 of the License.
+ * This file is part of OpenIoT.
  *
- *    OpenIoT is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    GNU Lesser General Public License for more details.
+ * OpenIoT is free software: you can redistribute it and/or modify it under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation, version 3 of the License.
  *
- *    You should have received a copy of the GNU Lesser General Public License
- *    along with OpenIoT.  If not, see <http://www.gnu.org/licenses/>.
+ * OpenIoT is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
  *
- *     Contact: OpenIoT mailto: info@openiot.eu
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with OpenIoT. If not, see <http://www.gnu.org/licenses/>.
+ *
+ * Contact: OpenIoT mailto: info@openiot.eu
  */
-
 package org.openiot.ui.request.commons.nodes.base;
 
 import java.io.Serializable;
@@ -36,18 +35,24 @@ import org.openiot.ui.request.commons.annotations.GraphNodeClass;
 import org.openiot.ui.request.commons.annotations.scanners.GraphNodeScanner;
 import org.openiot.ui.request.commons.factory.GraphFactory;
 import org.openiot.ui.request.commons.interfaces.GraphModel;
-import org.openiot.ui.request.commons.logging.LoggerService;
 import org.openiot.ui.request.commons.models.ObservableMap;
 import org.openiot.ui.request.commons.nodes.interfaces.GraphNode;
 import org.openiot.ui.request.commons.nodes.interfaces.GraphNodeConnection;
 import org.openiot.ui.request.commons.nodes.interfaces.GraphNodeEndpoint;
 import org.openiot.ui.request.commons.nodes.interfaces.GraphNodeProperty;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * 
+ *
  * @author Achilleas Anagnostopoulos (aanag) email: aanag@sensap.eu
  */
 public class DefaultGraphNode implements GraphNode, Serializable {
+
+	/**
+	 * The logger for this class.
+	 */
+	private static final Logger LOGGER = LoggerFactory.getLogger(DefaultGraphNode.class);
 	private static final long serialVersionUID = 1L;
 
 	private String UID = "graphNode_" + System.nanoTime();
@@ -83,10 +88,12 @@ public class DefaultGraphNode implements GraphNode, Serializable {
 		}
 	}
 
+	@Override
 	public void setGraphModel(GraphModel model) {
 		this.graphModel = model;
 	}
 
+	@Override
 	public GraphModel getGraphModel() {
 		return this.graphModel;
 	}
@@ -102,14 +109,17 @@ public class DefaultGraphNode implements GraphNode, Serializable {
 		}
 	}
 
+	@Override
 	public String getUID() {
 		return UID;
 	}
 
+	@Override
 	public void setUID(String UID) {
 		this.UID = UID;
 	}
 
+	@Override
 	public String getLabel() {
 		return label;
 	}
@@ -118,6 +128,7 @@ public class DefaultGraphNode implements GraphNode, Serializable {
 		this.label = label;
 	}
 
+	@Override
 	public String getType() {
 		return type;
 	}
@@ -126,14 +137,17 @@ public class DefaultGraphNode implements GraphNode, Serializable {
 		this.type = type;
 	}
 
+	@Override
 	public List<GraphNodeProperty> getPropertyDefinitions() {
 		return propertyDefinitions;
 	}
 
+	@Override
 	public void setPropertyDefinitions(List<GraphNodeProperty> propertyDefinitions) {
 		this.propertyDefinitions = propertyDefinitions;
 	}
 
+	@Override
 	public GraphNodeProperty getPropertyByName(String name) {
 		for (GraphNodeProperty property : propertyDefinitions) {
 			if (property.getName().equals(name)) {
@@ -144,6 +158,7 @@ public class DefaultGraphNode implements GraphNode, Serializable {
 		return null;
 	}
 
+	@Override
 	public Map<String, Object> getPropertyValueMap() {
 		return propertyMap;
 	}
@@ -152,14 +167,17 @@ public class DefaultGraphNode implements GraphNode, Serializable {
 		propertyMap.put(propertyKey, propertyValue);
 	}
 
+	@Override
 	public List<GraphNodeEndpoint> getEndpointDefinitions() {
 		return endpointDefinitions;
 	}
 
+	@Override
 	public void setEndpointDefinitions(List<GraphNodeEndpoint> endpointDefinitions) {
 		this.endpointDefinitions = endpointDefinitions;
 	}
 
+	@Override
 	public GraphNodeEndpoint getEndpointByLabel(String label) {
 		for (GraphNodeEndpoint ep : endpointDefinitions) {
 			if (ep.getLabel().equals(label)) {
@@ -178,6 +196,7 @@ public class DefaultGraphNode implements GraphNode, Serializable {
 		this.propertyMap.deleteObserver(o);
 	}
 
+	@Override
 	public GraphNode getCopy() {
 		DefaultGraphNode copy = null;
 		try {
@@ -205,6 +224,7 @@ public class DefaultGraphNode implements GraphNode, Serializable {
 		return copy;
 	}
 
+	@Override
 	public JSONObject toJSON() {
 		JSONObject spec = new JSONObject();
 		try {
@@ -232,20 +252,21 @@ public class DefaultGraphNode implements GraphNode, Serializable {
 			for (Map.Entry<String, Object> entry : propertyMap.entrySet()) {
 				Class javaType = getPropertyByName(entry.getKey()).getJavaType();
 				// Convert date to long
-				if( javaType.isAssignableFrom(Date.class)){
-					propertyValues.put(entry.getKey(), ((Date)entry.getValue()).getTime());
-				}else{
+				if (javaType.isAssignableFrom(Date.class)) {
+					propertyValues.put(entry.getKey(), ((Date) entry.getValue()).getTime());
+				} else {
 					propertyValues.put(entry.getKey(), entry.getValue());
 				}
 			}
 			spec.put("propertyValues", propertyValues);
 
 		} catch (JSONException ex) {
-			LoggerService.log(ex);
+			LOGGER.error("", ex);
 		}
 		return spec;
 	}
 
+	@Override
 	public void importJSON(JSONObject spec) throws JSONException {
 		setUID(spec.getString("uid"));
 		setType(spec.getString("type"));
@@ -280,17 +301,17 @@ public class DefaultGraphNode implements GraphNode, Serializable {
 				}
 				this.propertyMap.getWrappedMap().put(key, list);
 			} else {
-				if( javaType.isAssignableFrom(Date.class) ){
+				if (javaType.isAssignableFrom(Date.class)) {
 					this.propertyMap.getWrappedMap().put(key, new Date(propertyValues.optLong(key)));
-				}else{
+				} else {
 					this.propertyMap.getWrappedMap().put(key, propertyValues.optString(key));
 				}
 			}
 		}
-		
+
 		// Trigger refresh
-		if( this instanceof Observer){
-			((Observer)this).update(this.propertyMap, null);
+		if (this instanceof Observer) {
+			((Observer) this).update(this.propertyMap, null);
 		}
 	}
 

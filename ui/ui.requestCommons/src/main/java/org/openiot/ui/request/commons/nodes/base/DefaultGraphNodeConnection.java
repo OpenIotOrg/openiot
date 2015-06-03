@@ -1,6 +1,6 @@
 /**
  *    Copyright (c) 2011-2014, OpenIoT
- *   
+ *
  *    This file is part of OpenIoT.
  *
  *    OpenIoT is free software: you can redistribute it and/or modify
@@ -24,16 +24,21 @@ import java.io.Serializable;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.openiot.ui.request.commons.logging.LoggerService;
 import org.openiot.ui.request.commons.nodes.interfaces.GraphNode;
 import org.openiot.ui.request.commons.nodes.interfaces.GraphNodeConnection;
 import org.openiot.ui.request.commons.nodes.interfaces.GraphNodeEndpoint;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author Achilleas Anagnostopoulos (aanag) email: aanag@sensap.eu
  */
 public class DefaultGraphNodeConnection implements GraphNodeConnection, Serializable {
+	/**
+	 * The logger for this class.
+	 */
+	private static final Logger LOGGER = LoggerFactory.getLogger(DefaultGraphNodeConnection.class);
 	private static final long serialVersionUID = 1L;
 
     private String UID = "graphNodeConnection_" + System.nanoTime();
@@ -52,46 +57,57 @@ public class DefaultGraphNodeConnection implements GraphNodeConnection, Serializ
         this.destinationEndpoint = destinationEndpoint;
     }
 
+	@Override
     public String getUID() {
         return UID;
     }
 
+	@Override
     public void setUID(String UID) {
         this.UID = UID;
     }
 
+	@Override
     public GraphNode getSourceNode() {
         return sourceNode;
     }
 
+	@Override
     public GraphNodeEndpoint getSourceEndpoint() {
         return sourceEndpoint;
     }
 
+	@Override
     public GraphNode getDestinationNode() {
         return destinationNode;
     }
 
+	@Override
     public GraphNodeEndpoint getDestinationEndpoint() {
         return destinationEndpoint;
     }
 
+	@Override
     public void setSourceNode(GraphNode sourceNode) {
         this.sourceNode = sourceNode;
     }
 
+	@Override
     public void setDestinationNode(GraphNode destinationNode) {
         this.destinationNode = destinationNode;
     }
 
+	@Override
     public void setSourceEndpoint(GraphNodeEndpoint sourceEndpoint) {
         this.sourceEndpoint = sourceEndpoint;
     }
 
+	@Override
     public void setDestinationEndpoint(GraphNodeEndpoint destinationEndpoint) {
         this.destinationEndpoint = destinationEndpoint;
     }
 
+	@Override
     public JSONObject toJSON(){
     	JSONObject spec = new JSONObject();
     	try{
@@ -101,16 +117,17 @@ public class DefaultGraphNodeConnection implements GraphNodeConnection, Serializ
     		spec.put("srcEndpoint", sourceEndpoint != null ? sourceEndpoint.getUID() : null);
     		spec.put("dstNode", destinationNode != null ? destinationNode.getUID() : null);
     		spec.put("dstEndpoint", destinationEndpoint != null ? destinationEndpoint.getUID() : null);
-    	
+
     	}catch(JSONException ex){
-    		LoggerService.log(ex);
+    		LOGGER.error("", ex);
     	}
-    	
+
     	return spec;
     }
 
+	@Override
     public void importJSON(JSONObject spec) throws JSONException{
     	setUID(spec.getString("uid"));
     }
-    
+
 }

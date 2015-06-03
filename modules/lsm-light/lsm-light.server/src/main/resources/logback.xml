@@ -26,18 +26,11 @@
 	</appender>
 
 
-	<logger name="org.openiot.lsm" level="DEBUG" additivity="false">
-		<appender-ref ref="STDOUT" />
-		<appender-ref ref="file" />
-	</logger>
-	
-	
-	<logger name="org.openiot.security.client" level="DEBUG" additivity="false">
-		<appender-ref ref="STDOUT" />
-		<appender-ref ref="file" />
-	</logger>
+	<logger name="org.openiot.lsm" level="DEBUG" />
+	<logger name="org.openiot.security.client" level="INFO" />
+	<logger name="org.openiot.lsm.manager.SensorManager" level="INFO" />
 
-	<root level="debug">
+	<root level="INFO">
 		<appender-ref ref="STDOUT" />
 		<appender-ref ref="file" />
 	</root>

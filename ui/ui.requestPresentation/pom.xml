@@ -1,15 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- /** * Copyright (c) 2011-2014, OpenIoT * * This library is free software; 
-	you can redistribute it and/or * modify it either under the terms of the 
-	GNU Lesser General Public * License version 2.1 as published by the Free 
-	Software Foundation * (the "LGPL"). If you do not alter this * notice, a 
-	recipient may use your version of this file under the LGPL. * * You should 
-	have received a copy of the LGPL along with this library * in the file COPYING-LGPL-2.1; 
-	if not, write to the Free Software * Foundation, Inc., 59 Temple Place, Suite 
-	330, Boston, MA 02111-1307 USA * * This software is distributed on an "AS 
-	IS" basis, WITHOUT WARRANTY * OF ANY KIND, either express or implied. See 
-	the LGPL for * the specific language governing rights and limitations. * 
-	* Contact: OpenIoT mailto: info@openiot.eu */ -->
+<!--
+     Copyright (c) 2011-2014, OpenIoT
+
+     This file is part of OpenIoT.
+
+     OpenIoT is free software: you can redistribute it and/or modify
+     it under the terms of the GNU Lesser General Public License as published by
+     the Free Software Foundation, version 3 of the License.
+
+     OpenIoT is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU Lesser General Public License for more details.
+
+     You should have received a copy of the GNU Lesser General Public License
+     along with OpenIoT.  If not, see <http://www.gnu.org/licenses/>.
+
+	  Contact: OpenIoT mailto: info@openiot.eu
+/ -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
@@ -24,6 +32,13 @@
 	<version>0.0.1</version>
 	<name>OpenIoT request presentation web app</name>
 	<url>https://github.com/OpenIotOrg/openiot</url>
+
+	<parent>
+		<groupId>org.openiot</groupId>
+		<artifactId>openiot</artifactId>
+		<version>0.2-SNAPSHOT</version>
+		<relativePath>../../pom.xml</relativePath>
+	</parent>
 
 	<licenses>
 		<license>
@@ -73,27 +88,24 @@
 		<dependency>
 			<groupId>org.openiot</groupId>
 			<artifactId>utils.commons</artifactId>
-			<version>0.0.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.openiot</groupId>
 			<artifactId>ui.requestCommons</artifactId>
-			<version>0.0.1</version>
 		</dependency>
 
-		
+
 		<!-- To Solve JAXB Dependency. Need Moxy persistence API which is not part of eclipse -->
 		<dependency>
-		    <groupId>org.eclipse.persistence</groupId>
-    		<artifactId>org.eclipse.persistence.moxy</artifactId>
-    		<version>2.5.1</version>
+			<groupId>org.eclipse.persistence</groupId>
+			<artifactId>org.eclipse.persistence.moxy</artifactId>
+			<version>2.5.1</version>
 		</dependency>
 		<!-- MISC -->
 
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>3.8.1</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -147,32 +159,45 @@
 			<artifactId>jaxb-impl</artifactId>
 			<version>2.1</version>
 		</dependency>
-		
+
 		<!-- To Solve JAXB Dependency error. Need Moxy persistence API -->
-        <dependency>
-            <groupId>org.eclipse.persistence</groupId>
-            <artifactId>org.eclipse.persistence.moxy</artifactId>
-        	<version>2.5.1</version>
-         </dependency>
-         
+		<dependency>
+			<groupId>org.eclipse.persistence</groupId>
+			<artifactId>org.eclipse.persistence.moxy</artifactId>
+			<version>2.5.1</version>
+		</dependency>
+
 		<!-- resteasy -->
 		<dependency>
 			<groupId>org.jboss.resteasy</groupId>
 			<artifactId>resteasy-jaxrs</artifactId>
 			<version>2.3.1.GA</version>
+			<exclusions>
+				<exclusion>
+					<groupId>commons-logging</groupId>
+					<artifactId>commons-logging</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>net.bull.javamelody</groupId>
 			<artifactId>javamelody-core</artifactId>
 			<version>1.45.0</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.openiot</groupId>
 			<artifactId>security.client</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
-		
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>jcl-over-slf4j</artifactId>
+		</dependency>
+
 	</dependencies>
 
 
@@ -182,7 +207,7 @@
 	<!-- =========================================================== -->
 
 	<build>
-		<!-- Maven will append the version to the finalName (which is the name 
+		<!-- Maven will append the version to the finalName (which is the name
 		given to the generated war, and hence the context root) -->
 		<finalName>${project.artifactId}</finalName>
 		<plugins>
@@ -223,11 +248,11 @@
 
 	<profiles>
 		<profile>
-			<!-- When built in OpenShift the 'openshift' profile will be used when 
+			<!-- When built in OpenShift the 'openshift' profile will be used when
 			invoking mvn. -->
-			<!-- Use this profile for any OpenShift specific customization your app 
+			<!-- Use this profile for any OpenShift specific customization your app
 			will need. -->
-			<!-- By default that is to put the resulting archive into the 'deployments' 
+			<!-- By default that is to put the resulting archive into the 'deployments'
 			folder. -->
 			<!-- http://maven.apache.org/guides/mini/guide-building-for-different-environments.html -->
 			<id>openshift</id>

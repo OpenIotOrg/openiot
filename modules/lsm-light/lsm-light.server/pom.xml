@@ -10,6 +10,13 @@
 	<description>The LSM server for OpenIoT</description>
 	<url>https://github.com/OpenIotOrg/openiot</url>
 
+	<parent>
+		<groupId>org.openiot</groupId>
+		<artifactId>openiot</artifactId>
+		<version>0.2-SNAPSHOT</version>
+		<relativePath>../../../pom.xml</relativePath>
+	</parent>
+
 	<licenses>
 		<license>
 			<name>GNU Lesser General Public License, version 2.1</name>
@@ -77,7 +84,6 @@
 		<dependency>
 			<groupId>org.openiot</groupId>
 			<artifactId>utils.commons</artifactId>
-			<version>0.0.1</version>
 		</dependency>
 
 		<!-- ======== CDI API Dependencies ========== -->
@@ -206,7 +212,6 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.11</version>
 			<scope>compile</scope>
 		</dependency>
 
@@ -226,12 +231,10 @@
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
-			<version>1.1.2</version>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>log4j-over-slf4j</artifactId>
-			<version>1.6.4</version>
 		</dependency>
 
 
@@ -247,20 +250,17 @@
 		<dependency>
 			<groupId>org.openiot</groupId>
 			<artifactId>security.client</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 
 		<!-- ======== lsm-light.client must come after security.client for class loading issues! ========== -->
 		<dependency>
 			<groupId>org.openiot</groupId>
 			<artifactId>lsm-light.client</artifactId>
-			<version>0.0.1</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
-			<version>1.7.1</version>
 			<scope>compile</scope>
 		</dependency>
 

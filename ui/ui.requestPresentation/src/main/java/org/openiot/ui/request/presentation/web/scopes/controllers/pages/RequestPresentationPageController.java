@@ -1,6 +1,6 @@
 /**
  *    Copyright (c) 2011-2014, OpenIoT
- *   
+ *
  *    This file is part of OpenIoT.
  *
  *    OpenIoT is free software: you can redistribute it and/or modify
@@ -25,7 +25,6 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -41,10 +40,8 @@ import org.openiot.commons.osdspec.model.PresentationAttr;
 import org.openiot.commons.sdum.serviceresultset.model.SdumServiceResultSet;
 import org.openiot.security.client.AccessControlUtil;
 import org.openiot.security.client.OAuthorizationCredentials;
-import org.openiot.ui.request.commons.logging.LoggerService;
 import org.openiot.ui.request.commons.models.OAMOManager;
 import org.openiot.ui.request.commons.providers.SDUMAPIWrapper;
-import org.openiot.ui.request.commons.providers.SchedulerAPIWrapper;
 import org.openiot.ui.request.commons.providers.exceptions.APIException;
 import org.openiot.ui.request.commons.util.MarshalOSDspecUtils;
 import org.openiot.ui.request.presentation.web.model.nodes.interfaces.VisualizationWidget;
@@ -54,20 +51,24 @@ import org.openiot.ui.request.presentation.web.scopes.session.context.pages.Requ
 import org.openiot.ui.request.presentation.web.util.FaceletLocalization;
 import org.primefaces.component.dashboard.Dashboard;
 import org.primefaces.component.panel.Panel;
-import org.primefaces.event.map.StateChangeEvent;
 import org.primefaces.model.DashboardColumn;
 import org.primefaces.model.DashboardModel;
 import org.primefaces.model.DefaultDashboardColumn;
 import org.primefaces.model.DefaultDashboardModel;
-import org.primefaces.model.map.LatLng;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * 
+ *
  * @author Achilleas Anagnostopoulos (aanag) email: aanag@sensap.eu
  */
 @ManagedBean(name = "requestPresentationPageController")
 @RequestScoped
 public class RequestPresentationPageController implements Serializable {
+	/**
+	 * The logger for this class.
+	 */
+	private static final Logger LOGGER = LoggerFactory.getLogger(RequestPresentationPageController.class);
 	private static final long serialVersionUID = 1L;
 
 	// Cached context
@@ -91,16 +92,16 @@ public class RequestPresentationPageController implements Serializable {
 				OAuthorizationCredentials credentials = acUtil.getOAuthorizationCredentials();
 				if(credentials == null)
 					return null;
-				else 
+				else
 					sessionBean.setUserId(credentials.getUserIdURI());
 			}
 			cachedContext = (RequestPresentationPageContext) (sessionBean == null ? ApplicationBean.lookupSessionBean() : sessionBean).getContext("requestPresentationPageContext");
 			if (cachedContext == null) {
 				cachedContext = new RequestPresentationPageContext();
 				try {
-					LoggerService.log(Level.INFO, MarshalOSDspecUtils.marshalOSDSpec(cachedContext.getAppManager().exportOSDSpec()));
+					LOGGER.info(MarshalOSDspecUtils.marshalOSDSpec(cachedContext.getAppManager().exportOSDSpec()));
 				} catch (Exception ex) {
-					LoggerService.log(ex);
+					LOGGER.error("", ex);
 				}
 			}
 		}
@@ -142,7 +143,7 @@ public class RequestPresentationPageController implements Serializable {
 			}
 
 		} catch (APIException ex) {
-			LoggerService.log(ex);
+			LOGGER.error("", ex);
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, messages.getString("GROWL_ERROR_HEADER"), FaceletLocalization.getLocalisedMessage(messages, "ERROR_CONNECTING_TO_REGISTRATION_SERVICE")));
 		}
 
@@ -257,17 +258,15 @@ public class RequestPresentationPageController implements Serializable {
 				nextColumn++;
 
 			} catch (InstantiationException e) {
-				LoggerService.log(e);
+				LOGGER.error("", e);
 			} catch (IllegalAccessException e) {
-				LoggerService.log(e);
+				LOGGER.error("", e);
 			} catch (ClassNotFoundException e) {
-				LoggerService.log(e);
-				e.printStackTrace();
+				LOGGER.error("", e);
 			} catch (ClassCastException e) {
-				LoggerService.log(e);
-				e.printStackTrace();
+				LOGGER.error("", e);
 			} catch (Throwable ex) {
-				ex.printStackTrace();
+				LOGGER.error("", ex);
 			}
 		}
 	}

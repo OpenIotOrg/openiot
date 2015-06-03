@@ -1,6 +1,6 @@
 /**
  *    Copyright (c) 2011-2014, OpenIoT
- *   
+ *
  *    This file is part of OpenIoT.
  *
  *    OpenIoT is free software: you can redistribute it and/or modify
@@ -25,12 +25,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.logging.Level;
 
 import org.openiot.ui.request.commons.annotations.GraphNodeClass;
 import org.openiot.ui.request.commons.annotations.NodeProperties;
 import org.openiot.ui.request.commons.annotations.NodeProperty;
-import org.openiot.ui.request.commons.logging.LoggerService;
 import org.openiot.ui.request.commons.nodes.base.DefaultGraphNode;
 import org.openiot.ui.request.commons.nodes.base.DefaultGraphNodeEndpoint;
 import org.openiot.ui.request.commons.nodes.enums.AnchorType;
@@ -69,7 +67,7 @@ public class GenericSource extends DefaultGraphNode implements Serializable {
 			removeAllGroups();
 			return;
 		}
-		
+
 		// Operate on a copy of the input list
 		List<String> newEndpointLabels = new ArrayList<String>(srcEndpointLabels);
 		List<String> goneEndpointLabels = new ArrayList<String>();
@@ -95,7 +93,7 @@ public class GenericSource extends DefaultGraphNode implements Serializable {
 				endpoint.setScope("sensor_" + endpoint.getScope());
 			}
 		}
-		
+
 		// Remove gone endpoints
 		for( String goneLabel : goneEndpointLabels ){
 			GraphNodeEndpoint ep = getEndpointByLabel(goneLabel);
@@ -106,7 +104,7 @@ public class GenericSource extends DefaultGraphNode implements Serializable {
 		// And new end point for each new group
 		for (String srcEndpointLabel : newEndpointLabels) {
 			GraphNodeEndpoint src = getEndpointByLabel(srcEndpointLabel.contains("recordTime") ? "recordTime" : srcEndpointLabel);
-			
+
 			GraphNodeEndpoint dst = new DefaultGraphNodeEndpoint();
 			dst.setType(EndpointType.Output);
 			dst.setAnchor(AnchorType.Right);

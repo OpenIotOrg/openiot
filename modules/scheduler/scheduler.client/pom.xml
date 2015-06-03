@@ -33,6 +33,13 @@
 	<name>OpenIoT Scheduler Client</name>
 	<description>The Scheduler Client</description>
 
+	<parent>
+		<groupId>org.openiot</groupId>
+		<artifactId>openiot</artifactId>
+		<version>0.2-SNAPSHOT</version>
+		<relativePath>../../../pom.xml</relativePath>
+	</parent>
+
 	<licenses>
 		<license>
 			<name>GNU Lesser General Public License, version 2.1</name>
@@ -77,16 +84,10 @@
 	<dependencies>
 
 		<!--======== OpenIoT dependencies ============-->
-
-
 		<dependency>
 			<groupId>org.openiot</groupId>
 			<artifactId>utils.commons</artifactId>
-			<version>0.0.1</version>
 		</dependency>
-
-
-
 
 		<!-- ======== JBoss RestEasy JAX-RS with JAXB support Dependencies ========== -->
 		<dependency>
@@ -100,10 +101,7 @@
 			<version>2.3.6.Final</version>
 		</dependency>
 
-
-
 		<!-- ====== org.eclipse.persistence.jaxb.JAXBContextFactory Dependencies -->
-
 		<dependency>
 			<groupId>org.eclipse.persistence</groupId>
 			<artifactId>eclipselink</artifactId>
@@ -112,21 +110,15 @@
 
 
 		<!-- ======== LogBack Dependencies ========== -->
-
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
-			<version>1.0.11</version>
 		</dependency>
 		<!-- Apache commons-logging Required By Sesame -->
 		<dependency>
-			<groupId>commons-logging</groupId>
-			<artifactId>commons-logging</artifactId>
-			<version>1.1.2</version>
+			<groupId>org.slf4j</groupId>
+			<artifactId>jcl-over-slf4j</artifactId>
 		</dependency>
-
-
-
 
 		<!-- ======== Eclipse win32 SWT Dependencies (Specific for every platform) ========== -->
 		<dependency>
@@ -134,10 +126,6 @@
 			<artifactId>x86</artifactId>
 			<version>3.3.0-v3346</version>
 		</dependency>
-
-
-
-
 	</dependencies>
 
 	<!-- =========================================================== -->
