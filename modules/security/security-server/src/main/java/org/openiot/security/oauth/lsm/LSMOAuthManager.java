@@ -32,6 +32,8 @@ import org.openiot.lsm.security.oauth.LSMTicketGrantingTicketImpl;
 import org.openiot.lsm.security.oauth.mgmt.Permission;
 import org.openiot.lsm.security.oauth.mgmt.Role;
 import org.openiot.lsm.security.oauth.mgmt.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.query.QueryExecution;
 import com.hp.hpl.jena.query.QuerySolution;
@@ -39,6 +41,10 @@ import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.sparql.engine.http.QueryEngineHTTP;
 
 public class LSMOAuthManager {
+	/**
+	 * The logger for this class.
+	 */
+	private static final Logger LOGGER = LoggerFactory.getLogger(LSMOAuthManager.class);
 	private static LSMOAuthManager instance;
 	private String lSMOauthGraphURL;
 	private String sparqlEndPoint;
@@ -402,6 +408,8 @@ public class LSMOAuthManager {
 				+ "?service <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://openiot.eu/ontology/ns/CloudService>." + "}";
 		try {
 			String service = sparqlEndPoint;
+			LOGGER.info("Using endpoint: {}", service);
+			LOGGER.debug("Running query: {}", sparql);
 			QueryExecution vqe = new QueryEngineHTTP(service, sparql);
 			ResultSet results = vqe.execSelect();
 			while (results.hasNext()) {

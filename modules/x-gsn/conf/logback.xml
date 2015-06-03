@@ -2,7 +2,7 @@
 <configuration>
 
 	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-		<encoder>
+		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
 			<Pattern>%d{HH:mm:ss.SSS} [%21thread] %-5level %logger{36} - %msg%n</Pattern>
 		</encoder>
 	</appender>
@@ -21,7 +21,7 @@
 			<maxHistory>30</maxHistory>
 		</rollingPolicy>
 
-		<encoder>
+		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
 			<Pattern>%d{HH:mm:ss.SSS} [%21thread] %-5level %logger{36} - %msg%n</Pattern>
 		</encoder>
 	</appender>
@@ -39,7 +39,6 @@
 	<logger name="org.openiot.gsn.VirtualSensor" level="DEBUG"/>
 	<logger name="org.openiot.gsn.VSensorLoader" level="WARN"/>
 	<logger name="org.openiot.gsn.Mappings" level="WARN"/>
-	<logger name="org.openiot.gsn.wrappers.tcplistener" level="DEBUG"/>
 	<logger name="org.openiot.gsn.wrappers" level="INFO"/>
 
 	<root level="debug">
