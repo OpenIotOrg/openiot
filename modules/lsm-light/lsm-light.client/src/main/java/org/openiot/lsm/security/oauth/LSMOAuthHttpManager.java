@@ -34,6 +34,8 @@ import org.openiot.lsm.security.oauth.mgmt.Role;
 import org.openiot.lsm.security.oauth.mgmt.User;
 
 import static org.openiot.lsm.utils.OAuthUtil.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 
@@ -41,6 +43,10 @@ import static org.openiot.lsm.utils.OAuthUtil.*;
  * 
  */
 public class LSMOAuthHttpManager {
+	/**
+	 * The logger for this class.
+	 */
+	private static final Logger LOGGER = LoggerFactory.getLogger(LSMOAuthHttpManager.class);
 	String LSMOauthURL;
 	private String lsmOauthGraphURL;
 
@@ -103,13 +109,12 @@ public class LSMOAuthHttpManager {
 				// reads server's response
 				ObjectInputStream objStream = new ObjectInputStream(conn.getInputStream());
 				permission = (Permission) objStream.readObject();
-				System.out.println("Server's response: " + responseCode);
+				LOGGER.debug("Server response: {}.", responseCode);
 			} else {
-				System.out.println("Server returned non-OK code: " + responseCode);
+				LOGGER.warn("Server returned non-OK code: {}.", responseCode);
 			}
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			System.out.println("cannot send data to server");
+			LOGGER.error("cannot send data to server", ex);
 		}
 		return permission;
 	}
@@ -146,13 +151,12 @@ public class LSMOAuthHttpManager {
 			// always check HTTP response code from server
 			responseCode = conn.getResponseCode();
 			if (responseCode == HttpURLConnection.HTTP_OK) {
-				System.out.println("Server's response: " + responseCode);
+				LOGGER.debug("Server response: {}.", responseCode);
 			} else {
-				System.out.println("Server returned non-OK code: " + responseCode);
+				LOGGER.warn("Server returned non-OK code: {}.", responseCode);
 			}
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			System.out.println("cannot send data to server");
+			LOGGER.error("cannot send data to server", ex);
 		}
 	}
 
@@ -191,13 +195,12 @@ public class LSMOAuthHttpManager {
 				// reads server's response
 				BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 				String response = reader.readLine();
-				System.out.println("Server's response: " + response);
+				LOGGER.debug("Server response: {}.", response);
 			} else {
-				System.out.println("Server returned non-OK code: " + responseCode);
+				LOGGER.warn("Server returned non-OK code: {}.", responseCode);
 			}
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			System.out.println("cannot send data to server");
+			LOGGER.error("cannot send data to server", ex);
 		}
 	}
 
@@ -237,13 +240,12 @@ public class LSMOAuthHttpManager {
 				// reads server's response
 				ObjectInputStream objStream = new ObjectInputStream(conn.getInputStream());
 				role = (Role) objStream.readObject();
-				System.out.println("Server's response: " + responseCode);
+				LOGGER.debug("Server response: {}.", responseCode);
 			} else {
-				System.out.println("Server returned non-OK code: " + responseCode);
+				LOGGER.warn("Server returned non-OK code: {}.", responseCode);
 			}
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			System.out.println("cannot send data to server");
+			LOGGER.error("cannot send data to server", ex);
 		}
 		return role;
 	}
@@ -280,13 +282,12 @@ public class LSMOAuthHttpManager {
 			// always check HTTP response code from server
 			responseCode = conn.getResponseCode();
 			if (responseCode == HttpURLConnection.HTTP_OK) {
-				System.out.println("Server's response: " + responseCode);
+				LOGGER.debug("Server response: {}.", responseCode);
 			} else {
-				System.out.println("Server returned non-OK code: " + responseCode);
+				LOGGER.warn("Server returned non-OK code: {}.", responseCode);
 			}
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			System.out.println("cannot send data to server");
+			LOGGER.error("cannot send data to server", ex);
 		}
 	}
 
@@ -322,13 +323,12 @@ public class LSMOAuthHttpManager {
 			// always check HTTP response code from server
 			responseCode = conn.getResponseCode();
 			if (responseCode == HttpURLConnection.HTTP_OK) {
-				System.out.println("Server's response: " + responseCode);
+				LOGGER.debug("Server response: {}.", responseCode);
 			} else {
-				System.out.println("Server returned non-OK code: " + responseCode);
+				LOGGER.warn("Server returned non-OK code: {}.", responseCode);
 			}
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			System.out.println("cannot send data to server");
+			LOGGER.error("cannot send data to server", ex);
 		}
 	}
 
@@ -367,13 +367,12 @@ public class LSMOAuthHttpManager {
 				// reads server's response
 				BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 				String response = reader.readLine();
-				System.out.println("Server's response: " + response);
+				LOGGER.debug("Server response: {}.", response);
 			} else {
-				System.out.println("Server returned non-OK code: " + responseCode);
+				LOGGER.warn("Server returned non-OK code: {}.", responseCode);
 			}
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			System.out.println("cannot send data to server");
+			LOGGER.error("cannot send data to server", ex);
 		}
 	}
 
@@ -413,13 +412,12 @@ public class LSMOAuthHttpManager {
 				// reads server's response
 				ObjectInputStream objStream = new ObjectInputStream(conn.getInputStream());
 				user = (User) objStream.readObject();
-				System.out.println("Server's response: " + responseCode);
+				LOGGER.debug("Server response: {}.", responseCode);
 			} else {
-				System.out.println("Server returned non-OK code: " + responseCode);
+				LOGGER.warn("Server returned non-OK code: {}.", responseCode);
 			}
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			System.out.println("cannot send data to server");
+			LOGGER.error("cannot send data to server", ex);
 		}
 		return user;
 	}
@@ -456,13 +454,12 @@ public class LSMOAuthHttpManager {
 			// always check HTTP response code from server
 			responseCode = conn.getResponseCode();
 			if (responseCode == HttpURLConnection.HTTP_OK) {
-				System.out.println("Server's response: " + responseCode);
+				LOGGER.debug("Server response: {}.", responseCode);
 			} else {
-				System.out.println("Server returned non-OK code: " + responseCode);
+				LOGGER.warn("Server returned non-OK code: {}.", responseCode);
 			}
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			System.out.println("cannot send data to server");
+			LOGGER.error("cannot send data to server", ex);
 		}
 	}
 
@@ -501,13 +498,12 @@ public class LSMOAuthHttpManager {
 				// reads server's response
 				BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 				String response = reader.readLine();
-				System.out.println("Server's response: " + response);
+				LOGGER.debug("Server response: {}.", response);
 			} else {
-				System.out.println("Server returned non-OK code: " + responseCode);
+				LOGGER.warn("Server returned non-OK code: {}.", responseCode);
 			}
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			System.out.println("cannot send data to server");
+			LOGGER.error("cannot send data to server", ex);
 		}
 	}
 
@@ -547,13 +543,12 @@ public class LSMOAuthHttpManager {
 				// reads server's response
 				ObjectInputStream objStream = new ObjectInputStream(conn.getInputStream());
 				ticket = (LSMServiceTicketImpl) objStream.readObject();
-				System.out.println("Server's response: " + responseCode);
+				LOGGER.debug("Server response: {}.", responseCode);
 			} else {
-				System.out.println("Server returned non-OK code: " + responseCode);
+				LOGGER.warn("Server returned non-OK code: {}.", responseCode);
 			}
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			System.out.println("cannot send data to server");
+			LOGGER.error("cannot send data to server", ex);
 		}
 		return ticket;
 	}
@@ -590,13 +585,12 @@ public class LSMOAuthHttpManager {
 			// always check HTTP response code from server
 			responseCode = conn.getResponseCode();
 			if (responseCode == HttpURLConnection.HTTP_OK) {
-				System.out.println("Server's response: " + responseCode);
+				LOGGER.debug("Server response: {}.", responseCode);
 			} else {
-				System.out.println("Server returned non-OK code: " + responseCode);
+				LOGGER.warn("Server returned non-OK code: {}.", responseCode);
 			}
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			System.out.println("cannot send data to server");
+			LOGGER.error("cannot send data to server", ex);
 		}
 	}
 
@@ -635,13 +629,12 @@ public class LSMOAuthHttpManager {
 				// reads server's response
 				BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 				String response = reader.readLine();
-				System.out.println("Server's response: " + response);
+				LOGGER.debug("Server response: {}.", response);
 			} else {
-				System.out.println("Server returned non-OK code: " + responseCode);
+				LOGGER.warn("Server returned non-OK code: {}.", responseCode);
 			}
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			System.out.println("cannot send data to server");
+			LOGGER.error("cannot send data to server", ex);
 		}
 	}
 
@@ -681,13 +674,12 @@ public class LSMOAuthHttpManager {
 				// reads server's response
 				ObjectInputStream objStream = new ObjectInputStream(conn.getInputStream());
 				ticketGranting = (LSMTicketGrantingTicketImpl) objStream.readObject();
-				System.out.println("Server's response: " + responseCode);
+				LOGGER.debug("Server response: {}.", responseCode);
 			} else {
-				System.out.println("Server returned non-OK code: " + responseCode);
+				LOGGER.warn("Server returned non-OK code: {}.", responseCode);
 			}
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			System.out.println("cannot send data to server");
+			LOGGER.error("cannot send data to server", ex);
 		}
 		return ticketGranting;
 	}
@@ -725,13 +717,12 @@ public class LSMOAuthHttpManager {
 			responseCode = conn.getResponseCode();
 			if (responseCode == HttpURLConnection.HTTP_OK) {
 				// reads server's response
-				System.out.println("Server's response: " + responseCode);
+				LOGGER.debug("Server response: {}.", responseCode);
 			} else {
-				System.out.println("Server returned non-OK code: " + responseCode);
+				LOGGER.warn("Server returned non-OK code: {}.", responseCode);
 			}
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			System.out.println("cannot send data to server");
+			LOGGER.error("cannot send data to server", ex);
 		}
 	}
 
@@ -770,13 +761,12 @@ public class LSMOAuthHttpManager {
 				// reads server's response
 				BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 				String response = reader.readLine();
-				System.out.println("Server's response: " + response);
+				LOGGER.debug("Server response: {}.", response);
 			} else {
-				System.out.println("Server returned non-OK code: " + responseCode);
+				LOGGER.warn("Server returned non-OK code: {}.", responseCode);
 			}
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			System.out.println("cannot send data to server");
+			LOGGER.error("cannot send data to server", ex);
 		}
 	}
 
@@ -816,13 +806,12 @@ public class LSMOAuthHttpManager {
 				// reads server's response
 				ObjectInputStream objStream = new ObjectInputStream(conn.getInputStream());
 				service = (LSMRegisteredServiceImpl) objStream.readObject();
-				System.out.println("Server's response: " + responseCode);
+				LOGGER.debug("Server response: {}.", responseCode);
 			} else {
-				System.out.println("Server returned non-OK code: " + responseCode);
+				LOGGER.warn("Server returned non-OK code: {}.", responseCode);
 			}
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			System.out.println("cannot send data to server");
+			LOGGER.error("cannot send data to server", ex);
 		}
 		return service;
 	}
@@ -859,13 +848,12 @@ public class LSMOAuthHttpManager {
 			// always check HTTP response code from server
 			responseCode = conn.getResponseCode();
 			if (responseCode == HttpURLConnection.HTTP_OK) {
-				System.out.println("Server's response: " + responseCode);
+				LOGGER.debug("Server response: {}.", responseCode);
 			} else {
-				System.out.println("Server returned non-OK code: " + responseCode);
+				LOGGER.warn("Server returned non-OK code: {}.", responseCode);
 			}
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			System.out.println("cannot send data to server");
+			LOGGER.error("cannot send data to server", ex);
 		}
 	}
 
@@ -904,13 +892,12 @@ public class LSMOAuthHttpManager {
 				// reads server's response
 				BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 				String response = reader.readLine();
-				System.out.println("Server's response: " + response);
+				LOGGER.debug("Server response: {}.", response);
 			} else {
-				System.out.println("Server returned non-OK code: " + responseCode);
+				LOGGER.warn("Server returned non-OK code: {}.", responseCode);
 			}
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			System.out.println("cannot send data to server");
+			LOGGER.error("cannot send data to server", ex);
 		}
 	}
 
@@ -949,13 +936,12 @@ public class LSMOAuthHttpManager {
 				// reads server's response
 				BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 				String response = reader.readLine();
-				System.out.println("Server's response: " + response);
+				LOGGER.debug("Server response: {}.", response);
 			} else {
-				System.out.println("Server returned non-OK code: " + responseCode);
+				LOGGER.warn("Server returned non-OK code: {}.", responseCode);
 			}
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			System.out.println("cannot send data to server");
+			LOGGER.error("cannot send data to server", ex);
 		}
 	}
 
