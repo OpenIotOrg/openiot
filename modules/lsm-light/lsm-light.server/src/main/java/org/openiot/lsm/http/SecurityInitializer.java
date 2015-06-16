@@ -18,7 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class SecurityInitializer {
-	private static Logger logger = LoggerFactory.getLogger(SecurityInitializer.class);
+	private static final Logger logger = LoggerFactory.getLogger(SecurityInitializer.class);
 
 	private static final long ID_SERVICE_MANAGER = 1;
 	private static final long ID_HTTP = 2;
@@ -159,7 +159,8 @@ public class SecurityInitializer {
 		predefPermissions.add(new Permission(PermissionsUtil.DEL_TRIPLES_DEMO, "delete triples", ID_LSM_SERVER));
 
 		predefPermissions.add(new Permission(PermissionsUtil.ADD_SENSOR_MAIN, "add new sensor to server", ID_LSM_SERVER));
-		predefPermissions.add(new Permission(PermissionsUtil.ADD_TRIPLES_MAIN, "insert triples into server", ID_LSM_SERVER));
+		Permission addTriplesMain = new Permission(PermissionsUtil.ADD_TRIPLES_MAIN, "insert triples into server", ID_LSM_SERVER);
+		predefPermissions.add(addTriplesMain);
 		predefPermissions.add(new Permission(PermissionsUtil.UPDATE_SENSOR_DATA_MAIN, "add new sensor reading", ID_LSM_SERVER));
 		predefPermissions.add(new Permission(PermissionsUtil.GET_SENSOR_MAIN, "retrieve sensor", ID_LSM_SERVER));
 		predefPermissions.add(new Permission(PermissionsUtil.DEL_SENSOR_MAIN, "delete sensor", ID_LSM_SERVER));
@@ -193,6 +194,9 @@ public class SecurityInitializer {
 
 		User schedulerUser = generateUser("Scheduler", "scheduler@openiot.eu", props.getProperty(SCHEDULER_USERNAME, "scheduleruser"),
 				md5(props.getProperty(SCHEDULER_PASSWORD, "scheduleruserpass")));
+		Role schedulerRoleOnLSM = new Role("scheduler-role", "Scheduler Role on LSM", ID_LSM_SERVER);
+		schedulerRoleOnLSM.addPermission(addTriplesMain);
+		schedulerUser.addRole(schedulerRoleOnLSM);
 		addUser(schedulerUser);
 
 		Role allPermRoleSDUM = new Role("AllPermRole", "This role has the permission *", ID_SDUM);
