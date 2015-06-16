@@ -28,7 +28,7 @@ public class ConfigFileReader {
 			logger.warn("The configuration file {} was not found.", iniFilePath);
 		} else {
 			ini = new Ini();
-			logger.debug("Loading ini configuration from {} ", iniFilePath);
+			logger.info("Loading ini configuration from {} ", iniFilePath);
 			ini.loadFromPath(iniFilePath);
 		}
 
@@ -45,7 +45,7 @@ public class ConfigFileReader {
 		if (!Files.exists(path) || Files.isDirectory(path)) {
 			logger.warn("The configuration file {} was not found.", iniFilePath);
 		} else {
-			logger.debug("Loading ini configuration from {} ", iniFilePath);
+			logger.info("Loading ini configuration from {} ", iniFilePath);
 			BufferedReader reader = null;
 			try {
 				reader = new BufferedReader(new FileReader(iniFilePath));
