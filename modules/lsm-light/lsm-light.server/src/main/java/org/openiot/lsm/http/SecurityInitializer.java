@@ -71,7 +71,7 @@ public class SecurityInitializer {
 		props = new PropertyManagement();
 		lSMOauthGraphURL = graphURL;
 		helper = new OauthServletHelper();
-		acUtil = AccessControlUtil.getRestInstance();
+		acUtil = AccessControlUtil.getRestInstance("lsm-server");
 	}
 
 	public static void init() {
