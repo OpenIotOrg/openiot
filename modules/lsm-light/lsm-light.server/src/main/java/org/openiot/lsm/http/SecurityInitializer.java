@@ -168,7 +168,7 @@ public class SecurityInitializer {
 
 		Permission allPermLSMServer = new Permission(PermissionsUtil.LSM_ALL, "all permissions", ID_LSM_SERVER);
 		predefPermissions.add(allPermLSMServer);
-		
+
 		// Permissions for the sensor schema editor
 		Permission schemeEditorCreateSensorPerm = new Permission(PermissionsUtil.SCHEMA_EDITOR_CREATE_SENSOR, "Create sensors", ID_SCHEMA_EDITOR);
 		Permission schemeEditorCreateSensorInstancePerm = new Permission(PermissionsUtil.SCHEMA_EDITOR_CREATE_SENSOR_INSTANCE, "Create sensor instances", ID_SCHEMA_EDITOR);
@@ -209,7 +209,7 @@ public class SecurityInitializer {
 		xgsnRoleOnLSM.addPermission(allPermLSMServer);
 		xgsnUser.addRole(xgsnRoleOnLSM);
 		addUser(xgsnUser);
-		
+
 		Role allPermsRoleSchemaEditor = new Role("Default-Role", "The default role with createSensor and createSensorInstance permissions", ID_SCHEMA_EDITOR);
 		allPermsRoleSchemaEditor.addPermission(schemeEditorCreateSensorPerm);
 		allPermsRoleSchemaEditor.addPermission(schemeEditorCreateSensorInstancePerm);
@@ -354,7 +354,7 @@ public class SecurityInitializer {
 		schemaEditorService.setId(ID_SCHEMA_EDITOR);
 		schemaEditorService.setAllowedToProxy(true);
 		schemaEditorService.setAnonymousAccess(false);
-		schemaEditorService.setDescription(props.getProperty(SCHEMA_EDITOR_SECRET, "schemaEditor.secret"));
+		schemaEditorService.setDescription(props.getProperty(SCHEMA_EDITOR_SECRET, "schemaEditor-secret"));
 		schemaEditorService.setEnabled(true);
 		schemaEditorService.setEvaluationOrder(0);
 		schemaEditorService.setIgnoreAttributes(false);
