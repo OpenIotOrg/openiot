@@ -20,11 +20,14 @@ OpenIoT is pertinent to a wide range of interrelated scientific and technologica
 ### Links:
 
 * [Contact OpenIoT](mailto:info@openiot.eu)
+* [Report Issues/Problems](mailto:openiot-dev@googlegroups.com)
+* [Developer’s Forum](https://groups.google.com/forum/#!forum/openiot-dev)
+* [Mailing Lists](https://github.com/OpenIotOrg/openiot/wiki/Mailing-Lists)
 * [Wiki](https://github.com/OpenIotOrg/openiot/wiki)
 * [Documentation](https://github.com/OpenIotOrg/openiot/wiki/Documentation)
 * [Downloads](https://github.com/OpenIotOrg/openiot/wiki/Downloads)
 * [FP7 OpenIoT Project Site](http://openiot.eu/)
-* [Stats@ohloh](https://www.ohloh.net/p/OpenIoT)
+* [Stats@OpenHUB](https://www.openhub.net/p/OpenIoT)
 
 ----------------------------
 ----------------------------
