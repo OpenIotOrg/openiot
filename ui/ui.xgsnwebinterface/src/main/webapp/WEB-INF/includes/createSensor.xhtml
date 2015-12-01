@@ -1,0 +1,131 @@
+/**
+ *    Copyright (c) 2011-2014, OpenIoT
+ *   
+ *    This file is part of OpenIoT.
+ *
+ *    OpenIoT is free software: you can redistribute it and/or modify
+ *    it under the terms of the GNU Lesser General Public License as published by
+ *    the Free Software Foundation, version 3 of the License.
+ *
+ *    OpenIoT is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *    GNU Lesser General Public License for more details.
+ *
+ *    You should have received a copy of the GNU Lesser General Public License
+ *    along with OpenIoT.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *     Contact: OpenIoT mailto: info@openiot.eu
+ * 
+ *     @author Luke Herron
+ */
+
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition
+        xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:h="http://java.sun.com/jsf/html"
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:p="http://primefaces.org/ui">
+    <h:panelGroup id="sensorDetails">
+        <p:panelGrid columns="4" columnClasses="ui-grid-col-2, ui-grid-col-4, ui-grid-col-2, ui-grid-col-4" layout="grid">
+            <f:facet name="header"> 
+                Create New Sensor
+            </f:facet>
+
+            <p:outputLabel for="metaDataFile" value="Metadata file"/>
+            <p:fileUpload id="metaDataFile" multiple="false" allowTypes="/(\.|\/)(metadata)$/"
+                          value="#{sensorDetailsBean.metaDataFile}" update="metaDataFile metaDataError sensorOutput"
+                          fileUploadListener="#{createSensorController.onFileUpload}" auto="true">
+                <p:message for="metaDataFile" id="metaDataError"/>
+            </p:fileUpload>
+
+            <p:outputLabel for="name" value="Sensor name"/>
+            <p:inputText id="name" value="#{sensorDetailsBean.sensorName}" required="true" label="name"/>
+
+            <p:outputLabel for="sensorDescription" value="Description"/>
+            <p:inputText id="sensorDescription" value="#{sensorDetailsBean.description}" required="true" label="sensorDescription" />
+
+            <p:outputLabel for="wrappers" value="Select Wrapper"/>
+            <p:selectOneMenu id="wrappers" value="#{sensorDetailsBean.wrapperChoice}" required="true">
+                <f:selectItem itemLabel="-- Select --" itemValue="#{null}"/>
+                <f:selectItems value="#{sensorDetailsBean.wrapperChoices}"/>
+                <p:ajax listener="#{createSensorController.onWrapperChange}" event="change" partialSubmit="true"
+                        update="sensorInput sensorOutput" />
+            </p:selectOneMenu>
+        </p:panelGrid>
+    </h:panelGroup>
+
+    <p:separator style="visibility:hidden;"/>
+
+    <h:panelGroup id="sensorInput">
+                <f:facet name="header"> 
+                Create New Sensor
+            </f:facet>
+        <ui:fragment rendered="#{createSensorController.inputPanel eq 'csvWrapper'}">
+            <ui:include src="/WEB-INF/includes/sensor_config/csvSensorConfig.xhtml"/>
+        </ui:fragment>
+    </h:panelGroup>
+
+    <p:separator style="visibility:hidden;"/>
+
+    <h:panelGroup id="sensorOutput">
+        <p:panelGrid style="width: 100%; border: 1px solid #A8A8A8;" styleClass="ui-panelgrid-blank"
+                rendered="#{!(sensorDetailsBean.metaDataFile eq null) and !(sensorDetailsBean.wrapperChoice eq null)}">
+            <p:row>
+                <p:column colspan="7">
+                    <p:contextMenu for="outputValues" widgetVar="cMenu">
+                        <p:menuitem value="Edit Cell" icon="ui-icon-search" onclick="PF('cellOutput').showCellEditor();return false;"/>
+
+                        <p:menuitem value="Hide Menu" icon="ui-icon-close" onclick="PF('cMenu').hide()"/>
+                    </p:contextMenu>
+
+                    <p:dataTable id="outputValues" var="sensorOutput" value="#{sensorOutputBean.sensorOutputs}"
+                            editable="true" editMode="cell" widgetVar="cellOutput">
+                        <p:ajax event="cellEdit" listener="#{createSensorController.onCellEdit}" update="@(cellOutput)" />
+
+                        <p:column headerText="Name">
+                            <p:cellEditor>
+                                <f:facet name="output"><h:outputText value="#{sensorOutput.output}" /></f:facet>
+
+                                <f:facet name="input">
+                                    <p:inputText value="#{sensorOutput.output}" style="width:98%"/>
+                                </f:facet>
+                            </p:cellEditor>
+                        </p:column>
+
+                        <p:column headerText="Type">
+                            <p:cellEditor>
+                                <f:facet name="output"><h:outputText value="#{sensorOutput.type}"/></f:facet>
+
+                                <f:facet name="input">
+                                    <h:selectOneMenu value="#{sensorOutput.type}" style="width:100%">
+                                        <f:selectItem itemLabel="--Select--" itemValue="-- Select --"/>
+                                        <f:selectItems value="#{sensorOutputBean.outputTypes}"/>
+                                    </h:selectOneMenu>
+                                </f:facet>
+                            </p:cellEditor>
+                        </p:column>
+
+                        <p:column headerText="Description">
+                            <p:cellEditor>
+                                <f:facet name="output"><h:outputText value="#{sensorOutput.description}"/></f:facet>
+
+                                <f:facet name="input"><p:inputText value="#{sensorOutput.description}" style="width:98%"/></f:facet>
+                            </p:cellEditor>
+                        </p:column>
+
+                        <p:column headerText="Input Value">
+                            <h:outputText value="#{sensorOutput.input}"/>
+                        </p:column>
+                    </p:dataTable>
+                </p:column>
+            </p:row>
+        </p:panelGrid>
+    </h:panelGroup>
+
+    <p:separator style="visibility:hidden;"/>
+
+    <p:commandButton value="Submit" id="submit" styleClass="ui-priority-primary" style="float: right;" ajax="false"
+            process="@this @form" actionListener="#{createSensorController.submit}" />
+</ui:composition>

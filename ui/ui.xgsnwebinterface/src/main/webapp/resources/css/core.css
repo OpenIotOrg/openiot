@@ -1,0 +1,68 @@
+/**
+ *    Copyright (c) 2011-2014, OpenIoT
+ *   
+ *    This file is part of OpenIoT.
+ *
+ *    OpenIoT is free software: you can redistribute it and/or modify
+ *    it under the terms of the GNU Lesser General Public License as published by
+ *    the Free Software Foundation, version 3 of the License.
+ *
+ *    OpenIoT is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *    GNU Lesser General Public License for more details.
+ *
+ *    You should have received a copy of the GNU Lesser General Public License
+ *    along with OpenIoT.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *     Contact: OpenIoT mailto: info@openiot.eu
+ * 
+ *     @author Jay Kelly
+ */
+ 
+/* Global */
+.ui-widget,.ui-widget .ui-widget {
+    font-size: 9pt;
+}
+
+.ui-widget {
+    border:none;
+}
+
+.ui-layout-container.layout .ui-widget-content {
+    background: none;
+}
+
+.ui-panelgrid-content {
+    border: none;
+    background:#c4c4c4 url("/ui.xgsnWebInterface/javax.faces.resource/images/ui-bg_highlight-hard_80_c4c4c4_1x100.png.jsf?ln=primefaces-aristo") top repeat-x;
+    background:#c4c4c4 linear-gradient(top, rgba(255,255,255,0.8), rgba(255,255,255,0));
+    background:#c4c4c4 -webkit-gradient(linear, left top, left bottom, from(rgba(255,255,255,0.8)), to(rgba(255,255,255,0)));
+    background:#c4c4c4 -moz-linear-gradient(top, rgba(255,255,255,0.8), rgba(255,255,255,0));
+    -moz-border-radius:3px;
+    -webkit-border-radius:3px;
+    border-radius:3px;
+}
+
+.ui-panelgrid {
+    border: none;
+    background:#c4c4c4 url("/ui.xgsnWebInterface/javax.faces.resource/images/ui-bg_highlight-hard_80_c4c4c4_1x100.png.jsf?ln=primefaces-aristo") top repeat-x;
+    background:#c4c4c4 linear-gradient(top, rgba(255,255,255,0.8), rgba(255,255,255,0));
+    background:#c4c4c4 -webkit-gradient(linear, left top, left bottom, from(rgba(255,255,255,0.8)), to(rgba(255,255,255,0)));
+    background:#c4c4c4 -moz-linear-gradient(top, rgba(255,255,255,0.8), rgba(255,255,255,0));
+    -moz-border-radius:3px;
+    -webkit-border-radius:3px;
+    border-radius:3px;
+}
+
+.ui-outputlabel-rfi { display: none; }
+
+.ui-menu {
+    margin-top: 0px;
+    margin-left: 20px;
+}
+
+#logo {
+   margin-left: 20px;
+   margin-top: 10px;
+}

@@ -1,0 +1,144 @@
+/**
+ *    Copyright (c) 2011-2014, OpenIoT
+ *   
+ *    This file is part of OpenIoT.
+ *
+ *    OpenIoT is free software: you can redistribute it and/or modify
+ *    it under the terms of the GNU Lesser General Public License as published by
+ *    the Free Software Foundation, version 3 of the License.
+ *
+ *    OpenIoT is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *    GNU Lesser General Public License for more details.
+ *
+ *    You should have received a copy of the GNU Lesser General Public License
+ *    along with OpenIoT.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *     Contact: OpenIoT mailto: info@openiot.eu
+ * 
+ *     @author Luke Herron
+ */
+
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition
+        xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:h="http://java.sun.com/jsf/html"
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:p="http://primefaces.org/ui">
+    <p:panelGrid styleClass="ui-panelgrid-blank">
+        <f:facet name="inputHeader"> 
+            Sensor Input Details
+        </f:facet>  
+
+        <p:row>
+            <p:column colspan="1" >
+                <p:outputLabel id="fileLabel" style="width: 500px" for="sensorDataFile" value="#{sensorInputBean.sensorDataFile.fileName}"/>
+            </p:column>
+
+            <p:column colspan="5">
+                <p:fileUpload id="sensorDataFile" value="#{sensorInputBean.sensorDataFile.fileName}" multiple="false"
+                         allowTypes="/(\.|\/)(csv)$/" update="sensorDataFile fileLabel fieldConfig"
+                         fileUploadListener="#{createSensorController.onFileUpload}" required="true"/>
+            </p:column>
+        </p:row>
+
+        <p:row>
+            <p:column colspan="1">
+                <p:outputLabel for="delimiter" value="Delimeter"/>
+            </p:column>
+
+            <p:column colspan="1">
+                <p:selectOneMenu id="delimiter" value="#{sensorInputBean.predicateData.delimiter}" editable="true" required="true">
+                    <f:selectItem itemLabel="Comma (,)" itemValue="commaDelimited"/>
+                    <f:selectItem itemLabel="Tab (\t)" itemValue="tabDelimited"/>
+
+                    <p:ajax listener="#{createSensorController.onValueChange}" event="change" process="delimiter" update="fieldConfig" />
+                </p:selectOneMenu>
+            </p:column>
+
+            <p:column colspan="1">
+                <p:outputLabel for="stringQuote" value="String Quote"/>
+            </p:column>
+
+            <p:column colspan="1">
+                <p:selectOneMenu id="stringQuote" value="#{sensorInputBean.predicateData.stringQuote}" editable="true" required="true">
+                    <f:selectItem itemLabel="Single Quote (&apos;)" itemValue="&apos;"/>
+                    <f:selectItem itemLabel="Double Quote (&quot;)" itemValue="&quot;"/>
+
+                    <p:ajax listener="#{createSensorController.onValueChange}" event="change" process="stringQuote" update="fieldConfig" />
+                </p:selectOneMenu>
+            </p:column>
+
+            <p:column colspan="1">
+                <p:outputLabel for="skipLines" value="Skip First Lines"/>
+            </p:column>
+
+            <p:column colspan="1">
+                <p:inputText id="skipLines" value="#{sensorInputBean.predicateData.skipFirstLines}" required="true">
+                    <p:ajax listener="#{createSensorController.onValueChange}" event="keyup" process="skipLines" update="fieldConfig"/>
+                </p:inputText>
+            </p:column>
+        </p:row>
+
+        <p:row>
+            <p:column colspan="1">
+                <p:outputLabel for="nullValues" value="Null Values"/>
+            </p:column>
+
+            <p:column colspan="5">
+                <!--<p:inputText id="nullValues" value="#{sensorInputBean.predicateData.badValues}" style="width: 99%;"/>-->
+                <p:inputText id="nullValues" style="width: 99%;"/>
+            </p:column>
+        </p:row>
+
+        <p:row>
+            <p:column colspan="1">
+                <p:outputLabel for="samplingPeriod" value="Sampling Period"/>
+            </p:column>
+
+            <p:column colspan="2">
+                <p:selectOneMenu id="samplingPeriod" value="#{sensorInputBean.predicateData.samplingPeriod}">
+                    <f:selectItem itemLabel="Default" itemValue="default"/>
+                </p:selectOneMenu>
+            </p:column>
+
+            <p:column colspan="1">
+                <p:outputLabel for="samplingCount" value="Sampling Count Per Period"/>
+            </p:column>
+
+            <p:column colspan="2">
+                <p:selectOneMenu id="samplingCount" value="#{sensorInputBean.predicateData.samplingCount}">
+                    <f:selectItem itemLabel="Default" itemValue="default"/>
+                </p:selectOneMenu>
+            </p:column>
+        </p:row>
+
+        <p:outputPanel>
+            <p:row>
+                <p:column colspan="1" >
+                    <p:outputLabel for="fieldConfig" value="Field Formats" />
+                </p:column>
+
+                <p:column colspan="5">
+                    <p:dataTable id="fieldConfig" var="fields" value="#{sensorInputBean.mimicOneRow}">
+                        <p:columns var="column" value="#{sensorInputBean.dataSourceColumns}">
+                            <f:facet name="header">
+                                <h:outputText value="#{column}"/>
+                            </f:facet>
+
+                            <p:selectOneMenu editable="true" value="#{sensorInputBean.predicateData.fieldFormats[column]}">
+                                <f:selectItem itemLabel="date" itemValue="date"/>
+                                <f:selectItem itemLabel="double" itemValue="double"/>
+                                <f:selectItem itemLabel="integer" itemValue="integer"/>
+                                <f:selectItem itemLabel="numeric" itemValue="numeric"/>
+                                <f:selectItem itemLabel="timestamp" itemValue="timestamp"/>
+                            </p:selectOneMenu>
+                        </p:columns>
+                    </p:dataTable>
+                </p:column>
+            </p:row>
+        </p:outputPanel>
+    </p:panelGrid>
+</ui:composition>

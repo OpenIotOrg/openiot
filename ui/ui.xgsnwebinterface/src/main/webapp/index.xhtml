@@ -1,0 +1,118 @@
+/**
+ *    Copyright (c) 2011-2014, OpenIoT
+ *   
+ *    This file is part of OpenIoT.
+ *
+ *    OpenIoT is free software: you can redistribute it and/or modify
+ *    it under the terms of the GNU Lesser General Public License as published by
+ *    the Free Software Foundation, version 3 of the License.
+ *
+ *    OpenIoT is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *    GNU Lesser General Public License for more details.
+ *
+ *    You should have received a copy of the GNU Lesser General Public License
+ *    along with OpenIoT.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *     Contact: OpenIoT mailto: info@openiot.eu
+ * 
+ *     @author Jay Kelly, Luke Herron, Aaron Prince
+ */
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+
+    <f:view contentType="text/html" locale="en">
+        <h:head>
+            <h:outputStylesheet name="core.css" library="css"/>
+        </h:head>
+
+        <h:body>
+            <ui:debug/>
+
+            <p:layout fullPage="true">
+                <p:layoutUnit position="north" size="65">    
+                    <h:graphicImage value="/resources/images/logo.png" id="logo" width="200px" />
+                </p:layoutUnit>
+
+                <p:layoutUnit position="west" size="200" resizable="true" collapsible="true">
+                    <h:panelGroup id="menu" layout="block">
+                        <h:form>
+                            <p:growl id="growl" showDetail="true" sticky="true" />
+                            <p:menu>
+                                <f:ajax render=":content">
+                                    <p:menuitem value="Create Virtual Sensor" update=":content"
+                                                action="#{pageController.setPage('createSensor')}"/>
+
+                                    <p:menuitem value="Create Wrapper" update=":content"
+                                                action="#{pageController.setPage('createWrapper')}"/>
+
+                                    <p:menuitem value="Edit Wrapper" update=":content"
+                                                action="#{pageController.setPage('editWrapper')}"/>
+
+                                    <p:menuitem value="Start GSN" update=":content"
+                                                action="#{xgsn.startXGSN}"/>
+
+                                    <p:menuitem value="Stop GSN" update=":content"
+                                                action="#{xgsn.stopXGSN}"/>
+                                </f:ajax>
+                            </p:menu>
+                        </h:form>
+                    </h:panelGroup>
+                </p:layoutUnit>
+
+                <p:layoutUnit position="center">
+                    <h:panelGroup id="content" layout="block">
+                        <!-- See http://balusc.omnifaces.org/2011/09/communication-in-jsf-20.html#ViewScopedFailsInTagHandlers
+                            for why this is being wrapped in fragment tags -->
+                        <ui:fragment rendered="#{pageController.page eq 'createSensor'}">
+                            <h:form enctype="multipart/form-data" id="createSensorForm">
+                                <ui:include src="/WEB-INF/includes/createSensor.xhtml"/>
+                            </h:form>
+                        </ui:fragment>
+
+                        <ui:fragment rendered="#{pageController.page eq 'createWrapper'}">
+                            <ui:include src="/WEB-INF/includes/createWrapper.xhtml"/>
+                        </ui:fragment>
+
+                        <ui:fragment rendered="#{pageController.page eq 'editWrapper'}">
+                            <ui:include src="/WEB-INF/includes/editWrapper.xhtml"/>
+                        </ui:fragment>
+
+                        <ui:fragment rendered="#{pageController.page eq 'startGSN'}">
+                            <ui:include src="/WEB-INF/includes/startGSN.xhtml"/>
+                        </ui:fragment>
+
+                        <ui:fragment rendered="#{pageController.page eq 'stopGSN'}">
+                            <ui:include src="/WEB-INF/includes/stopGSN.xhtml"/>
+                        </ui:fragment>
+                    </h:panelGroup>
+
+                </p:layoutUnit>
+
+                <p:layoutUnit position="east" size="3%" />
+
+                <p:layoutUnit position="south" size="20%" collapsible="true" header="Logs">
+                    <h:panelGroup layout="block">
+                        <p:scrollPanel mode="native" id="logs"/>
+
+                        <p:socket onMessage="handleMessage" channel="/logs" />
+                    </h:panelGroup>
+                </p:layoutUnit>
+            </p:layout>
+
+            <script type="text/javascript">
+                function handleMessage(log) {
+                    var logs = $(PrimeFaces.escapeClientId('logs'));
+                    logs.prepend(log + '&lt;br /&gt;');
+                }
+            </script>
+        </h:body>
+    </f:view>
+</html>
