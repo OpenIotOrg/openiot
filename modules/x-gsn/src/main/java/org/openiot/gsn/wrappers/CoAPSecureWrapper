@@ -1,0 +1,214 @@
+package org.openiot.gsn.wrappers;
+
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Serializable;
+import java.net.InetSocketAddress;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.security.GeneralSecurityException;
+import java.security.KeyStore;
+import java.security.PrivateKey;
+import java.security.cert.Certificate;
+import java.util.logging.Level;
+
+import org.apache.log4j.Logger;
+import org.eclipse.californium.core.CoapClient;
+import org.eclipse.californium.core.CoapResponse;
+import org.eclipse.californium.core.network.CoAPEndpoint;
+import org.eclipse.californium.core.network.config.NetworkConfig;
+import org.eclipse.californium.scandium.DTLSConnector;
+import org.eclipse.californium.scandium.ScandiumLogger;
+import org.eclipse.californium.scandium.config.DtlsConnectorConfig;
+import org.eclipse.californium.scandium.dtls.pskstore.StaticPskStore;
+import org.openiot.gsn.beans.AddressBean;
+import org.openiot.gsn.beans.DataField;
+
+
+/* Implementation of a CoAP secure Wrapper that pulls 
+*  a temperature value from a CoAP secure Server addressed by an URI 
+*  defined in the XML file and push it to the LSM.
+*/
+
+public class CoAPSecureWrapper extends AbstractWrapper {
+	
+	static {
+		ScandiumLogger.initialize();
+		ScandiumLogger.setLevel(Level.FINE);
+	}
+
+
+	private static final String TRUST_STORE_PASSWORD = "rootPass";
+	private final static String KEY_STORE_PASSWORD = "endPass";
+	private static String KEY_STORE_LOCATION;
+	private static String TRUST_STORE_LOCATION;
+		
+	private DTLSConnector dtlsConnector;
+	
+	int threadCounter;
+	private final transient Logger logger = Logger.getLogger(CoAPSecureWrapper.class);
+	private AddressBean addressBean;
+	private String uriPath;	
+	private URI uri;	
+	private String inputRate;	
+	private int rate;
+	private int DEFAULT_RATE = 2000;
+	private String DEFAULT_FIELD = "Temperature";
+	private String DEFAULT_TYPE = "double";
+	private String DEFAULT_DESCRIPTION = "Value from CoAP Server";		
+	private String fieldName;
+	private String type;
+	private String description;
+	private DataField[] outputFormat;
+	
+	
+	public boolean initialize() {
+		
+	    this.addressBean = getActiveAddressBean( );
+		
+	    uriPath = this.addressBean.getPredicateValue("uri");
+	    logger.info("Uri Loaded from xml: " +uriPath); 
+	    try{
+	    	uri = new URI(uriPath);
+	    }catch(URISyntaxException e){
+	    	logger.error("Loading the CoAP wrapper failed : "+e.getMessage(),e);
+			return false;
+	    }
+	    
+	    inputRate = this.addressBean.getPredicateValue( "rate" );
+	    logger.info("Rate loaded from xml: " +inputRate);
+	    if ( inputRate == null || inputRate.trim( ).length( ) == 0 ){
+	    	rate = DEFAULT_RATE;
+	    	logger.warn("Loaded Default value");
+	    }else
+	    	rate = Integer.parseInt( inputRate );
+	    
+	    logger.info("Rate int: " +rate);
+	    
+	    fieldName = this.addressBean.getPredicateValue("field");
+	    logger.info("Field Name loaded from xml: " +fieldName);
+	    if(fieldName == null || fieldName.trim( ).length( ) == 0 ){
+	    	fieldName = DEFAULT_FIELD;
+	    	logger.warn("Loaded fieldName Default value");
+	    }
+	    
+	    type = this.addressBean.getPredicateValue("fieldType");
+	    logger.info("Type loaded from xml: " +type);
+	    if(type == null || type.trim( ).length( ) == 0 ){
+	    	type = DEFAULT_TYPE;
+	    	logger.warn("Loaded type Default value");
+	    }
+	    
+	    description = this.addressBean.getPredicateValue("fieldDescription");
+	    logger.info("Description loaded from xml: " + description);
+	    if(description == null || description.trim( ).length( ) == 0 ){
+	    	description = DEFAULT_DESCRIPTION;
+	    	logger.warn("Loaded description Default value");
+	    }
+	    
+	    KEY_STORE_LOCATION = this.addressBean.getPredicateValue("keyLocation");
+	    logger.info("KeyStore Location loaded from xml: " + KEY_STORE_LOCATION);
+
+	    
+	    TRUST_STORE_LOCATION = this.addressBean.getPredicateValue("trustLocation");
+	    logger.info("TrustStore Location loaded from xml: " + TRUST_STORE_LOCATION);
+
+	    
+		try {
+			// load key store
+			KeyStore keyStore = KeyStore.getInstance("JKS");
+			InputStream in = new FileInputStream(KEY_STORE_LOCATION);
+			keyStore.load(in, KEY_STORE_PASSWORD.toCharArray());
+
+			// load trust store
+			KeyStore trustStore = KeyStore.getInstance("JKS");
+			InputStream inTrust = new FileInputStream(TRUST_STORE_LOCATION);
+			trustStore.load(inTrust, TRUST_STORE_PASSWORD.toCharArray());
+
+			// You can load multiple certificates if needed
+			Certificate[] trustedCertificates = new Certificate[1];
+			trustedCertificates[0] = trustStore.getCertificate("root");
+
+			DtlsConnectorConfig.Builder builder = new DtlsConnectorConfig.Builder(new InetSocketAddress(0));
+			builder.setPskStore(new StaticPskStore("Client_identity", "secretPSK".getBytes()));
+			builder.setIdentity((PrivateKey)keyStore.getKey("client", KEY_STORE_PASSWORD.toCharArray()),
+					keyStore.getCertificateChain("client"), true);
+			builder.setTrustStore(trustedCertificates);
+			dtlsConnector = new DTLSConnector(builder.build(), null);
+
+		} catch (GeneralSecurityException | IOException e) {
+			System.err.println("Could not load the keystore");
+			e.printStackTrace();
+		}
+	    
+		setName("CoAPWrapper" + (++threadCounter));
+		
+		logger.info("Initialization was successful");
+		return true;
+	}
+	
+
+	public void run() {
+		
+		CoapClient client = new CoapClient(uri);
+		client.setEndpoint(new CoAPEndpoint(dtlsConnector, NetworkConfig.getStandard()));
+		
+		logger.info("Client inizialized");
+		
+		while(isActive()){
+			
+			try{
+				Thread.sleep(rate);
+			}catch(InterruptedException e){
+				e.printStackTrace();
+			}
+			logger.info("Request to server");
+			CoapResponse response = null;
+			try{
+				response = client.get();
+			}catch(Exception e){
+				e.printStackTrace();
+				logger.info(e.getMessage());
+				logger.info(e.getStackTrace());
+			}
+			logger.info("Response from server");
+			
+			if(response!=null){
+				/*
+				String data = (response.getResponseText());
+				logger.info("Response "+ data);
+				postStreamElement(new Serializable[] {data});
+				*/
+				double data = Integer.parseInt(response.getResponseText());
+				logger.info("Response "+ data);
+				postStreamElement(new Serializable[] {data});	
+			
+		    }else{
+		    	logger.info("Null Response");
+		    }
+			
+		}
+
+	}
+
+	public DataField[] getOutputFormat() {
+		
+		logger.info("getOutputFormat");
+		outputFormat = new DataField[1];
+		//outputFormat[0] = new DataField("Temperature", "double", "Value from CoAP Server");
+
+		outputFormat[0] = new DataField(new String(fieldName), new String(type), new String(description));
+		return outputFormat;
+	}
+
+
+	public void dispose() {
+		threadCounter--;
+	}
+
+	public String getWrapperName() {
+		return "coap";
+	}	
+	
+}
