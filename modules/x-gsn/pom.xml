@@ -444,7 +444,7 @@
 		<dependency>
 			<groupId>org.jboss.resteasy</groupId>
 			<artifactId>resteasy-jaxrs</artifactId>
-			<version>3.0.8.Final</version>
+			<version>3.0.11.Final</version>
 		</dependency>
 
 	</dependencies>
